@@ -43,7 +43,7 @@ class OnBoardScreenView extends StatelessWidget {
           itemBuilder: (context, index) {
             OnBoardingItem oi = pages[index];
             return Padding(
-              padding: const EdgeInsets.only(right: 8.0, left: 8.0),
+              padding:  EdgeInsets.symmetric(horizontal: 8.r),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -52,28 +52,28 @@ class OnBoardScreenView extends StatelessWidget {
                     oi.title!,
                     style: GoogleFonts.roboto(
                         color: Colors.white,
-                        fontSize: 20.sp,
+                        fontSize: 34.sp,
                         fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(
-                    height: 20.0,
+                   SizedBox(
+                    height: 20.h,
                   ),
                   Text(
                     oi.subTitle!,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20.sp,
+                      fontSize: 24.sp,
                     ),
                   ),
-                  const SizedBox(
-                    height: 60.0,
+                    SizedBox(
+                    height: 60.h,
                   ),
                   index != (pages.length - 1)
                       ? Center(
                           child: SizedBox(
                             //   width: double.infinity,
-                            height: 20.0,
+                            height: 23.h,
                             child: ListView.builder(
                               shrinkWrap: true,
                               itemCount: pages.length,
@@ -81,15 +81,14 @@ class OnBoardScreenView extends StatelessWidget {
                               itemBuilder: (context, i) {
                                 return Center(
                                   child: Padding(
-                                    padding: const EdgeInsets.all(2.0),
+                                    padding:  EdgeInsets.all(2.r),
                                     child: Container(
-                                      width: index == i ? 25 : 20.0,
+                                      width: index == i ? 25.w : 20.w,
                                       decoration: BoxDecoration(
                                           color: index == i
                                               ? blueColor
                                               : Colors.white,
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(10.0))),
+                                          borderRadius:  BorderRadius.circular(10.r)),
                                     ),
                                   ),
                                 );
@@ -101,12 +100,11 @@ class OnBoardScreenView extends StatelessWidget {
                           child: Align(
                             alignment: Alignment.center,
                             child: Container(
-                              height: 50,
-                              width: 200,
-                              decoration: const BoxDecoration(
+                              height: 60.h,
+                              width: 210.w,
+                              decoration:  BoxDecoration(
                                   color: blueColor,
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(30))),
+                                  borderRadius: BorderRadius.circular(30.r)),
                               child: Center(
                                 child: Text(
                                   Strings.getStarted.toUpperCase(),

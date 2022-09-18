@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:getn_driver/presentation/onBoarding/on_board_screen_view.dart';
+import 'package:getn_driver/presentation/onBoarding/OnBoardScreenView.dart';
+import 'package:getn_driver/presentation/splash/SplashScreen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home:  OnBoardScreenView(),
+        home:  const SplashScreen(),
       ),
     );
   }

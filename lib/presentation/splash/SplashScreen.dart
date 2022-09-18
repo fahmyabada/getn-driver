@@ -1,23 +1,62 @@
-import 'package:easy_splash_screen/easy_splash_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
-import 'package:getn_driver/presentation/di/injection_container.dart';
-import 'package:getn_driver/presentation/onBoarding/on_board_screen_view.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:getn_driver/data/utils/strings.dart';
+import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/presentation/onBoarding/OnBoardScreenView.dart';
+import 'package:getn_driver/presentation/splash/splash_screen_cubit.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return EasySplashScreen(
-      logo: Image.asset('assets/images/logo2.png'),
-      backgroundColor: white,
-      showLoader: true,
-      loadingText: const Text("Loading..."),
-      navigator: OnBoardScreenView(),
-      durationInSeconds: 3,
-    );
+    return BlocProvider(
+        create: (context) => SplashScreenCubit()..loadData(),
+        child: BlocConsumer<SplashScreenCubit, SplashScreenState>(
+            listener: (context, state) {
+          if (state is StartState) {
+            if (kDebugMode) {
+              print('*******StartState');
+            }
+            navigateTo(context, OnBoardScreenView());
+          }
+        }, builder: (context, state) {
+          return Scaffold(
+            backgroundColor: primaryColor,
+            body: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 40.r, right: 40.r),
+                  child: Text(
+                    Strings.perfectTaxiBooking,
+                    style: GoogleFonts.roboto(
+                        fontSize: 30.sp, color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                SizedBox(
+                  height: 40.h,
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 85.r),
+                  height: 15.h,
+                  child: const LinearProgressIndicator(
+                    backgroundColor: Colors.white,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      accentColor,
+                    ),
+                    //value: 0.8,
+                  ),
+                )
+              ],
+            ),
+          );
+        }));
   }
 }
