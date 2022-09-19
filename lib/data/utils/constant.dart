@@ -8,3 +8,7 @@ const cancel = "cancel";
 const accept = "accept";
 const arrive = "arrive";
 const coming = "coming";
+
+String serverFailureMessage = 'Server Failure';
+String cashFailureMessage = 'Cache Failure';
+String networkFailureMessage = 'network not available';

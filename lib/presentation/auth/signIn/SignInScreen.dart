@@ -1,12 +1,15 @@
-import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/model/country/CountryData.dart';
+import 'package:getn_driver/data/model/country/Data.dart';
 import 'package:getn_driver/data/model/country/IconModel.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/strings.dart';
-
+import 'package:getn_driver/presentation/auth/signIn/sign_in_cubit.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SignInScreenView extends StatefulWidget {
@@ -18,36 +21,74 @@ class SignInScreenView extends StatefulWidget {
 
 class _SignInScreenViewState extends State<SignInScreenView> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  CountryData selectedCountry = CountryData(
-      title: {"ar": "مصر", "en": "Egypt"},
-      code: '+20',
-      id: "62d6edd71da20a7e80892617",
-      icon: IconModel(
-          src:
-          "https://apis.getn.re-comparison.com/upload/country/1658254219700icon-file.webp"));
+  var phoneController = TextEditingController();
+  Data? dropDownValueCountry;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: SingleChildScrollView(
-          child: signInWidget(context),
-        ),
-      ),
-    );
+    return BlocProvider(
+        create: (context) => SignInCubit()..getCountries(),
+        child:
+            BlocConsumer<SignInCubit, SignInState>(listener: (context, state) {
+          if (state is SignInLoading) {
+            if (kDebugMode) {
+              print('*******PlanVisitLoadingState');
+            }
+          } else if (state is SignInErrorState) {
+            if (kDebugMode) {
+              print('*******PlanVisitErrorState ${state.message}');
+            }
+          }
+        }, builder: (context, state) {
+          return Scaffold(
+            body: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Form(
+                    key: formKey,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20.r),
+                          child: Container(
+                            padding: EdgeInsetsDirectional.all(10.r),
+                            decoration: BoxDecoration(
+                              color: primary,
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(20.r),
+                            ),
+                            child: defaultFormField(
+                                controller: serverController,
+                                type: TextInputType.text,
+                                label: LanguageCubit.get(context)
+                                    .getTexts("Server Url")
+                                    .toString(),
+                                prefix: Icons.cast_connected_outlined,
+                                validatorText: serverController.text,
+                                validatorMessage: LanguageCubit.get(context)
+                                    .getTexts("pleaseEnterServerUrl")
+                                    .toString(),
+                                onEditingComplete: () {
+                                  FocusScope.of(context).nextFocus();
+                                }),
+                          ),
+                        ),
+
+                      ],
+                    ),
+                  ),
+
+                ],
+              ),
+            ),
+          );
+        }));
   }
 
-  signInWidget(BuildContext context) {
+  signInWidget(BuildContext context, List<Data> list) {
     return Padding(
-      padding:  EdgeInsets.only(
-          left: 20.r,
-          right: 20.r,
-          top: 100.r),
+      padding: EdgeInsets.only(left: 20.r, right: 20.r, top: 100.r),
       child: (Column(
         children: [
           Text(
@@ -57,7 +98,7 @@ class _SignInScreenViewState extends State<SignInScreenView> {
                 fontWeight: FontWeight.bold,
                 color: primaryColor),
           ),
-           SizedBox(
+          SizedBox(
             height: 36.h,
           ),
           Form(
@@ -68,10 +109,8 @@ class _SignInScreenViewState extends State<SignInScreenView> {
                 Container(
                   height: 50.h,
                   decoration: BoxDecoration(
-                      border:
-                          Border.all(color: Colors.black.withOpacity(0.1)),
-                      borderRadius:
-                           BorderRadius.circular(30.r)),
+                      border: Border.all(color: Colors.black.withOpacity(0.1)),
+                      borderRadius: BorderRadius.circular(30.r)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -82,97 +121,124 @@ class _SignInScreenViewState extends State<SignInScreenView> {
                           // width: 400,
                           height: 55,
 
-                          child: DropdownButtonHideUnderline(
-                              child: DropdownButton2(
-                                dropdownDecoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(14.r),
-                                  border: Border.all(
-                                    width: 1.w,
-                                    color: Colors.grey[400] ?? Colors.black,
-                                  ),
+                          child: DropdownSearch<Data>(
+                            //mode of dropdown
+                            popupProps: PopupProps.menu(
+                                fit: FlexFit.loose,
+                                menuProps: MenuProps(
+                                  backgroundColor: white,
+                                  borderRadius: BorderRadius.circular(10.r),
                                 ),
-                                isExpanded: true,
-                                iconSize: 0.0,
-                                icon:
-                                    const Icon(Icons.keyboard_arrow_up_sharp),
-                                style: const TextStyle(color: Colors.grey),
-                                iconEnabledColor: Colors.grey,
-                                hint: Center(
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.center,
-                                    children: [
-                                      ImageTools.image(
-                                        fit: BoxFit.contain,
-                                        url: selectedCountry.icon?.src ?? " ",
-                                        height: 30.h,
-                                        width: 30.w,
-                                      ),
-                                      const Icon(
-                                        Icons.keyboard_arrow_down_sharp,
-                                        color: Color.fromARGB(
-                                            207, 204, 204, 213),
-                                      ),
-                                      Text(
-                                         selectedCountry
-                                                  .title?["en"] ??
-                                              "",
-                                          style: const TextStyle(
-                                              color: Colors.black)),
-                                       SizedBox(
-                                        width: 10.w,
-                                      ),
-                                      Text(
-                                          selectedCountry
-                                                  .code ??
-                                              "",
-                                          style: const TextStyle(
-                                              color: Colors.black)),
-                                    ],
-                                  ),
-                                ),
-                                onChanged: (CountryData? value) {
-                                  selectedCountry = value!;
-                                },
-                                items: controller.countries
-                                    .map((selectedCountry) {
-                                  return DropdownMenuItem<CountryData>(
-                                    value: selectedCountry,
-                                    child: Row(
-                                      children: [
-                                        ImageTools.image(
-                                          fit: BoxFit.contain,
-                                          url: selectedCountry.icon?.src ??
-                                              " ",
-                                          height: 30.h,
-                                          width: 30.h,
-                                        ),
-                                         SizedBox(
-                                          width: 5.w,
-                                        ),
-                                        Text(
-                                            selectedCountry
-                                                    .title?["en"] ??
+                                itemBuilder: (context, data, isSelected) =>
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 10.r, vertical: 10.r),
+                                      child: Row(
+                                        children: [
+                                          ImageTools.image(
+                                            fit: BoxFit.contain,
+                                            url: SignInCubit.get(context)
+                                                    .selectedCountry!
+                                                    .icon!
+                                                    .src ??
                                                 " ",
-                                            style: const TextStyle(
-                                                color: Colors.black)),
-                                         SizedBox(
-                                          width: 5.w,
-                                        ),
-                                        Text(
-                                            selectedCountry
-                                                    .code ??
-                                                "",
-                                            style: const TextStyle(
-                                                color: Colors.black)),
-                                      ],
-                                    ),
-                                  );
-                                }).toList(),
+                                            height: 30.h,
+                                            width: 30.h,
+                                          ),
+                                          SizedBox(
+                                            width: 5.w,
+                                          ),
+                                          Text(
+                                              SignInCubit.get(context)
+                                                      .selectedCountry!
+                                                      .title!
+                                                      .en ??
+                                                  " ",
+                                              style: const TextStyle(
+                                                  color: Colors.black)),
+                                          SizedBox(
+                                            width: 5.w,
+                                          ),
+                                          Text(
+                                              SignInCubit.get(context)
+                                                      .selectedCountry!
+                                                      .code ??
+                                                  "",
+                                              style: const TextStyle(
+                                                  color: Colors.black)),
+                                        ],
+                                      ),
+                                    )),
+                            selectedItem: dropDownValueCountry,
+                            items: list.cast<Data>(),
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 5.r, vertical: 10.r),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(9.r),
+                                  borderSide:
+                                      const BorderSide(color: primaryColor),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(9.r),
+                                  borderSide:
+                                      const BorderSide(color: primaryColor),
+                                ),
+                                errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(9.r),
+                                  borderSide:
+                                      const BorderSide(color: primaryColor),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(9.r),
+                                  borderSide:
+                                      const BorderSide(color: primaryColor),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(9.r),
+                                  borderSide:
+                                      const BorderSide(color: primaryColor),
+                                ),
                               ),
                             ),
+                            dropdownButtonProps: DropdownButtonProps(
+                              color: white,
+                              icon: Icon(Icons.arrow_drop_down, size: 24.h),
+                            ),
+                            dropdownBuilder: (context, selectedItem) => Center(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ImageTools.image(
+                                    fit: BoxFit.contain,
+                                    url: selectedItem!.icon!.src ?? " ",
+                                    height: 30,
+                                    width: 30,
+                                  ),
+                                  const Icon(
+                                    Icons.keyboard_arrow_down_sharp,
+                                    color: Color.fromARGB(207, 204, 204, 213),
+                                  ),
+                                  Text(selectedItem.title!.en ?? "",
+                                      style:
+                                          const TextStyle(color: Colors.black)),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(selectedItem.code ?? "",
+                                      style:
+                                          const TextStyle(color: Colors.black)),
+                                ],
+                              ),
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                dropDownValueCountry = value;
+                              });
+                            },
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -200,7 +266,7 @@ class _SignInScreenViewState extends State<SignInScreenView> {
                             },
                             decoration: InputDecoration(
                               hintText: Strings.phone,
-                              contentPadding:  EdgeInsets.symmetric(
+                              contentPadding: EdgeInsets.symmetric(
                                   vertical: 10.r, horizontal: 10.r),
                               labelStyle: GoogleFonts.roboto(
                                   color: greyColor, fontSize: 14.sp),
@@ -218,16 +284,15 @@ class _SignInScreenViewState extends State<SignInScreenView> {
                     ],
                   ),
                 ),
-                 SizedBox(
+                SizedBox(
                   height: 24.h,
                 ),
               ],
             ),
           ),
-           SizedBox(
-            height:  36.h,
+          SizedBox(
+            height: 36.h,
           ),
-
           GestureDetector(
             child: Container(
               height: 50.0,

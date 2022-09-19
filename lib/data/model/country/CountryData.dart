@@ -1,47 +1,53 @@
-import 'package:getn_driver/data/model/country/IconModel.dart';
+import 'Data.dart';
 
 class CountryData {
-  final Map<String, dynamic>? title;
-  final IconModel? icon;
-  final String? id;
-  final String? code;
   CountryData({
-    this.title,
-    this.icon,
-    this.id,
-    this.code,
-  });
+      List<Data>? data, 
+      int? totalCount, 
+      int? tableCount, 
+      int? page, 
+      int? limit,}){
+    _data = data;
+    _totalCount = totalCount;
+    _tableCount = tableCount;
+    _page = page;
+    _limit = limit;
+}
 
-  CountryData.fromJson(Map<String, dynamic> json)
-      : title = (json['title'] as Map<String, dynamic>?) != null
-      ? json['title'] as Map<String, dynamic>
-      : null,
-        icon = (json['icon'] as Map<String, dynamic>?) != null
-            ? IconModel.fromJson(json['icon'] as Map<String, dynamic>)
-            : null,
-        id = json['_id'] as String?,
-        code = json['code'] as String?;
+  CountryData.fromJson(dynamic json) {
+    if (json['data'] != null) {
+      _data = [];
+      json['data'].forEach((v) {
+        _data?.add(Data.fromJson(v));
+      });
+    }
+    _totalCount = json['totalCount'];
+    _tableCount = json['tableCount'];
+    _page = json['page'];
+    _limit = json['limit'];
+  }
+  List<Data>? _data;
+  int? _totalCount;
+  int? _tableCount;
+  int? _page;
+  int? _limit;
 
-  Map<String, dynamic> toJson() => {
-    'title': title,
-    'icon': icon?.toJson(),
-    'id': id,
-    'code': code,
-  };
+  List<Data>? get data => _data;
+  int? get totalCount => _totalCount;
+  int? get tableCount => _tableCount;
+  int? get page => _page;
+  int? get limit => _limit;
 
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is CountryData &&
-        other.title == title &&
-        other.icon == icon &&
-        other.id == id &&
-        other.code == code;
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    if (_data != null) {
+      map['data'] = _data?.map((v) => v.toJson()).toList();
+    }
+    map['totalCount'] = _totalCount;
+    map['tableCount'] = _tableCount;
+    map['page'] = _page;
+    map['limit'] = _limit;
+    return map;
   }
 
-  @override
-  int get hashCode {
-    return title.hashCode ^ icon.hashCode ^ id.hashCode ^ code.hashCode;
-  }
 }

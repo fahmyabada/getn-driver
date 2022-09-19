@@ -1,16 +1,13 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:getn_driver/presentation/di/injection_container.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class DioHelper {
   static late Dio dio;
 
   static init() {
-    print('serverUrl*************** ${getIt<SharedPreferences>().getString('serverUrl')}');
     dio = Dio(BaseOptions(
-      baseUrl: getIt<SharedPreferences>().getString('serverUrl') ?? '',
+      baseUrl: 'https://apis.getn.re-comparison.com/api/',
       receiveDataWhenStatusError: true,
     ));
   }
@@ -19,10 +16,7 @@ class DioHelper {
     required String url,
     Map<String, dynamic>? query,
   }) async {
-    return await dio.get(url, queryParameters: query,
-        onReceiveProgress: (received, total) {
-      // progress.add(((received / total) * 100).toStringAsFixed(0));
-    });
+    return await dio.get(url, queryParameters: query);
   }
 
   static Future<Response> postData({
@@ -30,22 +24,14 @@ class DioHelper {
     Map<String, dynamic>? query,
     String? data,
   }) async {
-    return await dio.post(url, queryParameters: query, data: data,
-        onReceiveProgress: (received, total) {
-      // progress.add(((received / total) * 100).toStringAsFixed(0));
-      // progressType.add(url);
-    });
+    return await dio.post(url, queryParameters: query, data: data);
   }
 
   static Future<Response> postData2({
     required String url,
     FormData? data,
   }) async {
-    return await dio.post(url, data: data,
-        onReceiveProgress: (received, total) {
-          // progress.add(((received / total) * 100).toStringAsFixed(0));
-          // progressType.add(url);
-        });
+    return await dio.post(url, data: data);
   }
 
   static Future<Response> putData({

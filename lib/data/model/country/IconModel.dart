@@ -1,25 +1,26 @@
 class IconModel {
-  final String? src;
-  final String? mimetype;
-
   IconModel({
-    this.src,
-    this.mimetype,
-  });
+      String? src, 
+      String? mimetype,}){
+    _src = src;
+    _mimetype = mimetype;
+}
 
-  IconModel.fromJson(Map<String, dynamic> json)
-      : src = json['src'] as String?,
-        mimetype = json['mimetype'] as String?;
+  IconModel.fromJson(dynamic json) {
+    _src = json['src'];
+    _mimetype = json['mimetype'];
+  }
+  String? _src;
+  String? _mimetype;
 
-  Map<String, dynamic> toJson() => {'src': src, 'mimetype': mimetype};
+  String? get src => _src;
+  String? get mimetype => _mimetype;
 
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is IconModel && other.src == src && other.mimetype == mimetype;
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['src'] = _src;
+    map['mimetype'] = _mimetype;
+    return map;
   }
 
-  @override
-  int get hashCode => src.hashCode ^ mimetype.hashCode;
 }

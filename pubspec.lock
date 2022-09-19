@@ -92,13 +92,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.6"
-  dropdown_button2:
+  dropdown_search:
     dependency: "direct main"
     description:
-      name: dropdown_button2
+      name: dropdown_search
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.1"
+    version: "5.0.2"
   easy_splash_screen:
     dependency: "direct main"
     description:
