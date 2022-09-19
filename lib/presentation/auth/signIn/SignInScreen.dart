@@ -1,11 +1,9 @@
-import 'package:dropdown_search/dropdown_search.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:getn_driver/data/model/country/CountryData.dart';
 import 'package:getn_driver/data/model/country/Data.dart';
-import 'package:getn_driver/data/model/country/IconModel.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/strings.dart';
@@ -21,7 +19,7 @@ class SignInScreenView extends StatefulWidget {
 }
 
 class _SignInScreenViewState extends State<SignInScreenView> {
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  var formKey = GlobalKey<FormState>();
   var phoneController = TextEditingController();
   Data? dropDownValueCountry;
 
@@ -31,296 +29,240 @@ class _SignInScreenViewState extends State<SignInScreenView> {
         create: (context) => SignInCubit()..getCountries(),
         child:
             BlocConsumer<SignInCubit, SignInState>(listener: (context, state) {
-          if (state is SignInLoading) {
+          if (state is CountriesLoading) {
             if (kDebugMode) {
-              print('*******PlanVisitLoadingState');
+              print('*******CountriesLoading');
             }
-          } else if (state is SignInErrorState) {
+          } else if (state is CountriesErrorState) {
             if (kDebugMode) {
-              print('*******PlanVisitErrorState ${state.message}');
+              print('*******CountriesErrorState ${state.message}');
             }
+            showToastt(
+                text: state.message,
+                state: ToastStates.error,
+                context: context);
+          } else if (state is CountriesSuccessState) {
+            if (kDebugMode) {
+              print(
+                  '*******CountriesSuccessState${SignInCubit.get(context).countries[0].icon!.src} ');
+            }
+            dropDownValueCountry = SignInCubit.get(context).countries[0];
+          } else if (state is SendOtpSuccessState) {
+            if (kDebugMode) {
+              print('*******SendOtpSuccessState');
+            }
+            if (state.data.isAlreadyUser!) {
+            } else {
+              showToastt(
+                  text: "register first please...",
+                  state: ToastStates.error,
+                  context: context);
+            }
+          } else if (state is SendOtpErrorState) {
+            if (kDebugMode) {
+              print('*******SendOtpErrorState');
+            }
+
+            showToastt(
+                text: state.message,
+                state: ToastStates.error,
+                context: context);
           }
         }, builder: (context, state) {
-          return Scaffold(
-            body: SingleChildScrollView(
-              child: Column(
+          return SafeArea(
+            child: Scaffold(
+              body: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Form(
-                    key: formKey,
-                    child: Column(
+                  SizedBox(
+                    width: 200.w,
+                    child: Text(
+                      Strings.signIn,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.roboto(
+                          fontSize: 25.sp,
+                          fontWeight: FontWeight.bold,
+                          color: primaryColor),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 36.h,
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 15.r),
+                    margin: EdgeInsets.symmetric(horizontal: 20.r),
+                    decoration: BoxDecoration(
+                        border:
+                            Border.all(color: Colors.black.withOpacity(0.1)),
+                        borderRadius: BorderRadius.circular(50.r)),
+                    child: Row(
                       children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20.r),
-                          child: Container(
-                            padding: EdgeInsetsDirectional.all(10.r),
-                            decoration: BoxDecoration(
-                              color: primaryColor,
-                              shape: BoxShape.rectangle,
-                              borderRadius: BorderRadius.circular(20.r),
-                            ),
+                        SignInCubit.get(context).countries.isNotEmpty
+                            ? SizedBox(
+                                width: 100.w,
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton2(
+                                    //      value: controller.selectedCountry?.value,
+                                    dropdownDecoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14.r),
+                                      border: Border.all(
+                                        width: 1,
+                                        color: Colors.grey[400] ?? Colors.black,
+                                      ),
+                                    ),
+                                    isExpanded: true,
+                                    iconSize: 0.0,
+                                    dropdownWidth: 350.w,
+                                    style: const TextStyle(color: Colors.grey),
+                                    onChanged: (Data? value) {
+                                      setState(() {
+                                        dropDownValueCountry = value;
+                                      });
+                                    },
+                                    hint: Center(
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          ImageTools.image(
+                                            fit: BoxFit.contain,
+                                            url: dropDownValueCountry!
+                                                    .icon!.src ??
+                                                " ",
+                                            height: 35.w,
+                                            width: 35.w,
+                                          ),
+                                          const Icon(
+                                            Icons.keyboard_arrow_down_sharp,
+                                            color: Color.fromARGB(
+                                                207, 204, 204, 213),
+                                          ),
+                                          SizedBox(
+                                            width: 2.w,
+                                          ),
+                                          Text(dropDownValueCountry!.code ?? "",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 20.sp)),
+                                        ],
+                                      ),
+                                    ),
+                                    items: SignInCubit.get(context)
+                                        .countries
+                                        .map((selectedCountry) {
+                                      return DropdownMenuItem<Data>(
+                                        value: selectedCountry,
+                                        child: Row(
+                                          children: [
+                                            ImageTools.image(
+                                              fit: BoxFit.contain,
+                                              url: selectedCountry.icon?.src ??
+                                                  " ",
+                                              height: 30.w,
+                                              width: 30.w,
+                                            ),
+                                            SizedBox(
+                                              width: 10.w,
+                                            ),
+                                            Text(
+                                                selectedCountry.title?.en ??
+                                                    " ",
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 20.sp)),
+                                            SizedBox(
+                                              width: 10.w,
+                                            ),
+                                            Text(selectedCountry.code ?? "",
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 20.sp)),
+                                          ],
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              )
+                            : const CircularProgressIndicator(color: black),
+                        SizedBox(
+                          width: 5.w,
+                        ),
+                        Expanded(
+                          child: Form(
+                            key: formKey,
                             child: defaultFormField(
                                 controller: phoneController,
-                                type: TextInputType.text,
+                                type: TextInputType.phone,
                                 label: "1234567",
-                                prefix: Icons.cast_connected_outlined,
+                                textSize: 25,
+                                border: true,
+                                borderColor: white,
                                 validatorText: phoneController.text,
-                                validatorMessage: "pleaseEnterServerUrl",
+                                validatorMessage: "Enter Phone Please..",
                                 onEditingComplete: () {
-                                  FocusScope.of(context).nextFocus();
+                                  FocusScope.of(context).unfocus();
                                 }),
                           ),
                         ),
-
                       ],
                     ),
                   ),
+                  defaultButton3(
+                      press: () {
+                        if (dropDownValueCountry != null) {
+                          if (formKey.currentState!.validate()) {
+                            FocusScopeNode currentFocus =
+                                FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.focusedChild?.unfocus();
+                            }
+                            if (phoneController.text.startsWith('0') && phoneController.text.length > 1) {
+                              final splitPhone = const TextEditingValue().copyWith(
+                                text: phoneController.text.replaceAll(RegExp(r'^0+(?=.)'), ''),
+                                selection: phoneController.selection.copyWith(
+                                  baseOffset: phoneController.text.length - 1,
+                                  extentOffset: phoneController.text.length - 1,
+                                ),
+                              );
+                              SignInCubit.get(context).sendOtp(
+                                  splitPhone.text.toString(),
+                                  dropDownValueCountry!.id!);
+                            } else {
+                              SignInCubit.get(context).sendOtp(
+                                  phoneController.text.toString(),
+                                  dropDownValueCountry!.id!);
+                            }
 
+
+                          }
+                        } else {
+                          showToastt(
+                              text: "country code note found",
+                              state: ToastStates.error,
+                              context: context);
+                        }
+                      },
+                      text: "Next",
+                      backColor: accentColor,
+                      textColor: white),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children:  [
+                      Text('You Don\'t have an account,',style: TextStyle(color: black,fontSize: 16.sp),),
+                      Text('Sign Up Now',style: TextStyle(color: accentColor,fontSize: 16.sp),)
+                    ],
+                  )
                 ],
               ),
             ),
           );
         }));
   }
-
-//   signInWidget(BuildContext context, List<Data> list) {
-//     return Padding(
-//       padding: EdgeInsets.only(left: 20.r, right: 20.r, top: 100.r),
-//       child: (Column(
-//         children: [
-//           Text(
-//             Strings.signIn,
-//             style: GoogleFonts.roboto(
-//                 fontSize: 20.sp,
-//                 fontWeight: FontWeight.bold,
-//                 color: primaryColor),
-//           ),
-//           SizedBox(
-//             height: 36.h,
-//           ),
-//           Form(
-//             key: formKey,
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 Container(
-//                   height: 50.h,
-//                   decoration: BoxDecoration(
-//                       border: Border.all(color: Colors.black.withOpacity(0.1)),
-//                       borderRadius: BorderRadius.circular(30.r)),
-//                   child: Row(
-//                     mainAxisAlignment: MainAxisAlignment.center,
-//                     children: [
-//                       SizedBox(
-//                         height: 55.h,
-//                         width: 150.w,
-//                         child: SizedBox(
-//                           // width: 400,
-//                           height: 55,
-//
-//                           child: DropdownSearch<Data>(
-//                             //mode of dropdown
-//                             popupProps: PopupProps.menu(
-//                                 fit: FlexFit.loose,
-//                                 menuProps: MenuProps(
-//                                   backgroundColor: white,
-//                                   borderRadius: BorderRadius.circular(10.r),
-//                                 ),
-//                                 itemBuilder: (context, data, isSelected) =>
-//                                     Padding(
-//                                       padding: EdgeInsets.symmetric(
-//                                           horizontal: 10.r, vertical: 10.r),
-//                                       child: Row(
-//                                         children: [
-//                                           ImageTools.image(
-//                                             fit: BoxFit.contain,
-//                                             url: SignInCubit.get(context)
-//                                                     .selectedCountry!
-//                                                     .icon!
-//                                                     .src ??
-//                                                 " ",
-//                                             height: 30.h,
-//                                             width: 30.h,
-//                                           ),
-//                                           SizedBox(
-//                                             width: 5.w,
-//                                           ),
-//                                           Text(
-//                                               SignInCubit.get(context)
-//                                                       .selectedCountry!
-//                                                       .title!
-//                                                       .en ??
-//                                                   " ",
-//                                               style: const TextStyle(
-//                                                   color: Colors.black)),
-//                                           SizedBox(
-//                                             width: 5.w,
-//                                           ),
-//                                           Text(
-//                                               SignInCubit.get(context)
-//                                                       .selectedCountry!
-//                                                       .code ??
-//                                                   "",
-//                                               style: const TextStyle(
-//                                                   color: Colors.black)),
-//                                         ],
-//                                       ),
-//                                     )),
-//                             selectedItem: dropDownValueCountry,
-//                             items: list.cast<Data>(),
-//                             dropdownDecoratorProps: DropDownDecoratorProps(
-//                               dropdownSearchDecoration: InputDecoration(
-//                                 contentPadding: EdgeInsets.symmetric(
-//                                     horizontal: 5.r, vertical: 10.r),
-//                                 enabledBorder: OutlineInputBorder(
-//                                   borderRadius: BorderRadius.circular(9.r),
-//                                   borderSide:
-//                                       const BorderSide(color: primaryColor),
-//                                 ),
-//                                 focusedBorder: OutlineInputBorder(
-//                                   borderRadius: BorderRadius.circular(9.r),
-//                                   borderSide:
-//                                       const BorderSide(color: primaryColor),
-//                                 ),
-//                                 errorBorder: OutlineInputBorder(
-//                                   borderRadius: BorderRadius.circular(9.r),
-//                                   borderSide:
-//                                       const BorderSide(color: primaryColor),
-//                                 ),
-//                                 focusedErrorBorder: OutlineInputBorder(
-//                                   borderRadius: BorderRadius.circular(9.r),
-//                                   borderSide:
-//                                       const BorderSide(color: primaryColor),
-//                                 ),
-//                                 border: OutlineInputBorder(
-//                                   borderRadius: BorderRadius.circular(9.r),
-//                                   borderSide:
-//                                       const BorderSide(color: primaryColor),
-//                                 ),
-//                               ),
-//                             ),
-//                             dropdownButtonProps: DropdownButtonProps(
-//                               color: white,
-//                               icon: Icon(Icons.arrow_drop_down, size: 24.h),
-//                             ),
-//                             dropdownBuilder: (context, selectedItem) => Center(
-//                               child: Row(
-//                                 crossAxisAlignment: CrossAxisAlignment.center,
-//                                 mainAxisAlignment: MainAxisAlignment.center,
-//                                 children: [
-//                                   ImageTools.image(
-//                                     fit: BoxFit.contain,
-//                                     url: selectedItem!.icon!.src ?? " ",
-//                                     height: 30,
-//                                     width: 30,
-//                                   ),
-//                                   const Icon(
-//                                     Icons.keyboard_arrow_down_sharp,
-//                                     color: Color.fromARGB(207, 204, 204, 213),
-//                                   ),
-//                                   Text(selectedItem.title!.en ?? "",
-//                                       style:
-//                                           const TextStyle(color: Colors.black)),
-//                                   const SizedBox(
-//                                     width: 10,
-//                                   ),
-//                                   Text(selectedItem.code ?? "",
-//                                       style:
-//                                           const TextStyle(color: Colors.black)),
-//                                 ],
-//                               ),
-//                             ),
-//                             onChanged: (value) {
-//                               setState(() {
-//                                 dropDownValueCountry = value;
-//                               });
-//                             },
-//                           ),
-//                         ),
-//                       ),
-//                       SizedBox(
-//                         height: 50.0,
-//                         width: MediaQuery.of(context).size.width / 1.9,
-//                         child: Form(
-//                           key: _formKey,
-//                           child: TextFormField(
-//                             style: GoogleFonts.roboto(
-//                                 color: greyColor, fontSize: 14.sp),
-//                             controller: controller.mobileController,
-//                             keyboardType: TextInputType.number,
-//                             validator: (String? value) {
-// // remover number 1 from string
-//                               value = (value?.startsWith("0", 0) ?? false)
-//                                   ? value?.substring(1)
-//                                   : value;
-//                               //     value = ;
-//                               controller.mobileController.text = value ?? "";
-//                               if (GetUtils.isPhoneNumber(value ?? " ")) {
-//                                 return null;
-//                               } else {
-//                                 return Strings.pleaseFillOutTheField;
-//                               }
-//                             },
-//                             decoration: InputDecoration(
-//                               hintText: Strings.phone,
-//                               contentPadding: EdgeInsets.symmetric(
-//                                   vertical: 10.r, horizontal: 10.r),
-//                               labelStyle: GoogleFonts.roboto(
-//                                   color: greyColor, fontSize: 14.sp),
-//                               // filled: true,
-//                               hintStyle: GoogleFonts.roboto(
-//                                   color: greyColor, fontSize: 14.sp),
-//                               focusedBorder: InputBorder.none,
-//                               enabledBorder: InputBorder.none,
-//                               focusedErrorBorder: InputBorder.none,
-//                               errorBorder: InputBorder.none,
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 SizedBox(
-//                   height: 24.h,
-//                 ),
-//               ],
-//             ),
-//           ),
-//           SizedBox(
-//             height: 36.h,
-//           ),
-//           GestureDetector(
-//             child: Container(
-//               height: 50.0,
-//               width: MediaQuery.of(context).size.width,
-//               decoration: const BoxDecoration(
-//                   color: accentColor,
-//                   borderRadius: BorderRadius.all(Radius.circular(30))),
-//               child: Center(
-//                 child: Text(
-//                   Strings.next.toUpperCase(),
-//                   style: GoogleFonts.roboto(
-//                       color: Colors.white,
-//                       fontSize: 16.sp,
-//                       fontWeight: FontWeight.bold),
-//                 ),
-//               ),
-//             ),
-//             onTap: () {
-//               if (_formKey.currentState!.validate() &&
-//                   controller.selectedCountry?.value.id != null) {
-//                 controller.sendOTP(controller.mobileController.text,
-//                     controller.selectedCountry?.value.id ?? "");
-//                 controller.setPhoneNumber(controller.mobileController.text);
-//                 controller.setCountryId(controller.selectedCountry?.value.id);
-//               } else {
-//                 showSnackbar("error", Strings.pleaseFillOutTheField);
-//               }
-//             },
-//           ),
-//         ],
-//       )),
-//     );
-//   }
 }

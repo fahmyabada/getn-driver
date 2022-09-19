@@ -1,10 +1,22 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:getn_driver/presentation/onBoarding/OnBoardScreenView.dart';
+import 'package:getn_driver/data/api/Dio_Helper.dart';
+import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/splash/SplashScreen.dart';
 
-void main() {
+void main() async{
+// for error connection with api
+  HttpOverrides.global = MyHttpOverrides();
+
+  // for example ensure Initialized shared perefence
   WidgetsFlutterBinding.ensureInitialized();
+
+  //for dependency injection
+  await init();
+
+  await DioHelper.init();
 
   runApp(const MyApp());
 }
@@ -29,4 +41,5 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 

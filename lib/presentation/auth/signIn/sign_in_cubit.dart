@@ -1,10 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:getn_driver/data/model/sendOtp/SendOtpData.dart';
 import 'package:getn_driver/data/model/country/Data.dart';
 import 'package:getn_driver/data/model/country/IconModel.dart';
 import 'package:getn_driver/data/model/country/Title.dart';
-import 'package:getn_driver/domain/usecase/signIn/GetCountriesLocalUseCase.dart';
+import 'package:getn_driver/domain/usecase/signIn/GetCountriesUseCase.dart';
+import 'package:getn_driver/domain/usecase/signIn/SendOtpUseCase.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:meta/meta.dart';
 
@@ -16,7 +18,8 @@ class SignInCubit extends Cubit<SignInState> {
   static SignInCubit get(context) => BlocProvider.of(context);
 
   var getPlanVisitUseCase = getIt<GetCountriesUseCase>();
-  List<Data>? countries = [] ;
+  var sendOtpUseCase = getIt<SendOtpUseCase>();
+  List<Data> countries = [];
 
   Data? selectedCountry = Data(
       title: Title(ar: "مصر", en: "Egypt"),
@@ -30,9 +33,8 @@ class SignInCubit extends Cubit<SignInState> {
     selectedCountry = value;
   }
 
-
   void getCountries() async {
-    emit(SignInLoading());
+    emit(CountriesLoading());
     getPlanVisitUseCase.execute().then((value) {
       emit(eitherLoadedOrErrorStateCountries(value));
     });
@@ -41,11 +43,26 @@ class SignInCubit extends Cubit<SignInState> {
   SignInState eitherLoadedOrErrorStateCountries(
       Either<String, List<Data>?> data) {
     return data.fold((failure1) {
-      return SignInErrorState(failure1);
+      return CountriesErrorState(failure1);
     }, (data) {
       countries = data!;
-      return SignInSuccessState(data);
+      return CountriesSuccessState(data);
     });
   }
 
+  void sendOtp(String phone, String countryId) async {
+    emit(SendOtpLoading());
+    sendOtpUseCase.execute(phone, countryId).then((value) {
+      emit(eitherLoadedOrErrorStateSendOtp(value));
+    });
+  }
+
+  SignInState eitherLoadedOrErrorStateSendOtp(
+      Either<String, SendOtpData> data) {
+    return data.fold((failure1) {
+      return SendOtpErrorState(failure1);
+    }, (data) {
+      return SendOtpSuccessState(data);
+    });
+  }
 }

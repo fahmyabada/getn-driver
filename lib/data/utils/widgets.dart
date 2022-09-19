@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 
 void navigateAndFinish(context, widget) => Navigator.pushAndRemoveUntil(
     context, MaterialPageRoute(builder: (context) => widget), (route) => false);
@@ -8,28 +9,30 @@ void navigatePop(context, widget) => Navigator.pushAndRemoveUntil(
     context, MaterialPageRoute(builder: (context) => widget), (route) => false);
 
 void navigateTo(context, widget) => Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (context) => widget,
-  ),
-);
+      context,
+      MaterialPageRoute(
+        builder: (context) => widget,
+      ),
+    );
 
 Widget defaultFormField(
-    {TextEditingController? controller,
-      TextInputType? type,
-      String? label,
-      IconData? prefix,
-      bool isPassword = false,
-      String? validatorText,
-      String? validatorMessage,
-      bool suffix = false,
-      VoidCallback? onEditingComplete,
-      bool enabled = true,
-      double textSize = 16,
-      Function? submit,
-      Function? changed,
-      Function? tap,
-      Function? suffixPressed}) =>
+        {TextEditingController? controller,
+        TextInputType? type,
+        String? label,
+        IconData? prefix,
+        bool isPassword = false,
+        String? validatorText,
+        String? validatorMessage,
+        bool suffix = false,
+        VoidCallback? onEditingComplete,
+        bool enabled = true,
+        double textSize = 16,
+        bool border = false,
+        Color? borderColor,
+        Function? submit,
+        Function? changed,
+        Function? tap,
+        Function? suffixPressed}) =>
     TextFormField(
       enabled: enabled,
       enableInteractiveSelection: true,
@@ -38,7 +41,7 @@ Widget defaultFormField(
       obscureText: isPassword,
       maxLines: isPassword ? 1 : null,
       textAlign: TextAlign.start,
-      style: TextStyle(fontSize: 17.sp),
+      style: TextStyle(fontSize: textSize.sp),
       // to move next editText
       onEditingComplete: onEditingComplete,
       cursorColor: Colors.black,
@@ -50,41 +53,54 @@ Widget defaultFormField(
         ),
         prefixIcon: prefix != null
             ? Container(
-          margin: EdgeInsetsDirectional.only(start: 5.r, end: 5.r),
-          child: Icon(
-            prefix,
-            color: Colors.black87,
-            size: 25.sm,
-          ),
-        )
+                margin: EdgeInsetsDirectional.only(start: 5.r, end: 5.r),
+                child: Icon(
+                  prefix,
+                  color: Colors.black87,
+                  size: 25.sm,
+                ),
+              )
             : null,
         filled: true,
         //to make background
         fillColor: Colors.white,
         //for background color
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
-          borderSide: const BorderSide(color: Colors.white),
+        enabledBorder: border
+            ? OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.r),
+                borderSide: BorderSide(color: borderColor!),
+              )
+            : null,
+        focusedBorder: border
+            ? OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.r),
+                borderSide: BorderSide(color: borderColor!),
+              )
+            : null,
+        border: border
+            ? OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.r),
+                borderSide: BorderSide(color: borderColor!),
+              )
+            : null,
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(50.r),
+          borderSide: BorderSide(color: borderColor!),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
-          borderSide: const BorderSide(color: Colors.white),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(50.r),
+          borderSide: BorderSide(color: borderColor),
         ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
-          borderSide: const BorderSide(color: Colors.white),
-        ),
-        errorStyle: TextStyle(color: Colors.black, fontSize: 12.sm),
         suffixIcon: suffix
             ? IconButton(
-            onPressed: () {
-              suffixPressed != null ? suffixPressed() : null;
-            },
-            icon: Icon(
-              isPassword ? Icons.visibility_off : Icons.visibility,
-              color: Colors.black,
-              size: 25.sm,
-            ))
+                onPressed: () {
+                  suffixPressed != null ? suffixPressed() : null;
+                },
+                icon: Icon(
+                  isPassword ? Icons.visibility_off : Icons.visibility,
+                  color: Colors.black,
+                  size: 25.sm,
+                ))
             : null,
       ),
       onChanged: (s) {
@@ -103,3 +119,71 @@ Widget defaultFormField(
         tap != null ? tap() : null;
       },
     );
+
+Widget defaultButton3(
+        {required VoidCallback press,
+        required String text,
+        required Color backColor,
+        required Color textColor}) =>
+    Container(
+      margin: EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: press,
+        style: TextButton.styleFrom(
+          backgroundColor: backColor,
+          foregroundColor: textColor,
+          padding: EdgeInsets.symmetric(vertical: 15.r),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.r),
+          ),
+          textStyle: TextStyle(
+              fontSize: 24.sm,
+              fontWeight: FontWeight.bold,
+              fontStyle: FontStyle.italic),
+        ),
+        child: Text(
+          text,
+        ),
+      ),
+    );
+
+
+void showToastt({
+  required String text,
+  required ToastStates state,
+  required BuildContext context,
+}) =>
+    showToast(
+      text,
+      context: context,
+      backgroundColor: chooseToastColor(state),
+      animation: StyledToastAnimation.scale,
+      reverseAnimation: StyledToastAnimation.fade,
+      position: StyledToastPosition.bottom,
+      animDuration: const Duration(seconds: 1),
+      duration: const Duration(seconds: 3),
+      curve: Curves.elasticOut,
+      reverseCurve: Curves.linear,
+    );
+
+// enum
+enum ToastStates { success, error, warning }
+
+Color chooseToastColor(ToastStates state) {
+  Color color;
+
+  switch (state) {
+    case ToastStates.success:
+      color = Colors.green;
+      break;
+    case ToastStates.error:
+      color = Colors.red;
+      break;
+    case ToastStates.warning:
+      color = Colors.amber;
+      break;
+  }
+
+  return color;
+}

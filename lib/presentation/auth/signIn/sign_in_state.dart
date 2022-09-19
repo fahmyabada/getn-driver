@@ -5,16 +5,30 @@ abstract class SignInState {}
 
 class SignInInitial extends SignInState {}
 
-class SignInLoading extends SignInState {}
+class CountriesLoading extends SignInState {}
 
-class SignInErrorState extends SignInState {
+class CountriesErrorState extends SignInState {
   final String message;
 
-  SignInErrorState(this.message);
+  CountriesErrorState(this.message);
 }
 
-class SignInSuccessState extends SignInState {
+class CountriesSuccessState extends SignInState {
   final List<Data>? data;
 
-  SignInSuccessState(this.data);
+  CountriesSuccessState(this.data);
+}
+
+class SendOtpLoading extends SignInState {}
+
+class SendOtpErrorState extends SignInState {
+  final String message;
+
+  SendOtpErrorState(this.message);
+}
+
+class SendOtpSuccessState extends SignInState {
+  final SendOtpData data;
+
+  SendOtpSuccessState(this.data);
 }
