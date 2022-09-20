@@ -14,3 +14,4 @@ const Color greenLightColor = Color(0xFFE5F6E7);
 const Color blueColor = Color(0xff47B5FF);
 const white = Color(0xFFFFFFFF);
 const black = Colors.black;
+const grey = Color(0xFFF8F8F8);

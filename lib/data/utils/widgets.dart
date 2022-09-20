@@ -137,6 +137,7 @@ Widget defaultFormField(
 
 Widget defaultButton3(
         {required VoidCallback press,
+        bool disablePress = true,
         required String text,
         required Color backColor,
         required Color textColor}) =>
@@ -144,7 +145,7 @@ Widget defaultButton3(
       margin: EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: press,
+        onPressed: disablePress ? press : null,
         style: TextButton.styleFrom(
           backgroundColor: backColor,
           foregroundColor: textColor,

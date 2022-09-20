@@ -24,13 +24,12 @@ class _SignInScreenState extends State<SignInScreen> {
   var formKey = GlobalKey<FormState>();
   var phoneController = TextEditingController();
   Data? dropDownValueCountry;
-
+  String splitPhone2 = "";
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => SignCubit()..getCountries(),
-        child:
-            BlocConsumer<SignCubit, SignState>(listener: (context, state) {
+        child: BlocConsumer<SignCubit, SignState>(listener: (context, state) {
           if (state is CountriesLoading) {
             if (kDebugMode) {
               print('*******CountriesLoading');
@@ -53,7 +52,21 @@ class _SignInScreenState extends State<SignInScreen> {
             if (kDebugMode) {
               print('*******SendOtpSuccessState');
             }
-            if (state.data.isAlreadyUser!) {
+            if (state.data.otpSend!) {
+              navigateTo(
+                  context,
+                  OtpScreen(
+                    phone: splitPhone2,
+                    countryId: dropDownValueCountry!.id!,
+                  ));
+            }
+           else if (state.data.isAlreadyUser! && state.data.otpSend!) {
+              navigateTo(
+                  context,
+                  OtpScreen(
+                    phone: phoneController.text.toString(),
+                    countryId: dropDownValueCountry!.id!,
+                  ));
             } else {
               showToastt(
                   text: "register first please...",
@@ -247,6 +260,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                   extentOffset: phoneController.text.length - 1,
                                 ),
                               );
+                              setState(() {
+                                splitPhone2 = splitPhone.text.toString();
+                              });
                               SignCubit.get(context).sendOtp(
                                   splitPhone.text.toString(),
                                   dropDownValueCountry!.id!);
@@ -277,13 +293,16 @@ class _SignInScreenState extends State<SignInScreen> {
                         style: TextStyle(color: black, fontSize: 16.sp),
                       ),
                       InkWell(
-                          child: Text(
-                        'Sign Up Now',
-                        style: TextStyle(color: accentColor, fontSize: 16.sp),
-                      ),
-                      onTap: (){
-                            navigateTo(context, OtpScreen(phone: phoneController.text.toString(),));
-                      },)
+                        child: Text(
+                          'Sign Up Now',
+                          style: TextStyle(color: accentColor, fontSize: 16.sp),
+                        ),
+                        onTap: () {
+                          navigateTo(
+                              context,
+                              const SignUpScreen());
+                        },
+                      )
                     ],
                   )
                 ],
