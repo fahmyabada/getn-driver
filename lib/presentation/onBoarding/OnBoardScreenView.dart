@@ -119,7 +119,7 @@ class OnBoardScreenView extends StatelessWidget {
                             ),
                           ),
                           onTap: () {
-                            navigateTo(context,const SignInScreenView());
+                            navigateTo(context,const SignInScreen());
                           },
                         )
                 ],

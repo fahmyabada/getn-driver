@@ -23,7 +23,7 @@ class SplashScreen extends StatelessWidget {
             if (kDebugMode) {
               print('*******StartState');
             }
-            navigateTo(context, SignInScreenView());
+            navigateTo(context, SignInScreen());
           }
         }, builder: (context, state) {
           return Scaffold(

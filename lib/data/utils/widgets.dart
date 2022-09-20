@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+import 'package:getn_driver/data/utils/colors.dart';
 
 void navigateAndFinish(context, widget) => Navigator.pushAndRemoveUntil(
     context, MaterialPageRoute(builder: (context) => widget), (route) => false);
@@ -28,24 +29,29 @@ Widget defaultFormField(
         bool enabled = true,
         double textSize = 16,
         bool border = false,
+        bool autoFocus = false,
         Color? borderColor,
+        FocusNode? foucsnode,
         Function? submit,
         Function? changed,
         Function? tap,
         Function? suffixPressed}) =>
     TextFormField(
+      focusNode: foucsnode,
+      autofocus: autoFocus,
       enabled: enabled,
       enableInteractiveSelection: true,
       controller: controller,
       keyboardType: type,
       obscureText: isPassword,
       maxLines: isPassword ? 1 : null,
-      textAlign: TextAlign.start,
+      textAlign: !border ? TextAlign.center : TextAlign.start,
       style: TextStyle(fontSize: textSize.sp),
       // to move next editText
       onEditingComplete: onEditingComplete,
       cursorColor: Colors.black,
       decoration: InputDecoration(
+        contentPadding: !border ? EdgeInsets.symmetric(vertical: 15.r) : null,
         labelText: label,
         labelStyle: TextStyle(
           fontSize: textSize.sp,
@@ -67,22 +73,31 @@ Widget defaultFormField(
         //for background color
         enabledBorder: border
             ? OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.r),
+                borderRadius: BorderRadius.circular(50.r),
                 borderSide: BorderSide(color: borderColor!),
               )
-            : null,
+            : OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15.r),
+                borderSide: const BorderSide(color: greyColor),
+              ),
         focusedBorder: border
             ? OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.r),
+                borderRadius: BorderRadius.circular(50.r),
                 borderSide: BorderSide(color: borderColor!),
               )
-            : null,
+            : OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15.r),
+                borderSide: const BorderSide(color: greyColor),
+              ),
         border: border
             ? OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.r),
+                borderRadius: BorderRadius.circular(50.r),
                 borderSide: BorderSide(color: borderColor!),
               )
-            : null,
+            : OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15.r),
+                borderSide: const BorderSide(color: greyColor),
+              ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(50.r),
           borderSide: BorderSide(color: borderColor!),
@@ -147,7 +162,6 @@ Widget defaultButton3(
         ),
       ),
     );
-
 
 void showToastt({
   required String text,

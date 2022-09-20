@@ -8,19 +8,17 @@ import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/strings.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
-import 'package:getn_driver/presentation/auth/otp/OtpScreen.dart';
 import 'package:getn_driver/presentation/auth/signCubit/sign_cubit.dart';
-import 'package:getn_driver/presentation/auth/signUp/SignUpScreen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({Key? key}) : super(key: key);
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({Key? key}) : super(key: key);
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   var formKey = GlobalKey<FormState>();
   var phoneController = TextEditingController();
   Data? dropDownValueCountry;
@@ -78,9 +76,9 @@ class _SignInScreenState extends State<SignInScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(
-                    width: 200.w,
+                    width: 210.w,
                     child: Text(
-                      Strings.signIn,
+                      Strings.signUpWithMobileNumber,
                       textAlign: TextAlign.center,
                       style: GoogleFonts.roboto(
                           fontSize: 25.sp,
@@ -236,12 +234,9 @@ class _SignInScreenState extends State<SignInScreen> {
                             if (!currentFocus.hasPrimaryFocus) {
                               currentFocus.focusedChild?.unfocus();
                             }
-                            if (phoneController.text.startsWith('0') &&
-                                phoneController.text.length > 1) {
-                              final splitPhone =
-                                  const TextEditingValue().copyWith(
-                                text: phoneController.text
-                                    .replaceAll(RegExp(r'^0+(?=.)'), ''),
+                            if (phoneController.text.startsWith('0') && phoneController.text.length > 1) {
+                              final splitPhone = const TextEditingValue().copyWith(
+                                text: phoneController.text.replaceAll(RegExp(r'^0+(?=.)'), ''),
                                 selection: phoneController.selection.copyWith(
                                   baseOffset: phoneController.text.length - 1,
                                   extentOffset: phoneController.text.length - 1,
@@ -255,6 +250,8 @@ class _SignInScreenState extends State<SignInScreen> {
                                   phoneController.text.toString(),
                                   dropDownValueCountry!.id!);
                             }
+
+
                           }
                         } else {
                           showToastt(
@@ -266,26 +263,6 @@ class _SignInScreenState extends State<SignInScreen> {
                       text: "Next",
                       backColor: accentColor,
                       textColor: white),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'You Don\'t have an account,',
-                        style: TextStyle(color: black, fontSize: 16.sp),
-                      ),
-                      InkWell(
-                          child: Text(
-                        'Sign Up Now',
-                        style: TextStyle(color: accentColor, fontSize: 16.sp),
-                      ),
-                      onTap: (){
-                            navigateTo(context, OtpScreen(phone: phoneController.text.toString(),));
-                      },)
-                    ],
-                  )
                 ],
               ),
             ),
