@@ -8,7 +8,7 @@ import 'package:getn_driver/domain/usecase/signIn/SendOtpUseCase.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:meta/meta.dart';
 
-part 'sign_state.dart';
+part 'state.dart';
 
 class SignCubit extends Cubit<SignState> {
   SignCubit() : super(SignInitial());

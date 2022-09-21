@@ -52,7 +52,7 @@ class OnBoardScreenView extends StatelessWidget {
                 children: [
                   Text(
                     oi.title!,
-                    style: GoogleFonts.roboto(
+                    style: TextStyle(
                         color: Colors.white,
                         fontSize: 34.sp,
                         fontWeight: FontWeight.bold),
@@ -110,7 +110,7 @@ class OnBoardScreenView extends StatelessWidget {
                               child: Center(
                                 child: Text(
                                   Strings.getStarted.toUpperCase(),
-                                  style: GoogleFonts.roboto(
+                                  style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 20.sp,
                                       fontWeight: FontWeight.bold),

@@ -45,13 +45,15 @@ Widget defaultFormField(
       keyboardType: type,
       obscureText: isPassword,
       maxLines: isPassword ? 1 : null,
-      textAlign: !border ? TextAlign.center : TextAlign.start,
+      textAlign: TextAlign.start,
       style: TextStyle(fontSize: textSize.sp),
       // to move next editText
       onEditingComplete: onEditingComplete,
       cursorColor: Colors.black,
       decoration: InputDecoration(
-        contentPadding: !border ? EdgeInsets.symmetric(vertical: 15.r) : null,
+        contentPadding: border
+            ? null
+            : EdgeInsets.symmetric(horizontal: 25.r,vertical: 20.r),
         labelText: label,
         labelStyle: TextStyle(
           fontSize: textSize.sp,
@@ -77,7 +79,7 @@ Widget defaultFormField(
                 borderSide: BorderSide(color: borderColor!),
               )
             : OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15.r),
+                borderRadius: BorderRadius.circular(50.r),
                 borderSide: const BorderSide(color: greyColor),
               ),
         focusedBorder: border
@@ -86,7 +88,7 @@ Widget defaultFormField(
                 borderSide: BorderSide(color: borderColor!),
               )
             : OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15.r),
+                borderRadius: BorderRadius.circular(50.r),
                 borderSide: const BorderSide(color: greyColor),
               ),
         border: border
@@ -95,17 +97,27 @@ Widget defaultFormField(
                 borderSide: BorderSide(color: borderColor!),
               )
             : OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15.r),
+                borderRadius: BorderRadius.circular(50.r),
                 borderSide: const BorderSide(color: greyColor),
               ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(50.r),
-          borderSide: BorderSide(color: borderColor!),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(50.r),
-          borderSide: BorderSide(color: borderColor),
-        ),
+        focusedErrorBorder: border
+            ? OutlineInputBorder(
+                borderRadius: BorderRadius.circular(50.r),
+                borderSide: BorderSide(color: borderColor!),
+              )
+            : OutlineInputBorder(
+                borderRadius: BorderRadius.circular(50.r),
+                borderSide: const BorderSide(color: redColor),
+              ),
+        errorBorder: border
+            ? OutlineInputBorder(
+                borderRadius: BorderRadius.circular(50.r),
+                borderSide: BorderSide(color: borderColor!),
+              )
+            : OutlineInputBorder(
+                borderRadius: BorderRadius.circular(50.r),
+                borderSide: const BorderSide(color: redColor),
+              ),
         suffixIcon: suffix
             ? IconButton(
                 onPressed: () {

@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
-import 'package:getn_driver/presentation/auth/signCubit/sign_cubit.dart';
+import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 class OtpScreen extends StatefulWidget {
@@ -96,6 +96,10 @@ class _OtpScreenState extends State<OtpScreen> {
           return Scaffold(
             backgroundColor: white,
             appBar: AppBar(
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back,color: black,),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
               backgroundColor: white,
               elevation: 0.0,
               iconTheme: const IconThemeData(color: black),
@@ -130,7 +134,6 @@ class _OtpScreenState extends State<OtpScreen> {
                         codeLength: 4,
                         onCodeSubmitted: (code) {},
                         onCodeChanged: (code) {
-                          print("listenOtp22******************$code");
                           listenOtp();
                           if (code!.length == 4) {
                             FocusScope.of(context).requestFocus(FocusNode());
@@ -152,7 +155,6 @@ class _OtpScreenState extends State<OtpScreen> {
                       child: const Text('Get app signature'),
                       onPressed: () async {
                         signature = await SmsAutoFill().getAppSignature;
-                        print("signature******************$signature");
                         setState(() {});
                       },
                     ),
@@ -179,8 +181,6 @@ class _OtpScreenState extends State<OtpScreen> {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     final minutes = twoDigits(duration.inMinutes.remainder(60));
     final seconds = twoDigits(duration.inSeconds.remainder(60));
-
-    print("***************minutes = $minutes ******* seconds = $seconds");
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

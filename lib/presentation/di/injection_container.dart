@@ -5,7 +5,7 @@ import 'package:getn_driver/data/repository/signIn/SignInRepositoryImpl.dart';
 import 'package:getn_driver/domain/repository/SignInRepository.dart';
 import 'package:getn_driver/domain/usecase/signIn/GetCountriesUseCase.dart';
 import 'package:getn_driver/domain/usecase/signIn/SendOtpUseCase.dart';
-import 'package:getn_driver/presentation/auth/signCubit/sign_cubit.dart';
+import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

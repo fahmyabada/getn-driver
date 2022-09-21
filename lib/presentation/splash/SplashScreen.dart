@@ -36,7 +36,7 @@ class SplashScreen extends StatelessWidget {
                   padding: EdgeInsets.only(left: 40.r, right: 40.r),
                   child: Text(
                     Strings.perfectTaxiBooking,
-                    style: GoogleFonts.roboto(
+                    style: TextStyle(
                         fontSize: 30.sp, color: Colors.white),
                     textAlign: TextAlign.center,
                   ),

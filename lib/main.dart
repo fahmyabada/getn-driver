@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/api/Dio_Helper.dart';
+import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/splash/SplashScreen.dart';
 
@@ -35,6 +36,11 @@ class MyApp extends StatelessWidget {
         title: 'GetNDriver',
         theme: ThemeData(
           primarySwatch: Colors.blue,
+          scaffoldBackgroundColor: white,
+          appBarTheme: const AppBarTheme(
+            color: white,
+            elevation: 0.0,
+          ),
         ),
         home:  const SplashScreen(),
       ),
