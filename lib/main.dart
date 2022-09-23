@@ -1,13 +1,15 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/api/Dio_Helper.dart';
 import 'package:getn_driver/data/utils/colors.dart';
+import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/splash/SplashScreen.dart';
 
-void main() async{
+void main() async {
 // for error connection with api
   HttpOverrides.global = MyHttpOverrides();
 
@@ -30,22 +32,22 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       designSize: const Size(411, 891),
       minTextAdapt: true,
-      builder: (BuildContext context, child) =>
-      MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'GetNDriver',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          scaffoldBackgroundColor: white,
-          appBarTheme: const AppBarTheme(
-            color: white,
-            elevation: 0.0,
+      builder: (BuildContext context, child) => BlocProvider(
+        create: (context) => SignCubit(),
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'GetNDriver',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            scaffoldBackgroundColor: white,
+            appBarTheme: const AppBarTheme(
+              color: white,
+              elevation: 0.0,
+            ),
           ),
+          home: const SplashScreen(),
         ),
-        home:  const SplashScreen(),
       ),
     );
   }
 }
-
-

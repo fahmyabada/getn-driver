@@ -4,6 +4,9 @@ import 'package:getn_driver/data/repository/signIn/SignInRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/signIn/SignInRepositoryImpl.dart';
 import 'package:getn_driver/domain/repository/SignInRepository.dart';
 import 'package:getn_driver/domain/usecase/signIn/GetCountriesUseCase.dart';
+import 'package:getn_driver/domain/usecase/signIn/GetRoleUseCase.dart';
+import 'package:getn_driver/domain/usecase/signIn/LoginUseCase.dart';
+import 'package:getn_driver/domain/usecase/signIn/RegisterUseCase.dart';
 import 'package:getn_driver/domain/usecase/signIn/SendOtpUseCase.dart';
 import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -21,6 +24,9 @@ Future<void> init() async {
   // Use cases
   getIt.registerLazySingleton(() => GetCountriesUseCase(getIt()));
   getIt.registerLazySingleton(() => SendOtpUseCase(getIt()));
+  getIt.registerLazySingleton(() => RegisterUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetRoleUseCase(getIt()));
+  getIt.registerLazySingleton(() => LoginUseCase(getIt()));
 
   // Repository
   getIt.registerLazySingleton<SignInRepository>(

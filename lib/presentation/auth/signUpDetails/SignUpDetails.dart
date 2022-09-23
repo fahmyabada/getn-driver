@@ -1,150 +1,240 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
+import 'package:getn_driver/presentation/auth/signUpDetails/VerifyImage.dart';
+import 'package:getn_driver/presentation/auth/terms/TermsScreen.dart';
 
-class SignUpDetails extends StatefulWidget {
-  const SignUpDetails({Key? key}) : super(key: key);
+class SignUpDetailsScreen extends StatefulWidget {
+  const SignUpDetailsScreen(
+      {Key? key,
+      required this.countryId,
+      required this.phone,
+      required this.codeOtp})
+      : super(key: key);
+
+  final String phone;
+  final String countryId;
+  final String codeOtp;
 
   @override
-  State<SignUpDetails> createState() => _SignUpDetailsState();
+  State<SignUpDetailsScreen> createState() => _SignUpDetailsScreenState();
 }
 
-class _SignUpDetailsState extends State<SignUpDetails> {
-  var groupVisitType;
-  var groupVisitTypeValue = "driver";
-  bool terms = false;
+class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
+  int groupValue = 0;
+  var groupValueId = "driver";
   final fullNameController = TextEditingController();
   final emailController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    super.initState();
+    SignCubit.get(context).getRole();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 25.r),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Complete your Registration",
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                    fontSize: 25.sp,
-                    fontWeight: FontWeight.bold,
-                    color: primaryColor),
-              ),
-              SizedBox(
-                height: 30.h,
-              ),
-              Form(
-                key: formKey,
-                child: Column(
-                  children: [
-                    defaultFormField(
-                      controller: fullNameController,
-                      type: TextInputType.text,
-                      label: "Full Name",
-                      textSize: 22,
-                      border: false,
-                      validatorText: fullNameController.text,
-                      validatorMessage: "Enter Full Name Please..",
-                      onEditingComplete: () {
-                        FocusScope.of(context).unfocus();
-                      },
-                    ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    defaultFormField(
-                      controller: emailController,
-                      type: TextInputType.text,
-                      label: "Email",
-                      textSize: 22,
-                      border: false,
-                      validatorText: emailController.text,
-                      validatorMessage: "Enter Email Please..",
-                      onEditingComplete: () {
-                        FocusScope.of(context).unfocus();
-                      },
-                    ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10.r),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Text(
-                              "Role",
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                  fontSize: 20.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: black),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 4,
-                            child: radioButtonTypeDriverLayout(context),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Row(
+    return BlocConsumer<SignCubit, SignState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          return Scaffold(
+            body: SafeArea(
+              child: SingleChildScrollView(
+                child: SizedBox(
+                  height: 1.sh,
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          width: 10.0,
-                          height: 24.0,
-                          child: Checkbox(
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
-                            focusColor: Theme.of(context).focusColor,
-                            //   activeColor: Theme.of(context).colorScheme.secondary,
-                            value: terms,
-                            onChanged: (value) {
-                              setState(() {
-                                terms = value!;
-                              });
-                            },
+                        Expanded(
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 30.h,
+                              ),
+                              Text(
+                                "Complete your Registration",
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                    fontSize: 25.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: primaryColor),
+                              ),
+                              SizedBox(
+                                height: 50.h,
+                              ),
+                              Form(
+                                key: formKey,
+                                child: Column(
+                                  children: [
+                                    defaultFormField(
+                                      controller: fullNameController,
+                                      type: TextInputType.text,
+                                      label: "Full Name",
+                                      textSize: 22,
+                                      border: false,
+                                      validatorText: fullNameController.text,
+                                      validatorMessage:
+                                          "Enter Full Name Please..",
+                                      onEditingComplete: () {
+                                        FocusScope.of(context).nextFocus();
+                                      },
+                                    ),
+                                    SizedBox(
+                                      height: 20.h,
+                                    ),
+                                    defaultFormField(
+                                      controller: emailController,
+                                      type: TextInputType.text,
+                                      label: "Email",
+                                      textSize: 22,
+                                      border: false,
+                                      validatorText: emailController.text,
+                                      validatorMessage: "Enter Email Please..",
+                                      onEditingComplete: () {
+                                        FocusScope.of(context).unfocus();
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: 40.h,
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child: Text(
+                                      "Role",
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(
+                                          fontSize: 20.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: black),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 4,
+                                    child: state is RoleLoading
+                                        ? const CircularProgressIndicator(
+                                            color: black)
+                                        : SignCubit.get(context)
+                                                .roles
+                                                .isNotEmpty
+                                            ? radioButtonTypeDriverLayout(
+                                                context)
+                                            : IconButton(
+                                                icon: Icon(
+                                                  Icons.cloud_upload,
+                                                  color: redColor,
+                                                  size: 60.sp,
+                                                ),
+                                                onPressed: () {
+                                                  SignCubit.get(context)
+                                                      .getCountries();
+                                                }),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                        SizedBox(width: 20.h),
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("i confirm that i have read & agree to the",
-                                style:
-                                    TextStyle(fontSize: 20.sp, color: black)),
                             Row(
-                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                InkWell(
-                                  onTap: () {},
-                                  child: Text("Terms & condition ",
-                                      style: TextStyle(
-                                          fontSize: 20.sp, color: accentColor)),
+                                SizedBox(
+                                  width: 10.0,
+                                  height: 24.0,
+                                  child: Checkbox(
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    focusColor: Theme.of(context).focusColor,
+                                    //   activeColor: Theme.of(context).colorScheme.secondary,
+                                    value: SignCubit.get(context).terms,
+                                    onChanged: (value) {
+                                      SignCubit.get(context).setTerms(value!);
+                                    },
+                                  ),
                                 ),
-                                Text("and Privacy Policy",
-                                    style: TextStyle(
-                                        fontSize: 20.sp, color: black)),
+                                SizedBox(width: 20.h),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        "i confirm that i have read & agree to the",
+                                        style: TextStyle(
+                                            fontSize: 20.sp, color: black)),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        InkWell(
+                                          onTap: () {
+                                            navigateTo(
+                                                context, const TermsScreen());
+                                          },
+                                          child: Text("Terms & condition ",
+                                              style: TextStyle(
+                                                  fontSize: 20.sp,
+                                                  color: accentColor)),
+                                        ),
+                                        Text("and Privacy Policy",
+                                            style: TextStyle(
+                                                fontSize: 20.sp, color: black)),
+                                      ],
+                                    )
+                                  ],
+                                )
                               ],
-                            )
+                            ),
+                            defaultButton3(
+                                press: () {
+                                  if (formKey.currentState!.validate()) {
+                                    if (SignCubit.get(context).terms) {
+                                      navigateTo(
+                                        context,
+                                        VerifyImageScreen(
+                                          typeScreen: "signModel",
+                                          fullName: fullNameController.text
+                                              .toString(),
+                                          email:
+                                              emailController.text.toString(),
+                                          phone: widget.phone,
+                                          countryId: widget.countryId,
+                                          codeOtp: widget.codeOtp,
+                                          role: groupValueId,
+                                        ),
+                                      );
+                                    } else {
+                                      showToastt(
+                                          text:
+                                              "check in Terms & condition first..",
+                                          state: ToastStates.error,
+                                          context: context);
+                                    }
+                                  }
+                                },
+                                text: "Next",
+                                backColor: accentColor,
+                                textColor: white),
                           ],
                         )
                       ],
-                    )
-                  ],
+                    ),
+                  ),
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
+        });
   }
 
   Widget radioButtonTypeDriverLayout(BuildContext context) {
@@ -160,18 +250,19 @@ class _SignUpDetailsState extends State<SignUpDetails> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Radio(
-                value: 1,
-                groupValue: groupVisitType ?? 1,
+                value: 0,
+                groupValue: groupValue,
                 activeColor: accentColor,
                 onChanged: (value) {
                   setState(() {
-                    groupVisitType = value;
-                    groupVisitTypeValue = "driver";
+                    groupValue = value!;
+                    groupValueId =
+                        SignCubit.get(context).roles[0].id!;
                   });
                 },
-                // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
-              Text('driver', style: TextStyle(fontSize: 20.sp)),
+              Text(SignCubit.get(context).roles[0].title!,
+                  style: TextStyle(fontSize: 20.sp)),
             ],
           ),
         ),
@@ -187,19 +278,20 @@ class _SignUpDetailsState extends State<SignUpDetails> {
           child: Row(
             children: [
               Radio(
-                value: 2,
-                groupValue: groupVisitType,
+                value: 1,
+                groupValue: groupValue,
                 activeColor: accentColor,
                 onChanged: (value) {
                   setState(() {
-                    groupVisitType = value;
-                    groupVisitTypeValue = "Driver and tour guide";
+                    groupValue = value!;
+                    groupValueId =
+                        SignCubit.get(context).roles[1].id!;
                   });
                 },
                 // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
               Text(
-                'Driver and tour guide',
+                SignCubit.get(context).roles[1].title!,
                 style: TextStyle(fontSize: 20.sp),
               ),
             ],

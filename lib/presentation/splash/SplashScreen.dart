@@ -6,9 +6,7 @@ import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/strings.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/auth/signIn/SignInScreen.dart';
-import 'package:getn_driver/presentation/onBoarding/OnBoardScreenView.dart';
 import 'package:getn_driver/presentation/splash/splash_screen_cubit.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -23,7 +21,7 @@ class SplashScreen extends StatelessWidget {
             if (kDebugMode) {
               print('*******StartState');
             }
-            navigateTo(context, SignInScreen());
+            navigateTo(context, const SignInScreen());
           }
         }, builder: (context, state) {
           return Scaffold(
