@@ -1,8 +1,6 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:getn_driver/presentation/di/injection_container.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class DioHelper {
   static late Dio dio;
@@ -32,11 +30,7 @@ class DioHelper {
   static Future<Response> postData2({
     required String url,
     FormData? data,
-    String? header,
   }) async {
-    dio.options.headers = {
-      'Content-Type': header,
-    };
     return await dio.post(url, data: data);
   }
 
@@ -48,22 +42,6 @@ class DioHelper {
     return await dio.put(
       url,
       queryParameters: query,
-      data: data,
-    );
-  }
-
-  static Future<Response> putData2({
-    required String url,
-    FormData? data,
-    String? header,
-  }) async {
-    getIt<SharedPreferences>().getString("token") != null
-        ? dio.options.headers = {
-            'Authorization': 'bearerAuth ${getIt<SharedPreferences>().getString("token")}',
-          }
-        : null;
-    return await dio.put(
-      url,
       data: data,
     );
   }
@@ -95,7 +73,7 @@ String handleError(dynamic error) {
     switch (dioError.type) {
       case DioErrorType.other:
         errorDescription =
-            "Connection to API server failed due to internet connection";
+        "Connection to API server failed due to internet connection";
         break;
       case DioErrorType.cancel:
         errorDescription = "Request to API server was cancelled";
@@ -119,3 +97,4 @@ String handleError(dynamic error) {
   print("handleError:: errorDescription >> $errorDescription");
   return errorDescription;
 }
+
