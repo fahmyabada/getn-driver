@@ -59,8 +59,8 @@ class DioHelper {
   }) async {
     getIt<SharedPreferences>().getString("token") != null
         ? dio.options.headers = {
-            'Authorization': 'bearerAuth ${getIt<SharedPreferences>().getString("token")}',
-          }
+      'Authorization': 'bearerAuth ${getIt<SharedPreferences>().getString("token")}',
+    }
         : null;
     return await dio.put(
       url,
@@ -95,7 +95,7 @@ String handleError(dynamic error) {
     switch (dioError.type) {
       case DioErrorType.other:
         errorDescription =
-            "Connection to API server failed due to internet connection";
+        "Connection to API server failed due to internet connection";
         break;
       case DioErrorType.cancel:
         errorDescription = "Request to API server was cancelled";
