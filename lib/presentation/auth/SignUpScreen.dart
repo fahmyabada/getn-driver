@@ -9,17 +9,16 @@ import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/strings.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
-import 'package:getn_driver/presentation/auth/otp/OtpScreen.dart';
-import 'package:getn_driver/presentation/auth/signUp/SignUpScreen.dart';
+import 'package:getn_driver/presentation/auth/OtpScreen.dart';
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({Key? key}) : super(key: key);
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({Key? key}) : super(key: key);
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   var formKey = GlobalKey<FormState>();
   var phoneController = TextEditingController();
   Data? dropDownValueCountry;
@@ -36,43 +35,36 @@ class _SignInScreenState extends State<SignInScreen> {
     return BlocConsumer<SignCubit, SignState>(listener: (context, state) {
       if (state is CountriesLoading) {
         if (kDebugMode) {
-          print('SignInScreen*******CountriesLoading');
+          print('SignUpScreen*******CountriesLoading');
         }
       } else if (state is CountriesErrorState) {
         if (kDebugMode) {
-          print('SignInScreen*******CountriesErrorState ${state.message}');
+          print('SignUpScreen*******CountriesErrorState ${state.message}');
         }
         showToastt(
             text: state.message, state: ToastStates.error, context: context);
       } else if (state is CountriesSuccessState) {
         if (kDebugMode) {
           print(
-              'SignInScreen*******CountriesSuccessState${SignCubit.get(context).countries[0].icon!.src} ');
+              'SignUpScreen*******CountriesSuccessState${SignCubit.get(context).countries[0].icon!.src} ');
         }
         dropDownValueCountry = SignCubit.get(context).countries[0];
-      } else if (state is SendOtpSignInSuccessState) {
+      } else if (state is SendOtpSignUpSuccessState) {
         if (kDebugMode) {
-          print('SignInScreen*******SendOtpSignInSuccessState');
+          print('SignUpScreen*******SendOtpSignUpSuccessState');
         }
-        if (state.data.isAlreadyUser! && state.data.otpSend!) {
-          navigateTo(
+        print("phoneSignupScreen******************${splitPhone2}}");
+        navigateTo(
             context,
             OtpScreen(
               isAlreadyUser: state.data.isAlreadyUser!,
               code: state.data.code,
               phone: splitPhone2,
               countryId: dropDownValueCountry!.id!,
-            ),
-          );
-        } else if (!state.data.isAlreadyUser! && state.data.otpSend!) {
-          showToastt(
-              text: "Register first please...",
-              state: ToastStates.error,
-              context: context);
-        }
-      } else if (state is SendOtpSignInErrorState) {
+            ));
+      } else if (state is SendOtpSignUpErrorState) {
         if (kDebugMode) {
-          print('*******SendOtpSignInErrorState');
+          print('SignUpScreen*******SendOtpSignUpErrorState');
         }
 
         showToastt(
@@ -80,7 +72,15 @@ class _SignInScreenState extends State<SignInScreen> {
       }
     }, builder: (context, state) {
       return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: black,
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -88,7 +88,7 @@ class _SignInScreenState extends State<SignInScreen> {
             SizedBox(
               width: 200.w,
               child: Text(
-                Strings.signIn,
+                Strings.signUpWithMobileNumber,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 25.sp,
@@ -248,12 +248,13 @@ class _SignInScreenState extends State<SignInScreen> {
                           splitPhone2 = splitPhone.text.toString();
                         });
                         SignCubit.get(context).sendOtp(
-                            "signIn",
-                            splitPhone.text.toString(),
+                            "signUp",
+                            splitPhone2,
                             dropDownValueCountry!.id!);
                       } else {
+                        splitPhone2 = phoneController.text.toString();
                         SignCubit.get(context).sendOtp(
-                            "signIn",
+                            "signUp",
                             phoneController.text.toString(),
                             dropDownValueCountry!.id!);
                       }
@@ -268,31 +269,6 @@ class _SignInScreenState extends State<SignInScreen> {
                 text: "Next",
                 backColor: accentColor,
                 textColor: white),
-            SizedBox(
-              height: 10.h,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'You Don\'t have an account,',
-                  style: TextStyle(color: black, fontSize: 16.sp),
-                ),
-                InkWell(
-                  child: Text(
-                    'Sign Up Now',
-                    style: TextStyle(color: accentColor, fontSize: 16.sp),
-                  ),
-                  onTap: () {
-                    navigateTo(context, const SignUpScreen());
-                    // navigateTo(
-                    //   context,
-                    //   const DriverInformationScreen(),
-                    // );
-                  },
-                )
-              ],
-            )
           ],
         ),
       );

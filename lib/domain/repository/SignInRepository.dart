@@ -1,8 +1,9 @@
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:getn_driver/data/model/country/Data.dart';
-import 'package:getn_driver/data/model/signModel/SignModel.dart';
-import 'package:getn_driver/data/model/sendOtp/SendOtpData.dart';
 import 'package:getn_driver/data/model/role/DataRole.dart';
+import 'package:getn_driver/data/model/sendOtp/SendOtpData.dart';
+import 'package:getn_driver/data/model/signModel/SignModel.dart';
 
 abstract class SignInRepository {
   Future<Either<String, List<Data>?>> getCountries();
@@ -11,7 +12,8 @@ abstract class SignInRepository {
 
   Future<Either<String, SendOtpData>> sendOtp(String phone, String countryId);
 
-  Future<Either<String, SignModel>> login(String phone, String countryId, String code);
+  Future<Either<String, SignModel>> login(
+      String phone, String countryId, String code);
 
   Future<Either<String, SignModel>> register(
       String phone,
@@ -23,4 +25,5 @@ abstract class SignInRepository {
       bool terms,
       String photo);
 
+  Future<Either<String, SignModel>> editInformationUserUseCase(FormData data);
 }

@@ -6,20 +6,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/presentation/auth/DriverInformationScreen.dart';
+import 'package:getn_driver/presentation/auth/SignUpDetails.dart';
 import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
-import 'package:getn_driver/presentation/auth/driverInformation/DriverInformationScreen.dart';
-import 'package:getn_driver/presentation/auth/signUpDetails/SignUpDetails.dart';
 import 'package:getn_driver/presentation/dashBoard/DashBoardScreen.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({Key? key,
-    required this.phone,
-    required this.countryId,
-    required this.isAlreadyUser,
-    this.code})
+  const OtpScreen(
+      {Key? key,
+      required this.phone,
+      required this.countryId,
+      required this.isAlreadyUser,
+      this.code})
       : super(key: key);
 
   final String phone;
@@ -61,7 +62,6 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   void initState() {
     super.initState();
-    print("phoneOtpScreen******************${widget.phone}");
     startTimer();
     listenOtp();
     if (widget.code != null) {
@@ -80,12 +80,11 @@ class _OtpScreenState extends State<OtpScreen> {
     await SmsAutoFill().unregisterListener();
     await SmsAutoFill().listenForCode();
     await SmsAutoFill().listenForCode;
-    print("listenOtp******************");
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<SignCubit, SignState>(listener: (context, state) {
+    return BlocConsumer<SignCubit, SignState>(listener: (context1, state) {
       if (state is SendOtpSuccessState) {
         if (kDebugMode) {
           print('OtpScreen*******SendOtpSuccessState');
@@ -103,21 +102,36 @@ class _OtpScreenState extends State<OtpScreen> {
 
         showToastt(
             text: state.message, state: ToastStates.error, context: context);
-      }else  if (state is SignInSuccessState) {
+      } else if (state is SignInSuccessState) {
         if (kDebugMode) {
           print('OtpScreen*******SignInSuccessState');
         }
-
-        getIt<SharedPreferences>().setString('phone', state.data.phone!);
-        getIt<SharedPreferences>().setString('name', state.data.name!);
-        getIt<SharedPreferences>().setString('token', state.data.token!);
-        if (state.data.frontNationalImage != null) {
-          getIt<SharedPreferences>().setString('typeSign', "sign");
-          navigateTo(
-                context, const DriverInformationScreen());
-        } else {
-            getIt<SharedPreferences>().setString('typeSign', "signWithInformation");
+        if (state.data.token != null) {
+          showToastt(
+              text: "user already have account",
+              state: ToastStates.success,
+              context: context);
+          getIt<SharedPreferences>().setString('phone', state.data.phone!);
+          if (state.data.name != null) {
+            getIt<SharedPreferences>().setString('name', state.data.name!);
+          }
+          getIt<SharedPreferences>().setString('token', state.data.token!);
+          if (state.data.frontNationalImage != null) {
+            getIt<SharedPreferences>().setString('typeSign', "sign");
+            navigateTo(context, const DriverInformationScreen());
+          } else {
+            getIt<SharedPreferences>()
+                .setString('typeSign', "signWithInformation");
             navigateTo(context, const DashBoardScreen());
+          }
+        } else {
+          navigateTo(
+              context,
+              SignUpDetailsScreen(
+                phone: widget.phone,
+                countryId: widget.countryId,
+                codeOtp: _code,
+              ));
         }
       } else if (state is SignInErrorState) {
         if (kDebugMode) {
@@ -163,7 +177,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   child: PinFieldAutoFill(
                     decoration: UnderlineDecoration(
                         textStyle:
-                        TextStyle(fontSize: 20.sp, color: Colors.black),
+                            TextStyle(fontSize: 20.sp, color: Colors.black),
                         colorBuilder: const FixedColorBuilder(yellowLightColor),
                         bgColorBuilder: const FixedColorBuilder(grey),
                         gapSpace: 30.w),
@@ -205,18 +219,8 @@ class _OtpScreenState extends State<OtpScreen> {
                 SizedBox(height: 32.h),
                 defaultButton3(
                     press: () {
-                      if (widget.isAlreadyUser) {
-                        SignCubit.get(context).makeLogin(
-                            widget.phone, widget.countryId, _code);
-                      } else {
-                        navigateTo(
-                            context,
-                            SignUpDetailsScreen(
-                              phone: widget.phone,
-                              countryId: widget.countryId,
-                              codeOtp: _code,
-                            ));
-                      }
+                      SignCubit.get(context)
+                          .makeLogin(widget.phone, widget.countryId, _code);
                     },
                     disablePress: openNext,
                     text: "Next",
@@ -240,19 +244,19 @@ class _OtpScreenState extends State<OtpScreen> {
       children: [
         openResend
             ? InkWell(
-          onTap: () {
-            SignCubit.get(context)
-                .sendOtp("otp", widget.phone, widget.countryId);
-          },
-          child: Text(
-            "resend ",
-            style: TextStyle(color: blueColor, fontSize: 18.sp),
-          ),
-        )
+                onTap: () {
+                  SignCubit.get(context)
+                      .sendOtp("otp", widget.phone, widget.countryId);
+                },
+                child: Text(
+                  "resend ",
+                  style: TextStyle(color: blueColor, fontSize: 18.sp),
+                ),
+              )
             : Text(
-          "resend ",
-          style: TextStyle(color: greyColor, fontSize: 18.sp),
-        ),
+                "resend ",
+                style: TextStyle(color: greyColor, fontSize: 18.sp),
+              ),
         Text(
           "code in ",
           style: TextStyle(color: black, fontSize: 18.sp),

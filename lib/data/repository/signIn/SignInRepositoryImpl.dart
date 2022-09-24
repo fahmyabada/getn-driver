@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:dio/src/form_data.dart';
 import 'package:getn_driver/data/api/network_info.dart';
 import 'package:getn_driver/data/model/country/Data.dart';
 import 'package:getn_driver/data/model/role/DataRole.dart';
@@ -94,6 +95,24 @@ class SignInRepositoryImpl extends SignInRepository {
     if (await networkInfo.isConnected) {
       return await signInRemoteDataSource
           .login(phone, countryId, code)
+          .then((value) {
+        return value.fold((failure) {
+          return Left(failure.toString());
+        }, (data) {
+          return Right(data);
+        });
+      });
+    } else {
+      return Left(networkFailureMessage);
+    }
+  }
+
+  @override
+  Future<Either<String, SignModel>> editInformationUserUseCase(
+      FormData data) async {
+    if (await networkInfo.isConnected) {
+      return await signInRemoteDataSource
+          .editInformationUserUseCase(data)
           .then((value) {
         return value.fold((failure) {
           return Left(failure.toString());

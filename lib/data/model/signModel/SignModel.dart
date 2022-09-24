@@ -8,8 +8,8 @@ class SignModel {
   SignModel({
     String? id,
     dynamic image,
-    dynamic frontNationalImage,
-    dynamic backNationalImage,
+    VerifyImage? frontNationalImage,
+    VerifyImage? backNationalImage,
     VerifyImage? verifyImage,
     String? name,
     Ratings? ratings,
@@ -38,8 +38,12 @@ class SignModel {
   SignModel.fromJson(dynamic json) {
     _id = json['_id'];
     _image = json['image'];
-    _frontNationalImage = json['frontNationalImage'];
-    _backNationalImage = json['backNationalImage'];
+    _frontNationalImage = json['frontNationalImage'] != null
+        ? VerifyImage.fromJson(json['frontNationalImage'])
+        : null;
+    _backNationalImage = json['backNationalImage'] != null
+        ? VerifyImage.fromJson(json['backNationalImage'])
+        : null;
     _verifyImage = json['verifyImage'] != null
         ? VerifyImage.fromJson(json['verifyImage'])
         : null;
@@ -58,8 +62,8 @@ class SignModel {
 
   String? _id;
   dynamic _image;
-  dynamic _frontNationalImage;
-  dynamic _backNationalImage;
+  VerifyImage? _frontNationalImage;
+  VerifyImage? _backNationalImage;
   VerifyImage? _verifyImage;
   String? _name;
   Ratings? _ratings;
@@ -74,9 +78,9 @@ class SignModel {
 
   dynamic get image => _image;
 
-  dynamic get frontNationalImage => _frontNationalImage;
+  VerifyImage? get frontNationalImage => _frontNationalImage;
 
-  dynamic get backNationalImage => _backNationalImage;
+  VerifyImage? get backNationalImage => _backNationalImage;
 
   VerifyImage? get verifyImage => _verifyImage;
 
@@ -100,8 +104,12 @@ class SignModel {
     final map = <String, dynamic>{};
     map['_id'] = _id;
     map['image'] = _image;
-    map['frontNationalImage'] = _frontNationalImage;
-    map['backNationalImage'] = _backNationalImage;
+    if (_frontNationalImage != null) {
+      map['frontNationalImage'] = _frontNationalImage?.toJson();
+    }
+    if (_backNationalImage != null) {
+      map['backNationalImage'] = _backNationalImage?.toJson();
+    }
     if (_message != null) {
       map['message'] = _message?.toJson();
     }

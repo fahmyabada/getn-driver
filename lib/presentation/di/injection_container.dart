@@ -3,6 +3,7 @@ import 'package:getn_driver/data/api/network_info.dart';
 import 'package:getn_driver/data/repository/signIn/SignInRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/signIn/SignInRepositoryImpl.dart';
 import 'package:getn_driver/domain/repository/SignInRepository.dart';
+import 'package:getn_driver/domain/usecase/signIn/EditInformationUserUseCase.dart';
 import 'package:getn_driver/domain/usecase/signIn/GetCountriesUseCase.dart';
 import 'package:getn_driver/domain/usecase/signIn/GetRoleUseCase.dart';
 import 'package:getn_driver/domain/usecase/signIn/LoginUseCase.dart';
@@ -27,6 +28,7 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => RegisterUseCase(getIt()));
   getIt.registerLazySingleton(() => GetRoleUseCase(getIt()));
   getIt.registerLazySingleton(() => LoginUseCase(getIt()));
+  getIt.registerLazySingleton(() => EditInformationUserUseCase(getIt()));
 
   // Repository
   getIt.registerLazySingleton<SignInRepository>(
