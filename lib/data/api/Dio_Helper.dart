@@ -10,7 +10,7 @@ class DioHelper {
   static init() {
     dio = Dio(BaseOptions(
       baseUrl: 'https://apis.getn.re-comparison.com/api/',
-      receiveDataWhenStatusError: true,
+      receiveDataWhenStatusError: true, 
     ));
   }
 
@@ -32,11 +32,7 @@ class DioHelper {
   static Future<Response> postData2({
     required String url,
     FormData? data,
-    String? header,
   }) async {
-    dio.options.headers = {
-      'Content-Type': header,
-    };
     return await dio.post(url, data: data);
   }
 
@@ -67,6 +63,7 @@ class DioHelper {
       data: data,
     );
   }
+
 }
 
 class MyHttpOverrides extends HttpOverrides {
@@ -119,3 +116,4 @@ String handleError(dynamic error) {
   print("handleError:: errorDescription >> $errorDescription");
   return errorDescription;
 }
+
