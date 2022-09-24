@@ -4,7 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
-import 'package:getn_driver/presentation/auth/signUpDetails/VerifyImage.dart';
+import 'package:getn_driver/presentation/auth/VerifyImage.dart';
+import 'package:getn_driver/presentation/dashBoard/DashBoardScreen.dart';
+import 'package:getn_driver/presentation/di/injection_container.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DriverInformationScreen extends StatefulWidget {
   const DriverInformationScreen({Key? key}) : super(key: key);
@@ -18,7 +21,17 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SignCubit, SignState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if(state is EditSuccessState){
+            print('*******EditSuccessState');
+            getIt<SharedPreferences>().setString('typeSign', "signWithInformation");
+            navigateTo(context, const DashBoardScreen());
+          }else if (state is EditErrorState){
+            print('*******EditErrorState');
+            showToastt(
+                text: state.message, state: ToastStates.error, context: context);
+          }
+        },
         builder: (context, state) {
           return Scaffold(
             body: SafeArea(
@@ -60,17 +73,19 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                                 style: TextStyle(
                                     fontSize: 20.sp, color: primaryColor),
                               ),
-                              SignCubit.get(context).frontNationalId
+                              SignCubit
+                                  .get(context)
+                                  .frontNationalId
                                   ? Icon(
-                                      Icons.done,
-                                      color: greenColor,
-                                      size: 25.w,
-                                    )
+                                Icons.done,
+                                color: greenColor,
+                                size: 25.w,
+                              )
                                   : Text(
-                                      'Update',
-                                      style: TextStyle(
-                                          fontSize: 20.sp, color: greenColor),
-                                    )
+                                'Update',
+                                style: TextStyle(
+                                    fontSize: 20.sp, color: greenColor),
+                              )
                             ],
                           )),
                       onTap: () {
@@ -104,17 +119,19 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                                 style: TextStyle(
                                     fontSize: 20.sp, color: primaryColor),
                               ),
-                              SignCubit.get(context).backNationalId
+                              SignCubit
+                                  .get(context)
+                                  .backNationalId
                                   ? Icon(
-                                      Icons.done,
-                                      color: greenColor,
-                                      size: 25.w,
-                                    )
+                                Icons.done,
+                                color: greenColor,
+                                size: 25.w,
+                              )
                                   : Text(
-                                      'Update',
-                                      style: TextStyle(
-                                          fontSize: 20.sp, color: greenColor),
-                                    )
+                                'Update',
+                                style: TextStyle(
+                                    fontSize: 20.sp, color: greenColor),
+                              )
                             ],
                           )),
                       onTap: () {
@@ -126,7 +143,7 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                         );
                       },
                     ),
-                    SizedBox(
+                    /*  SizedBox(
                       height: 30.h,
                     ),
                     //front Passport
@@ -213,7 +230,7 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                           ),
                         );
                       },
-                    ),
+                    ),*/
                     SizedBox(
                       height: 30.h,
                     ),
@@ -236,17 +253,19 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                                 style: TextStyle(
                                     fontSize: 20.sp, color: primaryColor),
                               ),
-                              SignCubit.get(context).frontDriverLicence
+                              SignCubit
+                                  .get(context)
+                                  .frontDriverLicence
                                   ? Icon(
-                                      Icons.done,
-                                      color: greenColor,
-                                      size: 25.w,
-                                    )
+                                Icons.done,
+                                color: greenColor,
+                                size: 25.w,
+                              )
                                   : Text(
-                                      'Update',
-                                      style: TextStyle(
-                                          fontSize: 20.sp, color: greenColor),
-                                    )
+                                'Update',
+                                style: TextStyle(
+                                    fontSize: 20.sp, color: greenColor),
+                              )
                             ],
                           )),
                       onTap: () {
@@ -280,17 +299,19 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                                 style: TextStyle(
                                     fontSize: 20.sp, color: primaryColor),
                               ),
-                              SignCubit.get(context).backDriverLicence
+                              SignCubit
+                                  .get(context)
+                                  .backDriverLicence
                                   ? Icon(
-                                      Icons.done,
-                                      color: greenColor,
-                                      size: 25.w,
-                                    )
+                                Icons.done,
+                                color: greenColor,
+                                size: 25.w,
+                              )
                                   : Text(
-                                      'Update',
-                                      style: TextStyle(
-                                          fontSize: 20.sp, color: greenColor),
-                                    )
+                                'Update',
+                                style: TextStyle(
+                                    fontSize: 20.sp, color: greenColor),
+                              )
                             ],
                           )),
                       onTap: () {
@@ -305,19 +326,38 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
 
                     defaultButton3(
                         press: () {
-                          if (SignCubit.get(context).frontNationalIdString !=
+                          if (SignCubit
+                              .get(context)
+                              .frontNationalIdString !=
+                              null &&
+                              SignCubit
+                                  .get(context)
+                                  .backNationalIdString !=
                                   null &&
-                              SignCubit.get(context).backNationalIdString !=
+                              // SignCubit.get(context).frontPassportString !=
+                              //     null &&
+                              // SignCubit.get(context).backPassportString !=
+                              //     null &&
+                              SignCubit
+                                  .get(context)
+                                  .frontDriverLicenceString !=
                                   null &&
-                              SignCubit.get(context).frontPassportString !=
-                                  null &&
-                              SignCubit.get(context).backPassportString !=
-                                  null &&
-                              SignCubit.get(context).frontDriverLicenceString !=
-                                  null &&
-                              SignCubit.get(context).backDriverLicenceString !=
+                              SignCubit
+                                  .get(context)
+                                  .backDriverLicenceString !=
                                   null) {
-
+                            SignCubit.get(context).editInformation(
+                                SignCubit
+                                    .get(context)
+                                    .frontNationalIdString!, SignCubit
+                                .get(context)
+                                .backNationalIdString!,
+                                SignCubit
+                                    .get(context)
+                                    .frontDriverLicenceString!,
+                                SignCubit
+                                    .get(context)
+                                    .backDriverLicenceString!);
                           } else {
                             showToastt(
                                 text: "please fill all data first...",

@@ -1,10 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:getn_driver/data/model/country/Data.dart';
 import 'package:getn_driver/data/model/role/DataRole.dart';
 import 'package:getn_driver/data/model/sendOtp/SendOtpData.dart';
 import 'package:getn_driver/data/model/signModel/SignModel.dart';
+import 'package:getn_driver/domain/usecase/signIn/EditInformationUserUseCase.dart';
 import 'package:getn_driver/domain/usecase/signIn/GetCountriesUseCase.dart';
 import 'package:getn_driver/domain/usecase/signIn/GetRoleUseCase.dart';
 import 'package:getn_driver/domain/usecase/signIn/LoginUseCase.dart';
@@ -13,6 +15,7 @@ import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:meta/meta.dart';
 
 import '../../../domain/usecase/signIn/RegisterUseCase.dart';
+import 'package:http_parser/http_parser.dart';
 
 part 'state.dart';
 
@@ -26,21 +29,23 @@ class SignCubit extends Cubit<SignState> {
   var sendOtpUseCase = getIt<SendOtpUseCase>();
   var registerUseCase = getIt<RegisterUseCase>();
   var loginUseCase = getIt<LoginUseCase>();
+  var editInformationUserUseCase = getIt<EditInformationUserUseCase>();
 
   List<Data> countries = [];
   List<DataRole> roles = [];
   bool terms = false;
   bool frontNationalId = false;
   bool backNationalId = false;
-  bool frontPassport = false;
-  bool backPassport = false;
+
+  // bool frontPassport = false;
+  // bool backPassport = false;
   bool frontDriverLicence = false;
   bool backDriverLicence = false;
   String? frontNationalIdString;
   String? backNationalIdString;
 
-  String? frontPassportString;
-  String? backPassportString;
+  // String? frontPassportString;
+  // String? backPassportString;
   String? frontDriverLicenceString;
   String? backDriverLicenceString;
 
@@ -84,8 +89,8 @@ class SignCubit extends Cubit<SignState> {
     });
   }
 
-  SignState eitherLoadedOrErrorStateSendOtp(
-      String type, Either<String, SendOtpData> data) {
+  SignState eitherLoadedOrErrorStateSendOtp(String type,
+      Either<String, SendOtpData> data) {
     return data.fold((failure1) {
       if (type == "signIn") {
         return SendOtpSignInErrorState(failure1);
@@ -105,8 +110,7 @@ class SignCubit extends Cubit<SignState> {
     });
   }
 
-  void makeRegister(
-      String phone,
+  void makeRegister(String phone,
       String countryId,
       String email,
       String codeOtp,
@@ -116,7 +120,15 @@ class SignCubit extends Cubit<SignState> {
       String photo) async {
     emit(RegisterLoading());
     registerUseCase
-        .execute(phone, countryId, email, codeOtp, fullName, role, terms, photo)
+        .execute(
+        phone,
+        countryId,
+        email,
+        codeOtp,
+        fullName,
+        role,
+        terms,
+        photo)
         .then((value) {
       emit(eitherLoadedOrErrorStateMakeRegister(value));
     });
@@ -146,6 +158,41 @@ class SignCubit extends Cubit<SignState> {
     });
   }
 
+  void editInformation(String frontNationalId, String backNationalId,
+      String frontDriverLicence, String backDriverLicence) async {
+    emit(EditLoading());
+    String fileFrontNationalId = frontNationalId
+        .split('/')
+        .last;
+    String fileBackNationalId = backNationalId
+        .split('/')
+        .last;
+    String fileFrontDriverLicenced = frontDriverLicence
+        .split('/')
+        .last;
+    String fileBackDriverLicence = backDriverLicence
+        .split('/')
+        .last;
+    var formData = FormData.fromMap({
+    'frontNationalImage': await MultipartFile.fromFile(frontNationalId, filename: fileFrontNationalId, contentType: MediaType("image", "jpeg")),
+    'backNationalImage': await MultipartFile.fromFile(backNationalId, filename: fileBackNationalId, contentType: MediaType("image", "jpeg")),
+    'frontDriveImage': await MultipartFile.fromFile(frontDriverLicence, filename: fileFrontDriverLicenced, contentType: MediaType("image", "jpeg")),
+    'backDriveImage': await MultipartFile.fromFile(backDriverLicence, filename: fileBackDriverLicence, contentType: MediaType("image", "jpeg")),
+    });
+    editInformationUserUseCase.execute(formData).then((value) {
+      emit(eitherLoadedOrErrorStateEditInformation(value));
+    });
+  }
+
+  SignState eitherLoadedOrErrorStateEditInformation(
+      Either<String, SignModel> data) {
+    return data.fold((failure1) {
+      return EditErrorState(failure1);
+    }, (data) {
+      return EditSuccessState(data);
+    });
+  }
+
   void setTerms(bool data) {
     terms = data;
 
@@ -157,11 +204,13 @@ class SignCubit extends Cubit<SignState> {
       frontNationalId = data;
     } else if (type == "backNationalId") {
       backNationalId = data;
-    } else if (type == "frontPassport") {
-      frontPassport = data;
-    } else if (type == "backPassport") {
-      backPassport = data;
-    } else if (type == "frontDriverLicence") {
+    }
+    // else if (type == "frontPassport") {
+    //   frontPassport = data;
+    // } else if (type == "backPassport") {
+    //   backPassport = data;
+    // }
+    else if (type == "frontDriverLicence") {
       frontDriverLicence = data;
     } else if (type == "backDriverLicence") {
       backDriverLicence = data;
@@ -169,99 +218,4 @@ class SignCubit extends Cubit<SignState> {
 
     emit(DriverInformationLoading());
   }
-
-// void setChangeUpdateString(String type, String data) {
-//   if (type == "frontNationalId") {
-//     frontNationalIdString = data;
-//   }
-//   else if (type == "backNationalId"){
-//     backNationalIdString = data;
-//   }
-//   else if (type == "frontPassport"){
-//     frontPassportString = data;
-//   }
-//   else if (type == "backPassport"){
-//     backPassportString = data;
-//   }
-//   else if (type == "frontDriverLicence"){
-//     frontDriverLicenceString = data;
-//   }
-//   else if (type == "backDriverLicence"){
-//     backDriverLicenceString = data;
-//   }
-//
-//   emit(DriverInformationStringLoading());
-// }
-
-/*void setTerms(bool type) {
-    terms = type;
-    emit(TermsSuccessState(type));
-  }
-
-  void setFrontNational(String data) {
-    frontNationalIdString = data;
-    frontNationalId = true;
-    emit(DriverInformationStringLoading());
-  }
-
-  void setBackNational(String data) {
-    backNationalIdString = data;
-    backNationalId = true;
-    emit(DriverInformationStringLoading());
-  }
-
-  void setFrontPassport(String data) {
-    frontNationalIdString = data;
-    frontNationalId = true;
-    emit(DriverInformationStringLoading());
-  }
-
-  void setBackPassport(String data) {
-    backNationalIdString = data;
-    backNationalId = true;
-    emit(DriverInformationStringLoading());
-  }
-
-  void setFrontDriverLicence(String data) {
-    frontDriverLicenceString = data;
-    frontDriverLicence = true;
-    emit(DriverInformationStringLoading());
-  }
-
-  void setBackDriverLicence(String data) {
-    backDriverLicenceString = data;
-    backDriverLicence = true;
-    emit(DriverInformationStringLoading());
-  }
-
-*/
-
-//
-
-//
-// void setBackNationalBool(bool data) {
-//   backNationalId = data;
-//   emit(DriverInformationBoolLoading());
-// }
-//
-// void setFrontPassportBool(bool data) {
-//   frontPassport = data;
-//   emit(DriverInformationBoolLoading());
-// }
-//
-// void setBackPassportBool(bool data) {
-//   backPassport = data;
-//   emit(DriverInformationBoolLoading());
-// }
-//
-// void setFrontDriverLicenceBool(bool data) {
-//   frontDriverLicence = data;
-//   emit(DriverInformationBoolLoading());
-// }
-//
-// void setBackDriverLicenceBool(bool data) {
-//   backDriverLicence = data;
-//   emit(DriverInformationBoolLoading());
-// }
-
 }

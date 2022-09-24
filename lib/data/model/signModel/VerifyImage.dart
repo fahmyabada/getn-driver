@@ -1,19 +1,22 @@
 class VerifyImage {
   VerifyImage({
-      String? src, 
-      String? mimetype,}){
+    String? src,
+    String? mimetype,
+  }) {
     _src = src;
     _mimetype = mimetype;
-}
+  }
 
   VerifyImage.fromJson(dynamic json) {
-    _src = json['src'];
-    _mimetype = json['mimetype'];
+    _src = json['src'] ?? "";
+    _mimetype = json['mimetype'] ?? "";
   }
+
   String? _src;
   String? _mimetype;
 
   String? get src => _src;
+
   String? get mimetype => _mimetype;
 
   Map<String, dynamic> toJson() {
@@ -22,5 +25,4 @@ class VerifyImage {
     map['mimetype'] = _mimetype;
     return map;
   }
-
 }

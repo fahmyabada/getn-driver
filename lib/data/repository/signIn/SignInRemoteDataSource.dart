@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:getn_driver/data/api/Dio_Helper.dart';
@@ -8,6 +10,7 @@ import 'package:getn_driver/data/model/role/Role.dart';
 import 'package:getn_driver/data/model/sendOtp/SendOtpData.dart';
 import 'package:getn_driver/data/model/signModel/SignModel.dart';
 import 'package:getn_driver/data/utils/constant.dart';
+import 'package:http_parser/http_parser.dart';
 
 abstract class SignInRemoteDataSource {
   Future<Either<String, List<Data>?>> getCountries();
@@ -28,6 +31,8 @@ abstract class SignInRemoteDataSource {
       String role,
       bool terms,
       String photo);
+
+  Future<Either<String, SignModel>> editInformationUserUseCase(FormData data);
 }
 
 class SignInRemoteDataSourceImpl implements SignInRemoteDataSource {
@@ -110,19 +115,53 @@ class SignInRemoteDataSourceImpl implements SignInRemoteDataSource {
       bool terms,
       String photo) async {
     try {
+      String fileName = photo.split('/').last;
+      // String mimeType = mime(fileName);
+      // String mimee = mimeType.split('/')[0];
+      // String type = mimeType.split('/')[1];
+
       var formData = FormData.fromMap({
         'phone': phone,
         'country': countryId,
         'verifyCode': codeOtp,
         'role': role,
         'email': email,
-        'verifyImage':
-            await MultipartFile.fromFile(photo, filename: 'upload.png'),
+        'verifyImage': await MultipartFile.fromFile(photo, filename: fileName, contentType: MediaType("image", "jpeg")),
         'acceptTermsAndConditions': terms,
       });
 
+      const headers = 'multipart/form-data';
+      print("formData**********************${fileName}");
+
       return await DioHelper.postData2(
-              url: 'driver/auth/send-otp', data: formData)
+              url: 'driver/auth/register', data: formData, header: headers)
+          .then((value) {
+        if (value.statusCode == 200) {
+          if (SignModel.fromJson(value.data).id != null) {
+            return Right(SignModel.fromJson(value.data));
+          } else {
+            print("register**********************${value.data.toString()}");
+            return Left(value.data.toString());
+          }
+        } else {
+          return Left(serverFailureMessage);
+        }
+      });
+    } on Exception catch (error) {
+      return Left(handleError(error));
+    }
+  }
+
+  @override
+  Future<Either<String, SignModel>> login(
+      String phone, String countryId, String code) async {
+    try {
+      var formData = FormData.fromMap({
+        'phone': phone,
+        'country': countryId,
+        'verifyCode': code,
+      });
+      return await DioHelper.postData2(url: 'driver/auth/login', data: formData)
           .then((value) {
         if (value.statusCode == 200) {
           if (SignModel.fromJson(value.data).id != null) {
@@ -140,16 +179,9 @@ class SignInRemoteDataSourceImpl implements SignInRemoteDataSource {
   }
 
   @override
-  Future<Either<String, SignModel>> login(
-      String phone, String countryId, String code) async {
+  Future<Either<String, SignModel>> editInformationUserUseCase(FormData data) async{
     try {
-
-      var formData = FormData.fromMap({
-        'phone': phone,
-        'country': countryId,
-        'verifyCode': code,
-      });
-      return await DioHelper.postData2(url: 'driver/auth/login', data: formData)
+      return await DioHelper.putData2(url: 'driver/auth/edit-profile', data: data)
           .then((value) {
         if (value.statusCode == 200) {
           if (SignModel.fromJson(value.data).id != null) {

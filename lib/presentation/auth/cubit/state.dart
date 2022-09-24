@@ -99,6 +99,20 @@ class SignInSuccessState extends SignState {
   SignInSuccessState(this.data);
 }
 
+class EditLoading extends SignState {}
+
+class EditErrorState extends SignState {
+  final String message;
+
+  EditErrorState(this.message);
+}
+
+class EditSuccessState extends SignState {
+  final SignModel data;
+
+  EditSuccessState(this.data);
+}
+
 class TermsSuccessState extends SignState {}
 
 class DriverInformationLoading extends SignState {}

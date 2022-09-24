@@ -7,8 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/presentation/auth/DriverInformationScreen.dart';
 import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
-import 'package:getn_driver/presentation/auth/driverInformation/DriverInformationScreen.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -137,22 +137,24 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
                                 style: TextStyle(
                                     fontSize: 20.sp, color: primaryColor),
                               )
-                            : widget.typeScreen == "frontPassport"
-                                ? Text(
-                                    "Verify your front Passport by taking shot of your photo ",
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                        fontSize: 20.sp, color: primaryColor),
-                                  )
-                                : widget.typeScreen == "backPassport"
-                                    ? Text(
-                                        "Verify your back Passport by taking shot of your photo ",
-                                        textAlign: TextAlign.start,
-                                        style: TextStyle(
-                                            fontSize: 20.sp,
-                                            color: primaryColor),
-                                      )
-                                    : widget.typeScreen == "frontDriverLicence"
+                            :
+                            // widget.typeScreen == "frontPassport"
+                            //                 ? Text(
+                            //                     "Verify your front Passport by taking shot of your photo ",
+                            //                     textAlign: TextAlign.start,
+                            //                     style: TextStyle(
+                            //                         fontSize: 20.sp, color: primaryColor),
+                            //                   )
+                            //                 : widget.typeScreen == "backPassport"
+                            //                     ? Text(
+                            //                         "Verify your back Passport by taking shot of your photo ",
+                            //                         textAlign: TextAlign.start,
+                            //                         style: TextStyle(
+                            //                             fontSize: 20.sp,
+                            //                             color: primaryColor),
+                            //                       )
+                            //                     :
+                            widget.typeScreen == "frontDriverLicence"
                                         ? Text(
                                             "Verify your front driver licence by taking shot of your photo ",
                                             textAlign: TextAlign.start,
@@ -215,17 +217,19 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
                               .setChangeUpdateBool("backNationalId", true);
                           SignCubit.get(context).backNationalIdString =
                               _imageFileList!.path.toString();
-                        } else if (widget.typeScreen == "frontPassport") {
-                          SignCubit.get(context)
-                              .setChangeUpdateBool("frontPassport", true);
-                          SignCubit.get(context).frontPassportString =
-                              _imageFileList!.path.toString();
-                        } else if (widget.typeScreen == "backPassport") {
-                          SignCubit.get(context)
-                              .setChangeUpdateBool("backPassport", true);
-                          SignCubit.get(context).backPassportString =
-                              _imageFileList!.path.toString();
-                        } else if (widget.typeScreen == "frontDriverLicence") {
+                        }
+                        // else if (widget.typeScreen == "frontPassport") {
+                        //   SignCubit.get(context)
+                        //       .setChangeUpdateBool("frontPassport", true);
+                        //   SignCubit.get(context).frontPassportString =
+                        //       _imageFileList!.path.toString();
+                        // } else if (widget.typeScreen == "backPassport") {
+                        //   SignCubit.get(context)
+                        //       .setChangeUpdateBool("backPassport", true);
+                        //   SignCubit.get(context).backPassportString =
+                        //       _imageFileList!.path.toString();
+                        // }
+                        else if (widget.typeScreen == "frontDriverLicence") {
                           SignCubit.get(context)
                               .setChangeUpdateBool("frontDriverLicence", true);
                           SignCubit.get(context).frontDriverLicenceString =

@@ -9,16 +9,17 @@ import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/strings.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
-import 'package:getn_driver/presentation/auth/otp/OtpScreen.dart';
+import 'package:getn_driver/presentation/auth/OtpScreen.dart';
+import 'package:getn_driver/presentation/auth/SignUpScreen.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+class SignInScreen extends StatefulWidget {
+  const SignInScreen({Key? key}) : super(key: key);
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignInScreenState extends State<SignInScreen> {
   var formKey = GlobalKey<FormState>();
   var phoneController = TextEditingController();
   Data? dropDownValueCountry;
@@ -35,36 +36,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return BlocConsumer<SignCubit, SignState>(listener: (context, state) {
       if (state is CountriesLoading) {
         if (kDebugMode) {
-          print('SignUpScreen*******CountriesLoading');
+          print('SignInScreen*******CountriesLoading');
         }
       } else if (state is CountriesErrorState) {
         if (kDebugMode) {
-          print('SignUpScreen*******CountriesErrorState ${state.message}');
+          print('SignInScreen*******CountriesErrorState ${state.message}');
         }
         showToastt(
             text: state.message, state: ToastStates.error, context: context);
       } else if (state is CountriesSuccessState) {
         if (kDebugMode) {
           print(
-              'SignUpScreen*******CountriesSuccessState${SignCubit.get(context).countries[0].icon!.src} ');
+              'SignInScreen*******CountriesSuccessState${SignCubit.get(context).countries[0].icon!.src} ');
         }
         dropDownValueCountry = SignCubit.get(context).countries[0];
-      } else if (state is SendOtpSignUpSuccessState) {
+      } else if (state is SendOtpSignInSuccessState) {
         if (kDebugMode) {
-          print('SignUpScreen*******SendOtpSignUpSuccessState');
+          print('SignInScreen*******SendOtpSignInSuccessState');
         }
-        print("phoneSignupScreen******************${splitPhone2}}");
-        navigateTo(
+        if (state.data.isAlreadyUser! && state.data.otpSend!) {
+          navigateTo(
             context,
             OtpScreen(
               isAlreadyUser: state.data.isAlreadyUser!,
               code: state.data.code,
               phone: splitPhone2,
               countryId: dropDownValueCountry!.id!,
-            ));
-      } else if (state is SendOtpSignUpErrorState) {
+            ),
+          );
+        } else if (!state.data.isAlreadyUser! && state.data.otpSend!) {
+          showToastt(
+              text: "Register first please...",
+              state: ToastStates.error,
+              context: context);
+        }
+      } else if (state is SendOtpSignInErrorState) {
         if (kDebugMode) {
-          print('SignUpScreen*******SendOtpSignUpErrorState');
+          print('*******SendOtpSignInErrorState');
         }
 
         showToastt(
@@ -72,15 +80,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       }
     }, builder: (context, state) {
       return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: black,
-            ),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ),
+        appBar: AppBar(),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -88,7 +88,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             SizedBox(
               width: 200.w,
               child: Text(
-                Strings.signUpWithMobileNumber,
+                Strings.signIn,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 25.sp,
@@ -248,14 +248,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           splitPhone2 = splitPhone.text.toString();
                         });
                         SignCubit.get(context).sendOtp(
-                            "signUp",
-                            splitPhone2,
+                            "signIn",
+                            splitPhone.text.toString(),
                             dropDownValueCountry!.id!);
                       } else {
-                        print("phoneSignupScreen2******************${splitPhone2}");
+                        splitPhone2 = phoneController.text.toString();
                         SignCubit.get(context).sendOtp(
-                            "signUp",
-                            phoneController.text.toString(),
+                            "signIn",
+                            splitPhone2,
                             dropDownValueCountry!.id!);
                       }
                     }
@@ -269,6 +269,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 text: "Next",
                 backColor: accentColor,
                 textColor: white),
+            SizedBox(
+              height: 10.h,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'You Don\'t have an account,',
+                  style: TextStyle(color: black, fontSize: 16.sp),
+                ),
+                InkWell(
+                  child: Text(
+                    'Sign Up Now',
+                    style: TextStyle(color: accentColor, fontSize: 16.sp),
+                  ),
+                  onTap: () {
+                    navigateTo(context, const SignUpScreen());
+                    // navigateTo(
+                    //   context,
+                    //   const DriverInformationScreen(),
+                    // );
+                  },
+                )
+              ],
+            )
           ],
         ),
       );
