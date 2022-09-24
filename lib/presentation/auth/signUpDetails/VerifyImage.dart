@@ -51,6 +51,7 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
           print('*******RegisterSuccessState');
         }
 
+        getIt<SharedPreferences>().setString('typeSign', "sign");
         getIt<SharedPreferences>().setString('phone', state.data.phone!);
         getIt<SharedPreferences>().setString('name', state.data.name!);
         getIt<SharedPreferences>().setString('token', state.data.token!);

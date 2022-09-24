@@ -59,13 +59,14 @@ class _SignInScreenState extends State<SignInScreen> {
             context,
             OtpScreen(
               isAlreadyUser: state.data.isAlreadyUser!,
-              phone: phoneController.text.toString(),
+              code: state.data.code,
+              phone: splitPhone2,
               countryId: dropDownValueCountry!.id!,
             ),
           );
         } else if (!state.data.isAlreadyUser! && state.data.otpSend!) {
           showToastt(
-              text: "signModel first please...",
+              text: "Register first please...",
               state: ToastStates.error,
               context: context);
         }

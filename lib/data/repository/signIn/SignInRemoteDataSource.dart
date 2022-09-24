@@ -142,23 +142,27 @@ class SignInRemoteDataSourceImpl implements SignInRemoteDataSource {
   @override
   Future<Either<String, SignModel>> login(
       String phone, String countryId, String code) async {
-    var formData = FormData.fromMap({
-      'phone': phone,
-      'country': countryId,
-      'verifyCode': code,
-    });
+    try {
 
-    return await DioHelper.postData2(url: 'driver/auth/login', data: formData)
-        .then((value) {
-      if (value.statusCode == 200) {
-        if (SignModel.fromJson(value.data).id != null) {
-          return Right(SignModel.fromJson(value.data));
+      var formData = FormData.fromMap({
+        'phone': phone,
+        'country': countryId,
+        'verifyCode': code,
+      });
+      return await DioHelper.postData2(url: 'driver/auth/login', data: formData)
+          .then((value) {
+        if (value.statusCode == 200) {
+          if (SignModel.fromJson(value.data).id != null) {
+            return Right(SignModel.fromJson(value.data));
+          } else {
+            return Left(SignModel.fromJson(value.data).message!.toString());
+          }
         } else {
-          return Left(SignModel.fromJson(value.data).message!.toString());
+          return Left(serverFailureMessage);
         }
-      } else {
-        return Left(serverFailureMessage);
-      }
-    });
+      });
+    } on Exception catch (error) {
+      return Left(handleError(error));
+    }
   }
 }

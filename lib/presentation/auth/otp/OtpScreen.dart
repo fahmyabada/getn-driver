@@ -108,13 +108,17 @@ class _OtpScreenState extends State<OtpScreen> {
           print('OtpScreen*******SignInSuccessState');
         }
 
-          // if (state.data.frontNationalImage != null) {
-          //   navigateTo(
-          //       context, const DriverInformationScreen());
-          // }
-        // } else {
-        //   navigateTo(context, const DashBoardScreen());
-        // }
+        getIt<SharedPreferences>().setString('phone', state.data.phone!);
+        getIt<SharedPreferences>().setString('name', state.data.name!);
+        getIt<SharedPreferences>().setString('token', state.data.token!);
+        if (state.data.frontNationalImage != null) {
+          getIt<SharedPreferences>().setString('typeSign', "sign");
+          navigateTo(
+                context, const DriverInformationScreen());
+        } else {
+            getIt<SharedPreferences>().setString('typeSign', "signWithInformation");
+            navigateTo(context, const DashBoardScreen());
+        }
       } else if (state is SignInErrorState) {
         if (kDebugMode) {
           print('OtpScreen*******SignInErrorState');

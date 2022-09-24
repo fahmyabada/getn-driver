@@ -134,7 +134,7 @@ class SignCubit extends Cubit<SignState> {
   void makeLogin(String phone, String countryId, String code) async {
     emit(SignInLoading());
     loginUseCase.execute(phone, countryId, code).then((value) {
-      emit(eitherLoadedOrErrorStateMakeRegister(value));
+      emit(eitherLoadedOrErrorStateMakeLogin(value));
     });
   }
 

@@ -5,8 +5,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/strings.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/presentation/auth/driverInformation/DriverInformationScreen.dart';
 import 'package:getn_driver/presentation/auth/signIn/SignInScreen.dart';
+import 'package:getn_driver/presentation/dashBoard/DashBoardScreen.dart';
+import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/splash/splash_screen_cubit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -21,7 +25,19 @@ class SplashScreen extends StatelessWidget {
             if (kDebugMode) {
               print('*******StartState');
             }
-            navigateTo(context, const SignInScreen());
+            if (getIt<SharedPreferences>().getString("typeSign") != null &&
+                getIt<SharedPreferences>().getString("token") != null) {
+              if (getIt<SharedPreferences>().getString("typeSign") == "sign") {
+                navigateTo(context, const DriverInformationScreen());
+              } else if (getIt<SharedPreferences>().getString("typeSign") ==
+                  "signWithInformation") {
+                navigateTo(context, const DashBoardScreen());
+              }else {
+                navigateTo(context, const SignInScreen());
+              }
+            } else {
+              navigateTo(context, const SignInScreen());
+            }
           }
         }, builder: (context, state) {
           return Scaffold(
