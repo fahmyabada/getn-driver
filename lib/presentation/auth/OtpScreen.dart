@@ -106,32 +106,26 @@ class _OtpScreenState extends State<OtpScreen> {
         if (kDebugMode) {
           print('OtpScreen*******SignInSuccessState');
         }
-        if (state.data.token != null) {
-          showToastt(
-              text: "user already have account",
-              state: ToastStates.success,
-              context: context);
+        showToastt(
+            text: "user already have account",
+            state: ToastStates.success,
+            context: context);
+        if (state.data.phone != null) {
           getIt<SharedPreferences>().setString('phone', state.data.phone!);
-          if (state.data.name != null) {
-            getIt<SharedPreferences>().setString('name', state.data.name!);
-          }
+        }
+        if (state.data.name != null) {
+          getIt<SharedPreferences>().setString('name', state.data.name!);
+        }
+        if (state.data.token != null) {
           getIt<SharedPreferences>().setString('token', state.data.token!);
-          if (state.data.frontNationalImage != null) {
-            getIt<SharedPreferences>().setString('typeSign', "sign");
-            navigateTo(context, const DriverInformationScreen());
-          } else {
-            getIt<SharedPreferences>()
-                .setString('typeSign', "signWithInformation");
-            navigateTo(context, const DashBoardScreen());
-          }
+        }
+        if (state.data.frontNationalImage!.src != null) {
+          getIt<SharedPreferences>()
+              .setString('typeSign', "signWithInformation");
+          navigateTo(context, const DashBoardScreen());
         } else {
-          navigateTo(
-              context,
-              SignUpDetailsScreen(
-                phone: widget.phone,
-                countryId: widget.countryId,
-                codeOtp: _code,
-              ));
+          getIt<SharedPreferences>().setString('typeSign', "sign");
+          navigateTo(context, const DriverInformationScreen());
         }
       } else if (state is SignInErrorState) {
         if (kDebugMode) {
@@ -219,8 +213,18 @@ class _OtpScreenState extends State<OtpScreen> {
                 SizedBox(height: 32.h),
                 defaultButton3(
                     press: () {
-                      SignCubit.get(context)
-                          .makeLogin(widget.phone, widget.countryId, _code);
+                      if(widget.isAlreadyUser) {
+                        SignCubit.get(context)
+                            .makeLogin(widget.phone, widget.countryId, _code);
+                      }else{
+                        navigateTo(
+                            context,
+                            SignUpDetailsScreen(
+                              phone: widget.phone,
+                              countryId: widget.countryId,
+                              codeOtp: _code,
+                            ));
+                      }
                     },
                     disablePress: openNext,
                     text: "Next",

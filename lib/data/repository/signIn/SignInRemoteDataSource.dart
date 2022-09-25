@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:getn_driver/data/api/Dio_Helper.dart';
@@ -116,9 +114,6 @@ class SignInRemoteDataSourceImpl implements SignInRemoteDataSource {
       String photo) async {
     try {
       String fileName = photo.split('/').last;
-      // String mimeType = mime(fileName);
-      // String mimee = mimeType.split('/')[0];
-      // String type = mimeType.split('/')[1];
 
       var formData = FormData.fromMap({
         'phone': phone,
@@ -126,12 +121,12 @@ class SignInRemoteDataSourceImpl implements SignInRemoteDataSource {
         'verifyCode': codeOtp,
         'role': role,
         'email': email,
+        'name': fullName,
         'verifyImage': await MultipartFile.fromFile(photo, filename: fileName, contentType: MediaType("image", "jpeg")),
         'acceptTermsAndConditions': terms,
       });
 
       const headers = 'multipart/form-data';
-      print("formData**********************${fileName}");
 
       return await DioHelper.postData2(
               url: 'driver/auth/register', data: formData, header: headers)
@@ -140,7 +135,6 @@ class SignInRemoteDataSourceImpl implements SignInRemoteDataSource {
           if (SignModel.fromJson(value.data).id != null) {
             return Right(SignModel.fromJson(value.data));
           } else {
-            print("register**********************${value.data.toString()}");
             return Left(value.data.toString());
           }
         } else {

@@ -32,7 +32,11 @@ class DioHelper {
   static Future<Response> postData2({
     required String url,
     FormData? data,
+    String? header,
   }) async {
+    dio.options.headers = {
+      'Content-Type': header,
+    };
     return await dio.post(url, data: data);
   }
 

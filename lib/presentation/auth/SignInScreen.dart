@@ -66,7 +66,7 @@ class _SignInScreenState extends State<SignInScreen> {
           );
         } else if (!state.data.isAlreadyUser! && state.data.otpSend!) {
           showToastt(
-              text: "Register first please...",
+              text: "You Don\'t have an account\nRegister first please...",
               state: ToastStates.error,
               context: context);
         }

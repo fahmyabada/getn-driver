@@ -52,9 +52,15 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
         }
 
         getIt<SharedPreferences>().setString('typeSign', "sign");
-        getIt<SharedPreferences>().setString('phone', state.data.phone!);
-        getIt<SharedPreferences>().setString('name', state.data.name!);
-        getIt<SharedPreferences>().setString('token', state.data.token!);
+        if (state.data.phone != null) {
+          getIt<SharedPreferences>().setString('phone', state.data.phone!);
+        }
+        if (state.data.name != null) {
+          getIt<SharedPreferences>().setString('name', state.data.name!);
+        }
+        if (state.data.token != null) {
+          getIt<SharedPreferences>().setString('token', state.data.token!);
+        }
         navigateTo(context, const DriverInformationScreen());
       } else if (state is RegisterErrorState) {
         showToastt(
