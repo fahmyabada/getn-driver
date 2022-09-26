@@ -15,7 +15,7 @@ abstract class SignInRemoteDataSource {
 
   Future<Either<String, List<DataRole>?>> getRole();
 
-  Future<Either<String, SendOtpData>> sendOtp(String phone, String countryId);
+  Future<Either<String, SendOtpData>> sendOtp(String type, String phone, String countryId);
 
   Future<Either<String, SignModel>> login(
       String phone, String countryId, String code);
@@ -76,16 +76,19 @@ class SignInRemoteDataSourceImpl implements SignInRemoteDataSource {
 
   @override
   Future<Either<String, SendOtpData>> sendOtp(
-      String phone, String countryId) async {
+      String type, String phone, String countryId) async {
     try {
       var formData = FormData.fromMap({
         'phone': phone,
         'country': countryId,
-        // 'file': await MultipartFile.fromFile('./text.txt',filename: 'upload.txt')
       });
+      var query = {
+        'type': type,
+      };
+      print('*******type = $type');
 
       return await DioHelper.postData2(
-              url: 'driver/auth/send-otp', data: formData)
+              url: 'driver/auth/send-otp', data: formData, query: query)
           .then((value) {
         if (value.statusCode == 200) {
           if (SendOtpData.fromJson(value.data).isAlreadyUser != null) {

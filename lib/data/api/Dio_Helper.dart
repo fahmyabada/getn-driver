@@ -10,7 +10,7 @@ class DioHelper {
   static init() {
     dio = Dio(BaseOptions(
       baseUrl: 'https://apis.getn.re-comparison.com/api/',
-      receiveDataWhenStatusError: true, 
+      receiveDataWhenStatusError: true,
     ));
   }
 
@@ -31,13 +31,14 @@ class DioHelper {
 
   static Future<Response> postData2({
     required String url,
+    Map<String, dynamic>? query,
     FormData? data,
     String? header,
   }) async {
     dio.options.headers = {
       'Content-Type': header,
     };
-    return await dio.post(url, data: data);
+    return await dio.post(url, queryParameters: query, data: data);
   }
 
   static Future<Response> putData({
@@ -59,15 +60,15 @@ class DioHelper {
   }) async {
     getIt<SharedPreferences>().getString("token") != null
         ? dio.options.headers = {
-      'Authorization': 'bearerAuth ${getIt<SharedPreferences>().getString("token")}',
-    }
+            'Authorization':
+                'bearerAuth ${getIt<SharedPreferences>().getString("token")}',
+          }
         : null;
     return await dio.put(
       url,
       data: data,
     );
   }
-
 }
 
 class MyHttpOverrides extends HttpOverrides {
@@ -96,7 +97,7 @@ String handleError(dynamic error) {
     switch (dioError.type) {
       case DioErrorType.other:
         errorDescription =
-        "Connection to API server failed due to internet connection";
+            "Connection to API server failed due to internet connection";
         break;
       case DioErrorType.cancel:
         errorDescription = "Request to API server was cancelled";
@@ -108,7 +109,8 @@ String handleError(dynamic error) {
         errorDescription = "Receive timeout in connection with API server";
         break;
       case DioErrorType.response:
-        errorDescription = "Error: ${dioError.response?.data["message"]}";
+        // errorDescription = "Error: ${dioError.response?.data["message"]}";
+        errorDescription = dioError.response!.data["message"].toString();
         break;
       case DioErrorType.sendTimeout:
         errorDescription = "Send timeout in connection with API server";
@@ -120,4 +122,3 @@ String handleError(dynamic error) {
   print("handleError:: errorDescription >> $errorDescription");
   return errorDescription;
 }
-

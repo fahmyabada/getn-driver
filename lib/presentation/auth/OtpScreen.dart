@@ -19,14 +19,14 @@ class OtpScreen extends StatefulWidget {
       {Key? key,
       required this.phone,
       required this.countryId,
-      required this.isAlreadyUser,
+      required this.type,
       this.code})
       : super(key: key);
 
   final String phone;
   final String? code;
   final String countryId;
-  final bool isAlreadyUser;
+  final String type;
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -213,7 +213,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 SizedBox(height: 32.h),
                 defaultButton3(
                     press: () {
-                      if(widget.isAlreadyUser) {
+                      if(widget.type == "login") {
                         SignCubit.get(context)
                             .makeLogin(widget.phone, widget.countryId, _code);
                       }else{

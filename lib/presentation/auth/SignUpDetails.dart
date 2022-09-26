@@ -120,16 +120,20 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                     color: black),
                               ),
                               state is RoleLoading
-                                  ? const CircularProgressIndicator(
-                                      color: black)
+                                  ? Container(
+                                      margin: EdgeInsetsDirectional.only(
+                                          start: 30.r),
+                                      child: const CircularProgressIndicator(
+                                          color: black),
+                                    )
                                   : SignCubit.get(context).roles.isNotEmpty
                                       ? Expanded(
-                                        child: radioButtonTypeDriverLayout(
-                                            context),
-                                      )
+                                          child: radioButtonTypeDriverLayout(
+                                              context),
+                                        )
                                       : Container(
                                           margin: EdgeInsetsDirectional.only(
-                                              start: 10.r),
+                                              start: 30.r),
                                           child: IconButton(
                                               icon: Icon(
                                                 Icons.cloud_upload,
@@ -201,7 +205,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                   navigateTo(
                                     context,
                                     VerifyImageScreen(
-                                      typeScreen: "signModel",
+                                      typeScreen: "register",
                                       fullName:
                                           fullNameController.text.toString(),
                                       email: emailController.text.toString(),
@@ -239,8 +243,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
     return Column(
       children: [
         Container(
-          margin: EdgeInsetsDirectional.only(
-              start: 50.r),
+          margin: EdgeInsetsDirectional.only(start: 50.r),
           decoration: BoxDecoration(
             color: grey,
             shape: BoxShape.rectangle,
@@ -269,8 +272,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
           height: 15.w,
         ),
         Container(
-          margin: EdgeInsetsDirectional.only(
-              start: 50.r),
+          margin: EdgeInsetsDirectional.only(start: 50.r),
           decoration: BoxDecoration(
             color: grey,
             shape: BoxShape.rectangle,

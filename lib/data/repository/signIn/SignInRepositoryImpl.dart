@@ -47,10 +47,10 @@ class SignInRepositoryImpl extends SignInRepository {
 
   @override
   Future<Either<String, SendOtpData>> sendOtp(
-      String phone, String countryId) async {
+      String type, String phone, String countryId) async {
     if (await networkInfo.isConnected) {
       return await signInRemoteDataSource
-          .sendOtp(phone, countryId)
+          .sendOtp(type, phone, countryId)
           .then((value) {
         return value.fold((failure) {
           return Left(failure.toString());

@@ -123,7 +123,7 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
                 SizedBox(
                   height: 30.h,
                 ),
-                widget.typeScreen == "signModel"
+                widget.typeScreen == "register"
                     ? Text(
                         "Verify your identity by taking a selfie shot of your photo For the verification of something",
                         textAlign: TextAlign.start,
@@ -184,7 +184,7 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
                 defaultButton3(
                     press: () {
                       if (_imageFileList != null) {
-                        if (widget.typeScreen == "signModel") {
+                        if (widget.typeScreen == "register") {
                           print('signModel verify image***************** ');
                           print("SignUpDetails***********::>> signModel");
                           print(

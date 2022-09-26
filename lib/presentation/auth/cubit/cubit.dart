@@ -84,7 +84,7 @@ class SignCubit extends Cubit<SignState> {
 
   void sendOtp(String type, String phone, String countryId) async {
     emit(SendOtpLoading());
-    sendOtpUseCase.execute(phone, countryId).then((value) {
+    sendOtpUseCase.execute(type, phone, countryId).then((value) {
       emit(eitherLoadedOrErrorStateSendOtp(type, value));
     });
   }
@@ -92,17 +92,17 @@ class SignCubit extends Cubit<SignState> {
   SignState eitherLoadedOrErrorStateSendOtp(String type,
       Either<String, SendOtpData> data) {
     return data.fold((failure1) {
-      if (type == "signIn") {
+      if (type == "login") {
         return SendOtpSignInErrorState(failure1);
-      } else if (type == "signUp") {
+      } else if (type == "register") {
         return SendOtpSignUpErrorState(failure1);
       } else {
         return SendOtpErrorState(failure1);
       }
     }, (data) {
-      if (type == "signIn") {
+      if (type == "login") {
         return SendOtpSignInSuccessState(data);
-      } else if (type == "signUp") {
+      } else if (type == "register") {
         return SendOtpSignUpSuccessState(data);
       } else {
         return SendOtpSuccessState(data);

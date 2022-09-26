@@ -34,6 +34,12 @@ class SendOtpData {
 
   Message? get message => _message;
 
+
+  @override
+  String toString() {
+    return 'SendOtpData{_otpSend: $_otpSend, _isAlreadyUser: $_isAlreadyUser, _code: $_code, _message: $_message}';
+  }
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['otpSend'] = _otpSend;

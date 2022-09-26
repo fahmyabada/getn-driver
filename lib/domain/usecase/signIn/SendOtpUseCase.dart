@@ -7,7 +7,8 @@ class SendOtpUseCase {
 
   SendOtpUseCase(this.signInRepository);
 
-  Future<Either<String, SendOtpData>> execute(String phone, String countryId) {
-    return signInRepository.sendOtp(phone, countryId);
+  Future<Either<String, SendOtpData>> execute(
+      String type, String phone, String countryId) {
+    return signInRepository.sendOtp(type, phone, countryId);
   }
 }

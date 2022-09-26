@@ -8,9 +8,9 @@ import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/strings.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
-import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
 import 'package:getn_driver/presentation/auth/OtpScreen.dart';
 import 'package:getn_driver/presentation/auth/SignUpScreen.dart';
+import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -54,29 +54,28 @@ class _SignInScreenState extends State<SignInScreen> {
         if (kDebugMode) {
           print('SignInScreen*******SendOtpSignInSuccessState');
         }
-        if (state.data.isAlreadyUser! && state.data.otpSend!) {
-          navigateTo(
-            context,
-            OtpScreen(
-              isAlreadyUser: state.data.isAlreadyUser!,
-              code: state.data.code,
-              phone: splitPhone2,
-              countryId: dropDownValueCountry!.id!,
-            ),
-          );
-        } else if (!state.data.isAlreadyUser! && state.data.otpSend!) {
-          showToastt(
-              text: "You Don\'t have an account\nRegister first please...",
-              state: ToastStates.error,
-              context: context);
-        }
+        navigateTo(
+          context,
+          OtpScreen(
+            type: "login",
+            code: state.data.code,
+            phone: splitPhone2,
+            countryId: dropDownValueCountry!.id!,
+          ),
+        );
       } else if (state is SendOtpSignInErrorState) {
         if (kDebugMode) {
           print('*******SendOtpSignInErrorState');
         }
-
-        showToastt(
-            text: state.message, state: ToastStates.error, context: context);
+        if (state.message == "{phone:  phone incorrect}") {
+          showToastt(
+              text: "You Don\'t have an account\nRegister first please...",
+              state: ToastStates.error,
+              context: context);
+        } else {
+          showToastt(
+              text: state.message, state: ToastStates.error, context: context);
+        }
       }
     }, builder: (context, state) {
       return Scaffold(
@@ -248,15 +247,13 @@ class _SignInScreenState extends State<SignInScreen> {
                           splitPhone2 = splitPhone.text.toString();
                         });
                         SignCubit.get(context).sendOtp(
-                            "signIn",
+                            "login",
                             splitPhone.text.toString(),
                             dropDownValueCountry!.id!);
                       } else {
                         splitPhone2 = phoneController.text.toString();
                         SignCubit.get(context).sendOtp(
-                            "signIn",
-                            splitPhone2,
-                            dropDownValueCountry!.id!);
+                            "login", splitPhone2, dropDownValueCountry!.id!);
                       }
                     }
                   } else {

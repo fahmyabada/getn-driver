@@ -57,7 +57,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         navigateTo(
             context,
             OtpScreen(
-              isAlreadyUser: state.data.isAlreadyUser!,
+              type: "register",
               code: state.data.code,
               phone: splitPhone2,
               countryId: dropDownValueCountry!.id!,
@@ -66,9 +66,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
         if (kDebugMode) {
           print('SignUpScreen*******SendOtpSignUpErrorState');
         }
-
-        showToastt(
-            text: state.message, state: ToastStates.error, context: context);
+        if (state.message == "{phone:  Already user}") {
+          showToastt(
+              text: "Already you have account \n SignIn please..", state: ToastStates.error, context: context);
+          Navigator.pop(context);
+        } else {
+          showToastt(
+              text: state.message, state: ToastStates.error, context: context);
+        }
       }
     }, builder: (context, state) {
       return Scaffold(
@@ -248,13 +253,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           splitPhone2 = splitPhone.text.toString();
                         });
                         SignCubit.get(context).sendOtp(
-                            "signUp",
+                            "register",
                             splitPhone2,
                             dropDownValueCountry!.id!);
                       } else {
                         splitPhone2 = phoneController.text.toString();
                         SignCubit.get(context).sendOtp(
-                            "signUp",
+                            "register",
                             phoneController.text.toString(),
                             dropDownValueCountry!.id!);
                       }

@@ -10,7 +10,7 @@ abstract class SignInRepository {
 
   Future<Either<String, List<DataRole>?>> getRole();
 
-  Future<Either<String, SendOtpData>> sendOtp(String phone, String countryId);
+  Future<Either<String, SendOtpData>> sendOtp(String type, String phone, String countryId);
 
   Future<Either<String, SignModel>> login(
       String phone, String countryId, String code);
