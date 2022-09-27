@@ -60,6 +60,12 @@ class Data {
   User? get user => _user;
   int? get v => _v;
 
+
+  @override
+  String toString() {
+    return 'Data{_title: $_title, _icon: $_icon, _status: $_status, _createdAt: $_createdAt, _updatedAt: $_updatedAt, _id: $_id, _zip: $_zip, _code: $_code, _user: $_user, _v: $_v}';
+  }
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     if (_title != null) {

@@ -37,7 +37,7 @@ class SignInRemoteDataSourceImpl implements SignInRemoteDataSource {
   @override
   Future<Either<String, List<Data>?>> getCountries() async {
     try {
-      return await DioHelper.getData(url: 'country').then((value) {
+      return await DioHelper.getData(url: 'Role').then((value) {
         if (value.statusCode == 200) {
           if (CountryData.fromJson(value.data).data != null) {
             return Right(CountryData.fromJson(value.data!).data!);
