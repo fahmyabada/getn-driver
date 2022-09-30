@@ -44,7 +44,7 @@ class SignModel {
     _backNationalImage = json['backNationalImage'] != null
         ? VerifyImage.fromJson(json['backNationalImage'])
         : null;
-    _verifyImage = json['verifyImage'] != ""
+    _verifyImage = json['verifyImage'] != "" && json['verifyImage'] != null
         ? VerifyImage.fromJson(json['verifyImage'])
         : null;
     _name = json['name'];

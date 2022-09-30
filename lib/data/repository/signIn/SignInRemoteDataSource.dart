@@ -37,7 +37,7 @@ class SignInRemoteDataSourceImpl implements SignInRemoteDataSource {
   @override
   Future<Either<String, List<Data>?>> getCountries() async {
     try {
-      return await DioHelper.getData(url: 'Role').then((value) {
+      return await DioHelper.getData(url: 'country').then((value) {
         if (value.statusCode == 200) {
           if (CountryData.fromJson(value.data).data != null) {
             return Right(CountryData.fromJson(value.data!).data!);
@@ -48,9 +48,13 @@ class SignInRemoteDataSourceImpl implements SignInRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception {
-      return const Left("you have error when get Countries");
+    } on Exception catch (error) {
+      return Left(handleError(error));
     }
+    // {
+    //   print("request*********** ${request.toString()}");
+    //   return const Left("you have error when get Countries");
+    // }
   }
 
   @override
@@ -69,9 +73,12 @@ class SignInRemoteDataSourceImpl implements SignInRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception {
-      return const Left("you have error when get Roles");
+    } on Exception catch (error) {
+      return Left(handleError(error));
     }
+    // {
+    //   return const Left("you have error when get Roles");
+    // }
   }
 
   @override

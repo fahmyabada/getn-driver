@@ -17,7 +17,13 @@ class DioHelper {
   static Future<Response> getData({
     required String url,
     Map<String, dynamic>? query,
+    String? token,
   }) async {
+    token != null
+        ? dio.options.headers = {
+            'Authorization': 'bearerAuth $token',
+          }
+        : null;
     return await dio.get(url, queryParameters: query);
   }
 

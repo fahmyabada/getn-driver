@@ -8,6 +8,7 @@ import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/auth/DriverInformationScreen.dart';
 import 'package:getn_driver/presentation/auth/SignInScreen.dart';
 import 'package:getn_driver/presentation/dashBoard/DashBoardScreen.dart';
+import 'package:getn_driver/presentation/dashBoard/dash_board_cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/splash/splash_screen_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,8 +32,12 @@ class SplashScreen extends StatelessWidget {
                 navigateTo(context, const DriverInformationScreen());
               } else if (getIt<SharedPreferences>().getString("typeSign") ==
                   "signWithInformation") {
-                navigateTo(context, const DashBoardScreen());
-              }else {
+                navigateTo(
+                    context,
+                    BlocProvider(
+                        create: (context) => DashBoardCubit(),
+                        child: const DashBoardScreen()));
+              } else {
                 navigateTo(context, const SignInScreen());
               }
             } else {
@@ -50,8 +55,7 @@ class SplashScreen extends StatelessWidget {
                   padding: EdgeInsets.only(left: 40.r, right: 40.r),
                   child: Text(
                     Strings.perfectTaxiBooking,
-                    style: TextStyle(
-                        fontSize: 30.sp, color: Colors.white),
+                    style: TextStyle(fontSize: 30.sp, color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
                 ),

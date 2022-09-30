@@ -1,25 +1,27 @@
 import 'package:dartz/dartz.dart';
 import 'package:getn_driver/data/api/Dio_Helper.dart';
-import 'package:getn_driver/data/model/country/CountryData.dart';
-import 'package:getn_driver/data/model/country/Data.dart';
-import 'package:getn_driver/data/model/role/DataRole.dart';
-import 'package:getn_driver/data/model/role/Role.dart';
+import 'package:getn_driver/data/model/request/Request.dart';
 import 'package:getn_driver/data/utils/constant.dart';
+import 'package:getn_driver/presentation/di/injection_container.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class DashBoardRemoteDataSource {
-  Future<Either<String, List<DataRole>?>> getRequest();
+  Future<Either<String, Request?>> getRequestCurrent(Map<String, dynamic> body);
 }
 
 class DashBoardRemoteDataSourceImpl implements DashBoardRemoteDataSource {
   @override
-  Future<Either<String, List<DataRole>?>> getRequest() async{
+  Future<Either<String, Request?>> getRequestCurrent(
+      Map<String, dynamic> body) async {
     try {
-      var body = {"select": "title type", "app": "driver-app"};
-
-      return await DioHelper.getData(url: 'role', query: body).then((value) {
+      return await DioHelper.getData(
+              url: 'Request',
+              query: body,
+              token: getIt<SharedPreferences>().getString("token"))
+          .then((value) {
         if (value.statusCode == 200) {
-          if (Role.fromJson(value.data).data != null) {
-            return Right(Role.fromJson(value.data!).data!);
+          if (Request.fromJson(value.data).data!.isNotEmpty) {
+            return Right(Request.fromJson(value.data!));
           } else {
             return const Left("Not Found Roles");
           }
@@ -27,8 +29,8 @@ class DashBoardRemoteDataSourceImpl implements DashBoardRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception {
-      return const Left("you have error when get Roles");
+    } on Exception catch (error) {
+      return Left(handleError(error));
     }
   }
 }
