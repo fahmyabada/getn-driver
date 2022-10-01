@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:getn_driver/data/model/request/DataRequest.dart';
+import 'package:getn_driver/data/model/requestDetails/RequestDetails.dart';
 import 'package:getn_driver/domain/repository/RequestDetailsRepository.dart';
 
 class GetRequestDetailsUseCase {
@@ -7,7 +7,7 @@ class GetRequestDetailsUseCase {
 
   GetRequestDetailsUseCase(this.requestDetailsRepository);
 
-  Future<Either<String, DataRequest?>> execute(String id) {
+  Future<Either<String, RequestDetails?>> execute(String id) {
     return requestDetailsRepository.getRequestDetails(id);
   }
 }

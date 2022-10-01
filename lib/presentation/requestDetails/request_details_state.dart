@@ -12,7 +12,21 @@ class RequestDetailsErrorState extends RequestDetailsState {
 }
 
 class RequestDetailsSuccessState extends RequestDetailsState {
-  final DataRequest? data;
+  final RequestDetails? data;
 
   RequestDetailsSuccessState(this.data);
+}
+
+class TripsInitial extends RequestDetailsState {}
+
+class TripsErrorState extends RequestDetailsState {
+  final String message;
+
+  TripsErrorState(this.message);
+}
+
+class TripsSuccessState extends RequestDetailsState {
+  final Trips? data;
+
+  TripsSuccessState(this.data);
 }

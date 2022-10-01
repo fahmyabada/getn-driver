@@ -11,6 +11,7 @@ import 'package:getn_driver/domain/repository/RequestRepository.dart';
 import 'package:getn_driver/domain/repository/SignInRepository.dart';
 import 'package:getn_driver/domain/usecase/request/GetRequestUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetRequestDetailsUseCase.dart';
+import 'package:getn_driver/domain/usecase/requestDetails/GetTripsRequestDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/signIn/EditInformationUserUseCase.dart';
 import 'package:getn_driver/domain/usecase/signIn/GetCountriesUseCase.dart';
 import 'package:getn_driver/domain/usecase/signIn/GetRoleUseCase.dart';
@@ -39,6 +40,7 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => EditInformationUserUseCase(getIt()));
   getIt.registerLazySingleton(() => GetRequestUseCase(getIt()));
   getIt.registerLazySingleton(() => GetRequestDetailsUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetTripsRequestDetailsUseCase(getIt()));
 
   // Repository
   getIt.registerLazySingleton<SignInRepository>(
