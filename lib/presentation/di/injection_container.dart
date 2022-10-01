@@ -1,12 +1,16 @@
 import 'package:get_it/get_it.dart';
 import 'package:getn_driver/data/api/network_info.dart';
-import 'package:getn_driver/data/repository/dashBoard/DashBoardRemoteDataSource.dart';
-import 'package:getn_driver/data/repository/dashBoard/DashBoardRepositoryImpl.dart';
+import 'package:getn_driver/data/repository/request/RequestRemoteDataSource.dart';
+import 'package:getn_driver/data/repository/request/RequestRepositoryImpl.dart';
+import 'package:getn_driver/data/repository/requestDetails/RequestDetailsRemoteDataSource.dart';
+import 'package:getn_driver/data/repository/requestDetails/RequestDetailsRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/signIn/SignInRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/signIn/SignInRepositoryImpl.dart';
-import 'package:getn_driver/domain/repository/DashBoardRepository.dart';
+import 'package:getn_driver/domain/repository/RequestDetailsRepository.dart';
+import 'package:getn_driver/domain/repository/RequestRepository.dart';
 import 'package:getn_driver/domain/repository/SignInRepository.dart';
-import 'package:getn_driver/domain/usecase/dashboard/GetRequestUseCase.dart';
+import 'package:getn_driver/domain/usecase/request/GetRequestUseCase.dart';
+import 'package:getn_driver/domain/usecase/requestDetails/GetRequestDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/signIn/EditInformationUserUseCase.dart';
 import 'package:getn_driver/domain/usecase/signIn/GetCountriesUseCase.dart';
 import 'package:getn_driver/domain/usecase/signIn/GetRoleUseCase.dart';
@@ -34,6 +38,7 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => LoginUseCase(getIt()));
   getIt.registerLazySingleton(() => EditInformationUserUseCase(getIt()));
   getIt.registerLazySingleton(() => GetRequestUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetRequestDetailsUseCase(getIt()));
 
   // Repository
   getIt.registerLazySingleton<SignInRepository>(
@@ -43,8 +48,15 @@ Future<void> init() async {
     ),
   );
 
-  getIt.registerLazySingleton<DashBoardRepository>(
-        () => DashBoardRepositoryImpl(
+  getIt.registerLazySingleton<RequestRepository>(
+        () => RequestRepositoryImpl(
+      getIt(),
+      getIt(),
+    ),
+  );
+
+  getIt.registerLazySingleton<RequestDetailsRepository>(
+        () => RequestDetailsRepositoryImpl(
       getIt(),
       getIt(),
     ),
@@ -55,8 +67,11 @@ Future<void> init() async {
   getIt.registerLazySingleton<SignInRemoteDataSource>(
       () => SignInRemoteDataSourceImpl());
 
-  getIt.registerLazySingleton<DashBoardRemoteDataSource>(
-          () => DashBoardRemoteDataSourceImpl());
+  getIt.registerLazySingleton<RequestRemoteDataSource>(
+          () => RequestRemoteDataSourceImpl());
+
+  getIt.registerLazySingleton<RequestDetailsRemoteDataSource>(
+          () => RequestDetailsRemoteDataSourceImpl());
 
 
   //! Core

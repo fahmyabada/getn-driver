@@ -1,27 +1,26 @@
 import 'package:dartz/dartz.dart';
 import 'package:getn_driver/data/api/Dio_Helper.dart';
-import 'package:getn_driver/data/model/request/Request.dart';
+import 'package:getn_driver/data/model/request/DataRequest.dart';
 import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-abstract class DashBoardRemoteDataSource {
-  Future<Either<String, Request?>> getRequestCurrent(Map<String, dynamic> body);
+abstract class RequestDetailsRemoteDataSource {
+  Future<Either<String, DataRequest?>> getRequestDetails(String id);
 }
 
-class DashBoardRemoteDataSourceImpl implements DashBoardRemoteDataSource {
+class RequestDetailsRemoteDataSourceImpl
+    implements RequestDetailsRemoteDataSource {
   @override
-  Future<Either<String, Request?>> getRequestCurrent(
-      Map<String, dynamic> body) async {
+  Future<Either<String, DataRequest?>> getRequestDetails(String id) async {
     try {
       return await DioHelper.getData(
-              url: 'Request',
-              query: body,
+              url: 'Request/$id',
               token: getIt<SharedPreferences>().getString("token"))
           .then((value) {
         if (value.statusCode == 200) {
-          if (Request.fromJson(value.data).data!.isNotEmpty) {
-            return Right(Request.fromJson(value.data!));
+          if (DataRequest.fromJson(value.data).id!.isNotEmpty) {
+            return Right(DataRequest.fromJson(value.data!));
           } else {
             return const Left("Not Found Roles");
           }

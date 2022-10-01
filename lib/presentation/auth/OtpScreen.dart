@@ -9,9 +9,9 @@ import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/auth/DriverInformationScreen.dart';
 import 'package:getn_driver/presentation/auth/SignUpDetails.dart';
 import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
-import 'package:getn_driver/presentation/dashBoard/DashBoardScreen.dart';
-import 'package:getn_driver/presentation/dashBoard/dash_board_cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
+import 'package:getn_driver/presentation/request/RequestScreen.dart';
+import 'package:getn_driver/presentation/request/request_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
@@ -126,8 +126,8 @@ class _OtpScreenState extends State<OtpScreen> {
           navigateTo(
               context,
               BlocProvider(
-                  create: (context) => DashBoardCubit(),
-                  child: const DashBoardScreen()));
+                  create: (context) => RequestCubit(),
+                  child: const RequestScreen()));
         } else {
           getIt<SharedPreferences>().setString('typeSign', "sign");
           navigateTo(context, const DriverInformationScreen());

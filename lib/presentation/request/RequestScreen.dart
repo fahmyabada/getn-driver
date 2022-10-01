@@ -4,18 +4,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
-import 'package:getn_driver/presentation/dashBoard/dash_board_cubit.dart';
+import 'package:getn_driver/presentation/request/request_cubit.dart';
 import 'package:getn_driver/presentation/requestDetails/RequestDetailsScreen.dart';
+import 'package:getn_driver/presentation/requestDetails/request_details_cubit.dart';
 import 'package:intl/intl.dart';
 
-class DashBoardScreen extends StatefulWidget {
-  const DashBoardScreen({Key? key}) : super(key: key);
+class RequestScreen extends StatefulWidget {
+  const RequestScreen({Key? key}) : super(key: key);
 
   @override
-  State<DashBoardScreen> createState() => _DashBoardScreenState();
+  State<RequestScreen> createState() => _RequestScreenState();
 }
 
-class _DashBoardScreenState extends State<DashBoardScreen>
+class _RequestScreenState extends State<RequestScreen>
     with SingleTickerProviderStateMixin {
   int _currentIndex = 0;
   TabController? _tabController;
@@ -28,9 +29,9 @@ class _DashBoardScreenState extends State<DashBoardScreen>
   void initState() {
     super.initState();
     // first load
-    DashBoardCubit.get(context).getRequestCurrent(1);
-    DashBoardCubit.get(context).getRequestUpComing(1);
-    DashBoardCubit.get(context).getRequestPast(1);
+    RequestCubit.get(context).getRequestCurrent(1);
+    RequestCubit.get(context).getRequestUpComing(1);
+    RequestCubit.get(context).getRequestPast(1);
 
     _controllerUpcoming = ScrollController();
     _controllerPast = ScrollController();
@@ -41,24 +42,24 @@ class _DashBoardScreenState extends State<DashBoardScreen>
       setState(() {
         print("_currentIndex*********** ${_tabController!.index}");
         _currentIndex = _tabController!.index;
-        if(_tabController!.indexIsChanging) {
+        // if(_tabController!.indexIsChanging) {
           if (_currentIndex == 0) {
-            DashBoardCubit.get(context).getRequestCurrent(1);
+            RequestCubit.get(context).getRequestCurrent(1);
             typeRequest = "current";
           } else if (_currentIndex == 1) {
-            DashBoardCubit
+            RequestCubit
                 .get(context)
                 .indexUpComing = 1;
-            DashBoardCubit.get(context).getRequestUpComing(1);
+            RequestCubit.get(context).getRequestUpComing(1);
             typeRequest = "upComing";
           } else if (_currentIndex == 2) {
-            DashBoardCubit
+            RequestCubit
                 .get(context)
                 .indexPast = 1;
-            DashBoardCubit.get(context).getRequestPast(1);
+            RequestCubit.get(context).getRequestPast(1);
             typeRequest = "past";
           }
-        }
+        // }
       });
     });
   }
@@ -72,21 +73,21 @@ class _DashBoardScreenState extends State<DashBoardScreen>
   }
 
   void _loadMoreUpComing() {
-    DashBoardCubit.get(context).loadingUpComing = false;
+    RequestCubit.get(context).loadingUpComing = false;
 
-    DashBoardCubit.get(context).getRequestUpComing(
-        DashBoardCubit.get(context).indexUpComing);
+    RequestCubit.get(context).getRequestUpComing(
+        RequestCubit.get(context).indexUpComing);
   }
   void _loadMorePast() {
-    DashBoardCubit.get(context).loadingPast = false;
+    RequestCubit.get(context).loadingPast = false;
 
-    DashBoardCubit.get(context).getRequestPast(
-        DashBoardCubit.get(context).indexPast);
+    RequestCubit.get(context).getRequestPast(
+        RequestCubit.get(context).indexPast);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<DashBoardCubit, DashBoardState>(
+    return BlocConsumer<RequestCubit, RequestState>(
         listener: (context, state) {
       if (state is RequestCurrentInitial) {
         if (kDebugMode) {
@@ -115,9 +116,9 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                     // key: const PageStorageKey<String>('tab1'),
                     scrollDirection: Axis.vertical,
                     itemCount:
-                        DashBoardCubit.get(context).requestCurrent.length,
+                        RequestCubit.get(context).requestCurrent.length,
                     itemBuilder: (context, i) {
-                      var current = DashBoardCubit.get(context).requestCurrent[i];
+                      var current = RequestCubit.get(context).requestCurrent[i];
                       var startDate = DateTime.parse(current.from!.date!);
                       var endDate = DateTime.parse(current.to!);
 
@@ -238,7 +239,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                                                   'Start Date',
                                                   style: TextStyle(
                                                       color: grey2,
-                                                      fontSize: 14.sp),
+                                                      fontSize: 12.sp),
                                                 ),
                                                 SizedBox(
                                                   height: 5.r,
@@ -267,7 +268,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                                                   'End Date',
                                                   style: TextStyle(
                                                       color: grey2,
-                                                      fontSize: 14.sp),
+                                                      fontSize: 12.sp),
                                                 ),
                                                 SizedBox(
                                                   height: 5.r,
@@ -324,7 +325,9 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                           ),
                         ),
                         onTap: () {
-                          navigateTo(context, RequestDetailsScreen());
+                          navigateTo(context, BlocProvider(
+                              create: (context) => RequestDetailsCubit()..getRequestDetails(current.id!),
+                              child: const RequestDetailsScreen()));
                         },
                       );
                     },
@@ -338,8 +341,9 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                     controller: _controllerUpcoming
                       ..addListener(() async {
                         if (_controllerUpcoming.position.extentAfter == 0) {
-                          if (DashBoardCubit.get(context).loadingUpComing &&
+                          if (RequestCubit.get(context).loadingUpComing &&
                               typeRequest == "upComing") {
+                            print("_controllerUpcoming*********** ");
                             _loadMoreUpComing();
                           }
                         }
@@ -347,9 +351,9 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                     // key: const PageStorageKey<String>('tab2'),
                     scrollDirection: Axis.vertical,
                     itemCount:
-                        DashBoardCubit.get(context).requestUpComing.length,
+                        RequestCubit.get(context).requestUpComing.length,
                     itemBuilder: (context, i) {
-                      var upComing = DashBoardCubit.get(context).requestUpComing[i];
+                      var upComing = RequestCubit.get(context).requestUpComing[i];
                       var startDate = DateTime.parse(upComing.from!.date!);
                       var endDate = DateTime.parse(upComing.to!);
 
@@ -470,7 +474,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                                                       'Start Date',
                                                       style: TextStyle(
                                                           color: grey2,
-                                                          fontSize: 14.sp),
+                                                          fontSize: 12.sp),
                                                     ),
                                                     SizedBox(
                                                       height: 5.r,
@@ -499,7 +503,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                                                       'End Date',
                                                       style: TextStyle(
                                                           color: grey2,
-                                                          fontSize: 14.sp),
+                                                          fontSize: 12.sp),
                                                     ),
                                                     SizedBox(
                                                       height: 5.r,
@@ -556,7 +560,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                           ),
                         ),
                         onTap: () {
-                          navigateTo(context, RequestDetailsScreen());
+                          navigateTo(context, const RequestDetailsScreen());
                         },
                       );
                     },
@@ -570,8 +574,8 @@ class _DashBoardScreenState extends State<DashBoardScreen>
               controller: _controllerPast
                 ..addListener(() async {
                   if (_controllerPast.position.extentAfter == 0) {
-                    print('_controllerPast00*******${DashBoardCubit.get(context).loadingPast}');
-                    if (DashBoardCubit.get(context).loadingPast &&
+                    print('_controllerPast00*******${RequestCubit.get(context).loadingPast}');
+                    if (RequestCubit.get(context).loadingPast &&
                         typeRequest == "past") {
                       _loadMorePast();
                     }
@@ -580,9 +584,9 @@ class _DashBoardScreenState extends State<DashBoardScreen>
               // key: const PageStorageKey<String>('tab2'),
               scrollDirection: Axis.vertical,
               itemCount:
-              DashBoardCubit.get(context).requestPast.length,
+              RequestCubit.get(context).requestPast.length,
               itemBuilder: (context, i) {
-                var past = DashBoardCubit.get(context).requestPast[i];
+                var past = RequestCubit.get(context).requestPast[i];
                 var startDate = DateTime.parse(past.from!.date!);
                 var endDate = DateTime.parse(past.to!);
 
@@ -703,7 +707,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                                                 'Start Date',
                                                 style: TextStyle(
                                                     color: grey2,
-                                                    fontSize: 14.sp),
+                                                    fontSize: 12.sp),
                                               ),
                                               SizedBox(
                                                 height: 5.r,
@@ -732,7 +736,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                                                 'End Date',
                                                 style: TextStyle(
                                                     color: grey2,
-                                                    fontSize: 14.sp),
+                                                    fontSize: 12.sp),
                                               ),
                                               SizedBox(
                                                 height: 5.r,
@@ -789,7 +793,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                     ),
                   ),
                   onTap: () {
-                    navigateTo(context, RequestDetailsScreen());
+                    navigateTo(context, const RequestDetailsScreen());
                   },
                 );
               },
@@ -802,6 +806,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
             setState(() {
               _currentIndex = index;
               _tabController!.animateTo(_currentIndex);
+              // _tabController!.index = _currentIndex;
             });
           },
 

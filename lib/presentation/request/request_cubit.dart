@@ -3,16 +3,16 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:getn_driver/data/model/request/DataRequest.dart';
 import 'package:getn_driver/data/model/request/Request.dart';
-import 'package:getn_driver/domain/usecase/dashboard/GetRequestUseCase.dart';
+import 'package:getn_driver/domain/usecase/request/GetRequestUseCase.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:meta/meta.dart';
 
-part 'dash_board_state.dart';
+part 'request_state.dart';
 
-class DashBoardCubit extends Cubit<DashBoardState> {
-  DashBoardCubit() : super(RequestCurrentInitial());
+class RequestCubit extends Cubit<RequestState> {
+  RequestCubit() : super(RequestCurrentInitial());
 
-  static DashBoardCubit get(context) => BlocProvider.of(context);
+  static RequestCubit get(context) => BlocProvider.of(context);
 
   var getRequestUseCase = getIt<GetRequestUseCase>();
 
@@ -37,7 +37,7 @@ class DashBoardCubit extends Cubit<DashBoardState> {
     });
   }
 
-  DashBoardState eitherLoadedOrErrorStateRequestCurrent(
+  RequestState eitherLoadedOrErrorStateRequestCurrent(
       Either<String, Request?> data) {
     return data.fold((failure1) {
       return RequestCurrentErrorState(failure1);
@@ -53,7 +53,8 @@ class DashBoardCubit extends Cubit<DashBoardState> {
   void getRequestUpComing(int index) async {
     var body = {
       "status": ["pending", "accept"],
-      "page": index
+      "page": index,
+      "sort": 'from.date:-1'
     };
     if (index > 1) {
       getRequestUseCase.execute(body).then((value) {
@@ -68,7 +69,7 @@ class DashBoardCubit extends Cubit<DashBoardState> {
     }
   }
 
-  DashBoardState eitherLoadedOrErrorStateRequestUpComing(
+  RequestState eitherLoadedOrErrorStateRequestUpComing(
       Either<String, Request?> data) {
     return data.fold((failure1) {
       return RequestUpComingErrorState(failure1);
@@ -76,8 +77,6 @@ class DashBoardCubit extends Cubit<DashBoardState> {
       if (data!.data!.isNotEmpty) {
         requestUpComing.clear();
         requestUpComing.addAll(data.data!);
-        requestUpComing
-            .sort((a, b) => a.referenceId! > b.referenceId! ? 1 : -1);
         indexUpComing = indexUpComing + 1;
         loadingUpComing = true;
       }
@@ -86,7 +85,7 @@ class DashBoardCubit extends Cubit<DashBoardState> {
     });
   }
 
-  DashBoardState eitherLoadedOrErrorStateRequestUpComing2(
+  RequestState eitherLoadedOrErrorStateRequestUpComing2(
       Either<String, Request?> data) {
     return data.fold((failure1) {
       return RequestUpComingErrorState(failure1);
@@ -95,8 +94,6 @@ class DashBoardCubit extends Cubit<DashBoardState> {
         if (data.totalCount! >= requestUpComing.length) {
           loadingUpComing = true;
           requestUpComing.addAll(data.data!);
-          requestUpComing
-              .sort((a, b) => a.referenceId! > b.referenceId! ? 1 : -1);
           indexUpComing = indexUpComing + 1;
         } else {
           loadingUpComing = false;
@@ -111,7 +108,8 @@ class DashBoardCubit extends Cubit<DashBoardState> {
   void getRequestPast(int index) async {
     var body = {
       "status": ["end", "cancel", "reject"],
-      "page": index
+      "page": index,
+      "sort": 'from.date:-1'
     };
     if (index > 1) {
       print('_controllerPast*******${requestPast.length}');
@@ -127,7 +125,7 @@ class DashBoardCubit extends Cubit<DashBoardState> {
     }
   }
 
-  DashBoardState eitherLoadedOrErrorStateRequestPast(
+  RequestState eitherLoadedOrErrorStateRequestPast(
       Either<String, Request?> data) {
     return data.fold((failure1) {
       return RequestUpComingErrorState(failure1);
@@ -135,8 +133,8 @@ class DashBoardCubit extends Cubit<DashBoardState> {
       if (data!.data!.isNotEmpty) {
         requestPast.clear();
         requestPast.addAll(data.data!);
-        requestPast
-            .sort((a, b) => a.referenceId! > b.referenceId! ? 1 : -1);
+        // requestPast
+        //     .sort((a, b) => a.referenceId! > b.referenceId! ? 1 : -1);
         indexPast = indexPast + 1;
         loadingPast = true;
       }
@@ -145,7 +143,7 @@ class DashBoardCubit extends Cubit<DashBoardState> {
     });
   }
 
-  DashBoardState eitherLoadedOrErrorStateRequestPast2(
+  RequestState eitherLoadedOrErrorStateRequestPast2(
       Either<String, Request?> data) {
     return data.fold((failure1) {
       return RequestUpComingErrorState(failure1);
@@ -154,8 +152,6 @@ class DashBoardCubit extends Cubit<DashBoardState> {
         if (data.totalCount! >= requestPast.length) {
           loadingPast = true;
           requestPast.addAll(data.data!);
-          requestPast
-              .sort((a, b) => a.referenceId! > b.referenceId! ? 1 : -1);
           indexPast = indexPast + 1;
         } else {
           loadingPast = false;

@@ -27,7 +27,7 @@ class Ratings {
     _driveAverage = json['driveAverage'];
     _carAverage = json['carAverage'];
     _guideAverage = json['guideAverage'];
-    _attitudeAverage = json['attitudeAverage'];
+    _attitudeAverage = json['attitudeAverage'] == 0 ? 0.0 : json['attitudeAverage'];
   }
 
   int? _drive;

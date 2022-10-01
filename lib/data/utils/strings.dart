@@ -70,7 +70,7 @@ class Strings {
   static String didntGetOtpCode = "Didn't get OTP code ? ";
   static String resend = 'Resend';
 
-  //dashboard screen
+  //request screen
   static String searchYourTripLocation = 'search your trip location';
   static String selectLocation = 'Select Location';
   static String go = 'Go';

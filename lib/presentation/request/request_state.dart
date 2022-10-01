@@ -1,0 +1,46 @@
+part of 'request_cubit.dart';
+
+@immutable
+abstract class RequestState {}
+
+class RequestCurrentInitial extends RequestState {}
+
+class RequestCurrentErrorState extends RequestState {
+  final String message;
+
+  RequestCurrentErrorState(this.message);
+}
+
+class RequestCurrentSuccessState extends RequestState {
+  final List<DataRequest>? data;
+
+  RequestCurrentSuccessState(this.data);
+}
+
+class RequestUpComingInitial extends RequestState {}
+
+class RequestUpComingErrorState extends RequestState {
+  final String message;
+
+  RequestUpComingErrorState(this.message);
+}
+
+class RequestUpComingSuccessState extends RequestState {
+  final List<DataRequest>? data;
+
+  RequestUpComingSuccessState(this.data);
+}
+
+class RequestPastInitial extends RequestState {}
+
+class RequestPastErrorState extends RequestState {
+  final String message;
+
+  RequestPastErrorState(this.message);
+}
+
+class RequestPastSuccessState extends RequestState {
+  final List<DataRequest>? data;
+
+  RequestPastSuccessState(this.data);
+}

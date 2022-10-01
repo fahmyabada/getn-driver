@@ -5,9 +5,9 @@ import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
 import 'package:getn_driver/presentation/auth/VerifyImage.dart';
-import 'package:getn_driver/presentation/dashBoard/DashBoardScreen.dart';
-import 'package:getn_driver/presentation/dashBoard/dash_board_cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
+import 'package:getn_driver/presentation/request/RequestScreen.dart';
+import 'package:getn_driver/presentation/request/request_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DriverInformationScreen extends StatefulWidget {
@@ -29,8 +29,8 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
             navigateTo(
                 context,
                 BlocProvider(
-                    create: (context) => DashBoardCubit(),
-                    child: const DashBoardScreen()));
+                    create: (context) => RequestCubit(),
+                    child: const RequestScreen()));
           }else if (state is EditErrorState){
             print('*******EditErrorState');
             showToastt(
