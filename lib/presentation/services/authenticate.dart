@@ -38,6 +38,7 @@ class AuthService {
     );
   }
 
+
   /// This method is used to logout the `FirebaseUser`
   signOut() {
     FirebaseAuth.instance.signOut();
@@ -78,9 +79,16 @@ class AuthService {
   /// get the `smsCode` from the user
   /// when used different phoneNumber other than the current (running) device
   /// we need to use OTP to get `phoneAuthCredential` which is inturn used to signIn/login
-  signInWithOTP(BuildContext context, smsCode, verId) {
+  signInWithOTP(BuildContext context, smsCode, verId) async{
     AuthCredential authCreds =
         PhoneAuthProvider.credential(verificationId: verId, smsCode: smsCode);
-    signIn(context, authCreds);
+    final result =
+        await FirebaseAuth.instance.signInWithCredential(authCreds);
+
+    if (result.user != null) {
+      print('signIn***********${result.credential!.accessToken}');
+    } else {
+      print("Error");
+    }
   }
 }

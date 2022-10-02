@@ -1,4 +1,5 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:getn_driver/data/utils/strings.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
 import 'package:getn_driver/presentation/auth/OtpScreen.dart';
+import 'package:getn_driver/presentation/services/authenticate.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -23,11 +25,72 @@ class _SignUpScreenState extends State<SignUpScreen> {
   var phoneController = TextEditingController();
   Data? dropDownValueCountry;
   String splitPhone2 = "";
+  String? verificationId, authStatus = "", otp;
 
   @override
   void initState() {
     super.initState();
     SignCubit.get(context).getCountries();
+  }
+
+  Future<void> verifyPhone(phoneNumber) async {
+    await FirebaseAuth.instance.verifyPhoneNumber(
+
+      /// Make sure to prefix with your country code
+        phoneNumber: phoneNumber,
+
+        ///No duplicated SMS will be sent out upon re-entry (before timeout).
+        timeout: const Duration(seconds: 5),
+
+        /// If the SIM (with phoneNumber) is in the current device this function is called.
+        /// This function gives `AuthCredential`. Moreover `login` function can be called from this callback
+        /// When this function is called there is no need to enter the OTP, you can click on Login button to sigin directly as the device is now verified
+        verificationCompleted: (AuthCredential authResult) {
+          if (kDebugMode) {
+            print('verifyPhone***********$phoneNumber');
+          }
+          // AuthService().signIn(context, authResult);
+          setState(() {
+            authStatus = "Your account is successfully verified";
+          });
+        },
+
+        /// Called when the verification is failed
+        verificationFailed: (final authException) {
+          if (kDebugMode) {
+            print('verificationFailed***********${authException.message!}');
+          }
+          setState(() {
+            authStatus = "Authentication failed";
+          });
+        },
+
+        /// This is called after the OTP is sent. Gives a `verificationId` and `code`
+        codeSent: (String verId, [int? forceResend]) {
+          print('codeSent***********$verId');
+          verificationId = verId;
+          setState(() {
+            authStatus = "OTP has been successfully send";
+          });
+          navigateTo(
+            context,
+            OtpScreen(
+              type: "register",
+              verificationId: verificationId,
+              phone: splitPhone2,
+              countryId: dropDownValueCountry!.id!,
+            ),
+          );
+        },
+
+        /// After automatic code retrival `tmeout` this function is called
+        codeAutoRetrievalTimeout: (String verId) {
+          print('codeAutoRetrievalTimeout***********$verId');
+          verificationId = verId;
+          setState(() {
+            authStatus = "TIMEOUT";
+          });
+        });
   }
 
   @override
@@ -37,31 +100,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
         if (kDebugMode) {
           print('SignUpScreen*******CountriesLoading');
         }
-      } else if (state is CountriesErrorState) {
+      }
+      else if (state is CountriesErrorState) {
         if (kDebugMode) {
           print('SignUpScreen*******CountriesErrorState ${state.message}');
         }
         showToastt(
             text: state.message, state: ToastStates.error, context: context);
-      } else if (state is CountriesSuccessState) {
+      }
+      else if (state is CountriesSuccessState) {
         if (kDebugMode) {
           print(
               'SignUpScreen*******CountriesSuccessState${SignCubit.get(context).countries[0].icon!.src} ');
         }
         dropDownValueCountry = SignCubit.get(context).countries[0];
-      } else if (state is SendOtpSignUpSuccessState) {
+      }
+      else if (state is SendOtpSignUpSuccessState) {
         if (kDebugMode) {
           print('SignUpScreen*******SendOtpSignUpSuccessState');
         }
         print("phoneSignupScreen******************${splitPhone2}}");
-        navigateTo(
-            context,
-            OtpScreen(
-              type: "register",
-              code: state.data.code,
-              phone: splitPhone2,
-              countryId: dropDownValueCountry!.id!,
-            ));
+        verifyPhone(
+            '${dropDownValueCountry!.code}${phoneController.text}');
       } else if (state is SendOtpSignUpErrorState) {
         if (kDebugMode) {
           print('SignUpScreen*******SendOtpSignUpErrorState');
@@ -219,6 +279,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           type: TextInputType.phone,
                           label: "123456789",
                           textSize: 25,
+                          borderRadius: 50,
                           border: true,
                           borderColor: white,
                           validatorText: phoneController.text,

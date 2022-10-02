@@ -40,9 +40,13 @@ class DioHelper {
     Map<String, dynamic>? query,
     FormData? data,
     String? header,
+    String? apiKey,
+    String? firebaseToken,
   }) async {
     dio.options.headers = {
       'Content-Type': header,
+      'api_key': apiKey,
+      'firebase_token': firebaseToken
     };
     return await dio.post(url, queryParameters: query, data: data);
   }
@@ -86,45 +90,3 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-String handleError(dynamic error) {
-  String errorDescription = "";
-
-  print("handleError:: error >> $error");
-
-  if (error is DioError) {
-    print("************************ DioError ************************");
-
-    DioError dioError = error;
-    print("dioError:: $dioError");
-    if (dioError.response != null) {
-      print("dioError:: response >> ${dioError.response}");
-    }
-
-    switch (dioError.type) {
-      case DioErrorType.other:
-        errorDescription =
-            "Connection to API server failed due to internet connection";
-        break;
-      case DioErrorType.cancel:
-        errorDescription = "Request to API server was cancelled";
-        break;
-      case DioErrorType.connectTimeout:
-        errorDescription = "Connection timeout with API server";
-        break;
-      case DioErrorType.receiveTimeout:
-        errorDescription = "Receive timeout in connection with API server";
-        break;
-      case DioErrorType.response:
-        // errorDescription = "Error: ${dioError.response?.data["message"]}";
-        errorDescription = dioError.response!.data["message"].toString();
-        break;
-      case DioErrorType.sendTimeout:
-        errorDescription = "Send timeout in connection with API server";
-        break;
-    }
-  } else {
-    errorDescription = "Unexpected error occured";
-  }
-  print("handleError:: errorDescription >> $errorDescription");
-  return errorDescription;
-}

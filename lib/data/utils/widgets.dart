@@ -31,6 +31,7 @@ Widget defaultFormField(
         bool border = false,
         bool autoFocus = false,
         Color? borderColor,
+        int? borderRadius,
         FocusNode? foucsnode,
         Function? submit,
         Function? changed,
@@ -53,7 +54,7 @@ Widget defaultFormField(
       decoration: InputDecoration(
         contentPadding: border
             ? null
-            : EdgeInsets.symmetric(horizontal: 25.r,vertical: 20.r),
+            : EdgeInsets.symmetric(horizontal: 25.r, vertical: 20.r),
         labelText: label,
         labelStyle: TextStyle(
           fontSize: textSize.sp,
@@ -75,38 +76,38 @@ Widget defaultFormField(
         //for background color
         enabledBorder: border
             ? OutlineInputBorder(
-                borderRadius: BorderRadius.circular(50.r),
+                borderRadius: BorderRadius.circular(borderRadius!.r),
                 borderSide: BorderSide(color: borderColor!),
               )
             : OutlineInputBorder(
-                borderRadius: BorderRadius.circular(50.r),
+                borderRadius: BorderRadius.circular(borderRadius!.r),
                 borderSide: const BorderSide(color: greyColor),
               ),
         focusedBorder: border
             ? OutlineInputBorder(
-                borderRadius: BorderRadius.circular(50.r),
+                borderRadius: BorderRadius.circular(borderRadius.r),
                 borderSide: BorderSide(color: borderColor!),
               )
             : OutlineInputBorder(
-                borderRadius: BorderRadius.circular(50.r),
+                borderRadius: BorderRadius.circular(borderRadius.r),
                 borderSide: const BorderSide(color: greyColor),
               ),
         border: border
             ? OutlineInputBorder(
-                borderRadius: BorderRadius.circular(50.r),
+                borderRadius: BorderRadius.circular(borderRadius.r),
                 borderSide: BorderSide(color: borderColor!),
               )
             : OutlineInputBorder(
-                borderRadius: BorderRadius.circular(50.r),
+                borderRadius: BorderRadius.circular(borderRadius.r),
                 borderSide: const BorderSide(color: greyColor),
               ),
         focusedErrorBorder: border
             ? OutlineInputBorder(
-                borderRadius: BorderRadius.circular(50.r),
+                borderRadius: BorderRadius.circular(borderRadius.r),
                 borderSide: BorderSide(color: borderColor!),
               )
             : OutlineInputBorder(
-                borderRadius: BorderRadius.circular(50.r),
+                borderRadius: BorderRadius.circular(borderRadius.r),
                 borderSide: const BorderSide(color: redColor),
               ),
         errorBorder: border

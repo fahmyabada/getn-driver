@@ -113,7 +113,7 @@ class SignCubit extends Cubit<SignState> {
   void makeRegister(String phone,
       String countryId,
       String email,
-      String codeOtp,
+      String firebaseToken,
       String fullName,
       String role,
       bool terms,
@@ -124,7 +124,7 @@ class SignCubit extends Cubit<SignState> {
         phone,
         countryId,
         email,
-        codeOtp,
+        firebaseToken,
         fullName,
         role,
         terms,
@@ -143,9 +143,9 @@ class SignCubit extends Cubit<SignState> {
     });
   }
 
-  void makeLogin(String phone, String countryId, String code) async {
+  void makeLogin(String phone, String countryId, String firebaseToken) async {
     emit(SignInLoading());
-    loginUseCase.execute(phone, countryId, code).then((value) {
+    loginUseCase.execute(phone, countryId, firebaseToken).then((value) {
       emit(eitherLoadedOrErrorStateMakeLogin(value));
     });
   }

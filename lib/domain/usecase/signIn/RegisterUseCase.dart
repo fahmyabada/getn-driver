@@ -11,12 +11,12 @@ class RegisterUseCase {
       String phone,
       String countryId,
       String email,
-      String codeOtp,
+      String firebaseToken,
       String fullName,
       String role,
       bool terms,
       String photo) {
     return signInRepository.register(
-        phone, countryId, email, codeOtp, fullName, role, terms, photo);
+        phone, countryId, email, firebaseToken, fullName, role, terms, photo);
   }
 }

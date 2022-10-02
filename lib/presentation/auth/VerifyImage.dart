@@ -20,7 +20,7 @@ class VerifyImageScreen extends StatefulWidget {
       this.phone,
       this.countryId,
       this.email,
-      this.codeOtp,
+      this.firebaseToken,
       this.role,
       this.typeScreen})
       : super(key: key);
@@ -29,7 +29,7 @@ class VerifyImageScreen extends StatefulWidget {
   final String? phone;
   final String? countryId;
   final String? email;
-  final String? codeOtp;
+  final String? firebaseToken;
   final String? fullName;
   final String? role;
 
@@ -196,7 +196,7 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
                           print(
                               "SignUpDetails***********countryId::>> ${widget.countryId}");
                           print(
-                              "SignUpDetails***********codeOtp::>> ${widget.codeOtp}");
+                              "SignUpDetails***********firebaseToken::>> ${widget.firebaseToken}");
                           print(
                               "SignUpDetails***********codeOtp::>> ${widget.role}");
                           print(
@@ -208,7 +208,7 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
                               widget.phone!,
                               widget.countryId!,
                               widget.email!,
-                              widget.codeOtp!,
+                              widget.firebaseToken!,
                               widget.fullName!,
                               widget.role!,
                               SignCubit.get(context).terms,

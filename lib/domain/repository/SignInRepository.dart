@@ -13,13 +13,13 @@ abstract class SignInRepository {
   Future<Either<String, SendOtpData>> sendOtp(String type, String phone, String countryId);
 
   Future<Either<String, SignModel>> login(
-      String phone, String countryId, String code);
+      String phone, String countryId, String firebaseToken);
 
   Future<Either<String, SignModel>> register(
       String phone,
       String countryId,
       String email,
-      String codeOtp,
+      String firebaseToken,
       String fullName,
       String role,
       bool terms,

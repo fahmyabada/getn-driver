@@ -10,8 +10,8 @@ class LoginUseCase {
   Future<Either<String, SignModel>> execute(
     String phone,
     String countryId,
-    String codeOtp,
+    String firebaseToken,
   ) {
-    return signInRepository.login(phone, countryId, codeOtp);
+    return signInRepository.login(phone, countryId, firebaseToken);
   }
 }

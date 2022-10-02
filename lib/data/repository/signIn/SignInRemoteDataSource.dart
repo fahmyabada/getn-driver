@@ -15,16 +15,17 @@ abstract class SignInRemoteDataSource {
 
   Future<Either<String, List<DataRole>?>> getRole();
 
-  Future<Either<String, SendOtpData>> sendOtp(String type, String phone, String countryId);
+  Future<Either<String, SendOtpData>> sendOtp(
+      String type, String phone, String countryId);
 
   Future<Either<String, SignModel>> login(
-      String phone, String countryId, String code);
+      String phone, String countryId, String firebaseToken);
 
   Future<Either<String, SignModel>> register(
       String phone,
       String countryId,
       String email,
-      String codeOtp,
+      String firebaseToken,
       String fullName,
       String role,
       bool terms,
@@ -92,10 +93,15 @@ class SignInRemoteDataSourceImpl implements SignInRemoteDataSource {
       var query = {
         'type': type,
       };
+      const apiKey =
+          'fjsadkjfgdshfgjhjhvmgfdhvjkhdfjkhgkljfklghg54654654j65g456hk456hj4k6546hj4k64jh6k';
       print('*******type = $type');
 
       return await DioHelper.postData2(
-              url: 'driver/auth/send-otp', data: formData, query: query)
+              url: 'driver/auth/send-otp',
+              data: formData,
+              query: query,
+              apiKey: apiKey)
           .then((value) {
         if (value.statusCode == 200) {
           if (SendOtpData.fromJson(value.data).isAlreadyUser != null) {
@@ -117,7 +123,7 @@ class SignInRemoteDataSourceImpl implements SignInRemoteDataSource {
       String phone,
       String countryId,
       String email,
-      String codeOtp,
+      String firebaseToken,
       String fullName,
       String role,
       bool terms,
@@ -128,18 +134,24 @@ class SignInRemoteDataSourceImpl implements SignInRemoteDataSource {
       var formData = FormData.fromMap({
         'phone': phone,
         'country': countryId,
-        'verifyCode': codeOtp,
         'role': role,
         'email': email,
         'name': fullName,
-        'verifyImage': await MultipartFile.fromFile(photo, filename: fileName, contentType: MediaType("image", "jpeg")),
+        'verifyImage': await MultipartFile.fromFile(photo,
+            filename: fileName, contentType: MediaType("image", "jpeg")),
         'acceptTermsAndConditions': terms,
       });
 
       const headers = 'multipart/form-data';
+      const apiKey =
+          'fjsadkjfgdshfgjhjhvmgfdhvjkhdfjkhgkljfklghg54654654j65g456hk456hj4k6546hj4k64jh6k';
 
       return await DioHelper.postData2(
-              url: 'driver/auth/register', data: formData, header: headers)
+              url: 'driver/auth/register',
+              data: formData,
+              header: headers,
+              apiKey: apiKey,
+              firebaseToken: firebaseToken)
           .then((value) {
         if (value.statusCode == 200) {
           if (SignModel.fromJson(value.data).id != null) {
@@ -158,14 +170,17 @@ class SignInRemoteDataSourceImpl implements SignInRemoteDataSource {
 
   @override
   Future<Either<String, SignModel>> login(
-      String phone, String countryId, String code) async {
+      String phone, String countryId, String firebaseToken) async {
     try {
       var formData = FormData.fromMap({
         'phone': phone,
         'country': countryId,
-        'verifyCode': code,
       });
-      return await DioHelper.postData2(url: 'driver/auth/login', data: formData)
+      const apiKey =
+          'fjsadkjfgdshfgjhjhvmgfdhvjkhdfjkhgkljfklghg54654654j65g456hk456hj4k6546hj4k64jh6k';
+
+      return await DioHelper.postData2(
+              url: 'driver/auth/login', data: formData, apiKey: apiKey,firebaseToken: firebaseToken)
           .then((value) {
         if (value.statusCode == 200) {
           if (SignModel.fromJson(value.data).id != null) {
@@ -183,9 +198,11 @@ class SignInRemoteDataSourceImpl implements SignInRemoteDataSource {
   }
 
   @override
-  Future<Either<String, SignModel>> editInformationUserUseCase(FormData data) async{
+  Future<Either<String, SignModel>> editInformationUserUseCase(
+      FormData data) async {
     try {
-      return await DioHelper.putData2(url: 'driver/auth/edit-profile', data: data)
+      return await DioHelper.putData2(
+              url: 'driver/auth/edit-profile', data: data)
           .then((value) {
         if (value.statusCode == 200) {
           if (SignModel.fromJson(value.data).id != null) {

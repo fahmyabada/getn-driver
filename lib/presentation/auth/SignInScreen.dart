@@ -34,6 +34,67 @@ class _SignInScreenState extends State<SignInScreen> {
     SignCubit.get(context).getCountries();
   }
 
+  Future<void> verifyPhone(phoneNumber) async {
+    await FirebaseAuth.instance.verifyPhoneNumber(
+
+      /// Make sure to prefix with your country code
+        phoneNumber: phoneNumber,
+
+        ///No duplicated SMS will be sent out upon re-entry (before timeout).
+        timeout: const Duration(seconds: 5),
+
+        /// If the SIM (with phoneNumber) is in the current device this function is called.
+        /// This function gives `AuthCredential`. Moreover `login` function can be called from this callback
+        /// When this function is called there is no need to enter the OTP, you can click on Login button to sigin directly as the device is now verified
+        verificationCompleted: (AuthCredential authResult) {
+          if (kDebugMode) {
+            print('verifyPhone***********$phoneNumber');
+          }
+          setState(() {
+            authStatus = "Your account is successfully verified";
+          });
+        },
+
+        /// Called when the verification is failed
+        verificationFailed: (final authException) {
+          if (kDebugMode) {
+            print('verificationFailed***********${authException.message!}');
+          }
+          setState(() {
+            authStatus = "Authentication failed";
+          });
+          showToastt(
+              text: "Authentication failed", state: ToastStates.error, context: context);
+        },
+
+        /// This is called after the OTP is sent. Gives a `verificationId` and `code`
+        codeSent: (String verId, [int? forceResend]) {
+          print('codeSent***********$verId');
+          verificationId = verId;
+          setState(() {
+            authStatus = "OTP has been successfully send";
+          });
+          navigateTo(
+            context,
+            OtpScreen(
+              type: "login",
+              verificationId: verificationId,
+              phone: splitPhone2,
+              countryId: dropDownValueCountry!.id!,
+            ),
+          );
+        },
+
+        /// After automatic code retrival `tmeout` this function is called
+        codeAutoRetrievalTimeout: (String verId) {
+          print('codeAutoRetrievalTimeout***********$verId');
+          verificationId = verId;
+          setState(() {
+            authStatus = "TIMEOUT";
+          });
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SignCubit, SignState>(listener: (context, state) {
@@ -53,24 +114,18 @@ class _SignInScreenState extends State<SignInScreen> {
               'SignInScreen*******CountriesSuccessState${SignCubit.get(context).countries[0].icon!.src} ');
         }
         dropDownValueCountry = SignCubit.get(context).countries[0];
-      } else if (state is SendOtpSignInSuccessState) {
+      }
+      else if (state is SendOtpSignInSuccessState) {
         if (kDebugMode) {
           print('SignInScreen*******SendOtpSignInSuccessState');
         }
-        navigateTo(
-          context,
-          OtpScreen(
-            type: "login",
-            code: state.data.code,
-            phone: splitPhone2,
-            countryId: dropDownValueCountry!.id!,
-          ),
-        );
+        verifyPhone(
+            '${dropDownValueCountry!.code}${phoneController.text}');
       } else if (state is SendOtpSignInErrorState) {
         if (kDebugMode) {
           print('*******SendOtpSignInErrorState');
         }
-        if (state.message == "{phone:  phone incorrect}") {
+        if (state.message == "{phone:  phone or country incorrect}") {
           showToastt(
               text: "You Don\'t have an account\nRegister first please...",
               state: ToastStates.error,
@@ -216,6 +271,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           type: TextInputType.phone,
                           label: "123456789",
                           textSize: 25,
+                          borderRadius: 50,
                           border: true,
                           borderColor: white,
                           validatorText: phoneController.text,
@@ -249,21 +305,14 @@ class _SignInScreenState extends State<SignInScreen> {
                         setState(() {
                           splitPhone2 = splitPhone.text.toString();
                         });
-                        // print(
-                        //     'verifyPhone1***********${dropDownValueCountry!.code}$splitPhone2');
-                        //
-                        // verifyPhone(
-                        //     '${dropDownValueCountry!.code}$splitPhone2');
+
                         SignCubit.get(context).sendOtp(
                             "login",
-                            splitPhone.text.toString(),
+                            splitPhone2,
                             dropDownValueCountry!.id!);
                       } else {
                         splitPhone2 = phoneController.text.toString();
-                        // print(
-                        //     'verifyPhone2***********${dropDownValueCountry!.code}${phoneController.text}');
-                        // verifyPhone(
-                        //     '${dropDownValueCountry!.code}${phoneController.text}');
+
                         SignCubit.get(context).sendOtp(
                             "login", splitPhone2, dropDownValueCountry!.id!);
                       }
@@ -309,96 +358,5 @@ class _SignInScreenState extends State<SignInScreen> {
     });
   }
 
-  Future<void> verifyPhone(phoneNumber) async {
-    await FirebaseAuth.instance.verifyPhoneNumber(
 
-        /// Make sure to prefix with your country code
-        phoneNumber: phoneNumber,
-
-        ///No duplicated SMS will be sent out upon re-entry (before timeout).
-        timeout: const Duration(seconds: 5),
-
-        /// If the SIM (with phoneNumber) is in the current device this function is called.
-        /// This function gives `AuthCredential`. Moreover `login` function can be called from this callback
-        /// When this function is called there is no need to enter the OTP, you can click on Login button to sigin directly as the device is now verified
-        verificationCompleted: (AuthCredential authResult) {
-          if (kDebugMode) {
-            print('verifyPhone***********$phoneNumber');
-          }
-          AuthService().signIn(context, authResult);
-          setState(() {
-            authStatus = "Your account is successfully verified";
-          });
-        },
-
-        /// Called when the verification is failed
-        verificationFailed: (final authException) {
-          if (kDebugMode) {
-            print('verificationFailed***********${authException.message!}');
-          }
-          setState(() {
-            authStatus = "Authentication failed";
-          });
-        },
-
-        /// This is called after the OTP is sent. Gives a `verificationId` and `code`
-        codeSent: (String verId, [int? forceResend]) {
-          print('codeSent***********$verId');
-          verificationId = verId;
-          setState(() {
-            authStatus = "OTP has been successfully send";
-          });
-          otpDialogBox(context).then((value) {});
-          // navigateTo(context, OtpScreen(phone: splitPhone2, countryId: dropDownValueCountry!.id!, type: "login"));
-        },
-
-        /// After automatic code retrival `tmeout` this function is called
-        codeAutoRetrievalTimeout: (String verId) {
-          print('codeAutoRetrievalTimeout***********$verId');
-          verificationId = verId;
-          setState(() {
-            authStatus = "TIMEOUT";
-          });
-        });
-  }
-
-  otpDialogBox(BuildContext context) {
-    return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Enter your OTP'),
-            content: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(30),
-                    ),
-                  ),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    otp = value;
-                  });
-                },
-              ),
-            ),
-            contentPadding: const EdgeInsets.all(10.0),
-            actions: <Widget>[
-              MaterialButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  AuthService().signInWithOTP(context,otp!, verificationId!);
-                },
-                child: const Text(
-                  'Submit',
-                ),
-              ),
-            ],
-          );
-        });
-  }
 }

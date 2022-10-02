@@ -13,12 +13,12 @@ class SignUpDetailsScreen extends StatefulWidget {
       {Key? key,
       required this.countryId,
       required this.phone,
-      required this.codeOtp})
+      required this.firebaseToken})
       : super(key: key);
 
   final String phone;
   final String countryId;
-  final String codeOtp;
+  final String firebaseToken;
 
   @override
   State<SignUpDetailsScreen> createState() => _SignUpDetailsScreenState();
@@ -82,6 +82,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                   label: "Full Name",
                                   textSize: 22,
                                   border: false,
+                                  borderRadius: 50,
                                   validatorText: fullNameController.text,
                                   validatorMessage: "Enter Full Name Please..",
                                   onEditingComplete: () {
@@ -97,6 +98,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                   label: "Email",
                                   textSize: 22,
                                   border: false,
+                                  borderRadius: 50,
                                   validatorText: emailController.text,
                                   validatorMessage: "Enter Email Please..",
                                   onEditingComplete: () {
@@ -211,7 +213,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                       email: emailController.text.toString(),
                                       phone: widget.phone,
                                       countryId: widget.countryId,
-                                      codeOtp: widget.codeOtp,
+                                      firebaseToken: widget.firebaseToken,
                                       role: groupValueId,
                                     ),
                                   );

@@ -68,7 +68,7 @@ class SignInRepositoryImpl extends SignInRepository {
       String phone,
       String countryId,
       String email,
-      String codeOtp,
+      String firebaseToken,
       String fullName,
       String role,
       bool terms,
@@ -76,7 +76,7 @@ class SignInRepositoryImpl extends SignInRepository {
     if (await networkInfo.isConnected) {
       return await signInRemoteDataSource
           .register(
-              phone, countryId, email, codeOtp, fullName, role, terms, photo)
+              phone, countryId, email, firebaseToken, fullName, role, terms, photo)
           .then((value) {
         return value.fold((failure) {
           return Left(failure.toString());
@@ -91,10 +91,10 @@ class SignInRepositoryImpl extends SignInRepository {
 
   @override
   Future<Either<String, SignModel>> login(
-      String phone, String countryId, String code) async {
+      String phone, String countryId, String firebaseToken) async {
     if (await networkInfo.isConnected) {
       return await signInRemoteDataSource
-          .login(phone, countryId, code)
+          .login(phone, countryId, firebaseToken)
           .then((value) {
         return value.fold((failure) {
           return Left(failure.toString());
