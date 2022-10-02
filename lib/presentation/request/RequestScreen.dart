@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +26,7 @@ class _RequestScreenState extends State<RequestScreen>
   String typeRequest = "current";
   bool loadingUpComing = false;
   bool firstClickTabController = false;
+  late FirebaseMessaging _messaging;
 
   @override
   void initState() {
@@ -876,5 +878,71 @@ class _RequestScreenState extends State<RequestScreen>
         ),
       );
     });
+  }
+
+  void registerNotification() async {
+    // 2. Instantiate Firebase Messaging
+    _messaging = FirebaseMessaging.instance;
+
+    // 3. On iOS, this helps to take the user permissions
+    NotificationSettings settings = await _messaging.requestPermission(
+      alert: true,
+      badge: true,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      if (kDebugMode) {
+        print('User granted permission');
+      }
+      // 1. This method call when app in terminated state and you get a notification
+      // when you click on notification app open from terminated state and you can get notification data in this method
+      _messaging.getInitialMessage().then((RemoteMessage? message) {
+        if (kDebugMode) {
+          print("FirebaseMessaging.instance.getInitialMessage********");
+        }
+        if (message != null) {
+          if (kDebugMode) {
+            print("New Notification********");
+          }
+
+          if (message.data['title'] != null) {}
+        }
+      });
+
+      // 2. This method only call when App in forground it mean app must be opened
+      FirebaseMessaging.onMessage.listen(
+        (message) {
+          if (kDebugMode) {
+            print("FirebaseMessaging.onMessage.listen********");
+          }
+          if (message.notification != null) {
+            if (kDebugMode) {
+              print(message.notification!.title);
+              print(message.notification!.body);
+              print("message.data11 ${message.data}");
+            }
+            // LocalNotificationService.createAndDisplayNotification(message);
+          }
+        },
+      );
+
+      // 3. This method only call when App in background and not terminated(not closed)
+      FirebaseMessaging.onMessageOpenedApp.listen(
+        (message) {
+          if (kDebugMode) {
+            print("FirebaseMessaging.onMessageOpenedApp.listen********");
+          }
+          if (message.notification != null) {
+            if (kDebugMode) {
+              print(message.notification!.title);
+              print(message.notification!.body);
+              print("message.data22 ********${message.data['title']}");
+            }
+          }
+        },
+      );
+    }
   }
 }

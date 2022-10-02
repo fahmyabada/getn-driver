@@ -1,10 +1,15 @@
 import 'dart:io';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:getn_driver/data/api/Dio_Helper.dart';
 import 'package:getn_driver/data/utils/colors.dart';
+import 'package:getn_driver/firebase_options.dart';
 import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/splash/SplashScreen.dart';
@@ -16,12 +21,25 @@ void main() async {
   // for example ensure Initialized shared perefence
   WidgetsFlutterBinding.ensureInitialized();
 
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  FirebaseMessaging.onBackgroundMessage(backgroundHandler);
+
   //for dependency injection
   await init();
 
   await DioHelper.init();
 
   runApp(const MyApp());
+}
+
+Future<void> backgroundHandler(RemoteMessage message) async {
+  if (kDebugMode) {
+    print('messageData ********=${message.data.toString()}');
+    print('messageTitle ********=${message.notification!.title}');
+  }
 }
 
 class MyApp extends StatelessWidget {

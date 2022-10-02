@@ -1,4 +1,4 @@
-package com.getn.driver.getn_driver
+package com.getn.driver
 
 import io.flutter.embedding.android.FlutterActivity
 

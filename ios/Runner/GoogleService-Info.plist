@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>177189268795-mk8109mvgjnm915412r8fdnfdjdgh3ag.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.177189268795-mk8109mvgjnm915412r8fdnfdjdgh3ag</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCnJL8L9yqHUb__b-o5e-0t-3gzyZN6T1I</string>
+	<key>GCM_SENDER_ID</key>
+	<string>177189268795</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.getn.driver.getnDriver</string>
+	<key>PROJECT_ID</key>
+	<string>getnapp</string>
+	<key>STORAGE_BUCKET</key>
+	<string>getnapp.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:177189268795:ios:7d65df62934b36e80a1b1e</string>
+	<key>DATABASE_URL</key>
+	<string>https://getnapp-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

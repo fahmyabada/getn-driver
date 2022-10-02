@@ -1,4 +1,5 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/auth/OtpScreen.dart';
 import 'package:getn_driver/presentation/auth/SignUpScreen.dart';
 import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
+import 'package:getn_driver/presentation/services/authenticate.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -24,6 +26,7 @@ class _SignInScreenState extends State<SignInScreen> {
   var phoneController = TextEditingController();
   Data? dropDownValueCountry;
   String splitPhone2 = "";
+  String? verificationId, authStatus = "", otp;
 
   @override
   void initState() {
@@ -246,12 +249,21 @@ class _SignInScreenState extends State<SignInScreen> {
                         setState(() {
                           splitPhone2 = splitPhone.text.toString();
                         });
+                        // print(
+                        //     'verifyPhone1***********${dropDownValueCountry!.code}$splitPhone2');
+                        //
+                        // verifyPhone(
+                        //     '${dropDownValueCountry!.code}$splitPhone2');
                         SignCubit.get(context).sendOtp(
                             "login",
                             splitPhone.text.toString(),
                             dropDownValueCountry!.id!);
                       } else {
                         splitPhone2 = phoneController.text.toString();
+                        // print(
+                        //     'verifyPhone2***********${dropDownValueCountry!.code}${phoneController.text}');
+                        // verifyPhone(
+                        //     '${dropDownValueCountry!.code}${phoneController.text}');
                         SignCubit.get(context).sendOtp(
                             "login", splitPhone2, dropDownValueCountry!.id!);
                       }
@@ -295,5 +307,98 @@ class _SignInScreenState extends State<SignInScreen> {
         ),
       );
     });
+  }
+
+  Future<void> verifyPhone(phoneNumber) async {
+    await FirebaseAuth.instance.verifyPhoneNumber(
+
+        /// Make sure to prefix with your country code
+        phoneNumber: phoneNumber,
+
+        ///No duplicated SMS will be sent out upon re-entry (before timeout).
+        timeout: const Duration(seconds: 5),
+
+        /// If the SIM (with phoneNumber) is in the current device this function is called.
+        /// This function gives `AuthCredential`. Moreover `login` function can be called from this callback
+        /// When this function is called there is no need to enter the OTP, you can click on Login button to sigin directly as the device is now verified
+        verificationCompleted: (AuthCredential authResult) {
+          if (kDebugMode) {
+            print('verifyPhone***********$phoneNumber');
+          }
+          AuthService().signIn(context, authResult);
+          setState(() {
+            authStatus = "Your account is successfully verified";
+          });
+        },
+
+        /// Called when the verification is failed
+        verificationFailed: (final authException) {
+          if (kDebugMode) {
+            print('verificationFailed***********${authException.message!}');
+          }
+          setState(() {
+            authStatus = "Authentication failed";
+          });
+        },
+
+        /// This is called after the OTP is sent. Gives a `verificationId` and `code`
+        codeSent: (String verId, [int? forceResend]) {
+          print('codeSent***********$verId');
+          verificationId = verId;
+          setState(() {
+            authStatus = "OTP has been successfully send";
+          });
+          otpDialogBox(context).then((value) {});
+          // navigateTo(context, OtpScreen(phone: splitPhone2, countryId: dropDownValueCountry!.id!, type: "login"));
+        },
+
+        /// After automatic code retrival `tmeout` this function is called
+        codeAutoRetrievalTimeout: (String verId) {
+          print('codeAutoRetrievalTimeout***********$verId');
+          verificationId = verId;
+          setState(() {
+            authStatus = "TIMEOUT";
+          });
+        });
+  }
+
+  otpDialogBox(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Enter your OTP'),
+            content: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(30),
+                    ),
+                  ),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    otp = value;
+                  });
+                },
+              ),
+            ),
+            contentPadding: const EdgeInsets.all(10.0),
+            actions: <Widget>[
+              MaterialButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  AuthService().signInWithOTP(context,otp!, verificationId!);
+                },
+                child: const Text(
+                  'Submit',
+                ),
+              ),
+            ],
+          );
+        });
   }
 }
