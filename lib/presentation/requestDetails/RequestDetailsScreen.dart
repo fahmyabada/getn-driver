@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
+import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/presentation/requestDetails/request_details_cubit.dart';
 import 'package:intl/intl.dart';
 
@@ -52,20 +53,15 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           children: [
                             Row(
                               children: [
-                                Container(
-                                  width: 80.w,
-                                  height: 80.w,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: grey2,
-                                  ),
-                                  child: Padding(
-                                      padding: EdgeInsets.all(2.r),
-                                      child: const Icon(
-                                        Icons.personal_injury,
-                                        color: redColor,
-                                      )),
+                                ClipOval(
+                                  clipBehavior: Clip.antiAlias,
+                                  child: ImageTools.image(
+                                      fit: BoxFit.fill,
+                                      url: RequestDetailsCubit.get(context).requestDetails!.client2!.image!.src,
+                                      height: 70.w,
+                                      width: 70.w),
                                 ),
+
                                 Expanded(
                                   child: Container(
                                     margin:
@@ -81,7 +77,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                           children: [
                                             Expanded(
                                               child: Text(
-                                                RequestDetailsCubit.get(context).requestDetails!.client!.name!,
+                                                RequestDetailsCubit.get(context).requestDetails!.client2!.name!,
                                                 style: TextStyle(
                                                     fontSize: 20.sp,
                                                     color: black,
@@ -95,7 +91,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                           height: 5.h,
                                         ),
                                         Text(
-                                          '${RequestDetailsCubit.get(context).requestDetails!.client!.country!.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client!.city!.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client!.area!.title!.en!}',
+                                          '${RequestDetailsCubit.get(context).requestDetails!.client2!.country!.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.city!.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.area!.title!.en!}',
                                           style: TextStyle(
                                               fontSize: 18.sp, color: grey2),
                                         ),

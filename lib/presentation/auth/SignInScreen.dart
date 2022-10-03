@@ -12,7 +12,6 @@ import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/auth/OtpScreen.dart';
 import 'package:getn_driver/presentation/auth/SignUpScreen.dart';
 import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
-import 'package:getn_driver/presentation/services/authenticate.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -81,6 +80,7 @@ class _SignInScreenState extends State<SignInScreen> {
               verificationId: verificationId,
               phone: splitPhone2,
               countryId: dropDownValueCountry!.id!,
+              phoneWithCountry: '${dropDownValueCountry!.code}$splitPhone2',
             ),
           );
         },
@@ -120,7 +120,7 @@ class _SignInScreenState extends State<SignInScreen> {
           print('SignInScreen*******SendOtpSignInSuccessState');
         }
         verifyPhone(
-            '${dropDownValueCountry!.code}${phoneController.text}');
+            '${dropDownValueCountry!.code}$splitPhone2');
       } else if (state is SendOtpSignInErrorState) {
         if (kDebugMode) {
           print('*******SendOtpSignInErrorState');

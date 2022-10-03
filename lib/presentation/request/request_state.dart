@@ -44,3 +44,31 @@ class RequestPastSuccessState extends RequestState {
 
   RequestPastSuccessState(this.data);
 }
+
+class RequestPendingInitial extends RequestState {}
+
+class RequestPendingErrorState extends RequestState {
+  final String message;
+
+  RequestPendingErrorState(this.message);
+}
+
+class RequestPendingSuccessState extends RequestState {
+  final List<DataRequest>? data;
+
+  RequestPendingSuccessState(this.data);
+}
+
+class RequestEditInitial extends RequestState {}
+
+class RequestEditErrorState extends RequestState {
+  final String message;
+
+  RequestEditErrorState(this.message);
+}
+
+class RequestEditSuccessState extends RequestState {
+  final DataRequest? data;
+
+  RequestEditSuccessState(this.data);
+}

@@ -53,13 +53,17 @@ class DioHelper {
 
   static Future<Response> putData({
     required String url,
-    required Map<String, dynamic>? query,
-    String? data,
+    Map<String, dynamic>? query,
+    FormData? data,
+    String? token,
   }) async {
+    dio.options.headers = {
+      'Authorization': 'bearerAuth $token',
+    };
     return await dio.put(
       url,
       queryParameters: query,
-      data: data,
+      data: data
     );
   }
 

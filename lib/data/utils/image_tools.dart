@@ -51,7 +51,7 @@ class ImageTools {
     String kImageProxy = '',
   }) {
     if (height == null && width == null) {
-      width = 200;
+      width = 20;
     }
     var ratioImage = 1.4;
 

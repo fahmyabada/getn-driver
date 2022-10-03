@@ -546,13 +546,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.0.0"
-  pin_input_text_field:
-    dependency: transitive
+  pin_code_fields:
+    dependency: "direct main"
     description:
-      name: pin_input_text_field
+      name: pin_code_fields
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.2.0"
+    version: "7.4.0"
   platform:
     dependency: transitive
     description:
@@ -649,13 +649,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
-  sms_autofill:
-    dependency: "direct main"
-    description:
-      name: sms_autofill
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.2.0"
   source_span:
     dependency: transitive
     description:

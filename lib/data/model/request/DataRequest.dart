@@ -1,3 +1,5 @@
+import 'package:getn_driver/data/model/request/Client.dart';
+
 import 'From.dart';
 import 'Days.dart';
 import 'StatusHistory.dart';
@@ -93,7 +95,7 @@ class DataRequest {
     _driver = json['driver'];
     _car = json['car'];
     _carCategory = json['carCategory'];
-    _client = json['client'];
+    json['client'] is String? _client = json['client']: _client2 = json['client'] != null ? Client.fromJson(json['client']) : null;
     if (json['days'] != null) {
       _days = [];
       json['days'].forEach((v) {
@@ -135,6 +137,7 @@ class DataRequest {
   String? _car;
   String? _carCategory;
   String? _client;
+  Client? _client2;
   List<Days>? _days;
   List<StatusHistory>? _statusHistory;
   int? _v;
@@ -166,6 +169,7 @@ class DataRequest {
   String? get car => _car;
   String? get carCategory => _carCategory;
   String? get client => _client;
+  Client? get client2 => _client2;
   List<Days>? get days => _days;
   List<StatusHistory>? get statusHistory => _statusHistory;
   int? get v => _v;

@@ -14,18 +14,21 @@ import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/request/RequestScreen.dart';
 import 'package:getn_driver/presentation/request/request_cubit.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sms_autofill/sms_autofill.dart';
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({Key? key,
-    required this.phone,
-    required this.countryId,
-    required this.type,
-    this.verificationId})
+  const OtpScreen(
+      {Key? key,
+      required this.phone,
+      required this.countryId,
+      required this.type,
+      this.verificationId,
+      required this.phoneWithCountry})
       : super(key: key);
 
   final String phone;
+  final String phoneWithCountry;
   final String? verificationId;
   final String countryId;
   final String type;
@@ -74,61 +77,61 @@ class _OtpScreenState extends State<OtpScreen> {
     super.dispose();
   }
 
-
   void nextButton() async {
-    AuthCredential authCreds =
-    PhoneAuthProvider.credential(
+    FocusScope.of(context).requestFocus(FocusNode());
+    AuthCredential authCreds = PhoneAuthProvider.credential(
         verificationId: verificationId!, smsCode: otp!);
-    print('verificationId***********$verificationId*************$otp');
-    try{
-      final result = await FirebaseAuth.instance.signInWithCredential(authCreds);
+    try {
+      final result =
+          await FirebaseAuth.instance.signInWithCredential(authCreds);
       if (result.user != null) {
         if (kDebugMode) {
           print('refreshToken11***********}');
         }
         final idToken = await FirebaseAuth.instance.currentUser!.getIdToken();
-        getIt<SharedPreferences>().setString(
-            'firebaseToken', idToken);
+        getIt<SharedPreferences>().setString('firebaseToken', idToken);
         if (widget.type == "login") {
-          SignCubit.get(context).makeLogin(
-              widget.phone,
-              widget.countryId,
-              idToken);
+          SignCubit.get(context)
+              .makeLogin(widget.phone, widget.countryId, idToken);
         } else {
-          if (getIt<SharedPreferences>()
-              .getString('firebaseToken') !=
-              null) {
+          if (getIt<SharedPreferences>().getString('firebaseToken') != null) {
             navigateTo(
                 context,
                 SignUpDetailsScreen(
                   phone: widget.phone,
                   countryId: widget.countryId,
-                  firebaseToken: getIt<SharedPreferences>()
-                      .getString('firebaseToken')!,
+                  firebaseToken:
+                      getIt<SharedPreferences>().getString('firebaseToken')!,
                 ));
           }
         }
-      }
-      else {
+      } else {
         if (kDebugMode) {
           print("Error");
         }
         showToastt(
             text: "uncorrect code", state: ToastStates.error, context: context);
-
       }
-    }on Exception catch(error){
+    } on Exception catch (error) {
       print("Exception*************${error}");
-      showToastt(
-          text: handleErrorFirebase(error.toString()), state: ToastStates.error, context: context);
+      if (widget.type == "login") {
+        showToastt(
+            text: handleErrorFirebase("login", error.toString()),
+            state: ToastStates.error,
+            context: context);
+      } else {
+        showToastt(
+            text: handleErrorFirebase("register", error.toString()),
+            state: ToastStates.error,
+            context: context);
+      }
     }
-
   }
 
   Future<void> verifyPhone(phoneNumber) async {
     await FirebaseAuth.instance.verifyPhoneNumber(
 
-      /// Make sure to prefix with your country code
+        /// Make sure to prefix with your country code
         phoneNumber: phoneNumber,
 
         ///No duplicated SMS will be sent out upon re-entry (before timeout).
@@ -175,12 +178,6 @@ class _OtpScreenState extends State<OtpScreen> {
         });
   }
 
-  // void listenOtp() async {
-  //   await SmsAutoFill().unregisterListener();
-  //   await SmsAutoFill().listenForCode();
-  //   await SmsAutoFill().listenForCode;
-  // }
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SignCubit, SignState>(listener: (context1, state) {
@@ -194,16 +191,14 @@ class _OtpScreenState extends State<OtpScreen> {
           duration = const Duration(seconds: 15);
         });
         startTimer();
-      }
-      else if (state is SendOtpErrorState) {
+      } else if (state is SendOtpErrorState) {
         if (kDebugMode) {
           print('OtpScreen*******SendOtpErrorState');
         }
 
         showToastt(
             text: state.message, state: ToastStates.error, context: context);
-      }
-      else if (state is SignInSuccessState) {
+      } else if (state is SignInSuccessState) {
         if (kDebugMode) {
           print('OtpScreen*******SignInSuccessState');
         }
@@ -232,8 +227,7 @@ class _OtpScreenState extends State<OtpScreen> {
           getIt<SharedPreferences>().setString('typeSign', "sign");
           navigateTo(context, const DriverInformationScreen());
         }
-      }
-      else if (state is SignInErrorState) {
+      } else if (state is SignInErrorState) {
         if (kDebugMode) {
           print('OtpScreen*******SignInErrorState');
         }
@@ -263,7 +257,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 25.r),
                   child: Text(
-                    "Enter the 4- digit code sent to \n ${widget.phone}",
+                    "Enter the 4- digit code sent to \n ${widget.phoneWithCountry}",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -272,102 +266,69 @@ class _OtpScreenState extends State<OtpScreen> {
                   ),
                 ),
                 SizedBox(height: 30.h),
-             /*   Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    SizedBox(
-                      width: 60.w,
-                      child: defaultFormField(
-                        controller: pin1Controller,
-                        type: TextInputType.number,
-                        textSize: 25,
-                        autoFocus: true,
-                        borderColor: black,
-                        borderRadius: 15,
-                        changed: (value) {
-                          nextField(value, pin2FocusNode);
-                        },
-                      ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 25.r),
+                  child: PinCodeTextField(
+                    appContext: context,
+                    pastedTextStyle: TextStyle(
+                      color: Colors.green.shade600,
+                      fontWeight: FontWeight.bold,
                     ),
-                    SizedBox(
-                      width: 60.w,
-                      child: defaultFormField(
-                        controller: pin2Controller,
-                        type: TextInputType.number,
-                        textSize: 25,
-                        foucsnode: pin2FocusNode,
-                        borderColor: black,
-                        borderRadius: 15,
-                        changed: (value) {
-                          nextField(value, pin3FocusNode);
-                        },
-                      ),
+                    length: 6,
+                    animationType: AnimationType.fade,
+                    validator: (v) {
+                      if (v!.length < 3) {
+                        return "Enter Code Please...";
+                      } else {
+                        return null;
+                      }
+                    },
+                    obscureText: false,
+                    pinTheme: PinTheme(
+                      shape: PinCodeFieldShape.box,
+                      borderRadius: BorderRadius.circular(5),
+                      fieldHeight: 50,
+                      fieldWidth: 40,
+                      activeFillColor: Colors.white,
+                      inactiveFillColor: Colors.white,inactiveColor: blueLight
                     ),
-                    SizedBox(
-                      width: 60.w,
-                      child: defaultFormField(
-                        controller: pin3Controller,
-                        type: TextInputType.number,
-                        textSize: 25,
-                        foucsnode: pin3FocusNode,
-                        borderColor: black,
-                        borderRadius: 15,
-                        changed: (value) {
-                          nextField(value, pin4FocusNode);
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      width: 60.w,
-                      child: defaultFormField(
-                        controller: pin4Controller,
-                        type: TextInputType.number,
-                        textSize: 25,
-                        foucsnode: pin4FocusNode,
-                        borderColor: black,
-                        borderRadius: 15,
-                        changed: (value) {
-                          if (value.length == 1) {
-                            pin4FocusNode!.unfocus();
-                            if (pin1Controller.text.isNotEmpty &&
-                                pin2Controller.text.isNotEmpty &&
-                                pin3Controller.text.isNotEmpty &&
-                                pin4Controller.text.isNotEmpty) {
-                              setState(() {
-                                openResend = false;
-                                openNext = true;
-                                timer!.cancel();
-                              });
-                            }
-                            // Then you need to check is the code is correct or not
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                ),*/
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 30.r),
-                  child: PinFieldAutoFill(
-                    decoration: UnderlineDecoration(
-                        textStyle:
-                            TextStyle(fontSize: 20.sp, color: Colors.black),
-                        colorBuilder: const FixedColorBuilder(yellowLightColor),
-                        bgColorBuilder: const FixedColorBuilder(blueLight),
-                        gapSpace: 30.w),
-                    codeLength: 6,
-                    currentCode: otp??"",
-                    onCodeSubmitted: (code) {},
-                    onCodeChanged: (code) {
-                      if (code!.length == 6) {
-                          FocusScope.of(context).requestFocus(FocusNode());
-                            openResend = false;
+                    cursorColor: Colors.black,
+                    animationDuration: const Duration(milliseconds: 300),
+                    enableActiveFill: true,
+                    keyboardType: TextInputType.number,
+                    boxShadows: const [
+                      BoxShadow(
+                        offset: Offset(0, 1),
+                        color: Colors.black12,
+                        blurRadius: 10,
+                      )
+                    ],
+                    onCompleted: (v) {
+                      debugPrint("Completed");
+                    },
+                    onChanged: (value) {
+                      debugPrint(value);
+                      if (value.length == 6) {
+                        setState(() {
+                          otp = value;
+                          openResend = false;
                           openNext = true;
-                          timer!.cancel();
-                          setState(() {
-                            otp = code.toString();
+                          if (timer!.isActive) {
+                            timer!.cancel();
+                          }
+                        });
+                      } else {
+                        setState(() {
+                          openResend = true;
+                          openNext = false;
                         });
                       }
+                    },
+                    beforeTextPaste: (text) {
+                      debugPrint("Allowing to paste $text");
+                      //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
+                      //but you can show anything you want here, like your pop up saying wrong paste format or etc
+                      return true;
                     },
                   ),
                 ),
@@ -385,7 +346,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 buildTime(context),
                 SizedBox(height: 32.h),
                 defaultButton3(
-                    press: ()  {
+                    press: () {
                       nextButton();
                     },
                     disablePress: openNext,
@@ -410,26 +371,24 @@ class _OtpScreenState extends State<OtpScreen> {
       children: [
         openResend
             ? InkWell(
-          onTap: () {
-            setState(() {
-              openResend = false;
-              openNext = false;
-              duration = const Duration(seconds: 15);
-            });
-            startTimer();
-            verifyPhone(
-                '${widget.countryId}${widget.phone}');
-
-          },
-          child: Text(
-            "resend ",
-            style: TextStyle(color: blueColor, fontSize: 18.sp),
-          ),
-        )
+                onTap: () {
+                  setState(() {
+                    openResend = false;
+                    openNext = false;
+                    duration = const Duration(minutes: 1);
+                  });
+                  startTimer();
+                  verifyPhone(widget.phoneWithCountry);
+                },
+                child: Text(
+                  "resend ",
+                  style: TextStyle(color: blueColor, fontSize: 18.sp),
+                ),
+              )
             : Text(
-          "resend ",
-          style: TextStyle(color: greyColor, fontSize: 18.sp),
-        ),
+                "resend ",
+                style: TextStyle(color: greyColor, fontSize: 18.sp),
+              ),
         Text(
           "code in ",
           style: TextStyle(color: black, fontSize: 18.sp),

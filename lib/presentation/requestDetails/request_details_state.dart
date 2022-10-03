@@ -12,7 +12,7 @@ class RequestDetailsErrorState extends RequestDetailsState {
 }
 
 class RequestDetailsSuccessState extends RequestDetailsState {
-  final RequestDetails? data;
+  final DataRequest? data;
 
   RequestDetailsSuccessState(this.data);
 }

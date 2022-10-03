@@ -52,7 +52,7 @@ String handleError(dynamic error) {
   return errorDescription;
 }
 
-String handleErrorFirebase(dynamic error) {
+String handleErrorFirebase(String type, dynamic error) {
   print("Exception222*************${error}");
   switch (error) {
     case "ERROR_EMAIL_ALREADY_IN_USE":
@@ -67,6 +67,8 @@ String handleErrorFirebase(dynamic error) {
       return "No user found with this email.";
     case "[firebase_auth/session-expired] The sms code has expired. Please re-send the verification code to try again.":
       return "The sms code has expired. Please re-send the verification code to try again.";
+    case "[firebase_auth/invalid-verification-code] The sms verification code used to create the phone auth credential is invalid. Please resend the verification code sms and be sure use the verification code provided by the user.":
+      return "The sms verification code used is invalid";
     case "ERROR_USER_DISABLED":
     case "user-disabled":
       return "User disabled.";
@@ -80,6 +82,10 @@ String handleErrorFirebase(dynamic error) {
     case "invalid-email":
       return "Email address is invalid.";
     default:
-      return "Login failed. Please try again.";
+      if (type == "login") {
+        return "Login failed. Please try again.";
+      } else {
+        return "register failed. Please try again.";
+      }
   }
 }

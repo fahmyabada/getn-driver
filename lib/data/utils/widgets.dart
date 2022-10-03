@@ -177,6 +177,35 @@ Widget defaultButton3(
       ),
     );
 
+Widget defaultButton2(
+        {required VoidCallback press,
+        bool disablePress = true,
+        required String text,
+        required Color backColor,
+        bool colorBorder = false,
+        required Color textColor}) =>
+    ElevatedButton(
+      onPressed: disablePress ? press : null,
+      style: TextButton.styleFrom(
+        backgroundColor: backColor,
+        foregroundColor: textColor,
+        padding: EdgeInsets.symmetric(vertical: 10.r, horizontal: 35.r),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+          side: colorBorder
+              ? const BorderSide(color: grey2)
+              : const BorderSide(color: Colors.transparent),
+        ),
+        textStyle: TextStyle(
+            fontSize: 24.sm,
+            fontWeight: FontWeight.bold,
+            fontStyle: FontStyle.italic),
+      ),
+      child: Text(
+        text,
+      ),
+    );
+
 void showToastt({
   required String text,
   required ToastStates state,

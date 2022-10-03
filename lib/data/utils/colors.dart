@@ -9,7 +9,7 @@ const yellowLightColor = Color(0xFFFDF5E6);
 const redDarkColor = Color(0xFF2B0100);
 const redColor = Color(0xFFD90404);
 const greyColor = Color(0xFF707070);
-const greenColor = Color(0xFF03A60F);
+const greenColor = Colors.green;
 const greenLightColor = Color(0xFFE5F6E7);
 const blueColor = Color(0xff47B5FF);
 

@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:getn_driver/data/model/requestDetails/RequestDetails.dart';
+import 'package:getn_driver/data/model/request/DataRequest.dart';
 import 'package:getn_driver/data/model/trips/Data.dart';
 import 'package:getn_driver/data/model/trips/Trips.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetRequestDetailsUseCase.dart';
@@ -19,7 +19,7 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
   var getRequestDetailsUseCase = getIt<GetRequestDetailsUseCase>();
   var getTripsRequestDetailsUseCase = getIt<GetTripsRequestDetailsUseCase>();
 
-  RequestDetails? requestDetails;
+  DataRequest? requestDetails;
   List<Data> trips = [];
   int indexTrips = 0;
   bool loadingMoreTrips = false;
@@ -37,7 +37,7 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
   }
 
   RequestDetailsState eitherLoadedOrErrorStateRequestDetails(
-      Either<String, RequestDetails?> data, String id) {
+      Either<String, DataRequest?> data, String id) {
     return data.fold((failure1) {
       loadingRequest = false;
       failureRequest = failure1;

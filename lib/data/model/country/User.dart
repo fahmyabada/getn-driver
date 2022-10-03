@@ -2,19 +2,20 @@ import 'Image.dart';
 
 class User {
   User({
-      Image? image, 
-      bool? status, 
-      String? createdAt, 
-      String? updatedAt, 
-      bool? social, 
-      String? birthDate, 
-      String? id, 
-      String? email, 
-      String? password, 
-      String? role, 
-      String? name, 
-      int? v, 
-      List<String>? wishlist,}){
+    Image? image,
+    bool? status,
+    String? createdAt,
+    String? updatedAt,
+    bool? social,
+    String? birthDate,
+    String? id,
+    String? email,
+    String? password,
+    String? role,
+    String? name,
+    int? v,
+    List<String>? wishlist,
+  }) {
     _image = image;
     _status = status;
     _createdAt = createdAt;
@@ -28,10 +29,12 @@ class User {
     _name = name;
     _v = v;
     _wishlist = wishlist;
-}
+  }
 
   User.fromJson(dynamic json) {
-    _image = json['image'] != null ? Image.fromJson(json['image']) : null;
+    _image = json['image'] != null
+        ? Image.fromJson(json['image'])
+        : Image(mimetype: "", src: "");
     _status = json['status'];
     _createdAt = json['createdAt'];
     _updatedAt = json['updatedAt'];
@@ -45,6 +48,7 @@ class User {
     _v = json['__v'];
     _wishlist = json['wishlist'] != null ? json['wishlist'].cast<String>() : [];
   }
+
   Image? _image;
   bool? _status;
   String? _createdAt;
@@ -60,17 +64,29 @@ class User {
   List<String>? _wishlist;
 
   Image? get image => _image;
+
   bool? get status => _status;
+
   String? get createdAt => _createdAt;
+
   String? get updatedAt => _updatedAt;
+
   bool? get social => _social;
+
   String? get birthDate => _birthDate;
+
   String? get id => _id;
+
   String? get email => _email;
+
   String? get password => _password;
+
   String? get role => _role;
+
   String? get name => _name;
+
   int? get v => _v;
+
   List<String>? get wishlist => _wishlist;
 
   Map<String, dynamic> toJson() {
@@ -92,5 +108,4 @@ class User {
     map['wishlist'] = _wishlist;
     return map;
   }
-
 }

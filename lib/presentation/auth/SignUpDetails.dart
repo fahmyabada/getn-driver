@@ -80,7 +80,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                   controller: fullNameController,
                                   type: TextInputType.text,
                                   label: "Full Name",
-                                  textSize: 22,
+                                  textSize: 20,
                                   border: false,
                                   borderRadius: 50,
                                   validatorText: fullNameController.text,
@@ -96,7 +96,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                   controller: emailController,
                                   type: TextInputType.text,
                                   label: "Email",
-                                  textSize: 22,
+                                  textSize: 20,
                                   border: false,
                                   borderRadius: 50,
                                   validatorText: emailController.text,
@@ -177,7 +177,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                 Text(
                                     "i confirm that i have read & agree to the",
                                     style: TextStyle(
-                                        fontSize: 20.sp, color: black)),
+                                        fontSize: 17.sp, color: black)),
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -188,12 +188,12 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                       },
                                       child: Text("Terms & condition ",
                                           style: TextStyle(
-                                              fontSize: 20.sp,
+                                              fontSize: 17.sp,
                                               color: accentColor)),
                                     ),
                                     Text("and Privacy Policy",
                                         style: TextStyle(
-                                            fontSize: 20.sp, color: black)),
+                                            fontSize: 17.sp, color: black)),
                                   ],
                                 )
                               ],
@@ -266,7 +266,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                 },
               ),
               Text(SignCubit.get(context).roles[0].title!,
-                  style: TextStyle(fontSize: 20.sp)),
+                  style: TextStyle(fontSize: 18.sp)),
             ],
           ),
         ),
@@ -296,7 +296,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
               ),
               Text(
                 SignCubit.get(context).roles[1].title!,
-                style: TextStyle(fontSize: 20.sp),
+                style: TextStyle(fontSize: 18.sp),
               ),
             ],
           ),

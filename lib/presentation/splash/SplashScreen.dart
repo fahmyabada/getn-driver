@@ -29,19 +29,19 @@ class SplashScreen extends StatelessWidget {
             if (getIt<SharedPreferences>().getString("typeSign") != null &&
                 getIt<SharedPreferences>().getString("token") != null) {
               if (getIt<SharedPreferences>().getString("typeSign") == "sign") {
-                navigateTo(context, const DriverInformationScreen());
+                navigateAndFinish(context, const DriverInformationScreen());
               } else if (getIt<SharedPreferences>().getString("typeSign") ==
                   "signWithInformation") {
-                navigateTo(
+                navigateAndFinish(
                     context,
                     BlocProvider(
                         create: (context) => RequestCubit(),
                         child: const RequestScreen()));
               } else {
-                navigateTo(context, const SignInScreen());
+                navigateAndFinish(context, const SignInScreen());
               }
             } else {
-              navigateTo(context, const SignInScreen());
+              navigateAndFinish(context, const SignInScreen());
             }
           }
         }, builder: (context, state) {

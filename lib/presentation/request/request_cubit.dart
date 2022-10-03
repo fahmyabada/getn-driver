@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:getn_driver/data/model/request/DataRequest.dart';
 import 'package:getn_driver/data/model/request/Request.dart';
 import 'package:getn_driver/domain/usecase/request/GetRequestUseCase.dart';
+import 'package:getn_driver/domain/usecase/request/PutRequestUseCase.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:meta/meta.dart';
 
@@ -15,6 +16,7 @@ class RequestCubit extends Cubit<RequestState> {
   static RequestCubit get(context) => BlocProvider.of(context);
 
   var getRequestUseCase = getIt<GetRequestUseCase>();
+  var putRequestUseCase = getIt<PutRequestUseCase>();
 
   List<DataRequest> requestCurrent = [];
 
@@ -25,6 +27,10 @@ class RequestCubit extends Cubit<RequestState> {
   List<DataRequest> requestPast = [];
   int indexPast = 0;
   bool loadingPast = false;
+
+  List<DataRequest> requestPending = [];
+  int indexPending = 0;
+  bool loadingPending = false;
 
   void getRequestCurrent(int index) async {
     emit(RequestCurrentInitial());
@@ -52,7 +58,7 @@ class RequestCubit extends Cubit<RequestState> {
 
   void getRequestUpComing(int index) async {
     var body = {
-      "status": ["pending", "accept"],
+      "status": "accept",
       "page": index,
       "sort": 'from.date:-1'
     };
@@ -81,7 +87,7 @@ class RequestCubit extends Cubit<RequestState> {
         loadingUpComing = true;
       }
 
-      return RequestCurrentSuccessState(data.data);
+      return RequestUpComingSuccessState(data.data);
     });
   }
 
@@ -100,7 +106,7 @@ class RequestCubit extends Cubit<RequestState> {
         }
       }
 
-      return RequestCurrentSuccessState(data.data);
+      return RequestUpComingSuccessState(data.data);
     });
   }
 
@@ -128,7 +134,7 @@ class RequestCubit extends Cubit<RequestState> {
   RequestState eitherLoadedOrErrorStateRequestPast(
       Either<String, Request?> data) {
     return data.fold((failure1) {
-      return RequestUpComingErrorState(failure1);
+      return RequestPastErrorState(failure1);
     }, (data) {
       if (data!.data!.isNotEmpty) {
         requestPast.clear();
@@ -139,14 +145,14 @@ class RequestCubit extends Cubit<RequestState> {
         loadingPast = true;
       }
 
-      return RequestCurrentSuccessState(data.data);
+      return RequestPastSuccessState(data.data);
     });
   }
 
   RequestState eitherLoadedOrErrorStateRequestPast2(
       Either<String, Request?> data) {
     return data.fold((failure1) {
-      return RequestUpComingErrorState(failure1);
+      return RequestPastErrorState(failure1);
     }, (data) {
       if (data!.data!.isNotEmpty) {
         if (data.totalCount! >= requestPast.length) {
@@ -158,9 +164,80 @@ class RequestCubit extends Cubit<RequestState> {
         }
       }
 
-      return RequestCurrentSuccessState(data.data);
+      return RequestPastSuccessState(data.data);
     });
   }
 
+
+  void getRequestPending(int index) async {
+    var body = {
+      "status": "pending",
+      "page": index,
+      "sort": 'createdAt:-1',
+      "select-client": 'name image'
+    };
+    if (index > 1) {
+      getRequestUseCase.execute(body).then((value) {
+        emit(eitherLoadedOrErrorStateRequestPending2(value));
+      });
+    } else {
+      emit(RequestPendingInitial());
+      getRequestUseCase.execute(body).then((value) {
+        emit(eitherLoadedOrErrorStateRequestPending(value));
+      });
+    }
+  }
+
+  RequestState eitherLoadedOrErrorStateRequestPending(
+      Either<String, Request?> data) {
+    return data.fold((failure1) {
+      return RequestPendingErrorState(failure1);
+    }, (data) {
+      if (data!.data!.isNotEmpty) {
+        requestPending.clear();
+        requestPending.addAll(data.data!);
+        indexPending = indexPending + 1;
+        loadingPending = true;
+      }
+
+      return RequestPendingSuccessState(data.data);
+    });
+  }
+
+  RequestState eitherLoadedOrErrorStateRequestPending2(
+      Either<String, Request?> data) {
+    return data.fold((failure1) {
+      return RequestPendingErrorState(failure1);
+    }, (data) {
+      if (data!.data!.isNotEmpty) {
+        if (data.totalCount! >= requestPending.length) {
+          loadingPending = true;
+          requestPending.addAll(data.data!);
+          indexPending = indexPending + 1;
+        } else {
+          loadingPending = false;
+        }
+      }
+
+      return RequestPendingSuccessState(data.data);
+    });
+  }
+
+  void editRequest(String id, String type) async {
+    emit(RequestEditInitial());
+
+    putRequestUseCase.execute(id, type).then((value) {
+      emit(eitherLoadedOrErrorStateRequestEdit(value));
+    });
+  }
+
+  RequestState eitherLoadedOrErrorStateRequestEdit(
+      Either<String, DataRequest?> data) {
+    return data.fold((failure1) {
+      return RequestEditErrorState(failure1);
+    }, (data) {
+      return RequestEditSuccessState(data);
+    });
+  }
 
 }
