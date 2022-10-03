@@ -8,9 +8,31 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart' as path_provider;
 
+class ReceivedNotification {
+  ReceivedNotification({
+    required this.id,
+    required this.title,
+    required this.body,
+    required this.payload,
+  });
+
+  final int id;
+  final String? title;
+  final String? body;
+  final String? payload;
+}
+
 class LocalNotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
+  /// Streams are created so that app can respond to notification-related events
+  /// since the plugin is initialised in the `main` function
+  static final StreamController<ReceivedNotification> didReceiveLocalNotificationStream =
+  StreamController<ReceivedNotification>.broadcast();
+
+  static final StreamController<String?> selectNotificationStream =
+  StreamController<String?>.broadcast();
+
 
   static void initialize(BuildContext context) {
     //Initialization Settings for iOS
@@ -24,6 +46,9 @@ class LocalNotificationService {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
+    /// A notification action which triggers a App navigation event
+    const String navigationActionId = 'id_3';
+
     // initializationSettings  for Android
     InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
@@ -32,6 +57,21 @@ class LocalNotificationService {
 
     _notificationsPlugin.initialize(
       initializationSettings,
+      onDidReceiveNotificationResponse:
+          (NotificationResponse notificationResponse) {
+        switch (notificationResponse.notificationResponseType) {
+          case NotificationResponseType.selectedNotification:
+            selectNotificationStream.add(notificationResponse.payload);
+            break;
+          case NotificationResponseType.selectedNotificationAction:
+            if (notificationResponse.actionId == navigationActionId) {
+              selectNotificationStream.add(notificationResponse.payload);
+            }
+            break;
+        }
+      },
+      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
+
       onSelectNotification: (String? payload) async {
         if (kDebugMode) {
           print("onSelectNotification*******");
