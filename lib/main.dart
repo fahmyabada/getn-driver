@@ -12,6 +12,7 @@ import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/firebase_options.dart';
 import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
+import 'package:getn_driver/presentation/notificationService/local_notification_service.dart';
 import 'package:getn_driver/presentation/splash/SplashScreen.dart';
 
 void main() async {
@@ -38,7 +39,8 @@ void main() async {
 Future<void> backgroundHandler(RemoteMessage message) async {
   if (kDebugMode) {
     print('messageData ********=${message.data.toString()}');
-    print('messageTitle ********=${message.notification!.title}');
+    print("hhhhhhhhhh");
+    print('messageTitle ********=${message.notification!.toString()}');
   }
 }
 

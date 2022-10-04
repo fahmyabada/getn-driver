@@ -1,4 +1,6 @@
+﻿import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/presentation/notificationService/local_notification_service.dart';
 import 'package:getn_driver/presentation/request/request_cubit.dart';
 import 'package:getn_driver/presentation/requestDetails/RequestDetailsScreen.dart';
 import 'package:getn_driver/presentation/requestDetails/request_details_cubit.dart';
@@ -35,6 +38,12 @@ class _RequestScreenState extends State<RequestScreen>
   @override
   void initState() {
     super.initState();
+
+    LocalNotificationService.initialize(context);
+    registerNotification();
+    _configureDidReceiveLocalNotificationSubject();
+    _configureSelectNotificationSubject();
+
     // first load
     RequestCubit.get(context).getRequestCurrent(1);
     RequestCubit.get(context).getRequestUpComing(1);
@@ -63,7 +72,7 @@ class _RequestScreenState extends State<RequestScreen>
           RequestCubit.get(context).indexPast = 1;
           RequestCubit.get(context).getRequestPast(1);
           typeRequest = "past";
-        }else if (_currentIndex == 3) {
+        } else if (_currentIndex == 3) {
           RequestCubit.get(context).indexPending = 1;
           RequestCubit.get(context).getRequestPending(1);
           typeRequest = "pending";
@@ -75,6 +84,8 @@ class _RequestScreenState extends State<RequestScreen>
 
   @override
   void dispose() {
+    LocalNotificationService.didReceiveLocalNotificationStream.close();
+    LocalNotificationService.selectNotificationStream.close();
     _tabController!.dispose();
     super.dispose();
     _controllerUpcoming.removeListener(_loadMoreUpComing);
@@ -102,7 +113,6 @@ class _RequestScreenState extends State<RequestScreen>
     RequestCubit.get(context)
         .getRequestPending(RequestCubit.get(context).indexPending);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -619,7 +629,8 @@ class _RequestScreenState extends State<RequestScreen>
                               context,
                               BlocProvider(
                                   create: (context) => RequestDetailsCubit()
-                                    ..getRequestDetails(upComing.id!)..getTripsRequestDetails(1, upComing.id!),
+                                    ..getRequestDetails(upComing.id!)
+                                    ..getTripsRequestDetails(1, upComing.id!),
                                   child: const RequestDetailsScreen()));
                         },
                       );
@@ -880,364 +891,369 @@ class _RequestScreenState extends State<RequestScreen>
                   ),
             state is RequestPendingInitial
                 ? const Center(
-                child: CircularProgressIndicator(
-                  color: black,
-                ))
+                    child: CircularProgressIndicator(
+                    color: black,
+                  ))
                 : ListView.builder(
-              controller: _controllerPending
-                ..addListener(() async {
-                  if (_controllerPending.position.extentAfter == 0) {
-                    if (kDebugMode) {
-                      print(
-                        '_controllerPending00*******${RequestCubit.get(context).loadingPending}');
-                    }
-                    if (RequestCubit.get(context).loadingPending &&
-                        typeRequest == "pending") {
-                      _loadMorePending();
-                    }
-                  }
-                }),
-              // key: const PageStorageKey<String>('tab2'),
-              scrollDirection: Axis.vertical,
-              itemCount: RequestCubit.get(context).requestPending.length,
-              itemBuilder: (context, i) {
-                var pending = RequestCubit.get(context).requestPending[i];
-                var startDate = DateTime.parse(pending.from!.date!);
-                var endDate = DateTime.parse(pending.to!);
+                    controller: _controllerPending
+                      ..addListener(() async {
+                        if (_controllerPending.position.extentAfter == 0) {
+                          if (kDebugMode) {
+                            print(
+                                '_controllerPending00*******${RequestCubit.get(context).loadingPending}');
+                          }
+                          if (RequestCubit.get(context).loadingPending &&
+                              typeRequest == "pending") {
+                            _loadMorePending();
+                          }
+                        }
+                      }),
+                    // key: const PageStorageKey<String>('tab2'),
+                    scrollDirection: Axis.vertical,
+                    itemCount: RequestCubit.get(context).requestPending.length,
+                    itemBuilder: (context, i) {
+                      var pending = RequestCubit.get(context).requestPending[i];
+                      var startDate = DateTime.parse(pending.from!.date!);
+                      var endDate = DateTime.parse(pending.to!);
 
-                return InkWell(
-                  child: Container(
-                    margin: EdgeInsets.symmetric(
-                        horizontal: 10.r, vertical: 10.r),
-                    child: Card(
-                      elevation: 5.r,
-                      clipBehavior: Clip.antiAlias,
-                      child: Container(
-                        color: white,
-                        padding: EdgeInsets.symmetric(
-                            vertical: 10.r, horizontal: 7.r),
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            Row(
-                              children: [
-                                  ClipOval(
-                                    clipBehavior: Clip.antiAlias,
-                                    child: ImageTools.image(
-                                        fit: BoxFit.fill,
-                                        url: pending.client2!.image!.src,
-                                        height: 70.w,
-                                        width: 70.w),
+                      return InkWell(
+                        child: Container(
+                          margin: EdgeInsets.symmetric(
+                              horizontal: 10.r, vertical: 10.r),
+                          child: Card(
+                            elevation: 5.r,
+                            clipBehavior: Clip.antiAlias,
+                            child: Container(
+                              color: white,
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10.r, horizontal: 7.r),
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: 5.h,
                                   ),
-                                  Expanded(
-                                  child: Container(
-                                    margin:
-                                    EdgeInsets.symmetric(horizontal: 20.r),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          height: 5.h,
-                                        ),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                pending.client2!.name!,
-                                                style: TextStyle(
-                                                    fontSize: 17.sp,
-                                                    color: black,
-                                                    fontWeight:
-                                                    FontWeight.bold),
+                                  Row(
+                                    children: [
+                                      ClipOval(
+                                        clipBehavior: Clip.antiAlias,
+                                        child: ImageTools.image(
+                                            fit: BoxFit.fill,
+                                            url: pending.client2!.image!.src,
+                                            height: 70.w,
+                                            width: 70.w),
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 20.r),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                height: 5.h,
                                               ),
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      pending.client2!.name!,
+                                                      style: TextStyle(
+                                                          fontSize: 17.sp,
+                                                          color: black,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 5.h,
+                                              ),
+                                              Text(
+                                                '${pending.client2!.country?.title!.en!}, ${pending.client2!.city?.title!.en!}, ${pending.client2!.area?.title!.en!}',
+                                                style: TextStyle(
+                                                    fontSize: 15.sp,
+                                                    color: grey2),
+                                              ),
+                                              SizedBox(
+                                                height: 5.h,
+                                              ),
+                                              RatingBar.builder(
+                                                minRating: _userRating,
+                                                itemBuilder: (context, index) =>
+                                                    const Icon(
+                                                  Icons.star,
+                                                  color: Colors.amber,
+                                                ),
+                                                itemCount: 5,
+                                                itemSize: 17.w,
+                                                updateOnDrag: true,
+                                                onRatingUpdate: (rating) {
+                                                  setState(() {
+                                                    _userRating = rating;
+                                                  });
+                                                },
+                                                unratedColor:
+                                                    Colors.amber.withAlpha(50),
+                                                direction: Axis.horizontal,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 15.h,
+                                  ),
+                                  // divider
+                                  Container(
+                                    width: 1.sw,
+                                    height: 1.h,
+                                    color: Colors.grey[400],
+                                  ),
+                                  SizedBox(
+                                    height: 15.h,
+                                  ),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.location_on,
+                                        color: greenColor,
+                                        size: 20.w,
+                                      ),
+                                      SizedBox(
+                                        width: 10.w,
+                                      ),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Picked Point',
+                                              style: TextStyle(
+                                                  color: black,
+                                                  fontSize: 18.sp,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            SizedBox(height: 10.h),
+                                            Text(
+                                              pending.referenceId!.toString(),
+                                              // upComing.from!.placeTitle!,
+                                              style: TextStyle(
+                                                  color: grey2,
+                                                  fontSize: 16.sp),
                                             ),
                                           ],
                                         ),
-                                        SizedBox(
-                                          height: 5.h,
-                                        ),
-                                        Text(
-                                          '${pending.client2!.country?.title!.en!}, ${pending.client2!.city?.title!.en!}, ${pending.client2!.area?.title!.en!}',
-                                          style: TextStyle(
-                                              fontSize: 15.sp, color: grey2),
-                                        ),
-                                        SizedBox(
-                                          height: 5.h,
-                                        ),
-                                        RatingBar.builder(
-                                          minRating: _userRating,
-                                          itemBuilder: (context, index) =>
-                                          const Icon(
-                                            Icons.star,
-                                            color: Colors.amber,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            '12:00 am',
+                                            style: TextStyle(
+                                              color: grey2,
+                                              fontSize: 15.sp,
+                                            ),
                                           ),
-                                          itemCount: 5,
-                                          itemSize: 17.w,
-                                          updateOnDrag: true,
-                                          onRatingUpdate: (rating) {
-                                            setState(() {
-                                              _userRating = rating;
-                                            });
-                                          },
-                                          unratedColor:
-                                          Colors.amber.withAlpha(50),
-                                          direction: Axis.horizontal,
+                                          Text(
+                                            '11/12/2022',
+                                            style: TextStyle(
+                                                color: grey2, fontSize: 15.sp),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                  IntrinsicHeight(
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Expanded(
+                                          child: Card(
+                                            color: yellowLightColor,
+                                            child: Padding(
+                                              padding: EdgeInsets.all(15.r),
+                                              child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      'Days',
+                                                      style: TextStyle(
+                                                          color: grey2,
+                                                          fontSize: 13.sp),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 5.h,
+                                                    ),
+                                                    Text(
+                                                      '${pending.days!.length} Days',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          color: black,
+                                                          fontSize: 13.sp,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ]),
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Card(
+                                            color: rough,
+                                            child: Padding(
+                                              padding: EdgeInsets.all(15.r),
+                                              child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      'Start Date',
+                                                      style: TextStyle(
+                                                          color: grey2,
+                                                          fontSize: 12.sp),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 5.h,
+                                                    ),
+                                                    Text(
+                                                      DateFormat.yMMMd()
+                                                          .format(startDate),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          color: black,
+                                                          fontSize: 13.sp,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ]),
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Card(
+                                            color: greenLightColor,
+                                            child: Padding(
+                                              padding: EdgeInsets.all(15.r),
+                                              child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      'End Date',
+                                                      style: TextStyle(
+                                                          color: grey2,
+                                                          fontSize: 12.sp),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 5.h,
+                                                    ),
+                                                    Text(
+                                                      DateFormat.yMMMd()
+                                                          .format(endDate),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          color: black,
+                                                          fontSize: 13.sp,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ]),
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Card(
+                                            color: blueLight,
+                                            child: Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 15.r),
+                                              child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      'Cost',
+                                                      style: TextStyle(
+                                                          color: grey2,
+                                                          fontSize: 13.sp),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 5.h,
+                                                    ),
+                                                    Text(
+                                                      pending.totalPrice
+                                                          .toString(),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          color: black,
+                                                          fontSize: 13.sp,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ]),
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: 15.h,
-                            ),
-                            // divider
-                            Container(
-                              width: 1.sw,
-                              height: 1.h,
-                              color: Colors.grey[400],
-                            ),
-                            SizedBox(
-                              height: 15.h,
-                            ),
-                            Row(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.location_on,
-                                  color: greenColor,
-                                  size: 20.w,
-                                ),
-                                SizedBox(
-                                  width: 10.w,
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                  SizedBox(
+                                    height: 15.h,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      Text(
-                                        'Picked Point',
-                                        style: TextStyle(
-                                            color: black,
-                                            fontSize: 18.sp,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(height: 10.h),
-                                      Text(
-                                        pending.referenceId!.toString(),
-                                        // upComing.from!.placeTitle!,
-                                        style: TextStyle(
-                                            color: grey2,
-                                            fontSize: 16.sp),
-                                      ),
+                                      defaultButton2(
+                                          press: () {
+                                            RequestCubit.get(context)
+                                                .editRequest(
+                                                    pending.id!, "accept");
+                                          },
+                                          text: "Accept",
+                                          backColor: greenColor,
+                                          textColor: white),
+                                      defaultButton2(
+                                          press: () {
+                                            RequestCubit.get(context)
+                                                .editRequest(
+                                                    pending.id!, "reject");
+                                          },
+                                          colorBorder: true,
+                                          text: "Reject",
+                                          backColor: white,
+                                          textColor: grey2),
                                     ],
                                   ),
-                                ),
-                                Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '12:00 am',
-                                      style: TextStyle(
-                                        color: grey2,
-                                        fontSize: 15.sp,
-                                      ),
-                                    ),
-                                    Text(
-                                      '11/12/2022',
-                                      style: TextStyle(
-                                          color: grey2, fontSize: 15.sp),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            IntrinsicHeight(
-                              child: Row(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    child: Card(
-                                      color: yellowLightColor,
-                                      child: Padding(
-                                        padding: EdgeInsets.all(15.r),
-                                        child: Column(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                'Days',
-                                                style: TextStyle(
-                                                    color: grey2,
-                                                    fontSize: 13.sp),
-                                              ),
-                                              SizedBox(
-                                                height: 5.h,
-                                              ),
-                                              Text(
-                                                '${pending.days!.length} Days',
-                                                textAlign:
-                                                TextAlign.center,
-                                                style: TextStyle(
-                                                    color: black,
-                                                    fontSize: 13.sp,
-                                                    fontWeight:
-                                                    FontWeight.bold),
-                                              ),
-                                            ]),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Card(
-                                      color: rough,
-                                      child: Padding(
-                                        padding: EdgeInsets.all(15.r),
-                                        child: Column(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                'Start Date',
-                                                style: TextStyle(
-                                                    color: grey2,
-                                                    fontSize: 12.sp),
-                                              ),
-                                              SizedBox(
-                                                height: 5.h,
-                                              ),
-                                              Text(
-                                                DateFormat.yMMMd()
-                                                    .format(startDate),
-                                                textAlign:
-                                                TextAlign.center,
-                                                style: TextStyle(
-                                                    color: black,
-                                                    fontSize: 13.sp,
-                                                    fontWeight:
-                                                    FontWeight.bold),
-                                              ),
-                                            ]),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Card(
-                                      color: greenLightColor,
-                                      child: Padding(
-                                        padding: EdgeInsets.all(15.r),
-                                        child: Column(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                'End Date',
-                                                style: TextStyle(
-                                                    color: grey2,
-                                                    fontSize: 12.sp),
-                                              ),
-                                              SizedBox(
-                                                height: 5.h,
-                                              ),
-                                              Text(
-                                                DateFormat.yMMMd()
-                                                    .format(endDate),
-                                                textAlign:
-                                                TextAlign.center,
-                                                style: TextStyle(
-                                                    color: black,
-                                                    fontSize: 13.sp,
-                                                    fontWeight:
-                                                    FontWeight.bold),
-                                              ),
-                                            ]),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Card(
-                                      color: blueLight,
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 15.r),
-                                        child: Column(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                'Cost',
-                                                style: TextStyle(
-                                                    color: grey2,
-                                                    fontSize: 13.sp),
-                                              ),
-                                              SizedBox(
-                                                height: 5.h,
-                                              ),
-                                              Text(
-                                                pending.totalPrice
-                                                    .toString(),
-                                                textAlign:
-                                                TextAlign.center,
-                                                style: TextStyle(
-                                                    color: black,
-                                                    fontSize: 13.sp,
-                                                    fontWeight:
-                                                    FontWeight.bold),
-                                              ),
-                                            ]),
-                                      ),
-                                    ),
+                                  SizedBox(
+                                    height: 5.h,
                                   ),
                                 ],
                               ),
                             ),
-                            SizedBox(
-                              height: 15.h,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                defaultButton2(
-                                    press: () {
-                                      RequestCubit.get(context).editRequest(pending.id!, "accept");
-                                    },
-                                    text: "Accept",
-                                    backColor: greenColor,
-                                    textColor: white),
-                                defaultButton2(
-                                    press: () {
-                                      RequestCubit.get(context).editRequest(pending.id!, "reject");
-                                    },
-                                    colorBorder: true,
-                                    text: "Reject",
-                                    backColor: white,
-                                    textColor: grey2),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
+                        onTap: () {},
+                      );
+                    },
                   ),
-                  onTap: () {
-                  },
-                );
-              },
-            ),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
@@ -1256,7 +1272,8 @@ class _RequestScreenState extends State<RequestScreen>
           items: const [
             BottomNavigationBarItem(
                 icon: Icon(Icons.settings), label: "current "),
-            BottomNavigationBarItem(icon: Icon(Icons.upcoming), label: "upcoming "),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.upcoming), label: "upcoming "),
             BottomNavigationBarItem(
                 icon: Icon(Icons.person_pin_outlined), label: "past "),
             BottomNavigationBarItem(
@@ -1271,6 +1288,12 @@ class _RequestScreenState extends State<RequestScreen>
     // 2. Instantiate Firebase Messaging
     _messaging = FirebaseMessaging.instance;
 
+    final idToken = await FirebaseAuth.instance.currentUser!.getIdToken();
+    print('token=****************** $idToken');
+    _messaging.getToken().then((token) {
+      // token = "d7HPsTnxS6y7vuIyPGv1xJ:APA91bFqL-P90luB2ciiYueBS2AbeanvodSA0MCmIsUuOQEJdWY8dzEtozkRyy8YV1z-YJiao1phhCu9Ej17gBWob9XqL1jZvsGHsCpBMpyncz14Ixbp1C0N-8RDLnZuPCcuNm9_4Jnb";
+      print('token fcm=****************** $token');
+    });
     // 3. On iOS, this helps to take the user permissions
     NotificationSettings settings = await _messaging.requestPermission(
       alert: true,
@@ -1287,14 +1310,15 @@ class _RequestScreenState extends State<RequestScreen>
       // when you click on notification app open from terminated state and you can get notification data in this method
       _messaging.getInitialMessage().then((RemoteMessage? message) {
         if (kDebugMode) {
-          print("FirebaseMessaging.instance.getInitialMessage********");
+          print(
+              "FirebaseMessaging.instance.getInitialMessage********${message?.data}");
         }
         if (message != null) {
           if (kDebugMode) {
             print("New Notification********");
           }
 
-          if (message.data['title'] != null) {}
+          if (message.data['title_en'] != null) {}
         }
       });
 
@@ -1302,15 +1326,19 @@ class _RequestScreenState extends State<RequestScreen>
       FirebaseMessaging.onMessage.listen(
         (message) {
           if (kDebugMode) {
-            print("FirebaseMessaging.onMessage.listen********");
+            print("FirebaseMessaging.onMessage.listenhhh********${message}");
           }
+          RequestCubit.get(context).indexUpComing = 1;
+          RequestCubit.get(context).getRequestUpComing(1);
+          typeRequest = "upComing";
+          _tabController!.animateTo(1);
           if (message.notification != null) {
             if (kDebugMode) {
-              print(message.notification!.title);
-              print(message.notification!.body);
-              print("message.data11 ${message.data}");
+              print("message.datatitle***** ${message.notification!.title}");
+              print("message.databody***** ${message.notification!.body}");
+              print("message.data11***** ${message.data}");
             }
-            // LocalNotificationService.createAndDisplayNotification(message);
+            LocalNotificationService.createAndDisplayNotification(message);
           }
         },
       );
@@ -1319,17 +1347,72 @@ class _RequestScreenState extends State<RequestScreen>
       FirebaseMessaging.onMessageOpenedApp.listen(
         (message) {
           if (kDebugMode) {
-            print("FirebaseMessaging.onMessageOpenedApp.listen********");
+            print(
+                "FirebaseMessaging.onMessageOpenedApp.listen********${message.data}");
           }
           if (message.notification != null) {
             if (kDebugMode) {
               print(message.notification!.title);
               print(message.notification!.body);
-              print("message.data22 ********${message.data['title']}");
+              print("message.data22 ********${message.data}");
             }
+            // Navigator.of(context).push(
+            //   MaterialPageRoute(
+            //     builder: (context) => const RequestScreen(),
+            //   ),
+            // );
+            // LocalNotificationService.createAndDisplayNotification(message);
           }
         },
       );
     }
+  }
+
+  void _configureSelectNotificationSubject() {
+    LocalNotificationService.selectNotificationStream.stream
+        .listen((String? payload) async {
+      print("payload************ $payload");
+      // RequestCubit.get(context).indexUpComing = 1;
+      // RequestCubit.get(context).getRequestUpComing(1);
+      // typeRequest = "upComing";
+      // _tabController!.animateTo(1);
+      // await Navigator.of(context).push(MaterialPageRoute<void>(
+      //   builder: (BuildContext context) => SecondPage(payload),
+      // ));
+    });
+  }
+
+  void _configureDidReceiveLocalNotificationSubject() {
+    LocalNotificationService.didReceiveLocalNotificationStream.stream
+        .listen((ReceivedNotification receivedNotification) async {
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: receivedNotification.title != null
+              ? Text(receivedNotification.title!)
+              : null,
+          content: receivedNotification.body != null
+              ? Text(receivedNotification.body!)
+              : null,
+          actions: <Widget>[
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              onPressed: () async {
+                Navigator.of(context, rootNavigator: true).pop();
+                print(
+                    "_configureDidReceiveLocalNotificationSubject*************");
+                // await Navigator.of(context).push(
+                //   MaterialPageRoute<void>(
+                //     builder: (BuildContext context) =>
+                //         SecondPage(receivedNotification.payload),
+                //   ),
+                // );
+              },
+              child: const Text('Ok'),
+            )
+          ],
+        ),
+      );
+    });
   }
 }

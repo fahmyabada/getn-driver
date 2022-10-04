@@ -25,29 +25,108 @@ class ReceivedNotification {
 class LocalNotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
+
   /// Streams are created so that app can respond to notification-related events
   /// since the plugin is initialised in the `main` function
-  static final StreamController<ReceivedNotification> didReceiveLocalNotificationStream =
-  StreamController<ReceivedNotification>.broadcast();
+  static final StreamController<ReceivedNotification>
+      didReceiveLocalNotificationStream =
+      StreamController<ReceivedNotification>.broadcast();
 
   static final StreamController<String?> selectNotificationStream =
-  StreamController<String?>.broadcast();
+      StreamController<String?>.broadcast();
 
+  /// Defines a iOS/MacOS notification category for plain actions.
+  static const String darwinNotificationCategoryPlain = 'plainCategory';
+
+  /// Defines a iOS/MacOS notification category for text input actions.
+  static const String darwinNotificationCategoryText = 'textCategory';
+
+  /// A notification action which triggers a App navigation event
+  static const String navigationActionId = 'id_3';
+
+  //Initialization Settings for Android
+  static const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  @pragma('vm:entry-point')
+  static void notificationTapBackground(
+      NotificationResponse notificationResponse) {
+    // ignore: avoid_print
+    print('notification(${notificationResponse.id}) action tapped: '
+        '${notificationResponse.actionId} with'
+        ' payload: ${notificationResponse.payload}');
+    if (notificationResponse.input?.isNotEmpty ?? false) {
+      // ignore: avoid_print
+      print(
+          'notification action tapped with input: ${notificationResponse.input}');
+    }
+  }
+
+  static List<DarwinNotificationCategory> darwinNotificationCategories =
+      <DarwinNotificationCategory>[
+    DarwinNotificationCategory(
+      darwinNotificationCategoryText,
+      actions: <DarwinNotificationAction>[
+        DarwinNotificationAction.text(
+          'text_1',
+          'Action 1',
+          buttonTitle: 'Send',
+          placeholder: 'Placeholder',
+        ),
+      ],
+    ),
+    DarwinNotificationCategory(
+      darwinNotificationCategoryPlain,
+      actions: <DarwinNotificationAction>[
+        DarwinNotificationAction.plain('id_1', 'Action 1'),
+        DarwinNotificationAction.plain(
+          'id_2',
+          'Action 2 (destructive)',
+          options: <DarwinNotificationActionOption>{
+            DarwinNotificationActionOption.destructive,
+          },
+        ),
+        DarwinNotificationAction.plain(
+          navigationActionId,
+          'Action 3 (foreground)',
+          options: <DarwinNotificationActionOption>{
+            DarwinNotificationActionOption.foreground,
+          },
+        ),
+        DarwinNotificationAction.plain(
+          'id_4',
+          'Action 4 (auth required)',
+          options: <DarwinNotificationActionOption>{
+            DarwinNotificationActionOption.authenticationRequired,
+          },
+        ),
+      ],
+      options: <DarwinNotificationCategoryOption>{
+        DarwinNotificationCategoryOption.hiddenPreviewShowTitle,
+      },
+    )
+  ];
 
   static void initialize(BuildContext context) {
     //Initialization Settings for iOS
     DarwinInitializationSettings initializationSettingsDarwin =
-        const DarwinInitializationSettings(
+        DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
       requestSoundPermission: false,
+      onDidReceiveLocalNotification:
+          (int id, String? title, String? body, String? payload) async {
+        didReceiveLocalNotificationStream.add(
+          ReceivedNotification(
+            id: id,
+            title: title,
+            body: body,
+            payload: payload,
+          ),
+        );
+      },
+      notificationCategories: darwinNotificationCategories,
     );
-    //Initialization Settings for Android
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-
-    /// A notification action which triggers a App navigation event
-    const String navigationActionId = 'id_3';
 
     // initializationSettings  for Android
     InitializationSettings initializationSettings = InitializationSettings(
@@ -72,24 +151,24 @@ class LocalNotificationService {
       },
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
 
-      onSelectNotification: (String? payload) async {
-        if (kDebugMode) {
-          print("onSelectNotification*******");
-        }
-        if (payload!.isNotEmpty) {
-          if (kDebugMode) {
-            print("Custom data key ********* = $payload");
-          }
-
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => Home(
-                title: payload,
-              ),
-            ),
-          );
-        }
-      },
+      // onSelectNotification: (String? payload) async {
+      //   if (kDebugMode) {
+      //     print("onSelectNotification*******");
+      //   }
+      //   if (payload!.isNotEmpty) {
+      //     if (kDebugMode) {
+      //       print("Custom data key ********* = $payload");
+      //     }
+      //
+      //     Navigator.of(context).push(
+      //       MaterialPageRoute(
+      //         builder: (context) => Home(
+      //           title: payload,
+      //         ),
+      //       ),
+      //     );
+      //   }
+      // },
     );
   }
 
@@ -116,6 +195,11 @@ class LocalNotificationService {
         'bigPicture',
       );
 
+      const DarwinNotificationDetails iosNotificationDetails =
+          DarwinNotificationDetails(
+        categoryIdentifier: darwinNotificationCategoryPlain,
+      );
+
       NotificationDetails notificationDetails = NotificationDetails(
           android: AndroidNotificationDetails(
             "FahmyAbadaNotificationApp",
@@ -124,17 +208,13 @@ class LocalNotificationService {
             importance: Importance.max,
             priority: Priority.high,
             largeIcon: FilePathAndroidBitmap(largeIconPath),
-            icon: message.notification?.android?.smallIcon,
+            // icon: message.notification?.android?.smallIcon,
             styleInformation: BigPictureStyleInformation(
               FilePathAndroidBitmap(bigPicturePath),
               hideExpandedLargeIcon: true,
             ),
           ),
-          iOS:  IOSNotificationDetails(
-            presentAlert: true,
-            presentBadge: true,
-            presentSound: true,
-          ));
+          iOS: iosNotificationDetails);
 
       await _notificationsPlugin.show(
         id,
@@ -142,7 +222,7 @@ class LocalNotificationService {
         message.notification!.body,
         notificationDetails,
         //payload : holds the data that is passed through the notification when the notification is tapped
-        payload: message.data['title'],
+        payload: message.data['title_ar'],
       );
     } on Exception catch (e) {
       if (kDebugMode) {
