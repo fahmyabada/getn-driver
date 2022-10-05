@@ -151,24 +151,6 @@ class LocalNotificationService {
       },
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
 
-      // onSelectNotification: (String? payload) async {
-      //   if (kDebugMode) {
-      //     print("onSelectNotification*******");
-      //   }
-      //   if (payload!.isNotEmpty) {
-      //     if (kDebugMode) {
-      //       print("Custom data key ********* = $payload");
-      //     }
-      //
-      //     Navigator.of(context).push(
-      //       MaterialPageRoute(
-      //         builder: (context) => Home(
-      //           title: payload,
-      //         ),
-      //       ),
-      //     );
-      //   }
-      // },
     );
   }
 
@@ -222,7 +204,7 @@ class LocalNotificationService {
         message.notification!.body,
         notificationDetails,
         //payload : holds the data that is passed through the notification when the notification is tapped
-        payload: message.data['title_ar'],
+        payload: message.data['title'],
       );
     } on Exception catch (e) {
       if (kDebugMode) {

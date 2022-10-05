@@ -7,7 +7,7 @@ class PutRequestUseCase {
 
   PutRequestUseCase(this.requestRepository);
 
-  Future<Either<String, DataRequest?>> execute(String id, String type) {
-    return requestRepository.putRequest(id, type);
+  Future<Either<String, DataRequest?>> execute(String id, String type, String comment) {
+    return requestRepository.putRequest(id, type, comment);
   }
 }

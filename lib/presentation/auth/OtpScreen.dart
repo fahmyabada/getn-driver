@@ -220,9 +220,7 @@ class _OtpScreenState extends State<OtpScreen> {
               .setString('typeSign', "signWithInformation");
           navigateTo(
               context,
-              BlocProvider(
-                  create: (context) => RequestCubit(),
-                  child: const RequestScreen()));
+              const RequestScreen());
         } else {
           getIt<SharedPreferences>().setString('typeSign', "sign");
           navigateTo(context, const DriverInformationScreen());

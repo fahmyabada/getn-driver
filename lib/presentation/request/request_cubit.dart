@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:getn_driver/data/model/request/DataRequest.dart';
 import 'package:getn_driver/data/model/request/Request.dart';
@@ -17,6 +18,8 @@ class RequestCubit extends Cubit<RequestState> {
 
   var getRequestUseCase = getIt<GetRequestUseCase>();
   var putRequestUseCase = getIt<PutRequestUseCase>();
+  String typeRequest = "current";
+  TabController? tabController;
 
   List<DataRequest> requestCurrent = [];
 
@@ -57,11 +60,7 @@ class RequestCubit extends Cubit<RequestState> {
   }
 
   void getRequestUpComing(int index) async {
-    var body = {
-      "status": "accept",
-      "page": index,
-      "sort": 'from.date:-1'
-    };
+    var body = {"status": "accept", "page": index, "sort": 'from.date:-1'};
     if (index > 1) {
       getRequestUseCase.execute(body).then((value) {
         emit(eitherLoadedOrErrorStateRequestUpComing2(value));
@@ -109,7 +108,6 @@ class RequestCubit extends Cubit<RequestState> {
       return RequestUpComingSuccessState(data.data);
     });
   }
-
 
   void getRequestPast(int index) async {
     var body = {
@@ -168,7 +166,6 @@ class RequestCubit extends Cubit<RequestState> {
     });
   }
 
-
   void getRequestPending(int index) async {
     var body = {
       "status": "pending",
@@ -223,10 +220,10 @@ class RequestCubit extends Cubit<RequestState> {
     });
   }
 
-  void editRequest(String id, String type) async {
+  void editRequest(String id, String type, String comment) async {
     emit(RequestEditInitial());
 
-    putRequestUseCase.execute(id, type).then((value) {
+    putRequestUseCase.execute(id, type, comment).then((value) {
       emit(eitherLoadedOrErrorStateRequestEdit(value));
     });
   }
@@ -239,5 +236,4 @@ class RequestCubit extends Cubit<RequestState> {
       return RequestEditSuccessState(data);
     });
   }
-
 }

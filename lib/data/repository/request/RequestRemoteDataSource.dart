@@ -10,7 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 abstract class RequestRemoteDataSource {
   Future<Either<String, Request?>> getRequest(Map<String, dynamic> body);
 
-  Future<Either<String, DataRequest?>> putRequest(String id, String type);
+  Future<Either<String, DataRequest?>> putRequest(
+      String id, String type, String comment);
 }
 
 class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
@@ -39,9 +40,14 @@ class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
 
   @override
   Future<Either<String, DataRequest?>> putRequest(
-      String id, String type) async {
+      String id, String type, String comment) async {
     try {
-      var formData = FormData.fromMap({"status": type});
+      FormData? formData;
+      if (type == "accept") {
+        formData = FormData.fromMap({"status": type});
+      } else {
+        formData = FormData.fromMap({"status": type, "comment": comment});
+      }
 
       return await DioHelper.putData(
               url: 'request/$id',

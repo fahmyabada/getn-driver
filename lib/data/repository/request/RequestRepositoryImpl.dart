@@ -29,9 +29,11 @@ class RequestRepositoryImpl extends RequestRepository {
 
   @override
   Future<Either<String, DataRequest?>> putRequest(
-      String id, String type) async {
+      String id, String type, String comment) async {
     if (await networkInfo.isConnected) {
-      return await requestRemoteDataSource.putRequest(id, type).then((value) {
+      return await requestRemoteDataSource
+          .putRequest(id, type, comment)
+          .then((value) {
         return value.fold((failure) {
           return Left(failure.toString());
         }, (data) {

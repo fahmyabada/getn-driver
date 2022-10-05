@@ -1,3 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,16 +8,247 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/strings.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/main.dart';
 import 'package:getn_driver/presentation/auth/DriverInformationScreen.dart';
 import 'package:getn_driver/presentation/auth/SignInScreen.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
+import 'package:getn_driver/presentation/notificationService/local_notification_service.dart';
 import 'package:getn_driver/presentation/request/RequestScreen.dart';
 import 'package:getn_driver/presentation/request/request_cubit.dart';
 import 'package:getn_driver/presentation/splash/splash_screen_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  late FirebaseMessaging _messaging;
+  String title = "";
+
+  @override
+  void initState() {
+    super.initState();
+
+    LocalNotificationService.initialize(context);
+    registerNotification();
+    _configureDidReceiveLocalNotificationSubject();
+    _configureSelectNotificationSubject();
+  }
+
+  @override
+  void dispose() {
+    LocalNotificationService.didReceiveLocalNotificationStream.close();
+    LocalNotificationService.selectNotificationStream.close();
+    super.dispose();
+  }
+
+  void registerNotification() async {
+    // 2. Instantiate Firebase Messaging
+    _messaging = FirebaseMessaging.instance;
+
+    final idToken = await FirebaseAuth.instance.currentUser!.getIdToken();
+    print('token=****************** $idToken');
+    _messaging.getToken().then((token) {
+      print('token fcm=****************** $token');
+    });
+    // 3. On iOS, this helps to take the user permissions
+    NotificationSettings settings = await _messaging.requestPermission(
+      alert: true,
+      badge: true,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      if (kDebugMode) {
+        print('User granted permission');
+      }
+      // 1. This method call when app in terminated state and you get a notification
+      // when you click on notification app open from terminated state and you can get notification data in this method
+      _messaging.getInitialMessage().then((RemoteMessage? message) {
+        if (kDebugMode) {
+          print(
+              "FirebaseMessaging.instance.getInitialMessage********${message?.data}");
+        }
+        // if (message != null) {
+        //   if (kDebugMode) {
+        //     print("New Notification********");
+        //   }
+        //   if (message.notification != null) {
+        //     setState(() {
+        //       title = message.notification!.title!;
+        //     });
+        //     if (kDebugMode) {
+        //       print(message.notification!.title);
+        //       print(message.notification!.body);
+        //       print("getInitialMessage ********${message.data}");
+        //     }
+        //   }
+        // }
+      });
+
+      // 2. This method only call when App in forground it mean app must be opened
+      FirebaseMessaging.onMessage.listen(
+        (message) {
+          if (kDebugMode) {
+            print("FirebaseMessaging.onMessage.listenhhh********${message}");
+          }
+
+          if (getIt<SharedPreferences>().getString('typeScreen') != null &&
+              getIt<SharedPreferences>().getString('typeScreen') == "Request") {
+            switch (message.data['type']!.title) {
+              case "RequestCurrent":
+                RequestCubit.get(navigatorKey.currentContext)
+                    .getRequestCurrent(1);
+                RequestCubit.get(navigatorKey.currentContext).typeRequest =
+                    "current";
+                RequestCubit.get(navigatorKey.currentContext)
+                    .tabController!
+                    .animateTo(0);
+                break;
+              case "RequestUpComing":
+                RequestCubit.get(navigatorKey.currentContext).indexUpComing = 1;
+                RequestCubit.get(navigatorKey.currentContext)
+                    .getRequestUpComing(1);
+                RequestCubit.get(navigatorKey.currentContext).typeRequest =
+                    "upComing";
+                RequestCubit.get(navigatorKey.currentContext)
+                    .tabController!
+                    .animateTo(1);
+                break;
+              case "RequestPast":
+                RequestCubit.get(navigatorKey.currentContext).indexPast = 1;
+                RequestCubit.get(navigatorKey.currentContext).getRequestPast(1);
+                RequestCubit.get(navigatorKey.currentContext).typeRequest =
+                    "past";
+                RequestCubit.get(navigatorKey.currentContext)
+                    .tabController!
+                    .animateTo(2);
+                break;
+              case "RequestPending":
+                RequestCubit.get(navigatorKey.currentContext).indexPending = 1;
+                RequestCubit.get(navigatorKey.currentContext)
+                    .getRequestPending(1);
+                RequestCubit.get(navigatorKey.currentContext).typeRequest =
+                    "pending";
+                RequestCubit.get(navigatorKey.currentContext)
+                    .tabController!
+                    .animateTo(3);
+                break;
+            }
+          }
+          if (message.notification != null) {
+            if (kDebugMode) {
+              print("message.datatitle***** ${message.notification!.title}");
+              print("message.databody***** ${message.notification!.body}");
+              print("message.data11***** ${message.data}");
+            }
+            LocalNotificationService.createAndDisplayNotification(message);
+          }
+        },
+      );
+
+      // 3. This method only call when App in background and not terminated(not closed)
+      // when you click on notification app open from background state and you can get notification data in this method
+      FirebaseMessaging.onMessageOpenedApp.listen(
+        (message) {
+          if (kDebugMode) {
+            print(
+                "FirebaseMessaging.onMessageOpenedApp.listen********${message.data}");
+          }
+          if (message.notification != null) {
+            goToNextScreen(message.data['page'], false);
+            if (kDebugMode) {
+              print(message.notification!.title);
+              print(message.notification!.body);
+              print("onMessageOpenedApp ********${message.data}");
+            }
+          }
+        },
+      );
+    }
+  }
+
+  void goToNextScreen(String screen, bool typeFinish) {
+    if (typeFinish) {
+      navigatorKey.currentState!.pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => BlocProvider(
+                create: (context) => RequestCubit(),
+                child: RequestScreen(
+                  screenNotify: screen,
+                )),
+          ),
+          (route) => false);
+    } else {
+      navigatorKey.currentState!.push(
+        MaterialPageRoute(
+          builder: (context) => BlocProvider(
+              create: (context) => RequestCubit(),
+              child: RequestScreen(
+                screenNotify: screen,
+              )),
+        ),
+      );
+    }
+  }
+
+  void _configureSelectNotificationSubject() {
+    LocalNotificationService.selectNotificationStream.stream
+        .listen((String? payload) async {
+      print("payload************ $payload");
+      // RequestCubit.get(context).indexUpComing = 1;
+      // RequestCubit.get(context).getRequestUpComing(1);
+      // typeRequest = "upComing";
+      // _tabController!.animateTo(1);
+      // await Navigator.of(context).push(MaterialPageRoute<void>(
+      //   builder: (BuildContext context) => SecondPage(payload),
+      // ));
+      navigatorKey.currentState!.push(
+        MaterialPageRoute(
+          builder: (context) => SignInScreen(),
+        ),
+      );
+    });
+  }
+
+  void _configureDidReceiveLocalNotificationSubject() {
+    LocalNotificationService.didReceiveLocalNotificationStream.stream
+        .listen((ReceivedNotification receivedNotification) async {
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: receivedNotification.title != null
+              ? Text(receivedNotification.title!)
+              : null,
+          content: receivedNotification.body != null
+              ? Text(receivedNotification.body!)
+              : null,
+          actions: <Widget>[
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              onPressed: () async {
+                Navigator.of(context, rootNavigator: true).pop();
+                print(
+                    "_configureDidReceiveLocalNotificationSubject*************");
+                // await Navigator.of(context).push(
+                //   MaterialPageRoute<void>(
+                //     builder: (BuildContext context) =>
+                //         SecondPage(receivedNotification.payload),
+                //   ),
+                // );
+              },
+              child: const Text('Ok'),
+            )
+          ],
+        ),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +266,11 @@ class SplashScreen extends StatelessWidget {
                 navigateAndFinish(context, const DriverInformationScreen());
               } else if (getIt<SharedPreferences>().getString("typeSign") ==
                   "signWithInformation") {
-                navigateAndFinish(
-                    context,
-                    BlocProvider(
-                        create: (context) => RequestCubit(),
-                        child: const RequestScreen()));
+                if (title.isNotEmpty) {
+                  goToNextScreen(title, true);
+                } else {
+                  navigateAndFinish(context, const RequestScreen());
+                }
               } else {
                 navigateAndFinish(context, const SignInScreen());
               }

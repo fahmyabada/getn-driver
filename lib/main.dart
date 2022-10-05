@@ -13,6 +13,7 @@ import 'package:getn_driver/firebase_options.dart';
 import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/notificationService/local_notification_service.dart';
+import 'package:getn_driver/presentation/request/request_cubit.dart';
 import 'package:getn_driver/presentation/splash/SplashScreen.dart';
 
 void main() async {
@@ -44,6 +45,8 @@ Future<void> backgroundHandler(RemoteMessage message) async {
   }
 }
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -52,22 +55,31 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       designSize: const Size(411, 891),
       minTextAdapt: true,
-      builder: (BuildContext context, child) => BlocProvider(
-        create: (context) => SignCubit(),
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'GetNDriver',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-            scaffoldBackgroundColor: white,
-            appBarTheme: const AppBarTheme(
-              color: white,
-              elevation: 0.0,
+      builder: (BuildContext context, child) =>
+          MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => SignCubit(),
+              ),
+              BlocProvider(
+                create: (context) => RequestCubit(),
+              ),
+            ],
+            child: MaterialApp(
+              navigatorKey: navigatorKey,
+              debugShowCheckedModeBanner: false,
+              title: 'GetNDriver',
+              theme: ThemeData(
+                primarySwatch: Colors.blue,
+                scaffoldBackgroundColor: white,
+                appBarTheme: const AppBarTheme(
+                  color: white,
+                  elevation: 0.0,
+                ),
+              ),
+              home: const SplashScreen(),
             ),
           ),
-          home: const SplashScreen(),
-        ),
-      ),
     );
   }
 }

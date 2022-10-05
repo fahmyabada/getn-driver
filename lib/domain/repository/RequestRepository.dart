@@ -4,5 +4,5 @@ import 'package:getn_driver/data/model/request/Request.dart';
 
 abstract class RequestRepository {
   Future<Either<String, Request?>> getRequest(Map<String, dynamic> body);
-  Future<Either<String, DataRequest?>> putRequest(String id, String type);
+  Future<Either<String, DataRequest?>> putRequest(String id, String type, String comment);
 }

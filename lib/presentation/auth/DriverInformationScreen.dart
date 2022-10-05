@@ -28,9 +28,7 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
             getIt<SharedPreferences>().setString('typeSign', "signWithInformation");
             navigateTo(
                 context,
-                BlocProvider(
-                    create: (context) => RequestCubit(),
-                    child: const RequestScreen()));
+                const RequestScreen());
           }else if (state is EditErrorState){
             print('*******EditErrorState');
             showToastt(
