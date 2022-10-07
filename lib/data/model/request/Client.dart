@@ -23,7 +23,9 @@ class Client {
 
   Client.fromJson(dynamic json) {
     _image = json['image'] != null
-        ? Image.fromJson(json['image'])
+        ? json['image'] is String
+            ? Image(mimetype: "", src: "")
+            : Image.fromJson(json['image'])
         : Image(mimetype: "", src: "");
     _id = json['_id'];
     _country =

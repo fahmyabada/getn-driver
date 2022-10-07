@@ -9,14 +9,23 @@ import 'package:getn_driver/presentation/requestDetails/request_details_cubit.da
 import 'package:intl/intl.dart';
 
 class RequestDetailsScreen extends StatefulWidget {
-  const RequestDetailsScreen({Key? key}) : super(key: key);
+  const RequestDetailsScreen({Key? key, this.idRequest}) : super(key: key);
 
+  final String? idRequest;
   @override
   State<RequestDetailsScreen> createState() => _RequestDetailsScreenState();
 }
 
 class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   double _userRating = 3.0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    RequestDetailsCubit.get(context).getRequestDetails(widget.idRequest!);
+    RequestDetailsCubit.get(context).getTripsRequestDetails(1,widget.idRequest!);
+  }
 
   @override
   Widget build(BuildContext context) {

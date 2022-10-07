@@ -1,41 +1,44 @@
+import 'dart:ffi';
+
 import 'package:getn_driver/data/model/request/Client.dart';
 
-import 'From.dart';
 import 'Days.dart';
+import 'From.dart';
 import 'StatusHistory.dart';
 
 class DataRequest {
   DataRequest({
-      From? from, 
-      String? createdAt, 
-      String? updatedAt, 
-      String? status, 
-      String? to, 
-      int? subtotalPoints, 
-      int? subtotalPrice, 
-      int? consumptionPoints, 
-      int? consumptionKM, 
-      int? packagesPoints, 
-      int? totalPackagesPrice, 
-      int? consumptionPackagesPoints, 
-      int? consumptionPackagesKM, 
-      int? totalPoints, 
-      int? refund, 
-      int? totalPrice, 
-      int? totalConsumptionPoints, 
-      int? totalConsumptionKM, 
-      String? paymentMethod, 
-      int? referenceId, 
-      String? paymentStatus, 
-      String? packagesPaymentStatus, 
-      String? id, 
-      String? driver, 
-      String? car, 
-      String? carCategory, 
-      String? client, 
-      List<Days>? days, 
-      List<StatusHistory>? statusHistory, 
-      int? v,}){
+    From? from,
+    String? createdAt,
+    String? updatedAt,
+    String? status,
+    String? to,
+    int? subtotalPoints,
+    int? subtotalPrice,
+    double? consumptionPoints,
+    int? consumptionKM,
+    int? packagesPoints,
+    int? totalPackagesPrice,
+    int? consumptionPackagesPoints,
+    int? consumptionPackagesKM,
+    int? totalPoints,
+    int? refund,
+    int? totalPrice,
+    int? totalConsumptionPoints,
+    int? totalConsumptionKM,
+    String? paymentMethod,
+    int? referenceId,
+    String? paymentStatus,
+    String? packagesPaymentStatus,
+    String? id,
+    String? driver,
+    String? car,
+    String? carCategory,
+    String? client,
+    List<Days>? days,
+    List<StatusHistory>? statusHistory,
+    int? v,
+  }) {
     _from = from;
     _createdAt = createdAt;
     _updatedAt = updatedAt;
@@ -66,7 +69,7 @@ class DataRequest {
     _days = days;
     _statusHistory = statusHistory;
     _v = v;
-}
+  }
 
   DataRequest.fromJson(dynamic json) {
     _from = json['from'] != null ? From.fromJson(json['from']) : null;
@@ -76,7 +79,8 @@ class DataRequest {
     _to = json['to'];
     _subtotalPoints = json['subtotalPoints'];
     _subtotalPrice = json['subtotalPrice'];
-    _consumptionPoints = json['consumptionPoints'];
+    _consumptionPoints =
+        json['consumptionPoints'] == 0 ? 0.0 : json['consumptionPoints'];
     _consumptionKM = json['consumptionKM'];
     _packagesPoints = json['packagesPoints'];
     _totalPackagesPrice = json['totalPackagesPrice'];
@@ -95,7 +99,10 @@ class DataRequest {
     _driver = json['driver'];
     _car = json['car'];
     _carCategory = json['carCategory'];
-    json['client'] is String? _client = json['client']: _client2 = json['client'] != null ? Client.fromJson(json['client']) : null;
+    json['client'] is String
+        ? _client = json['client']
+        : _client2 =
+            json['client'] != null ? Client.fromJson(json['client']) : null;
     if (json['days'] != null) {
       _days = [];
       json['days'].forEach((v) {
@@ -110,6 +117,7 @@ class DataRequest {
     }
     _v = json['__v'];
   }
+
   From? _from;
   String? _createdAt;
   String? _updatedAt;
@@ -117,7 +125,7 @@ class DataRequest {
   String? _to;
   int? _subtotalPoints;
   int? _subtotalPrice;
-  int? _consumptionPoints;
+  double? _consumptionPoints;
   int? _consumptionKM;
   int? _packagesPoints;
   int? _totalPackagesPrice;
@@ -143,37 +151,66 @@ class DataRequest {
   int? _v;
 
   From? get from => _from;
-  String? get createdAt => _createdAt;
-  String? get updatedAt => _updatedAt;
-  String? get status => _status;
-  String? get to => _to;
-  int? get subtotalPoints => _subtotalPoints;
-  int? get subtotalPrice => _subtotalPrice;
-  int? get consumptionPoints => _consumptionPoints;
-  int? get consumptionKM => _consumptionKM;
-  int? get packagesPoints => _packagesPoints;
-  int? get totalPackagesPrice => _totalPackagesPrice;
-  int? get consumptionPackagesPoints => _consumptionPackagesPoints;
-  int? get consumptionPackagesKM => _consumptionPackagesKM;
-  int? get totalPoints => _totalPoints;
-  int? get refund => _refund;
-  int? get totalPrice => _totalPrice;
-  int? get totalConsumptionPoints => _totalConsumptionPoints;
-  int? get totalConsumptionKM => _totalConsumptionKM;
-  String? get paymentMethod => _paymentMethod;
-  int? get referenceId => _referenceId;
-  String? get paymentStatus => _paymentStatus;
-  String? get packagesPaymentStatus => _packagesPaymentStatus;
-  String? get id => _id;
-  String? get driver => _driver;
-  String? get car => _car;
-  String? get carCategory => _carCategory;
-  String? get client => _client;
-  Client? get client2 => _client2;
-  List<Days>? get days => _days;
-  List<StatusHistory>? get statusHistory => _statusHistory;
-  int? get v => _v;
 
+  String? get createdAt => _createdAt;
+
+  String? get updatedAt => _updatedAt;
+
+  String? get status => _status;
+
+  String? get to => _to;
+
+  int? get subtotalPoints => _subtotalPoints;
+
+  int? get subtotalPrice => _subtotalPrice;
+
+  double? get consumptionPoints => _consumptionPoints;
+
+  int? get consumptionKM => _consumptionKM;
+
+  int? get packagesPoints => _packagesPoints;
+
+  int? get totalPackagesPrice => _totalPackagesPrice;
+
+  int? get consumptionPackagesPoints => _consumptionPackagesPoints;
+
+  int? get consumptionPackagesKM => _consumptionPackagesKM;
+
+  int? get totalPoints => _totalPoints;
+
+  int? get refund => _refund;
+
+  int? get totalPrice => _totalPrice;
+
+  int? get totalConsumptionPoints => _totalConsumptionPoints;
+
+  int? get totalConsumptionKM => _totalConsumptionKM;
+
+  String? get paymentMethod => _paymentMethod;
+
+  int? get referenceId => _referenceId;
+
+  String? get paymentStatus => _paymentStatus;
+
+  String? get packagesPaymentStatus => _packagesPaymentStatus;
+
+  String? get id => _id;
+
+  String? get driver => _driver;
+
+  String? get car => _car;
+
+  String? get carCategory => _carCategory;
+
+  String? get client => _client;
+
+  Client? get client2 => _client2;
+
+  List<Days>? get days => _days;
+
+  List<StatusHistory>? get statusHistory => _statusHistory;
+
+  int? get v => _v;
 
   @override
   String toString() {
@@ -221,5 +258,4 @@ class DataRequest {
     map['__v'] = _v;
     return map;
   }
-
 }

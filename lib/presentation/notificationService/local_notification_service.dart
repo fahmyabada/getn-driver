@@ -2,9 +2,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:getn_driver/main.dart';
+import 'package:getn_driver/presentation/request/request_cubit.dart';
+import 'package:getn_driver/presentation/requestDetails/RequestDetailsScreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart' as path_provider;
 
@@ -25,15 +30,6 @@ class ReceivedNotification {
 class LocalNotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
-
-  /// Streams are created so that app can respond to notification-related events
-  /// since the plugin is initialised in the `main` function
-  static final StreamController<ReceivedNotification>
-      didReceiveLocalNotificationStream =
-      StreamController<ReceivedNotification>.broadcast();
-
-  static final StreamController<String?> selectNotificationStream =
-      StreamController<String?>.broadcast();
 
   /// Defines a iOS/MacOS notification category for plain actions.
   static const String darwinNotificationCategoryPlain = 'plainCategory';
@@ -116,14 +112,34 @@ class LocalNotificationService {
       requestSoundPermission: false,
       onDidReceiveLocalNotification:
           (int id, String? title, String? body, String? payload) async {
-        didReceiveLocalNotificationStream.add(
-          ReceivedNotification(
-            id: id,
-            title: title,
-            body: body,
-            payload: payload,
-          ),
-        );
+            await showDialog(
+              context: context,
+              builder: (BuildContext context) => CupertinoAlertDialog(
+                title: title != null
+                    ? Text(title)
+                    : null,
+                content: body != null
+                    ? Text(body)
+                    : null,
+                actions: <Widget>[
+                  CupertinoDialogAction(
+                    isDefaultAction: true,
+                    onPressed: () async {
+                      Navigator.of(context, rootNavigator: true).pop();
+                      print(
+                          "_configureDidReceiveLocalNotificationSubject*************");
+                      // await Navigator.of(context).push(
+                      //   MaterialPageRoute<void>(
+                      //     builder: (BuildContext context) =>
+                      //         SecondPage(payload),
+                      //   ),
+                      // );
+                    },
+                    child: const Text('Ok'),
+                  )
+                ],
+              ),
+            );
       },
       notificationCategories: darwinNotificationCategories,
     );
@@ -140,19 +156,51 @@ class LocalNotificationService {
           (NotificationResponse notificationResponse) {
         switch (notificationResponse.notificationResponseType) {
           case NotificationResponseType.selectedNotification:
-            selectNotificationStream.add(notificationResponse.payload);
+            // selectNotificationStream.add(notificationResponse.payload);
+            print("notificationResponseType************ ${notificationResponse.payload}");
+            goToNextScreen(notificationResponse.payload!, false);
             break;
           case NotificationResponseType.selectedNotificationAction:
             if (notificationResponse.actionId == navigationActionId) {
-              selectNotificationStream.add(notificationResponse.payload);
+              print("selectedNotificationAction************ ${notificationResponse.payload}");
+              goToNextScreen(notificationResponse.payload!, false);
+              // selectNotificationStream.add(notificationResponse.payload);
             }
             break;
         }
       },
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
-
     );
   }
+
+  static void goToNextScreen(String id, bool typeFinish) {
+    if (typeFinish) {
+      navigatorKey.currentState!.pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => BlocProvider(
+                create: (context) => RequestCubit(),
+                child: RequestDetailsScreen(
+                  idRequest: id,
+                )),
+          ),
+          (route) => false);
+    } else {
+      navigatorKey.currentState!.push(
+        MaterialPageRoute(
+          builder: (context) => BlocProvider(
+              create: (context) => RequestCubit(),
+              child: RequestDetailsScreen(
+                idRequest: id,
+              )),
+        ),
+      );
+    }
+  }
+
+  // void _configureSelectNotificationSubject() {
+  //   LocalNotificationService.selectNotificationStream.stream
+  //       .listen((String? payload) async {});
+  // }
 
   static Future<String> _downloadAndSaveFile(
       String? url, String fileName) async {
@@ -168,33 +216,33 @@ class LocalNotificationService {
     try {
       final id = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
-      String largeIconPath = await _downloadAndSaveFile(
-        message.notification?.android?.imageUrl,
-        'largeIcon',
-      );
-      final String bigPicturePath = await _downloadAndSaveFile(
-        message.notification?.android?.imageUrl,
-        'bigPicture',
-      );
+      // String largeIconPath = await _downloadAndSaveFile(
+      //   message.notification?.android?.imageUrl,
+      //   'largeIcon',
+      // );
+      // final String bigPicturePath = await _downloadAndSaveFile(
+      //   message.notification?.android?.imageUrl,
+      //   'bigPicture',
+      // );
 
       const DarwinNotificationDetails iosNotificationDetails =
           DarwinNotificationDetails(
         categoryIdentifier: darwinNotificationCategoryPlain,
       );
 
-      NotificationDetails notificationDetails = NotificationDetails(
+      NotificationDetails notificationDetails = const NotificationDetails(
           android: AndroidNotificationDetails(
             "FahmyAbadaNotificationApp",
             "FahmyAbadaNotificationAppChannel",
             playSound: true,
             importance: Importance.max,
             priority: Priority.high,
-            largeIcon: FilePathAndroidBitmap(largeIconPath),
-            // icon: message.notification?.android?.smallIcon,
-            styleInformation: BigPictureStyleInformation(
-              FilePathAndroidBitmap(bigPicturePath),
-              hideExpandedLargeIcon: true,
-            ),
+            // largeIcon: FilePathAndroidBitmap(largeIconPath),
+            // // icon: message.notification?.android?.smallIcon,
+            // styleInformation: BigPictureStyleInformation(
+            //   FilePathAndroidBitmap(bigPicturePath),
+            //   hideExpandedLargeIcon: true,
+            // ),
           ),
           iOS: iosNotificationDetails);
 
@@ -204,7 +252,7 @@ class LocalNotificationService {
         message.notification!.body,
         notificationDetails,
         //payload : holds the data that is passed through the notification when the notification is tapped
-        payload: message.data['title'],
+        payload: message.data['typeId'],
       );
     } on Exception catch (e) {
       if (kDebugMode) {

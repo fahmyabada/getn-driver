@@ -14,6 +14,7 @@ import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/notificationService/local_notification_service.dart';
 import 'package:getn_driver/presentation/request/request_cubit.dart';
+import 'package:getn_driver/presentation/requestDetails/request_details_cubit.dart';
 import 'package:getn_driver/presentation/splash/SplashScreen.dart';
 
 void main() async {
@@ -63,6 +64,9 @@ class MyApp extends StatelessWidget {
               ),
               BlocProvider(
                 create: (context) => RequestCubit(),
+              ),
+              BlocProvider(
+                create: (context) => RequestDetailsCubit(),
               ),
             ],
             child: MaterialApp(

@@ -8,9 +8,9 @@ import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
+import 'package:getn_driver/presentation/notificationService/local_notification_service.dart';
 import 'package:getn_driver/presentation/request/request_cubit.dart';
 import 'package:getn_driver/presentation/requestDetails/RequestDetailsScreen.dart';
-import 'package:getn_driver/presentation/requestDetails/request_details_cubit.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -39,16 +39,17 @@ class _RequestScreenState extends State<RequestScreen>
   void initState() {
     super.initState();
 
-    getIt<SharedPreferences>()
-        .setString('typeScreen', "Request");
+    getIt<SharedPreferences>().setString('typeScreen', "request");
 
     _controllerUpcoming = ScrollController();
     _controllerPast = ScrollController();
     _controllerPending = ScrollController();
 
-    RequestCubit.get(context).tabController = TabController(length: 4, vsync: this);
+    RequestCubit.get(context).tabController =
+        TabController(length: 4, vsync: this);
 
-    if(widget.screenNotify!= null && widget.screenNotify == "RequestPending"){
+    if (widget.screenNotify != null &&
+        widget.screenNotify == "RequestPending") {
       _currentIndex = 3;
       RequestCubit.get(context).tabController!.index = 3;
     }
@@ -59,10 +60,10 @@ class _RequestScreenState extends State<RequestScreen>
     RequestCubit.get(context).getRequestPast(1);
     RequestCubit.get(context).getRequestPending(1);
 
-
     RequestCubit.get(context).tabController!.addListener(() {
       setState(() {
-        print("_currentIndex*********** ${RequestCubit.get(context).tabController!.index}");
+        print(
+            "_currentIndex*********** ${RequestCubit.get(context).tabController!.index}");
         _currentIndex = RequestCubit.get(context).tabController!.index;
         // if(_tabController!.indexIsChanging) {
         if (_currentIndex == 0) {
@@ -102,6 +103,7 @@ class _RequestScreenState extends State<RequestScreen>
     _controllerPast.removeListener(_loadMorePast);
     _controllerPending.removeListener(_loadMorePending);
   }
+
 
   void _loadMoreUpComing() {
     RequestCubit.get(context).loadingUpComing = false;
@@ -384,11 +386,9 @@ class _RequestScreenState extends State<RequestScreen>
                         onTap: () {
                           navigateTo(
                               context,
-                              BlocProvider(
-                                  create: (context) => RequestDetailsCubit()
-                                    ..getRequestDetails(current.id!)
-                                    ..getTripsRequestDetails(1, current.id!),
-                                  child: const RequestDetailsScreen()));
+                              RequestDetailsScreen(
+                                idRequest: current.id,
+                              ));
                         },
                       );
                     },
@@ -403,7 +403,8 @@ class _RequestScreenState extends State<RequestScreen>
                       ..addListener(() async {
                         if (_controllerUpcoming.position.extentAfter == 0) {
                           if (RequestCubit.get(context).loadingUpComing &&
-                              RequestCubit.get(context).typeRequest == "upComing") {
+                              RequestCubit.get(context).typeRequest ==
+                                  "upComing") {
                             print("_controllerUpcoming*********** ");
                             _loadMoreUpComing();
                           }
@@ -637,11 +638,9 @@ class _RequestScreenState extends State<RequestScreen>
                         onTap: () {
                           navigateTo(
                               context,
-                              BlocProvider(
-                                  create: (context) => RequestDetailsCubit()
-                                    ..getRequestDetails(upComing.id!)
-                                    ..getTripsRequestDetails(1, upComing.id!),
-                                  child: const RequestDetailsScreen()));
+                              RequestDetailsScreen(
+                                idRequest: upComing.id,
+                              ));
                         },
                       );
                     },
@@ -890,11 +889,9 @@ class _RequestScreenState extends State<RequestScreen>
                         onTap: () {
                           navigateTo(
                               context,
-                              BlocProvider(
-                                  create: (context) => RequestDetailsCubit()
-                                    ..getRequestDetails(past.id!)
-                                    ..getTripsRequestDetails(1, past.id!),
-                                  child: const RequestDetailsScreen()));
+                              RequestDetailsScreen(
+                                idRequest: past.id,
+                              ));
                         },
                       );
                     },
@@ -930,7 +927,7 @@ class _RequestScreenState extends State<RequestScreen>
                             RequestCubit.get(context).requestPending[i];
                         var startDate = DateTime.parse(pending.from!.date!);
                         var endDate = DateTime.parse(pending.to!);
-                        final  commentVisible = i == indexPending;
+                        final commentVisible = i == indexPending;
 
                         return InkWell(
                           child: Container(
@@ -1247,27 +1244,28 @@ class _RequestScreenState extends State<RequestScreen>
                                     ),
                                     commentVisible
                                         ? Column(
-                                          children: [
-                                            defaultFormField(
-                                                controller: commentController,
-                                                type: TextInputType.text,
-                                                label: "comment",
-                                                textSize: 15,
-                                                borderRadius: 50,
-                                                border: false,
-                                                borderColor: white,
-                                                validatorText:
-                                                    commentController.text,
-                                                validatorMessage:
-                                                    "To Reject Enter Comment First Please..",
-                                                onEditingComplete: () {
-                                                  FocusScope.of(context).unfocus();
-                                                }),
-                                            SizedBox(
-                                              height: 15.h,
-                                            ),
-                                          ],
-                                        )
+                                            children: [
+                                              defaultFormField(
+                                                  controller: commentController,
+                                                  type: TextInputType.text,
+                                                  label: "comment",
+                                                  textSize: 15,
+                                                  borderRadius: 50,
+                                                  border: false,
+                                                  borderColor: white,
+                                                  validatorText:
+                                                      commentController.text,
+                                                  validatorMessage:
+                                                      "To Reject Enter Comment First Please..",
+                                                  onEditingComplete: () {
+                                                    FocusScope.of(context)
+                                                        .unfocus();
+                                                  }),
+                                              SizedBox(
+                                                height: 15.h,
+                                              ),
+                                            ],
+                                          )
                                         : Container(),
                                     Row(
                                       mainAxisAlignment:
@@ -1276,26 +1274,28 @@ class _RequestScreenState extends State<RequestScreen>
                                         defaultButton2(
                                             press: () {
                                               RequestCubit.get(context)
-                                                  .editRequest(
-                                                      pending.id!, "accept","");
+                                                  .editRequest(pending.id!,
+                                                      "accept", "");
                                             },
                                             text: "Accept",
                                             backColor: greenColor,
                                             textColor: white),
                                         defaultButton2(
                                             press: () {
-                                              if(commentVisible) {
+                                              if (commentVisible) {
                                                 if (formKeyRequest.currentState!
                                                     .validate()) {
                                                   RequestCubit.get(context)
                                                       .editRequest(
-                                                      pending.id!, "reject",commentController.text.toString());
+                                                          pending.id!,
+                                                          "reject",
+                                                          commentController.text
+                                                              .toString());
                                                 }
                                               }
                                               setState(() {
                                                 indexPending = i;
                                               });
-
                                             },
                                             colorBorder: true,
                                             text: "Reject",
@@ -1345,6 +1345,4 @@ class _RequestScreenState extends State<RequestScreen>
       );
     });
   }
-
-
 }
