@@ -49,6 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // print('token=****************** $idToken');
     _messaging.getToken().then((token) {
       print('token fcm=****************** $token');
+      getIt<SharedPreferences>().setString('fcmToken', token!);
     });
     // 3. On iOS, this helps to take the user permissions
     NotificationSettings settings = await _messaging.requestPermission(

@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:getn_driver/data/model/sendOtp/SendOtpData.dart';
-import 'package:getn_driver/domain/repository/SignInRepository.dart';
+import 'package:getn_driver/domain/repository/AuthRepository.dart';
 
 class SendOtpUseCase {
-  final SignInRepository signInRepository;
+  final AuthRepository signInRepository;
 
   SendOtpUseCase(this.signInRepository);
 

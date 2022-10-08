@@ -8,9 +8,11 @@ import 'package:getn_driver/data/model/role/Role.dart';
 import 'package:getn_driver/data/model/sendOtp/SendOtpData.dart';
 import 'package:getn_driver/data/model/signModel/SignModel.dart';
 import 'package:getn_driver/data/utils/constant.dart';
+import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-abstract class SignInRemoteDataSource {
+abstract class AuthRemoteDataSource {
   Future<Either<String, List<Data>?>> getCountries();
 
   Future<Either<String, List<DataRole>?>> getRole();
@@ -34,7 +36,7 @@ abstract class SignInRemoteDataSource {
   Future<Either<String, SignModel>> editInformationUserUseCase(FormData data);
 }
 
-class SignInRemoteDataSourceImpl implements SignInRemoteDataSource {
+class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<Either<String, List<Data>?>> getCountries() async {
     try {
@@ -137,6 +139,7 @@ class SignInRemoteDataSourceImpl implements SignInRemoteDataSource {
         'role': role,
         'email': email,
         'name': fullName,
+        'fcmToken': getIt<SharedPreferences>().getString("fcmToken"),
         'verifyImage': await MultipartFile.fromFile(photo,
             filename: fileName, contentType: MediaType("image", "jpeg")),
         'acceptTermsAndConditions': terms,

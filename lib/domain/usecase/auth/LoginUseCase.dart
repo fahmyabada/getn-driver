@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:getn_driver/data/model/signModel/SignModel.dart';
-import 'package:getn_driver/domain/repository/SignInRepository.dart';
+import 'package:getn_driver/domain/repository/AuthRepository.dart';
 
 class LoginUseCase {
-  final SignInRepository signInRepository;
+  final AuthRepository signInRepository;
 
   LoginUseCase(this.signInRepository);
 

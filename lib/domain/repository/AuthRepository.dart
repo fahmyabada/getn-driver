@@ -5,7 +5,7 @@ import 'package:getn_driver/data/model/role/DataRole.dart';
 import 'package:getn_driver/data/model/sendOtp/SendOtpData.dart';
 import 'package:getn_driver/data/model/signModel/SignModel.dart';
 
-abstract class SignInRepository {
+abstract class AuthRepository {
   Future<Either<String, List<Data>?>> getCountries();
 
   Future<Either<String, List<DataRole>?>> getRole();

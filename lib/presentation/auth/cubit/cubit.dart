@@ -6,15 +6,15 @@ import 'package:getn_driver/data/model/country/Data.dart';
 import 'package:getn_driver/data/model/role/DataRole.dart';
 import 'package:getn_driver/data/model/sendOtp/SendOtpData.dart';
 import 'package:getn_driver/data/model/signModel/SignModel.dart';
-import 'package:getn_driver/domain/usecase/signIn/EditInformationUserUseCase.dart';
-import 'package:getn_driver/domain/usecase/signIn/GetCountriesUseCase.dart';
-import 'package:getn_driver/domain/usecase/signIn/GetRoleUseCase.dart';
-import 'package:getn_driver/domain/usecase/signIn/LoginUseCase.dart';
-import 'package:getn_driver/domain/usecase/signIn/SendOtpUseCase.dart';
+import 'package:getn_driver/domain/usecase/auth/EditInformationUserUseCase.dart';
+import 'package:getn_driver/domain/usecase/auth/LoginUseCase.dart';
+import 'package:getn_driver/domain/usecase/auth/GetCountriesUseCase.dart';
+import 'package:getn_driver/domain/usecase/auth/GetRoleUseCase.dart';
+import 'package:getn_driver/domain/usecase/auth/SendOtpUseCase.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:meta/meta.dart';
 
-import '../../../domain/usecase/signIn/RegisterUseCase.dart';
+import '../../../domain/usecase/auth/RegisterUseCase.dart';
 import 'package:http_parser/http_parser.dart';
 
 part 'state.dart';

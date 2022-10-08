@@ -12,7 +12,7 @@ import 'package:intl/intl.dart';
 
 class RequestDetailsScreen extends StatefulWidget {
   const RequestDetailsScreen({Key? key, this.idRequest}) : super(key: key);
-
+  //01098785374
   final String? idRequest;
 
   @override
@@ -301,10 +301,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                           builder: (BuildContext
                                                               context) {
                                                             return CustomDialog(
-                                                              title:
-                                                                  'Do you want to reject?',
+                                                              title: 'Warning',
                                                               description:
-                                                                  'If you want to be rejected, you must first enter the reason for rejection and press OK..',
+                                                                  'you will charged a cancelation fee..',
                                                               backgroundColor:
                                                                   white,
                                                               btnOkColor:
@@ -331,9 +330,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                           builder: (BuildContext
                                                               context) {
                                                             return CustomDialog(
-                                                              title: 'Warning',
+                                                              title:
+                                                                  'Do you want to reject?',
                                                               description:
-                                                                  'you will charged a cancelation fee..',
+                                                                  'If you want to be rejected, you must first enter the reason for rejection and press OK..',
                                                               backgroundColor:
                                                                   white,
                                                               btnOkColor:
@@ -779,5 +779,56 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                                           5.r,
                                                                     ),
                                                                     Text(
-                                                                      trip.oneKMPoints
+                                                                      trip.oneKMPoints.toString(),
+                                                                      textAlign:
+                                                                      TextAlign
+                                                                          .center,
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                          black,
+                                                                          fontSize: 15
+                                                                              .sp,
+                                                                          fontWeight:
+                                                                          FontWeight.bold),
+                                                                    ),
+                                                                  ]),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                            )
+                                : Center(
+                              child: Text(
+                                RequestDetailsCubit.get(context).failureTrip,
+                                style: TextStyle(
+                                    fontSize: 20.sp,
+                                    color: blueColor,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+          )
+              : Center(
+            child: Text(
+              RequestDetailsCubit.get(context).failureRequest,
+              style: TextStyle(
+                  fontSize: 20.sp,
+                  color: blueColor,
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
                                                                     

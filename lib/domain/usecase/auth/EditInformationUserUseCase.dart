@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:getn_driver/data/model/signModel/SignModel.dart';
-import 'package:getn_driver/domain/repository/SignInRepository.dart';
+import 'package:getn_driver/domain/repository/AuthRepository.dart';
 
 class EditInformationUserUseCase {
-  final SignInRepository signInRepository;
+  final AuthRepository signInRepository;
 
   EditInformationUserUseCase(this.signInRepository);
 

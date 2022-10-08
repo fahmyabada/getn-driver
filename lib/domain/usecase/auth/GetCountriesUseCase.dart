@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:getn_driver/data/model/country/Data.dart';
-import 'package:getn_driver/domain/repository/SignInRepository.dart';
+import 'package:getn_driver/domain/repository/AuthRepository.dart';
 
 class GetCountriesUseCase {
-  final SignInRepository signInRepository;
+  final AuthRepository signInRepository;
 
   GetCountriesUseCase(this.signInRepository);
 

@@ -49,7 +49,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           if (kDebugMode) {
             print('verifyPhone***********$phoneNumber');
           }
-          // AuthService().signIn(context, authResult);
+          // AuthService().auth(context, authResult);
           setState(() {
             authStatus = "Your account is successfully verified";
           });

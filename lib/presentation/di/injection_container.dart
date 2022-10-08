@@ -1,25 +1,25 @@
 import 'package:get_it/get_it.dart';
 import 'package:getn_driver/data/api/network_info.dart';
+import 'package:getn_driver/data/repository/auth/AuthRemoteDataSource.dart';
+import 'package:getn_driver/data/repository/auth/AuthRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/request/RequestRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/request/RequestRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/requestDetails/RequestDetailsRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/requestDetails/RequestDetailsRepositoryImpl.dart';
-import 'package:getn_driver/data/repository/signIn/SignInRemoteDataSource.dart';
-import 'package:getn_driver/data/repository/signIn/SignInRepositoryImpl.dart';
 import 'package:getn_driver/domain/repository/RequestDetailsRepository.dart';
 import 'package:getn_driver/domain/repository/RequestRepository.dart';
-import 'package:getn_driver/domain/repository/SignInRepository.dart';
+import 'package:getn_driver/domain/repository/AuthRepository.dart';
 import 'package:getn_driver/domain/usecase/request/GetRequestUseCase.dart';
 import 'package:getn_driver/domain/usecase/request/PutRequestUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetRequestDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetTripsRequestDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/PutRequestDetailsUseCase.dart';
-import 'package:getn_driver/domain/usecase/signIn/EditInformationUserUseCase.dart';
-import 'package:getn_driver/domain/usecase/signIn/GetCountriesUseCase.dart';
-import 'package:getn_driver/domain/usecase/signIn/GetRoleUseCase.dart';
-import 'package:getn_driver/domain/usecase/signIn/LoginUseCase.dart';
-import 'package:getn_driver/domain/usecase/signIn/RegisterUseCase.dart';
-import 'package:getn_driver/domain/usecase/signIn/SendOtpUseCase.dart';
+import 'package:getn_driver/domain/usecase/auth/EditInformationUserUseCase.dart';
+import 'package:getn_driver/domain/usecase/auth/GetCountriesUseCase.dart';
+import 'package:getn_driver/domain/usecase/auth/GetRoleUseCase.dart';
+import 'package:getn_driver/domain/usecase/auth/LoginUseCase.dart';
+import 'package:getn_driver/domain/usecase/auth/RegisterUseCase.dart';
+import 'package:getn_driver/domain/usecase/auth/SendOtpUseCase.dart';
 import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,8 +47,8 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => PutRequestDetailsUseCase(getIt()));
 
   // Repository
-  getIt.registerLazySingleton<SignInRepository>(
-    () => SignInRepositoryImpl(
+  getIt.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(
       getIt(),
       getIt(),
     ),
@@ -70,8 +70,8 @@ Future<void> init() async {
 
 
   // Data sources
-  getIt.registerLazySingleton<SignInRemoteDataSource>(
-      () => SignInRemoteDataSourceImpl());
+  getIt.registerLazySingleton<AuthRemoteDataSource>(
+      () => AuthRemoteDataSourceImpl());
 
   getIt.registerLazySingleton<RequestRemoteDataSource>(
           () => RequestRemoteDataSourceImpl());
