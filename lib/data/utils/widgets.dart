@@ -6,15 +6,22 @@ import 'package:getn_driver/data/utils/colors.dart';
 void navigateAndFinish(context, widget) => Navigator.pushAndRemoveUntil(
     context, MaterialPageRoute(builder: (context) => widget), (route) => false);
 
-void navigatePop(context, widget) => Navigator.pushAndRemoveUntil(
-    context, MaterialPageRoute(builder: (context) => widget), (route) => false);
-
 void navigateTo(context, widget) => Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => widget,
       ),
     );
+
+Future<bool> navigateToWithRefreshPagePrevious(context, widget) async {
+  return await Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => widget,
+    ),
+  ) ??
+      false;
+}
 
 Widget defaultFormField(
         {TextEditingController? controller,

@@ -30,3 +30,17 @@ class TripsSuccessState extends RequestDetailsState {
 
   TripsSuccessState(this.data);
 }
+
+class RequestDetailsEditInitial extends RequestDetailsState {}
+
+class RequestDetailsEditErrorState extends RequestDetailsState {
+  final String message;
+
+  RequestDetailsEditErrorState(this.message);
+}
+
+class RequestDetailsEditSuccessState extends RequestDetailsState {
+  final DataRequest? data;
+
+  RequestDetailsEditSuccessState(this.data);
+}

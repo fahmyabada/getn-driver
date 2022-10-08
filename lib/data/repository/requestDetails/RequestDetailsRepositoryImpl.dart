@@ -47,4 +47,22 @@ class RequestDetailsRepositoryImpl extends RequestDetailsRepository {
       return Left(networkFailureMessage);
     }
   }
+
+  @override
+  Future<Either<String, DataRequest?>> putRequest(
+      String id, String type, String comment) async {
+    if (await networkInfo.isConnected) {
+      return await requestDetailsRemoteDataSource
+          .putRequest(id, type, comment)
+          .then((value) {
+        return value.fold((failure) {
+          return Left(failure.toString());
+        }, (data) {
+          return Right(data);
+        });
+      });
+    } else {
+      return Left(networkFailureMessage);
+    }
+  }
 }

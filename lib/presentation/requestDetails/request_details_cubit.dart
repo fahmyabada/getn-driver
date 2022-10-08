@@ -4,10 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:getn_driver/data/model/request/DataRequest.dart';
 import 'package:getn_driver/data/model/trips/Data.dart';
 import 'package:getn_driver/data/model/trips/Trips.dart';
+import 'package:getn_driver/domain/usecase/request/PutRequestUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetRequestDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetTripsRequestDetailsUseCase.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:meta/meta.dart';
+import 'package:intl/intl.dart';
 
 part 'request_details_state.dart';
 
@@ -18,6 +20,7 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
 
   var getRequestDetailsUseCase = getIt<GetRequestDetailsUseCase>();
   var getTripsRequestDetailsUseCase = getIt<GetTripsRequestDetailsUseCase>();
+  var putRequestUseCase = getIt<PutRequestUseCase>();
 
   DataRequest? requestDetails;
   List<Data> trips = [];
@@ -45,6 +48,17 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
     }, (data) {
       requestDetails = data;
       loadingRequest = false;
+      final currentDate = DateTime.now();
+      final d = DateFormat("yyyy-MM-ddTHH:mm")
+          .parse(requestDetails!.from!.date!)
+          .subtract(
+        const Duration(
+          hours: 24,
+        ),
+      );
+
+      print('date****************** $d');
+      print('date1****************** ${currentDate.isBefore(d)}');
       return RequestDetailsSuccessState(data);
     });
   }
@@ -97,6 +111,23 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
         }
       }
       return TripsSuccessState(data);
+    });
+  }
+
+  void editRequest(String id, String type, String comment) async {
+    emit(RequestDetailsEditInitial());
+
+    putRequestUseCase.execute(id, type, comment).then((value) {
+      emit(eitherLoadedOrErrorStateRequestEdit(value));
+    });
+  }
+
+  RequestDetailsState eitherLoadedOrErrorStateRequestEdit(
+      Either<String, DataRequest?> data) {
+    return data.fold((failure1) {
+      return RequestDetailsEditErrorState(failure1);
+    }, (data) {
+      return RequestDetailsEditSuccessState(data);
     });
   }
 }

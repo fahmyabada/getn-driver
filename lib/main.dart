@@ -77,6 +77,9 @@ class MyApp extends StatelessWidget {
                 primarySwatch: Colors.blue,
                 scaffoldBackgroundColor: white,
                 appBarTheme: const AppBarTheme(
+                  iconTheme: IconThemeData(
+                    color: Colors.black, //change your color here
+                  ),
                   color: white,
                   elevation: 0.0,
                 ),

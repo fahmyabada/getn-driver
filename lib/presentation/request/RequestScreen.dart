@@ -8,9 +8,9 @@ import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
-import 'package:getn_driver/presentation/notificationService/local_notification_service.dart';
 import 'package:getn_driver/presentation/request/request_cubit.dart';
 import 'package:getn_driver/presentation/requestDetails/RequestDetailsScreen.dart';
+import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -33,6 +33,7 @@ class _RequestScreenState extends State<RequestScreen>
   double _userRating = 3.0;
   var formKeyRequest = GlobalKey<FormState>();
   var commentController = TextEditingController();
+  String typeEditPending = "";
   int? indexPending;
 
   @override
@@ -104,7 +105,6 @@ class _RequestScreenState extends State<RequestScreen>
     _controllerPending.removeListener(_loadMorePending);
   }
 
-
   void _loadMoreUpComing() {
     RequestCubit.get(context).loadingUpComing = false;
 
@@ -130,12 +130,22 @@ class _RequestScreenState extends State<RequestScreen>
   Widget build(BuildContext context) {
     return BlocConsumer<RequestCubit, RequestState>(listener: (context, state) {
       if (state is RequestEditSuccessState) {
-        if (kDebugMode) {
-          print('*******RequestEditSuccessState');
+        if (typeEditPending == "accept") {
+          RequestCubit.get(context).indexUpComing = 1;
+          RequestCubit.get(context).getRequestUpComing(1);
+          RequestCubit.get(context).typeRequest = "upComing";
+          RequestCubit.get(context).tabController?.animateTo(1);
+        } else if (typeEditPending == "reject") {
+          Navigator.pop(context);
+          RequestCubit.get(context).indexPast = 1;
+          RequestCubit.get(context).getRequestPast(1);
+          RequestCubit.get(context).typeRequest = "past";
+          RequestCubit.get(context).tabController?.animateTo(2);
         }
-        RequestCubit.get(context).indexPending = 1;
-        RequestCubit.get(context).getRequestPending(1);
-        RequestCubit.get(context).typeRequest = "pending";
+      } else if (state is RequestEditErrorState) {
+        Navigator.pop(context);
+        showToastt(
+            text: state.message, state: ToastStates.error, context: context);
       }
     }, builder: (context, state) {
       return Scaffold(
@@ -383,12 +393,13 @@ class _RequestScreenState extends State<RequestScreen>
                             ),
                           ),
                         ),
-                        onTap: () {
-                          navigateTo(
-                              context,
-                              RequestDetailsScreen(
-                                idRequest: current.id,
-                              ));
+                        onTap: () async{
+                          await navigateToWithRefreshPagePrevious(context, RequestDetailsScreen(
+                            idRequest: current.id,
+                          ));
+                          setState(() {
+                            RequestCubit.get(context).getRequestCurrent(1);
+                          });
                         },
                       );
                     },
@@ -635,12 +646,13 @@ class _RequestScreenState extends State<RequestScreen>
                             ),
                           ),
                         ),
-                        onTap: () {
-                          navigateTo(
-                              context,
-                              RequestDetailsScreen(
-                                idRequest: upComing.id,
-                              ));
+                        onTap: () async{
+                          await navigateToWithRefreshPagePrevious(context, RequestDetailsScreen(
+                              idRequest: upComing.id,
+                          ));
+                          setState(() {
+                            RequestCubit.get(context).getRequestUpComing(1);
+                          });
                         },
                       );
                     },
@@ -886,12 +898,14 @@ class _RequestScreenState extends State<RequestScreen>
                             ),
                           ),
                         ),
-                        onTap: () {
-                          navigateTo(
-                              context,
-                              RequestDetailsScreen(
-                                idRequest: past.id,
-                              ));
+                        onTap: () async{
+                          await navigateToWithRefreshPagePrevious(context, RequestDetailsScreen(
+                              idRequest: past.id,
+                          ));
+                          setState(() {
+                            RequestCubit.get(context).getRequestPast(1);
+                          });
+
                         },
                       );
                     },
@@ -901,421 +915,420 @@ class _RequestScreenState extends State<RequestScreen>
                     child: CircularProgressIndicator(
                     color: black,
                   ))
-                : Form(
-                    key: formKeyRequest,
-                    child: ListView.builder(
-                      controller: _controllerPending
-                        ..addListener(() async {
-                          if (_controllerPending.position.extentAfter == 0) {
-                            if (kDebugMode) {
-                              print(
-                                  '_controllerPending00*******${RequestCubit.get(context).loadingPending}');
-                            }
-                            if (RequestCubit.get(context).loadingPending &&
-                                RequestCubit.get(context).typeRequest ==
-                                    "pending") {
-                              _loadMorePending();
-                            }
-                          }
-                        }),
-                      // key: const PageStorageKey<String>('tab2'),
-                      scrollDirection: Axis.vertical,
-                      itemCount:
-                          RequestCubit.get(context).requestPending.length,
-                      itemBuilder: (context, i) {
-                        var pending =
-                            RequestCubit.get(context).requestPending[i];
-                        var startDate = DateTime.parse(pending.from!.date!);
-                        var endDate = DateTime.parse(pending.to!);
-                        final commentVisible = i == indexPending;
+                : ListView.builder(
+                  controller: _controllerPending
+                    ..addListener(() async {
+                      if (_controllerPending.position.extentAfter == 0) {
+                        if (kDebugMode) {
+                          print(
+                              '_controllerPending00*******${RequestCubit.get(context).loadingPending}');
+                        }
+                        if (RequestCubit.get(context).loadingPending &&
+                            RequestCubit.get(context).typeRequest ==
+                                "pending") {
+                          _loadMorePending();
+                        }
+                      }
+                    }),
+                  // key: const PageStorageKey<String>('tab2'),
+                  scrollDirection: Axis.vertical,
+                  itemCount:
+                      RequestCubit.get(context).requestPending.length,
+                  itemBuilder: (context, i) {
+                    var pending =
+                        RequestCubit.get(context).requestPending[i];
+                    var startDate = DateTime.parse(pending.from!.date!);
+                    var endDate = DateTime.parse(pending.to!);
+                    final loadAcceptVisible = i == indexPending;
 
-                        return InkWell(
-                          child: Container(
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 10.r, vertical: 10.r),
-                            child: Card(
-                              elevation: 5.r,
-                              clipBehavior: Clip.antiAlias,
-                              child: Container(
-                                color: white,
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10.r, horizontal: 7.r),
-                                child: Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 5.h,
-                                    ),
-                                    Row(
-                                      children: [
-                                        ClipOval(
-                                          clipBehavior: Clip.antiAlias,
-                                          child: ImageTools.image(
-                                              fit: BoxFit.fill,
-                                              url: pending.client2!.image!.src,
-                                              height: 70.w,
-                                              width: 70.w),
-                                        ),
-                                        Expanded(
-                                          child: Container(
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 20.r),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                SizedBox(
-                                                  height: 5.h,
+                    return Container(
+                      margin: EdgeInsets.symmetric(
+                          horizontal: 10.r, vertical: 10.r),
+                      child: Card(
+                        elevation: 5.r,
+                        clipBehavior: Clip.antiAlias,
+                        child: Container(
+                          color: white,
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10.r, horizontal: 7.r),
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 5.h,
+                              ),
+                              Row(
+                                children: [
+                                  ClipOval(
+                                    clipBehavior: Clip.antiAlias,
+                                    child: ImageTools.image(
+                                        fit: BoxFit.fill,
+                                        url: pending.client2!.image!.src,
+                                        height: 70.w,
+                                        width: 70.w),
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      margin: EdgeInsets.symmetric(
+                                          horizontal: 20.r),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            height: 5.h,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  pending.client2!.name!,
+                                                  style: TextStyle(
+                                                      fontSize: 17.sp,
+                                                      color: black,
+                                                      fontWeight:
+                                                          FontWeight
+                                                              .bold),
                                                 ),
-                                                Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: Text(
-                                                        pending.client2!.name!,
-                                                        style: TextStyle(
-                                                            fontSize: 17.sp,
-                                                            color: black,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ),
-                                                  ],
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 5.h,
+                                          ),
+                                          Text(
+                                            '${pending.client2!.country?.title!.en!}, ${pending.client2!.city?.title!.en!}, ${pending.client2!.area?.title!.en!}',
+                                            style: TextStyle(
+                                                fontSize: 15.sp,
+                                                color: grey2),
+                                          ),
+                                          SizedBox(
+                                            height: 5.h,
+                                          ),
+                                          RatingBar.builder(
+                                            minRating: _userRating,
+                                            itemBuilder:
+                                                (context, index) =>
+                                                    const Icon(
+                                              Icons.star,
+                                              color: Colors.amber,
+                                            ),
+                                            itemCount: 5,
+                                            itemSize: 17.w,
+                                            updateOnDrag: true,
+                                            onRatingUpdate: (rating) {
+                                              setState(() {
+                                                _userRating = rating;
+                                              });
+                                            },
+                                            unratedColor: Colors.amber
+                                                .withAlpha(50),
+                                            direction: Axis.horizontal,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              SizedBox(
+                                height: 15.h,
+                              ),
+                              // divider
+                              Container(
+                                width: 1.sw,
+                                height: 1.h,
+                                color: Colors.grey[400],
+                              ),
+                              SizedBox(
+                                height: 15.h,
+                              ),
+                              Row(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.location_on,
+                                    color: greenColor,
+                                    size: 20.w,
+                                  ),
+                                  SizedBox(
+                                    width: 10.w,
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Picked Point',
+                                          style: TextStyle(
+                                              color: black,
+                                              fontSize: 18.sp,
+                                              fontWeight:
+                                                  FontWeight.bold),
+                                        ),
+                                        SizedBox(height: 10.h),
+                                        Text(
+                                          pending.referenceId!.toString(),
+                                          // upComing.from!.placeTitle!,
+                                          style: TextStyle(
+                                              color: grey2,
+                                              fontSize: 16.sp),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '12:00 am',
+                                        style: TextStyle(
+                                          color: grey2,
+                                          fontSize: 15.sp,
+                                        ),
+                                      ),
+                                      Text(
+                                        '11/12/2022',
+                                        style: TextStyle(
+                                            color: grey2,
+                                            fontSize: 15.sp),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 5.h,
+                              ),
+                              IntrinsicHeight(
+                                child: Row(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      child: Card(
+                                        color: yellowLightColor,
+                                        child: Padding(
+                                          padding: EdgeInsets.all(15.r),
+                                          child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .center,
+                                              children: [
+                                                Text(
+                                                  'Days',
+                                                  style: TextStyle(
+                                                      color: grey2,
+                                                      fontSize: 13.sp),
                                                 ),
                                                 SizedBox(
                                                   height: 5.h,
                                                 ),
                                                 Text(
-                                                  '${pending.client2!.country?.title!.en!}, ${pending.client2!.city?.title!.en!}, ${pending.client2!.area?.title!.en!}',
+                                                  '${pending.days!.length} Days',
+                                                  textAlign:
+                                                      TextAlign.center,
                                                   style: TextStyle(
-                                                      fontSize: 15.sp,
-                                                      color: grey2),
+                                                      color: black,
+                                                      fontSize: 13.sp,
+                                                      fontWeight:
+                                                          FontWeight
+                                                              .bold),
+                                                ),
+                                              ]),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Card(
+                                        color: rough,
+                                        child: Padding(
+                                          padding: EdgeInsets.all(15.r),
+                                          child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .center,
+                                              children: [
+                                                Text(
+                                                  'Start Date',
+                                                  style: TextStyle(
+                                                      color: grey2,
+                                                      fontSize: 12.sp),
                                                 ),
                                                 SizedBox(
                                                   height: 5.h,
                                                 ),
-                                                RatingBar.builder(
-                                                  minRating: _userRating,
-                                                  itemBuilder:
-                                                      (context, index) =>
-                                                          const Icon(
-                                                    Icons.star,
-                                                    color: Colors.amber,
-                                                  ),
-                                                  itemCount: 5,
-                                                  itemSize: 17.w,
-                                                  updateOnDrag: true,
-                                                  onRatingUpdate: (rating) {
-                                                    setState(() {
-                                                      _userRating = rating;
-                                                    });
-                                                  },
-                                                  unratedColor: Colors.amber
-                                                      .withAlpha(50),
-                                                  direction: Axis.horizontal,
+                                                Text(
+                                                  DateFormat.yMMMd()
+                                                      .format(startDate),
+                                                  textAlign:
+                                                      TextAlign.center,
+                                                  style: TextStyle(
+                                                      color: black,
+                                                      fontSize: 13.sp,
+                                                      fontWeight:
+                                                          FontWeight
+                                                              .bold),
                                                 ),
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 15.h,
-                                    ),
-                                    // divider
-                                    Container(
-                                      width: 1.sw,
-                                      height: 1.h,
-                                      color: Colors.grey[400],
-                                    ),
-                                    SizedBox(
-                                      height: 15.h,
-                                    ),
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.location_on,
-                                          color: greenColor,
-                                          size: 20.w,
+                                              ]),
                                         ),
-                                        SizedBox(
-                                          width: 10.w,
-                                        ),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Picked Point',
-                                                style: TextStyle(
-                                                    color: black,
-                                                    fontSize: 18.sp,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              SizedBox(height: 10.h),
-                                              Text(
-                                                pending.referenceId!.toString(),
-                                                // upComing.from!.placeTitle!,
-                                                style: TextStyle(
-                                                    color: grey2,
-                                                    fontSize: 16.sp),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              '12:00 am',
-                                              style: TextStyle(
-                                                color: grey2,
-                                                fontSize: 15.sp,
-                                              ),
-                                            ),
-                                            Text(
-                                              '11/12/2022',
-                                              style: TextStyle(
-                                                  color: grey2,
-                                                  fontSize: 15.sp),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 5.h,
-                                    ),
-                                    IntrinsicHeight(
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Expanded(
-                                            child: Card(
-                                              color: yellowLightColor,
-                                              child: Padding(
-                                                padding: EdgeInsets.all(15.r),
-                                                child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Text(
-                                                        'Days',
-                                                        style: TextStyle(
-                                                            color: grey2,
-                                                            fontSize: 13.sp),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 5.h,
-                                                      ),
-                                                      Text(
-                                                        '${pending.days!.length} Days',
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: TextStyle(
-                                                            color: black,
-                                                            fontSize: 13.sp,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ]),
-                                              ),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Card(
-                                              color: rough,
-                                              child: Padding(
-                                                padding: EdgeInsets.all(15.r),
-                                                child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Text(
-                                                        'Start Date',
-                                                        style: TextStyle(
-                                                            color: grey2,
-                                                            fontSize: 12.sp),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 5.h,
-                                                      ),
-                                                      Text(
-                                                        DateFormat.yMMMd()
-                                                            .format(startDate),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: TextStyle(
-                                                            color: black,
-                                                            fontSize: 13.sp,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ]),
-                                              ),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Card(
-                                              color: greenLightColor,
-                                              child: Padding(
-                                                padding: EdgeInsets.all(15.r),
-                                                child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Text(
-                                                        'End Date',
-                                                        style: TextStyle(
-                                                            color: grey2,
-                                                            fontSize: 12.sp),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 5.h,
-                                                      ),
-                                                      Text(
-                                                        DateFormat.yMMMd()
-                                                            .format(endDate),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: TextStyle(
-                                                            color: black,
-                                                            fontSize: 13.sp,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ]),
-                                              ),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Card(
-                                              color: blueLight,
-                                              child: Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 15.r),
-                                                child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Text(
-                                                        'Cost',
-                                                        style: TextStyle(
-                                                            color: grey2,
-                                                            fontSize: 13.sp),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 5.h,
-                                                      ),
-                                                      Text(
-                                                        pending.totalPrice
-                                                            .toString(),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: TextStyle(
-                                                            color: black,
-                                                            fontSize: 13.sp,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ]),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
                                       ),
                                     ),
-                                    SizedBox(
-                                      height: 15.h,
+                                    Expanded(
+                                      child: Card(
+                                        color: greenLightColor,
+                                        child: Padding(
+                                          padding: EdgeInsets.all(15.r),
+                                          child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .center,
+                                              children: [
+                                                Text(
+                                                  'End Date',
+                                                  style: TextStyle(
+                                                      color: grey2,
+                                                      fontSize: 12.sp),
+                                                ),
+                                                SizedBox(
+                                                  height: 5.h,
+                                                ),
+                                                Text(
+                                                  DateFormat.yMMMd()
+                                                      .format(endDate),
+                                                  textAlign:
+                                                      TextAlign.center,
+                                                  style: TextStyle(
+                                                      color: black,
+                                                      fontSize: 13.sp,
+                                                      fontWeight:
+                                                          FontWeight
+                                                              .bold),
+                                                ),
+                                              ]),
+                                        ),
+                                      ),
                                     ),
-                                    commentVisible
-                                        ? Column(
-                                            children: [
-                                              defaultFormField(
-                                                  controller: commentController,
-                                                  type: TextInputType.text,
-                                                  label: "comment",
-                                                  textSize: 15,
-                                                  borderRadius: 50,
-                                                  border: false,
-                                                  borderColor: white,
-                                                  validatorText:
-                                                      commentController.text,
-                                                  validatorMessage:
-                                                      "To Reject Enter Comment First Please..",
-                                                  onEditingComplete: () {
-                                                    FocusScope.of(context)
-                                                        .unfocus();
-                                                  }),
-                                              SizedBox(
-                                                height: 15.h,
-                                              ),
-                                            ],
-                                          )
-                                        : Container(),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        defaultButton2(
-                                            press: () {
-                                              RequestCubit.get(context)
-                                                  .editRequest(pending.id!,
-                                                      "accept", "");
-                                            },
-                                            text: "Accept",
-                                            backColor: greenColor,
-                                            textColor: white),
-                                        defaultButton2(
-                                            press: () {
-                                              if (commentVisible) {
-                                                if (formKeyRequest.currentState!
-                                                    .validate()) {
-                                                  RequestCubit.get(context)
-                                                      .editRequest(
-                                                          pending.id!,
-                                                          "reject",
-                                                          commentController.text
-                                                              .toString());
-                                                }
-                                              }
-                                              setState(() {
-                                                indexPending = i;
-                                              });
-                                            },
-                                            colorBorder: true,
-                                            text: "Reject",
-                                            backColor: white,
-                                            textColor: grey2),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 5.h,
+                                    Expanded(
+                                      child: Card(
+                                        color: blueLight,
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 15.r),
+                                          child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .center,
+                                              children: [
+                                                Text(
+                                                  'Cost',
+                                                  style: TextStyle(
+                                                      color: grey2,
+                                                      fontSize: 13.sp),
+                                                ),
+                                                SizedBox(
+                                                  height: 5.h,
+                                                ),
+                                                Text(
+                                                  pending.totalPrice
+                                                      .toString(),
+                                                  textAlign:
+                                                      TextAlign.center,
+                                                  style: TextStyle(
+                                                      color: black,
+                                                      fontSize: 13.sp,
+                                                      fontWeight:
+                                                          FontWeight
+                                                              .bold),
+                                                ),
+                                              ]),
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 ),
                               ),
-                            ),
+                              SizedBox(
+                                height: 15.h,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                    loadAcceptVisible
+                                        ? state is! RequestEditInitial
+                                            ? defaultButton2(
+                                                press: () {
+                                                  typeEditPending = "accept";
+                                                  RequestCubit.get(context)
+                                                      .editRequest(pending.id!,
+                                                          "accept", "");
+                                                  setState(() {
+                                                    indexPending = i;
+                                                  });
+                                                },
+                                                text: "Accept",
+                                                backColor: greenColor,
+                                                textColor: white)
+                                            : const Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  color: accentColor,
+                                                ),
+                                              )
+                                        : defaultButton2(
+                                            press: () {
+                                              typeEditPending = "accept";
+                                              RequestCubit.get(context)
+                                                  .editRequest(pending.id!,
+                                                      "accept", "");
+                                              setState(() {
+                                                indexPending = i;
+                                              });
+                                            },
+                                            text: "Accept",
+                                            backColor: greenColor,
+                                            textColor: white),
+                                    defaultButton2(
+                                      press: () {
+                                        typeEditPending = "reject";
+                                        showDialog(
+                                          context: context,
+                                          barrierDismissible: true,
+                                          // outside to dismiss
+                                          builder: (BuildContext context) {
+                                            return CustomDialog(
+                                              title: 'Do you want to reject?',
+                                              description: 'If you want to be rejected, you must first enter the reason for rejection and press OK..',
+                                              backgroundColor: white,
+                                              btnOkColor: accentColor,
+                                              btnCancelColor: grey,
+                                              id: pending.id,
+                                              titleColor: accentColor,
+                                              descColor: black,
+                                            );
+                                          },
+                                        );
+                                      },
+                                      colorBorder: true,
+                                      text: "Reject",
+                                      backColor: white,
+                                      textColor: grey2,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 5.h,
+                              ),
+                            ],
                           ),
-                          onTap: () {},
-                        );
-                      },
-                    ),
-                  ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(

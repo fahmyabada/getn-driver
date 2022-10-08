@@ -45,8 +45,8 @@ class _SplashScreenState extends State<SplashScreen> {
     // 2. Instantiate Firebase Messaging
     _messaging = FirebaseMessaging.instance;
 
-    final idToken = await FirebaseAuth.instance.currentUser!.getIdToken();
-    print('token=****************** $idToken');
+    // final idToken = await FirebaseAuth.instance.currentUser?.getIdToken();
+    // print('token=****************** $idToken');
     _messaging.getToken().then((token) {
       print('token fcm=****************** $token');
     });
