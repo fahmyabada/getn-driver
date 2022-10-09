@@ -284,49 +284,52 @@ class _SignInScreenState extends State<SignInScreen> {
                 ],
               ),
             ),
-            defaultButton3(
-                press: () {
-                  if (dropDownValueCountry != null) {
-                    if (formKey.currentState!.validate()) {
-                      FocusScopeNode currentFocus = FocusScope.of(context);
-                      if (!currentFocus.hasPrimaryFocus) {
-                        currentFocus.focusedChild?.unfocus();
-                      }
-                      if (phoneController.text.startsWith('0') &&
-                          phoneController.text.length > 1) {
-                        final splitPhone = const TextEditingValue().copyWith(
-                          text: phoneController.text
-                              .replaceAll(RegExp(r'^0+(?=.)'), ''),
-                          selection: phoneController.selection.copyWith(
-                            baseOffset: phoneController.text.length - 1,
-                            extentOffset: phoneController.text.length - 1,
-                          ),
-                        );
-                        setState(() {
-                          splitPhone2 = splitPhone.text.toString();
-                        });
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
+              child: defaultButton3(
+                  press: () {
+                    if (dropDownValueCountry != null) {
+                      if (formKey.currentState!.validate()) {
+                        FocusScopeNode currentFocus = FocusScope.of(context);
+                        if (!currentFocus.hasPrimaryFocus) {
+                          currentFocus.focusedChild?.unfocus();
+                        }
+                        if (phoneController.text.startsWith('0') &&
+                            phoneController.text.length > 1) {
+                          final splitPhone = const TextEditingValue().copyWith(
+                            text: phoneController.text
+                                .replaceAll(RegExp(r'^0+(?=.)'), ''),
+                            selection: phoneController.selection.copyWith(
+                              baseOffset: phoneController.text.length - 1,
+                              extentOffset: phoneController.text.length - 1,
+                            ),
+                          );
+                          setState(() {
+                            splitPhone2 = splitPhone.text.toString();
+                          });
 
-                        SignCubit.get(context).sendOtp(
-                            "login",
-                            splitPhone2,
-                            dropDownValueCountry!.id!);
-                      } else {
-                        splitPhone2 = phoneController.text.toString();
+                          SignCubit.get(context).sendOtp(
+                              "login",
+                              splitPhone2,
+                              dropDownValueCountry!.id!);
+                        } else {
+                          splitPhone2 = phoneController.text.toString();
 
-                        SignCubit.get(context).sendOtp(
-                            "login", splitPhone2, dropDownValueCountry!.id!);
+                          SignCubit.get(context).sendOtp(
+                              "login", splitPhone2, dropDownValueCountry!.id!);
+                        }
                       }
+                    } else {
+                      showToastt(
+                          text: "country code note found",
+                          state: ToastStates.error,
+                          context: context);
                     }
-                  } else {
-                    showToastt(
-                        text: "country code note found",
-                        state: ToastStates.error,
-                        context: context);
-                  }
-                },
-                text: "Next",
-                backColor: accentColor,
-                textColor: white),
+                  },
+                  text: "Next",
+                  backColor: accentColor,
+                  textColor: white),
+            ),
             SizedBox(
               height: 10.h,
             ),

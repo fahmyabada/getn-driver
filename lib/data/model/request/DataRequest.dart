@@ -1,6 +1,5 @@
-import 'dart:ffi';
-
 import 'package:getn_driver/data/model/request/Client.dart';
+import 'package:getn_driver/data/model/trips/To.dart';
 
 import 'Days.dart';
 import 'From.dart';
@@ -73,14 +72,15 @@ class DataRequest {
 
   DataRequest.fromJson(dynamic json) {
     _from = json['from'] != null ? From.fromJson(json['from']) : null;
+    json['to'] is String
+        ? _to = json['to']
+        : _to2 = json['to'] != null ? To.fromJson(json['to']) : null;
     _createdAt = json['createdAt'];
     _updatedAt = json['updatedAt'];
     _status = json['status'];
-    _to = json['to'];
     _subtotalPoints = json['subtotalPoints'];
     _subtotalPrice = json['subtotalPrice'];
-    _consumptionPoints =
-        json['consumptionPoints'] == 0 ? 0.0 : json['consumptionPoints'];
+    _consumptionPoints = double.parse(json['consumptionPoints'].toString());
     _consumptionKM = json['consumptionKM'];
     _packagesPoints = json['packagesPoints'];
     _totalPackagesPrice = json['totalPackagesPrice'];
@@ -123,6 +123,7 @@ class DataRequest {
   String? _updatedAt;
   String? _status;
   String? _to;
+  To? _to2;
   int? _subtotalPoints;
   int? _subtotalPrice;
   double? _consumptionPoints;

@@ -181,81 +181,84 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
                 SizedBox(
                   height: 30.h,
                 ),
-                defaultButton3(
-                    press: () {
-                      if (_imageFileList != null) {
-                        if (widget.typeScreen == "register") {
-                          print('signModel verify image***************** ');
-                          print("SignUpDetails***********::>> signModel");
-                          print(
-                              "SignUpDetails***********fullNameController::>> ${widget.fullName}");
-                          print(
-                              "SignUpDetails***********emailController::>> ${widget.email}");
-                          print(
-                              "SignUpDetails***********phone::>> ${widget.phone}");
-                          print(
-                              "SignUpDetails***********countryId::>> ${widget.countryId}");
-                          print(
-                              "SignUpDetails***********firebaseToken::>> ${widget.firebaseToken}");
-                          print(
-                              "SignUpDetails***********codeOtp::>> ${widget.role}");
-                          print(
-                              "SignUpDetails***********_imageFileList::>> ${_imageFileList!.path.toString()}}");
-                          print(
-                              "SignUpDetails***********terms::>> ${SignCubit.get(context).terms}}");
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
+                  child: defaultButton3(
+                      press: () {
+                        if (_imageFileList != null) {
+                          if (widget.typeScreen == "register") {
+                            print('signModel verify image***************** ');
+                            print("SignUpDetails***********::>> signModel");
+                            print(
+                                "SignUpDetails***********fullNameController::>> ${widget.fullName}");
+                            print(
+                                "SignUpDetails***********emailController::>> ${widget.email}");
+                            print(
+                                "SignUpDetails***********phone::>> ${widget.phone}");
+                            print(
+                                "SignUpDetails***********countryId::>> ${widget.countryId}");
+                            print(
+                                "SignUpDetails***********firebaseToken::>> ${widget.firebaseToken}");
+                            print(
+                                "SignUpDetails***********codeOtp::>> ${widget.role}");
+                            print(
+                                "SignUpDetails***********_imageFileList::>> ${_imageFileList!.path.toString()}}");
+                            print(
+                                "SignUpDetails***********terms::>> ${SignCubit.get(context).terms}}");
 
-                          SignCubit.get(context).makeRegister(
-                              widget.phone!,
-                              widget.countryId!,
-                              widget.email!,
-                              widget.firebaseToken!,
-                              widget.fullName!,
-                              widget.role!,
-                              SignCubit.get(context).terms,
-                              _imageFileList!.path.toString());
-                        } else if (widget.typeScreen == "frontNationalId") {
-                          SignCubit.get(context)
-                              .setChangeUpdateBool("frontNationalId", true);
-                          SignCubit.get(context).frontNationalIdString =
-                              _imageFileList!.path.toString();
-                        } else if (widget.typeScreen == "backNationalId") {
-                          SignCubit.get(context)
-                              .setChangeUpdateBool("backNationalId", true);
-                          SignCubit.get(context).backNationalIdString =
-                              _imageFileList!.path.toString();
+                            SignCubit.get(context).makeRegister(
+                                widget.phone!,
+                                widget.countryId!,
+                                widget.email!,
+                                widget.firebaseToken!,
+                                widget.fullName!,
+                                widget.role!,
+                                SignCubit.get(context).terms,
+                                _imageFileList!.path.toString());
+                          } else if (widget.typeScreen == "frontNationalId") {
+                            SignCubit.get(context)
+                                .setChangeUpdateBool("frontNationalId", true);
+                            SignCubit.get(context).frontNationalIdString =
+                                _imageFileList!.path.toString();
+                          } else if (widget.typeScreen == "backNationalId") {
+                            SignCubit.get(context)
+                                .setChangeUpdateBool("backNationalId", true);
+                            SignCubit.get(context).backNationalIdString =
+                                _imageFileList!.path.toString();
+                          }
+                          // else if (widget.typeScreen == "frontPassport") {
+                          //   SignCubit.get(context)
+                          //       .setChangeUpdateBool("frontPassport", true);
+                          //   SignCubit.get(context).frontPassportString =
+                          //       _imageFileList!.path.toString();
+                          // } else if (widget.typeScreen == "backPassport") {
+                          //   SignCubit.get(context)
+                          //       .setChangeUpdateBool("backPassport", true);
+                          //   SignCubit.get(context).backPassportString =
+                          //       _imageFileList!.path.toString();
+                          // }
+                          else if (widget.typeScreen == "frontDriverLicence") {
+                            SignCubit.get(context)
+                                .setChangeUpdateBool("frontDriverLicence", true);
+                            SignCubit.get(context).frontDriverLicenceString =
+                                _imageFileList!.path.toString();
+                          } else if (widget.typeScreen == "backDriverLicence") {
+                            SignCubit.get(context)
+                                .setChangeUpdateBool("backDriverLicence", true);
+                            SignCubit.get(context).backDriverLicenceString =
+                                _imageFileList!.path.toString();
+                          }
+                        } else {
+                          showToastt(
+                              text: "choose photo first please...",
+                              state: ToastStates.error,
+                              context: context);
                         }
-                        // else if (widget.typeScreen == "frontPassport") {
-                        //   SignCubit.get(context)
-                        //       .setChangeUpdateBool("frontPassport", true);
-                        //   SignCubit.get(context).frontPassportString =
-                        //       _imageFileList!.path.toString();
-                        // } else if (widget.typeScreen == "backPassport") {
-                        //   SignCubit.get(context)
-                        //       .setChangeUpdateBool("backPassport", true);
-                        //   SignCubit.get(context).backPassportString =
-                        //       _imageFileList!.path.toString();
-                        // }
-                        else if (widget.typeScreen == "frontDriverLicence") {
-                          SignCubit.get(context)
-                              .setChangeUpdateBool("frontDriverLicence", true);
-                          SignCubit.get(context).frontDriverLicenceString =
-                              _imageFileList!.path.toString();
-                        } else if (widget.typeScreen == "backDriverLicence") {
-                          SignCubit.get(context)
-                              .setChangeUpdateBool("backDriverLicence", true);
-                          SignCubit.get(context).backDriverLicenceString =
-                              _imageFileList!.path.toString();
-                        }
-                      } else {
-                        showToastt(
-                            text: "choose photo first please...",
-                            state: ToastStates.error,
-                            context: context);
-                      }
-                    },
-                    text: "Done",
-                    backColor: accentColor,
-                    textColor: white),
+                      },
+                      text: "Done",
+                      backColor: accentColor,
+                      textColor: white),
+                ),
               ],
             ),
           ),

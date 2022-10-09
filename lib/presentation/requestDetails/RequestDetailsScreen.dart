@@ -8,11 +8,13 @@ import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/requestDetails/request_details_cubit.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
+import 'package:getn_driver/presentation/tripDetails/TripDetailsScreen.dart';
+import 'package:getn_driver/presentation/tripDetails/trip_details_cubit.dart';
 import 'package:intl/intl.dart';
 
 class RequestDetailsScreen extends StatefulWidget {
   const RequestDetailsScreen({Key? key, this.idRequest}) : super(key: key);
-  //01098785374
+
   final String? idRequest;
 
   @override
@@ -497,338 +499,382 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                           var trip =
                                               RequestDetailsCubit.get(context)
                                                   .trips[i];
-                                          return Container(
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 10.r,
-                                                vertical: 10.r),
-                                            child: Card(
-                                              elevation: 5.r,
-                                              clipBehavior: Clip.antiAlias,
-                                              child: Container(
-                                                color: white,
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 10.r,
-                                                    horizontal: 15.r),
-                                                child: Column(
-                                                  children: [
-                                                    Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Icon(
-                                                          Icons.location_on,
-                                                          color: greenColor,
-                                                          size: 20.w,
-                                                        ),
-                                                        SizedBox(
-                                                          width: 10.w,
-                                                        ),
-                                                        Expanded(
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                'Picked Point',
-                                                                style: TextStyle(
-                                                                    color:
-                                                                        black,
-                                                                    fontSize:
-                                                                        15.sp,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
+                                          return InkWell(
+                                            child: Container(
+                                              margin: EdgeInsets.symmetric(
+                                                  horizontal: 10.r,
+                                                  vertical: 10.r),
+                                              child: Card(
+                                                elevation: 5.r,
+                                                clipBehavior: Clip.antiAlias,
+                                                child: Container(
+                                                  color: white,
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 10.r,
+                                                      horizontal: 15.r),
+                                                  child: Column(
+                                                    children: [
+                                                      Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Icon(
+                                                            Icons.location_on,
+                                                            color: greenColor,
+                                                            size: 20.w,
+                                                          ),
+                                                          SizedBox(
+                                                            width: 10.w,
+                                                          ),
+                                                          Expanded(
+                                                            flex: 3,
+                                                            child: Padding(
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .only(
+                                                                          end: 10
+                                                                              .r),
+                                                              child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Text(
+                                                                    'Picked Point',
+                                                                    style: TextStyle(
+                                                                        color:
+                                                                            black,
+                                                                        fontSize: 15
+                                                                            .sp,
+                                                                        fontWeight:
+                                                                            FontWeight.bold),
+                                                                  ),
+                                                                  SizedBox(
+                                                                      height:
+                                                                          10.h),
+                                                                  Text(
+                                                                    trip.from!
+                                                                        .placeTitle!,
+                                                                    style: TextStyle(
+                                                                        color:
+                                                                            grey2,
+                                                                        fontSize:
+                                                                            16.sp),
+                                                                  ),
+                                                                ],
                                                               ),
-                                                              SizedBox(
-                                                                  height: 10.h),
-                                                              Text(
-                                                                trip.from!
-                                                                    .placeTitle!,
-                                                                style: TextStyle(
+                                                            ),
+                                                          ),
+                                                          Expanded(
+                                                            flex: 2,
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .end,
+                                                              children: [
+                                                                Text(
+                                                                  DateFormat
+                                                                          .jm()
+                                                                      .format(DateTime
+                                                                          .parse(
+                                                                              trip.startDate!)),
+                                                                  style:
+                                                                      TextStyle(
                                                                     color:
                                                                         grey2,
                                                                     fontSize:
-                                                                        16.sp),
-                                                              ),
-                                                            ],
+                                                                        18.sp,
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                  DateFormat
+                                                                          .yMEd()
+                                                                      .format(DateTime
+                                                                          .parse(
+                                                                              trip.startDate!)),
+                                                                  style: TextStyle(
+                                                                      color:
+                                                                          grey2,
+                                                                      fontSize:
+                                                                          15.sp),
+                                                                ),
+                                                              ],
+                                                            ),
                                                           ),
-                                                        ),
-                                                        Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Text(
-                                                              DateFormat.jm()
-                                                                  .format(DateTime
-                                                                      .parse(trip
-                                                                          .from!
-                                                                          .date!)),
-                                                              style: TextStyle(
-                                                                color: grey2,
-                                                                fontSize: 18.sp,
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                        height: 15.r,
+                                                      ),
+                                                      Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Icon(
+                                                            Icons.location_on,
+                                                            color: redColor,
+                                                            size: 20.w,
+                                                          ),
+                                                          SizedBox(
+                                                            width: 10.w,
+                                                          ),
+                                                          Expanded(
+                                                            flex: 3,
+                                                            child: Padding(
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .only(
+                                                                          end: 10
+                                                                              .r),
+                                                              child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Text(
+                                                                    'Picked Point',
+                                                                    style: TextStyle(
+                                                                        color:
+                                                                            black,
+                                                                        fontSize: 15
+                                                                            .sp,
+                                                                        fontWeight:
+                                                                            FontWeight.bold),
+                                                                  ),
+                                                                  SizedBox(
+                                                                      height:
+                                                                          10.h),
+                                                                  Text(
+                                                                    trip.to!
+                                                                        .placeTitle!,
+                                                                    style: TextStyle(
+                                                                        color:
+                                                                            grey2,
+                                                                        fontSize:
+                                                                            15.sp),
+                                                                  ),
+                                                                ],
                                                               ),
                                                             ),
-                                                            Text(
-                                                              DateFormat.yMEd()
-                                                                  .format(DateTime
-                                                                      .parse(trip
-                                                                          .from!
-                                                                          .date!)),
-                                                              style: TextStyle(
-                                                                  color: grey2,
-                                                                  fontSize:
-                                                                      15.sp),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 15.r,
-                                                    ),
-                                                    Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Icon(
-                                                          Icons.location_on,
-                                                          color: redColor,
-                                                          size: 20.w,
-                                                        ),
-                                                        SizedBox(
-                                                          width: 10.w,
-                                                        ),
-                                                        Expanded(
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                'Picked Point',
-                                                                style: TextStyle(
-                                                                    color:
-                                                                        black,
-                                                                    fontSize:
-                                                                        15.sp,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
-                                                              ),
-                                                              SizedBox(
-                                                                  height: 10.h),
-                                                              Text(
-                                                                trip.to!
-                                                                    .placeTitle!,
-                                                                style: TextStyle(
+                                                          ),
+                                                          Expanded(
+                                                            flex: 2,
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .end,
+                                                              children: [
+                                                                Text(
+                                                                  '12:00 am',
+                                                                  // DateFormat.jm().format(DateTime.parse(
+                                                                  //     trip.to!.date!)),
+                                                                  style:
+                                                                      TextStyle(
                                                                     color:
                                                                         grey2,
                                                                     fontSize:
-                                                                        15.sp),
+                                                                        18.sp,
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                  '12/2/20200',
+                                                                  // DateFormat.yMEd().format(
+                                                                  //     DateTime.parse(
+                                                                  //         trip.to!.date!)),
+                                                                  style: TextStyle(
+                                                                      color:
+                                                                          grey2,
+                                                                      fontSize:
+                                                                          15.sp),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                        height: 15.r,
+                                                      ),
+                                                      Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Card(
+                                                              color:
+                                                                  yellowLightColor,
+                                                              child: Padding(
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .all(15
+                                                                            .r),
+                                                                child: Column(
+                                                                    children: [
+                                                                      Text(
+                                                                        'Distance',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                grey2,
+                                                                            fontSize:
+                                                                                15.sp),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            5.r,
+                                                                      ),
+                                                                      Text(
+                                                                        trip.consumptionKM!
+                                                                            .toStringAsFixed(2),
+                                                                        textAlign:
+                                                                            TextAlign.center,
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                black,
+                                                                            fontSize:
+                                                                                15.sp,
+                                                                            fontWeight: FontWeight.bold),
+                                                                      ),
+                                                                    ]),
                                                               ),
-                                                            ],
+                                                            ),
                                                           ),
-                                                        ),
-                                                        Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              '12:00 am',
-                                                              // DateFormat.jm().format(DateTime.parse(
-                                                              //     trip.to!.date!)),
-                                                              style: TextStyle(
-                                                                color: grey2,
-                                                                fontSize: 18.sp,
+                                                          Expanded(
+                                                            child: Card(
+                                                              color: Colors
+                                                                  .redAccent
+                                                                  .withOpacity(
+                                                                      .3),
+                                                              child: Padding(
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .all(15
+                                                                            .r),
+                                                                child: Column(
+                                                                    children: [
+                                                                      Text(
+                                                                        'Points',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                grey2,
+                                                                            fontSize:
+                                                                                15.sp),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            5.r,
+                                                                      ),
+                                                                      Text(
+                                                                        trip.consumptionPoints!
+                                                                            .toStringAsFixed(2),
+                                                                        textAlign:
+                                                                            TextAlign.center,
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                black,
+                                                                            fontSize:
+                                                                                15.sp,
+                                                                            fontWeight: FontWeight.bold),
+                                                                      ),
+                                                                    ]),
                                                               ),
                                                             ),
-                                                            Text(
-                                                              '12/2/20200',
-                                                              // DateFormat.yMEd().format(
-                                                              //     DateTime.parse(
-                                                              //         trip.to!.date!)),
-                                                              style: TextStyle(
-                                                                  color: grey2,
-                                                                  fontSize:
-                                                                      15.sp),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 15.r,
-                                                    ),
-                                                    Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Expanded(
-                                                          child: Card(
-                                                            color:
-                                                                yellowLightColor,
-                                                            child: Padding(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(
-                                                                          15.r),
-                                                              child: Column(
-                                                                  children: [
-                                                                    Text(
-                                                                      'Distance',
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              grey2,
-                                                                          fontSize:
-                                                                              15.sp),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      height:
-                                                                          5.r,
-                                                                    ),
-                                                                    Text(
-                                                                      trip.consumptionKM!
-                                                                          .toStringAsFixed(
-                                                                              2),
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .center,
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              black,
-                                                                          fontSize: 15
-                                                                              .sp,
-                                                                          fontWeight:
-                                                                              FontWeight.bold),
-                                                                    ),
-                                                                  ]),
+                                                          ),
+                                                          Expanded(
+                                                            child: Card(
+                                                              color:
+                                                                  greenLightColor,
+                                                              child: Padding(
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .all(15
+                                                                            .r),
+                                                                child: Column(
+                                                                    children: [
+                                                                      Text(
+                                                                        '1 Km Points',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                grey2,
+                                                                            fontSize:
+                                                                                15.sp),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            5.r,
+                                                                      ),
+                                                                      Text(
+                                                                        trip.oneKMPoints
+                                                                            .toString(),
+                                                                        textAlign:
+                                                                            TextAlign.center,
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                black,
+                                                                            fontSize:
+                                                                                15.sp,
+                                                                            fontWeight: FontWeight.bold),
+                                                                      ),
+                                                                    ]),
+                                                              ),
                                                             ),
                                                           ),
-                                                        ),
-                                                        Expanded(
-                                                          child: Card(
-                                                            color: Colors
-                                                                .redAccent
-                                                                .withOpacity(
-                                                                    .3),
-                                                            child: Padding(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(
-                                                                          15.r),
-                                                              child: Column(
-                                                                  children: [
-                                                                    Text(
-                                                                      'Points',
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              grey2,
-                                                                          fontSize:
-                                                                              15.sp),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      height:
-                                                                          5.r,
-                                                                    ),
-                                                                    Text(
-                                                                      trip.consumptionPoints!
-                                                                          .toStringAsFixed(
-                                                                              2),
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .center,
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              black,
-                                                                          fontSize: 15
-                                                                              .sp,
-                                                                          fontWeight:
-                                                                              FontWeight.bold),
-                                                                    ),
-                                                                  ]),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          child: Card(
-                                                            color:
-                                                                greenLightColor,
-                                                            child: Padding(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(
-                                                                          15.r),
-                                                              child: Column(
-                                                                  children: [
-                                                                    Text(
-                                                                      '1 Km Points',
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              grey2,
-                                                                          fontSize:
-                                                                              15.sp),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      height:
-                                                                          5.r,
-                                                                    ),
-                                                                    Text(
-                                                                      trip.oneKMPoints.toString(),
-                                                                      textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                          black,
-                                                                          fontSize: 15
-                                                                              .sp,
-                                                                          fontWeight:
-                                                                          FontWeight.bold),
-                                                                    ),
-                                                                  ]),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
+                                            onTap: () {
+                                              navigateTo(
+                                                  context,
+                                                  BlocProvider(
+                                                    create: (context) =>
+                                                        TripDetailsCubit()
+                                                          ..getTripDetails(
+                                                              RequestDetailsCubit
+                                                                      .get(
+                                                                          context)
+                                                                  .trips[i]
+                                                                  .id!),
+                                                    child: TripDetailsScreen(
+                                                        id: RequestDetailsCubit
+                                                                .get(context)
+                                                            .trips[i]
+                                                            .id),
+                                                  ));
+                                            },
                                           );
                                         },
-                            )
-                                : Center(
-                              child: Text(
-                                RequestDetailsCubit.get(context).failureTrip,
-                                style: TextStyle(
-                                    fontSize: 20.sp,
-                                    color: blueColor,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
+                                      )
+                                    : Center(
+                                        child: Text(
+                                          RequestDetailsCubit.get(context)
+                                              .failureTrip,
+                                          style: TextStyle(
+                                              fontSize: 20.sp,
+                                              color: blueColor,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
                           ],
                         ),
                       ),
-          )
-              : Center(
-            child: Text(
-              RequestDetailsCubit.get(context).failureRequest,
-              style: TextStyle(
-                  fontSize: 20.sp,
-                  color: blueColor,
-                  fontWeight: FontWeight.bold),
-            ),
-          ),
+                    )
+                  : Center(
+                      child: Text(
+                        RequestDetailsCubit.get(context).failureRequest,
+                        style: TextStyle(
+                            fontSize: 20.sp,
+                            color: blueColor,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
         );
       },
     );
   }
 }
-                                                                    

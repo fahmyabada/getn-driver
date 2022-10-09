@@ -86,14 +86,17 @@ class TermsScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              defaultButton3(
-                  press: () {
-                    SignCubit.get(context).setTerms(true);
-                    Navigator.of(context).pop();
-                  },
-                  text: "Accept",
-                  backColor: accentColor,
-                  textColor: white),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
+                child: defaultButton3(
+                    press: () {
+                      SignCubit.get(context).setTerms(true);
+                      Navigator.of(context).pop();
+                    },
+                    text: "Accept",
+                    backColor: accentColor,
+                    textColor: white),
+              ),
             ],
           ),
         ),

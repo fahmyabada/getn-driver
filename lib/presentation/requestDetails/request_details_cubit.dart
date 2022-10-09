@@ -48,17 +48,7 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
     }, (data) {
       requestDetails = data;
       loadingRequest = false;
-      final currentDate = DateTime.now();
-      final d = DateFormat("yyyy-MM-ddTHH:mm")
-          .parse(requestDetails!.from!.date!)
-          .subtract(
-        const Duration(
-          hours: 24,
-        ),
-      );
 
-      print('date****************** $d');
-      print('date1****************** ${currentDate.isBefore(d)}');
       return RequestDetailsSuccessState(data);
     });
   }

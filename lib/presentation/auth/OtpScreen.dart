@@ -343,14 +343,17 @@ class _OtpScreenState extends State<OtpScreen> {
                 SizedBox(height: 35.h),
                 buildTime(context),
                 SizedBox(height: 32.h),
-                defaultButton3(
-                    press: () {
-                      nextButton();
-                    },
-                    disablePress: openNext,
-                    text: "Next",
-                    backColor: accentColor,
-                    textColor: white),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
+                  child: defaultButton3(
+                      press: () {
+                        nextButton();
+                      },
+                      disablePress: openNext,
+                      text: "Next",
+                      backColor: accentColor,
+                      textColor: white),
+                ),
               ],
             ),
           ),

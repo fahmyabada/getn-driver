@@ -327,50 +327,53 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                       },
                     ),
 
-                    defaultButton3(
-                        press: () {
-                          if (SignCubit
-                              .get(context)
-                              .frontNationalIdString !=
-                              null &&
-                              SignCubit
-                                  .get(context)
-                                  .backNationalIdString !=
-                                  null &&
-                              // SignCubit.get(context).frontPassportString !=
-                              //     null &&
-                              // SignCubit.get(context).backPassportString !=
-                              //     null &&
-                              SignCubit
-                                  .get(context)
-                                  .frontDriverLicenceString !=
-                                  null &&
-                              SignCubit
-                                  .get(context)
-                                  .backDriverLicenceString !=
-                                  null) {
-                            SignCubit.get(context).editInformation(
-                                SignCubit
-                                    .get(context)
-                                    .frontNationalIdString!, SignCubit
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
+                      child: defaultButton3(
+                          press: () {
+                            if (SignCubit
                                 .get(context)
-                                .backNationalIdString!,
+                                .frontNationalIdString !=
+                                null &&
                                 SignCubit
                                     .get(context)
-                                    .frontDriverLicenceString!,
+                                    .backNationalIdString !=
+                                    null &&
+                                // SignCubit.get(context).frontPassportString !=
+                                //     null &&
+                                // SignCubit.get(context).backPassportString !=
+                                //     null &&
                                 SignCubit
                                     .get(context)
-                                    .backDriverLicenceString!);
-                          } else {
-                            showToastt(
-                                text: "please fill all data first...",
-                                state: ToastStates.error,
-                                context: context);
-                          }
-                        },
-                        text: "Done",
-                        backColor: accentColor,
-                        textColor: white),
+                                    .frontDriverLicenceString !=
+                                    null &&
+                                SignCubit
+                                    .get(context)
+                                    .backDriverLicenceString !=
+                                    null) {
+                              SignCubit.get(context).editInformation(
+                                  SignCubit
+                                      .get(context)
+                                      .frontNationalIdString!, SignCubit
+                                  .get(context)
+                                  .backNationalIdString!,
+                                  SignCubit
+                                      .get(context)
+                                      .frontDriverLicenceString!,
+                                  SignCubit
+                                      .get(context)
+                                      .backDriverLicenceString!);
+                            } else {
+                              showToastt(
+                                  text: "please fill all data first...",
+                                  state: ToastStates.error,
+                                  context: context);
+                            }
+                          },
+                          text: "Done",
+                          backColor: accentColor,
+                          textColor: white),
+                    ),
                   ],
                 ),
               ),

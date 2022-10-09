@@ -6,9 +6,12 @@ import 'package:getn_driver/data/repository/request/RequestRemoteDataSource.dart
 import 'package:getn_driver/data/repository/request/RequestRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/requestDetails/RequestDetailsRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/requestDetails/RequestDetailsRepositoryImpl.dart';
+import 'package:getn_driver/data/repository/tripDetails/TripDetailsRemoteDataSource.dart';
+import 'package:getn_driver/data/repository/tripDetails/TripDetailsRepositoryImpl.dart';
 import 'package:getn_driver/domain/repository/RequestDetailsRepository.dart';
 import 'package:getn_driver/domain/repository/RequestRepository.dart';
 import 'package:getn_driver/domain/repository/AuthRepository.dart';
+import 'package:getn_driver/domain/repository/TripDetailsRepository.dart';
 import 'package:getn_driver/domain/usecase/request/GetRequestUseCase.dart';
 import 'package:getn_driver/domain/usecase/request/PutRequestUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetRequestDetailsUseCase.dart';
@@ -20,6 +23,8 @@ import 'package:getn_driver/domain/usecase/auth/GetRoleUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/LoginUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/RegisterUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/SendOtpUseCase.dart';
+import 'package:getn_driver/domain/usecase/tripDetails/GetTripDetailsUseCase.dart';
+import 'package:getn_driver/domain/usecase/tripDetails/PutTripDetailsUseCase.dart';
 import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -45,6 +50,8 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => GetTripsRequestDetailsUseCase(getIt()));
   getIt.registerLazySingleton(() => PutRequestUseCase(getIt()));
   getIt.registerLazySingleton(() => PutRequestDetailsUseCase(getIt()));
+  getIt.registerLazySingleton(() => PutTripDetailsUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetTripDetailsUseCase(getIt()));
 
   // Repository
   getIt.registerLazySingleton<AuthRepository>(
@@ -68,6 +75,12 @@ Future<void> init() async {
     ),
   );
 
+  getIt.registerLazySingleton<TripDetailsRepository>(
+        () => TripDetailsRepositoryImpl(
+      getIt(),
+      getIt(),
+    ),
+  );
 
   // Data sources
   getIt.registerLazySingleton<AuthRemoteDataSource>(
@@ -79,6 +92,8 @@ Future<void> init() async {
   getIt.registerLazySingleton<RequestDetailsRemoteDataSource>(
           () => RequestDetailsRemoteDataSourceImpl());
 
+  getIt.registerLazySingleton<TripDetailsRemoteDataSource>(
+          () => TripDetailsRemoteDataSourceImpl());
 
   //! Core
   getIt.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(getIt()));

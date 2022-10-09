@@ -200,35 +200,38 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                             )
                           ],
                         ),
-                        defaultButton3(
-                            press: () {
-                              if (formKey.currentState!.validate()) {
-                                if (SignCubit.get(context).terms) {
-                                  navigateTo(
-                                    context,
-                                    VerifyImageScreen(
-                                      typeScreen: "register",
-                                      fullName:
-                                          fullNameController.text.toString(),
-                                      email: emailController.text.toString(),
-                                      phone: widget.phone,
-                                      countryId: widget.countryId,
-                                      firebaseToken: widget.firebaseToken,
-                                      role: groupValueId,
-                                    ),
-                                  );
-                                } else {
-                                  showToastt(
-                                      text:
-                                          "check in Terms & condition first..",
-                                      state: ToastStates.error,
-                                      context: context);
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
+                          child: defaultButton3(
+                              press: () {
+                                if (formKey.currentState!.validate()) {
+                                  if (SignCubit.get(context).terms) {
+                                    navigateTo(
+                                      context,
+                                      VerifyImageScreen(
+                                        typeScreen: "register",
+                                        fullName:
+                                            fullNameController.text.toString(),
+                                        email: emailController.text.toString(),
+                                        phone: widget.phone,
+                                        countryId: widget.countryId,
+                                        firebaseToken: widget.firebaseToken,
+                                        role: groupValueId,
+                                      ),
+                                    );
+                                  } else {
+                                    showToastt(
+                                        text:
+                                            "check in Terms & condition first..",
+                                        state: ToastStates.error,
+                                        context: context);
+                                  }
                                 }
-                              }
-                            },
-                            text: "Next",
-                            backColor: accentColor,
-                            textColor: white),
+                              },
+                              text: "Next",
+                              backColor: accentColor,
+                              textColor: white),
+                        ),
                       ],
                     )
                   ],

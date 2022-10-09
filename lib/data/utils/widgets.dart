@@ -161,8 +161,7 @@ Widget defaultButton3(
         required String text,
         required Color backColor,
         required Color textColor}) =>
-    Container(
-      margin: EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
+    SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         onPressed: disablePress ? press : null,
