@@ -50,7 +50,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
     _controllerLoadingTrips = ScrollController();
     getIt<SharedPreferences>().setString('typeScreen', "requestDetails");
-    RequestDetailsCubit.get(context).indexTrips = 0;
+    RequestDetailsCubit.get(context).indexTrips = 1;
     RequestDetailsCubit.get(context).trips = [];
     RequestDetailsCubit.get(context).loadingMoreTrips = false;
     RequestDetailsCubit.get(context).loadingTrips = false;
@@ -154,7 +154,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                               child: Text(
                                                 RequestDetailsCubit.get(context)
                                                     .requestDetails!
-                                                    .id!,
+                                                    .client2!.name!,
                                                 style: TextStyle(
                                                     fontSize: 20.sp,
                                                     color: black,
@@ -168,7 +168,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                           height: 5.h,
                                         ),
                                         Text(
-                                          '${RequestDetailsCubit.get(context).requestDetails!.client2!.country!.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.city!.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.area!.title!.en!}',
+                                          '${RequestDetailsCubit.get(context).requestDetails!.client2!.country!.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.city?.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.area?.title!.en!}',
                                           style: TextStyle(
                                               fontSize: 18.sp, color: grey2),
                                         ),

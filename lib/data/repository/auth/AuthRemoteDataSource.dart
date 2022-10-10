@@ -178,6 +178,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       var formData = FormData.fromMap({
         'phone': phone,
         'country': countryId,
+        'fcmToken': getIt<SharedPreferences>().getString("fcmToken"),
       });
       const apiKey =
           'fjsadkjfgdshfgjhjhvmgfdhvjkhdfjkhgkljfklghg54654654j65g456hk456hj4k6546hj4k64jh6k';

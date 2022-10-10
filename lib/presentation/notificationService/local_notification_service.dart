@@ -5,11 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:getn_driver/main.dart';
-import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/request/request_cubit.dart';
 import 'package:getn_driver/presentation/requestDetails/RequestDetailsScreen.dart';
 import 'package:getn_driver/presentation/tripDetails/TripDetailsScreen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalNotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
@@ -138,21 +136,33 @@ class LocalNotificationService {
           case NotificationResponseType.selectedNotification:
             print(
                 "notificationResponseType************ ${notificationResponse.payload}");
-            if (getIt<SharedPreferences>().getString('typeScreen') ==
-                'requestDetails') {
-              goToNextScreen(notificationResponse.payload!, "pushReplacement",
-                  "requestDetails");
-            } else if (getIt<SharedPreferences>().getString('typeScreen') ==
-                'tripDetails') {
-              if (notificationResponse.payload! == "inTripDetails") {
-                goToNextScreen(notificationResponse.payload!, "pushReplacement",
-                    "tripDetails");
-              } else {
-                goToNextScreen(notificationResponse.payload!, "pop", "");
-              }
-            } else {
-              goToNextScreen(notificationResponse.payload!, "push", "");
+            final split = notificationResponse.payload!.split(',');
+            final Map<int, String> values = {
+              for (int i = 0; i < split.length; i++) i: split[i]
+            };
+            String? id = values[0];
+            String? typeScreen = values[1];
+
+            if (typeScreen == "inSameTrip") {
+              // here if i get same trip id i will refresh page and show notification
+              // without enable clickable
+            } else if (typeScreen == "newTrip") {
+              goToNextScreen(id!, "pop", typeScreen!);
+            } else if (typeScreen == "outTrip") {
+              goToNextScreen(id!, "push", typeScreen!);
+            } else if (typeScreen == "outTripInRequest") {
+              goToNextScreen(id!, "pushReplacement", "requestDetails");
+            } else if (typeScreen == "inSameRequest") {
+              // here if i get same request id i will refresh page and show notification
+              // without enable clickable
+            } else if (typeScreen == "newRequest") {
+              goToNextScreen(id!, "pushReplacement", "requestDetails");
+            } else if (typeScreen == "outRequest") {
+              goToNextScreen(id!, "push", typeScreen!);
+            } else if (typeScreen == "outRequestInTrip") {
+              goToNextScreen(id!, "pop", typeScreen!);
             }
+
             break;
           case NotificationResponseType.selectedNotificationAction:
             if (notificationResponse.actionId == navigationActionId) {
@@ -166,8 +176,12 @@ class LocalNotificationService {
     );
   }
 
-  static void goToNextScreen(String id, String typeFinish, String typeScreen) {
-    if (typeFinish == "pushAndRemoveUntil") {
+  static void goToNextScreen(
+      String id, String typeTransfer, String typeScreen) {
+    print("goToNextScreen1************ $id");
+    print("goToNextScreen2************ $typeTransfer");
+    print("goToNextScreen3************ $typeScreen");
+    if (typeTransfer == "pushAndRemoveUntil") {
       navigatorKey.currentState!.pushAndRemoveUntil(
           MaterialPageRoute(
             builder: (context) => BlocProvider(
@@ -177,7 +191,7 @@ class LocalNotificationService {
                 )),
           ),
           (route) => false);
-    } else if (typeFinish == "push") {
+    } else if (typeTransfer == "push") {
       navigatorKey.currentState!.push(
         MaterialPageRoute(
           builder: (context) => BlocProvider(
@@ -187,9 +201,9 @@ class LocalNotificationService {
               )),
         ),
       );
-    } else if (typeFinish == "pop") {
+    } else if (typeTransfer == "pop") {
       navigatorKey.currentState!.pop(id);
-    } else if (typeFinish == "pushReplacement") {
+    } else if (typeTransfer == "pushReplacement") {
       if (typeScreen == "requestDetails") {
         navigatorKey.currentState!.pushReplacement(
           MaterialPageRoute(
@@ -200,7 +214,7 @@ class LocalNotificationService {
                 )),
           ),
         );
-      } else {
+      } else if (typeScreen == "tripDetails") {
         navigatorKey.currentState!.pushReplacement(
           MaterialPageRoute(
             builder: (context) => BlocProvider(
@@ -217,6 +231,8 @@ class LocalNotificationService {
   static void createAndDisplayNotification(
       RemoteMessage message, String? type) async {
     try {
+      String? payloadValue;
+
       final id = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
       const DarwinNotificationDetails iosNotificationDetails =
@@ -226,13 +242,28 @@ class LocalNotificationService {
 
       NotificationDetails notificationDetails = const NotificationDetails(
           android: AndroidNotificationDetails(
-            "FahmyAbadaNotificationApp",
-            "FahmyAbadaNotificationAppChannel",
+            "GetnDriverChannel",
+            "GetnDriverChannel",
             playSound: true,
             importance: Importance.max,
             priority: Priority.high,
           ),
           iOS: iosNotificationDetails);
+
+      if (type == "inSameTrip") {
+        payloadValue = message.data['typeId'];
+      } else if (type == "newTrip") {
+        payloadValue = message.data['parentId'];
+      } else if (type == "outTrip") {
+        payloadValue = message.data['parentId'];
+      } else if (type == "outTripInRequest") {
+        payloadValue = message.data['parentId'];
+      } else if (type == "inSameRequest" ||
+          type == "newRequest" ||
+          type == "outRequest" ||
+          type == "outRequestInTrip") {
+        payloadValue = message.data['typeId'];
+      }
 
       await _notificationsPlugin.show(
         id,
@@ -240,12 +271,7 @@ class LocalNotificationService {
         message.notification!.body,
         notificationDetails,
         //payload : holds the data that is passed through the notification when the notification is tapped
-        payload: type!.isEmpty
-            ? getIt<SharedPreferences>().getString('typeScreen') ==
-                    'tripDetails'
-                ? message.data['parentId']
-                : message.data['typeId']
-            : message.data['typeId'],
+        payload: '$payloadValue,$type',
       );
     } on Exception catch (e) {
       if (kDebugMode) {

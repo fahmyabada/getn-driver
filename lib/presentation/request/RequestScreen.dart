@@ -171,9 +171,6 @@ class _RequestScreenState extends State<RequestScreen>
                     itemCount: RequestCubit.get(context).requestCurrent.length,
                     itemBuilder: (context, i) {
                       var current = RequestCubit.get(context).requestCurrent[i];
-                      var startDate = DateTime.parse(current.from!.date!);
-                      var endDate = DateTime.parse(current.to!);
-
                       return InkWell(
                         child: Container(
                           margin: EdgeInsets.symmetric(
@@ -187,9 +184,98 @@ class _RequestScreenState extends State<RequestScreen>
                                   vertical: 10.r, horizontal: 7.r),
                               child: Column(
                                 children: [
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                  Row(
+                                    children: [
+                                      ClipOval(
+                                        clipBehavior: Clip.antiAlias,
+                                        child: ImageTools.image(
+                                            fit: BoxFit.fill,
+                                            url: current.client2!.image!.src,
+                                            height: 70.w,
+                                            width: 70.w),
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 20.r),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                height: 5.h,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      current.client2!.name!,
+                                                      style: TextStyle(
+                                                          fontSize: 17.sp,
+                                                          color: black,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .bold),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 5.h,
+                                              ),
+                                              Text(
+                                                '${current.client2!.country?.title!.en!}, ${current.client2!.city?.title!.en!}, ${current.client2!.area?.title!.en!}',
+                                                style: TextStyle(
+                                                    fontSize: 15.sp,
+                                                    color: grey2),
+                                              ),
+                                              SizedBox(
+                                                height: 5.h,
+                                              ),
+                                              RatingBar.builder(
+                                                minRating: _userRating,
+                                                itemBuilder:
+                                                    (context, index) =>
+                                                const Icon(
+                                                  Icons.star,
+                                                  color: Colors.amber,
+                                                ),
+                                                itemCount: 5,
+                                                itemSize: 17.w,
+                                                updateOnDrag: true,
+                                                onRatingUpdate: (rating) {
+                                                  setState(() {
+                                                    _userRating = rating;
+                                                  });
+                                                },
+                                                unratedColor: Colors.amber
+                                                    .withAlpha(50),
+                                                direction: Axis.horizontal,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 15.h,
+                                  ),
+                                  // divider
+                                  Container(
+                                    width: 1.sw,
+                                    height: 1.h,
+                                    color: Colors.grey[400],
+                                  ),
+                                  SizedBox(
+                                    height: 15.h,
+                                  ),
                                   Row(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Icon(
                                         Icons.location_on,
@@ -211,10 +297,9 @@ class _RequestScreenState extends State<RequestScreen>
                                                   fontSize: 18.sp,
                                                   fontWeight: FontWeight.bold),
                                             ),
-                                            SizedBox(height: 10.h),
+                                            SizedBox(height: 5.h),
                                             Text(
                                               current.from!.placeTitle!,
-                                              // current.from!.placeTitle!,
                                               style: TextStyle(
                                                   color: grey2,
                                                   fontSize: 16.sp),
@@ -222,24 +307,61 @@ class _RequestScreenState extends State<RequestScreen>
                                           ],
                                         ),
                                       ),
+                                      SizedBox(
+                                        width: 10.w,
+                                      ),
                                       Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                            CrossAxisAlignment.end,
                                         children: [
-                                          Text(
-                                            '12:00 am',
-                                            style: TextStyle(
-                                              color: grey2,
-                                              fontSize: 15.sp,
-                                            ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                DateFormat.yMEd().format(
+                                                    DateTime.parse(
+                                                        current.from!
+                                                            .date!)),
+                                                style: TextStyle(
+                                                    color: grey2, fontSize: 14.sp),
+                                              ),
+                                              SizedBox(
+                                                width: 5.w,
+                                              ),
+                                              Text(
+                                                DateFormat.jm().format(DateTime.parse(
+                                                    current.from!
+                                                        .date!)),
+                                                style: TextStyle(
+                                                  color: grey2,
+                                                  fontSize: 14.sp,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                           SizedBox(
                                             height: 5.h,
                                           ),
-                                          Text(
-                                            '11/12/2022',
-                                            style: TextStyle(
-                                                color: grey2, fontSize: 15.sp),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                DateFormat.yMEd().format(
+                                                    DateTime.parse(
+                                                        current.to!)),
+                                                style: TextStyle(
+                                                    color: grey2, fontSize: 14.sp),
+                                              ),
+                                              SizedBox(
+                                                width: 5.w,
+                                              ),
+                                              Text(
+                                                DateFormat.jm().format(DateTime.parse(
+                                                    current.to!)),
+                                                style: TextStyle(
+                                                  color: grey2,
+                                                  fontSize: 14.sp,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
@@ -295,7 +417,9 @@ class _RequestScreenState extends State<RequestScreen>
                                                       MainAxisAlignment.center,
                                                   children: [
                                                     Text(
-                                                      'Start Date',
+                                                      'Used Points',
+                                                      textAlign:
+                                                      TextAlign.center,
                                                       style: TextStyle(
                                                           color: grey2,
                                                           fontSize: 12.sp),
@@ -304,8 +428,7 @@ class _RequestScreenState extends State<RequestScreen>
                                                       height: 5.h,
                                                     ),
                                                     Text(
-                                                      DateFormat.yMMMd()
-                                                          .format(startDate),
+                                                      current.totalConsumptionPoints.toString(),
                                                       textAlign:
                                                           TextAlign.center,
                                                       style: TextStyle(
@@ -328,7 +451,8 @@ class _RequestScreenState extends State<RequestScreen>
                                                       MainAxisAlignment.center,
                                                   children: [
                                                     Text(
-                                                      'End Date',
+                                                      'Total Distance',
+                                                      textAlign: TextAlign.center,
                                                       style: TextStyle(
                                                           color: grey2,
                                                           fontSize: 12.sp),
@@ -337,8 +461,7 @@ class _RequestScreenState extends State<RequestScreen>
                                                       height: 5.h,
                                                     ),
                                                     Text(
-                                                      DateFormat.yMMMd()
-                                                          .format(endDate),
+                                                      current.consumptionKM.toString(),
                                                       textAlign:
                                                           TextAlign.center,
                                                       style: TextStyle(
@@ -362,7 +485,8 @@ class _RequestScreenState extends State<RequestScreen>
                                                       MainAxisAlignment.center,
                                                   children: [
                                                     Text(
-                                                      'Cost',
+                                                      'Total Price',
+                                                      textAlign: TextAlign.center,
                                                       style: TextStyle(
                                                           color: grey2,
                                                           fontSize: 13.sp),
@@ -427,9 +551,6 @@ class _RequestScreenState extends State<RequestScreen>
                     itemBuilder: (context, i) {
                       var upComing =
                           RequestCubit.get(context).requestUpComing[i];
-                      var startDate = DateTime.parse(upComing.from!.date!);
-                      var endDate = DateTime.parse(upComing.to!);
-
                       return InkWell(
                         child: Container(
                           margin: EdgeInsets.symmetric(
@@ -443,9 +564,98 @@ class _RequestScreenState extends State<RequestScreen>
                                   vertical: 10.r, horizontal: 7.r),
                               child: Column(
                                 children: [
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                  Row(
+                                    children: [
+                                      ClipOval(
+                                        clipBehavior: Clip.antiAlias,
+                                        child: ImageTools.image(
+                                            fit: BoxFit.fill,
+                                            url: upComing.client2!.image!.src,
+                                            height: 70.w,
+                                            width: 70.w),
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 20.r),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                height: 5.h,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      upComing.client2!.name!,
+                                                      style: TextStyle(
+                                                          fontSize: 17.sp,
+                                                          color: black,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .bold),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 5.h,
+                                              ),
+                                              Text(
+                                                '${upComing.client2!.country?.title!.en!}, ${upComing.client2!.city?.title!.en!}, ${upComing.client2!.area?.title!.en!}',
+                                                style: TextStyle(
+                                                    fontSize: 15.sp,
+                                                    color: grey2),
+                                              ),
+                                              SizedBox(
+                                                height: 5.h,
+                                              ),
+                                              RatingBar.builder(
+                                                minRating: _userRating,
+                                                itemBuilder:
+                                                    (context, index) =>
+                                                const Icon(
+                                                  Icons.star,
+                                                  color: Colors.amber,
+                                                ),
+                                                itemCount: 5,
+                                                itemSize: 17.w,
+                                                updateOnDrag: true,
+                                                onRatingUpdate: (rating) {
+                                                  setState(() {
+                                                    _userRating = rating;
+                                                  });
+                                                },
+                                                unratedColor: Colors.amber
+                                                    .withAlpha(50),
+                                                direction: Axis.horizontal,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 15.h,
+                                  ),
+                                  // divider
+                                  Container(
+                                    width: 1.sw,
+                                    height: 1.h,
+                                    color: Colors.grey[400],
+                                  ),
+                                  SizedBox(
+                                    height: 15.h,
+                                  ),
                                   Row(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Icon(
                                         Icons.location_on,
@@ -467,7 +677,7 @@ class _RequestScreenState extends State<RequestScreen>
                                                   fontSize: 18.sp,
                                                   fontWeight: FontWeight.bold),
                                             ),
-                                            SizedBox(height: 10.h),
+                                            SizedBox(height: 5.h),
                                             Text(
                                               upComing.from!.placeTitle!,
                                               // upComing.from!.placeTitle!,
@@ -478,21 +688,61 @@ class _RequestScreenState extends State<RequestScreen>
                                           ],
                                         ),
                                       ),
+                                      SizedBox(
+                                        width: 10.w,
+                                      ),
                                       Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Text(
-                                            '12:00 am',
-                                            style: TextStyle(
-                                              color: grey2,
-                                              fontSize: 15.sp,
-                                            ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                DateFormat.yMEd().format(
+                                                    DateTime.parse(
+                                                        upComing.from!
+                                                            .date!)),
+                                                style: TextStyle(
+                                                    color: grey2, fontSize: 14.sp),
+                                              ),
+                                              SizedBox(
+                                                width: 5.w,
+                                              ),
+                                              Text(
+                                                DateFormat.jm().format(DateTime.parse(
+                                                    upComing.from!
+                                                        .date!)),
+                                                style: TextStyle(
+                                                  color: grey2,
+                                                  fontSize: 14.sp,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          Text(
-                                            '11/12/2022',
-                                            style: TextStyle(
-                                                color: grey2, fontSize: 15.sp),
+                                          SizedBox(
+                                            height: 5.h,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                DateFormat.yMEd().format(
+                                                    DateTime.parse(
+                                                        upComing.to!)),
+                                                style: TextStyle(
+                                                    color: grey2, fontSize: 14.sp),
+                                              ),
+                                              SizedBox(
+                                                width: 5.w,
+                                              ),
+                                              Text(
+                                                DateFormat.jm().format(DateTime.parse(
+                                                    upComing.to!)),
+                                                style: TextStyle(
+                                                  color: grey2,
+                                                  fontSize: 14.sp,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
@@ -548,7 +798,8 @@ class _RequestScreenState extends State<RequestScreen>
                                                       MainAxisAlignment.center,
                                                   children: [
                                                     Text(
-                                                      'Start Date',
+                                                      'Used Points',
+                                                      textAlign: TextAlign.center,
                                                       style: TextStyle(
                                                           color: grey2,
                                                           fontSize: 12.sp),
@@ -557,8 +808,7 @@ class _RequestScreenState extends State<RequestScreen>
                                                       height: 5.h,
                                                     ),
                                                     Text(
-                                                      DateFormat.yMMMd()
-                                                          .format(startDate),
+                                                      upComing.totalConsumptionPoints.toString(),
                                                       textAlign:
                                                           TextAlign.center,
                                                       style: TextStyle(
@@ -581,7 +831,8 @@ class _RequestScreenState extends State<RequestScreen>
                                                       MainAxisAlignment.center,
                                                   children: [
                                                     Text(
-                                                      'End Date',
+                                                      'Total Distance',
+                                                      textAlign: TextAlign.center,
                                                       style: TextStyle(
                                                           color: grey2,
                                                           fontSize: 13.sp),
@@ -590,8 +841,7 @@ class _RequestScreenState extends State<RequestScreen>
                                                       height: 5.h,
                                                     ),
                                                     Text(
-                                                      DateFormat.yMMMd()
-                                                          .format(endDate),
+                                                      upComing.consumptionKM.toString(),
                                                       textAlign:
                                                           TextAlign.center,
                                                       style: TextStyle(
@@ -615,7 +865,8 @@ class _RequestScreenState extends State<RequestScreen>
                                                       MainAxisAlignment.center,
                                                   children: [
                                                     Text(
-                                                      'Cost',
+                                                      'Total Price',
+                                                      textAlign: TextAlign.center,
                                                       style: TextStyle(
                                                           color: grey2,
                                                           fontSize: 13.sp),
@@ -679,8 +930,6 @@ class _RequestScreenState extends State<RequestScreen>
                     itemCount: RequestCubit.get(context).requestPast.length,
                     itemBuilder: (context, i) {
                       var past = RequestCubit.get(context).requestPast[i];
-                      var startDate = DateTime.parse(past.from!.date!);
-                      var endDate = DateTime.parse(past.to!);
 
                       return InkWell(
                         child: Container(
@@ -695,9 +944,98 @@ class _RequestScreenState extends State<RequestScreen>
                                   vertical: 10.r, horizontal: 7.r),
                               child: Column(
                                 children: [
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                  Row(
+                                    children: [
+                                      ClipOval(
+                                        clipBehavior: Clip.antiAlias,
+                                        child: ImageTools.image(
+                                            fit: BoxFit.fill,
+                                            url: past.client2!.image!.src,
+                                            height: 70.w,
+                                            width: 70.w),
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 20.r),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                height: 5.h,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      past.client2!.name!,
+                                                      style: TextStyle(
+                                                          fontSize: 17.sp,
+                                                          color: black,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .bold),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 5.h,
+                                              ),
+                                              Text(
+                                                '${past.client2!.country?.title!.en!}, ${past.client2!.city?.title!.en!}, ${past.client2!.area?.title!.en!}',
+                                                style: TextStyle(
+                                                    fontSize: 15.sp,
+                                                    color: grey2),
+                                              ),
+                                              SizedBox(
+                                                height: 5.h,
+                                              ),
+                                              RatingBar.builder(
+                                                minRating: _userRating,
+                                                itemBuilder:
+                                                    (context, index) =>
+                                                const Icon(
+                                                  Icons.star,
+                                                  color: Colors.amber,
+                                                ),
+                                                itemCount: 5,
+                                                itemSize: 17.w,
+                                                updateOnDrag: true,
+                                                onRatingUpdate: (rating) {
+                                                  setState(() {
+                                                    _userRating = rating;
+                                                  });
+                                                },
+                                                unratedColor: Colors.amber
+                                                    .withAlpha(50),
+                                                direction: Axis.horizontal,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 15.h,
+                                  ),
+                                  // divider
+                                  Container(
+                                    width: 1.sw,
+                                    height: 1.h,
+                                    color: Colors.grey[400],
+                                  ),
+                                  SizedBox(
+                                    height: 15.h,
+                                  ),
                                   Row(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Icon(
                                         Icons.location_on,
@@ -719,7 +1057,7 @@ class _RequestScreenState extends State<RequestScreen>
                                                   fontSize: 18.sp,
                                                   fontWeight: FontWeight.bold),
                                             ),
-                                            SizedBox(height: 10.h),
+                                            SizedBox(height: 5.h),
                                             Text(
                                               past.from!.placeTitle!,
                                               // upComing.from!.placeTitle!,
@@ -730,28 +1068,68 @@ class _RequestScreenState extends State<RequestScreen>
                                           ],
                                         ),
                                       ),
+                                      SizedBox(
+                                        width: 10.w,
+                                      ),
                                       Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Text(
-                                            '12:00 am',
-                                            style: TextStyle(
-                                              color: grey2,
-                                              fontSize: 15.sp,
-                                            ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                DateFormat.yMEd().format(
+                                                    DateTime.parse(
+                                                        past.from!
+                                                            .date!)),
+                                                style: TextStyle(
+                                                    color: grey2, fontSize: 14.sp),
+                                              ),
+                                              SizedBox(
+                                                width: 5.w,
+                                              ),
+                                              Text(
+                                                DateFormat.jm().format(DateTime.parse(
+                                                    past.from!
+                                                        .date!)),
+                                                style: TextStyle(
+                                                  color: grey2,
+                                                  fontSize: 14.sp,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          Text(
-                                            '11/12/2022',
-                                            style: TextStyle(
-                                                color: grey2, fontSize: 15.sp),
+                                          SizedBox(
+                                            height: 5.h,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                DateFormat.yMEd().format(
+                                                    DateTime.parse(
+                                                        past.to!)),
+                                                style: TextStyle(
+                                                    color: grey2, fontSize: 14.sp),
+                                              ),
+                                              SizedBox(
+                                                width: 5.w,
+                                              ),
+                                              Text(
+                                                DateFormat.jm().format(DateTime.parse(
+                                                    past.to!)),
+                                                style: TextStyle(
+                                                  color: grey2,
+                                                  fontSize: 14.sp,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
                                     ],
                                   ),
                                   SizedBox(
-                                    height: 5.h,
+                                    height: 10.h,
                                   ),
                                   IntrinsicHeight(
                                     child: Row(
@@ -800,7 +1178,9 @@ class _RequestScreenState extends State<RequestScreen>
                                                       MainAxisAlignment.center,
                                                   children: [
                                                     Text(
-                                                      'Start Date',
+                                                      'Used Points',
+                                                      textAlign:
+                                                      TextAlign.center,
                                                       style: TextStyle(
                                                           color: grey2,
                                                           fontSize: 12.sp),
@@ -809,8 +1189,7 @@ class _RequestScreenState extends State<RequestScreen>
                                                       height: 5.h,
                                                     ),
                                                     Text(
-                                                      DateFormat.yMMMd()
-                                                          .format(startDate),
+                                                      past.totalConsumptionPoints.toString(),
                                                       textAlign:
                                                           TextAlign.center,
                                                       style: TextStyle(
@@ -833,7 +1212,8 @@ class _RequestScreenState extends State<RequestScreen>
                                                       MainAxisAlignment.center,
                                                   children: [
                                                     Text(
-                                                      'End Date',
+                                                      'Total Distance',
+                                                      textAlign: TextAlign.center,
                                                       style: TextStyle(
                                                           color: grey2,
                                                           fontSize: 12.sp),
@@ -842,8 +1222,7 @@ class _RequestScreenState extends State<RequestScreen>
                                                       height: 5.h,
                                                     ),
                                                     Text(
-                                                      DateFormat.yMMMd()
-                                                          .format(endDate),
+                                                      past.consumptionKM.toString(),
                                                       textAlign:
                                                           TextAlign.center,
                                                       style: TextStyle(
@@ -867,7 +1246,8 @@ class _RequestScreenState extends State<RequestScreen>
                                                       MainAxisAlignment.center,
                                                   children: [
                                                     Text(
-                                                      'Cost',
+                                                      'Total Price',
+                                                      textAlign: TextAlign.center,
                                                       style: TextStyle(
                                                           color: grey2,
                                                           fontSize: 13.sp),
@@ -937,8 +1317,6 @@ class _RequestScreenState extends State<RequestScreen>
                   itemBuilder: (context, i) {
                     var pending =
                         RequestCubit.get(context).requestPending[i];
-                    var startDate = DateTime.parse(pending.from!.date!);
-                    var endDate = DateTime.parse(pending.to!);
                     final loadAcceptVisible = i == indexPending;
 
                     return Container(
@@ -1044,7 +1422,7 @@ class _RequestScreenState extends State<RequestScreen>
                               ),
                               Row(
                                 crossAxisAlignment:
-                                    CrossAxisAlignment.center,
+                                    CrossAxisAlignment.start,
                                 children: [
                                   Icon(
                                     Icons.location_on,
@@ -1067,9 +1445,9 @@ class _RequestScreenState extends State<RequestScreen>
                                               fontWeight:
                                                   FontWeight.bold),
                                         ),
-                                        SizedBox(height: 10.h),
+                                        SizedBox(height: 5.h),
                                         Text(
-                                          pending.referenceId!.toString(),
+                                          pending.from!.date!,
                                           // upComing.from!.placeTitle!,
                                           style: TextStyle(
                                               color: grey2,
@@ -1078,34 +1456,73 @@ class _RequestScreenState extends State<RequestScreen>
                                       ],
                                     ),
                                   ),
+                                  SizedBox(
+                                    width: 10.w,
+                                  ),
                                   Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        '12:00 am',
-                                        style: TextStyle(
-                                          color: grey2,
-                                          fontSize: 15.sp,
-                                        ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            DateFormat.yMEd().format(
+                                                DateTime.parse(
+                                                    pending.from!
+                                                        .date!)),
+                                            style: TextStyle(
+                                                color: grey2, fontSize: 14.sp),
+                                          ),
+                                          SizedBox(
+                                            width: 5.w,
+                                          ),
+                                          Text(
+                                            DateFormat.jm().format(DateTime.parse(
+                                                pending.from!
+                                                    .date!)),
+                                            style: TextStyle(
+                                              color: grey2,
+                                              fontSize: 14.sp,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        '11/12/2022',
-                                        style: TextStyle(
-                                            color: grey2,
-                                            fontSize: 15.sp),
+                                      SizedBox(
+                                        height: 5.h,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            DateFormat.yMEd().format(
+                                                DateTime.parse(
+                                                    pending.to!)),
+                                            style: TextStyle(
+                                                color: grey2, fontSize: 14.sp),
+                                          ),
+                                          SizedBox(
+                                            width: 5.w,
+                                          ),
+                                          Text(
+                                            DateFormat.jm().format(DateTime.parse(
+                                                pending.to!)),
+                                            style: TextStyle(
+                                              color: grey2,
+                                              fontSize: 14.sp,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
                                 ],
                               ),
                               SizedBox(
-                                height: 5.h,
+                                height: 10.h,
                               ),
                               IntrinsicHeight(
                                 child: Row(
                                   crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                  CrossAxisAlignment.center,
                                   children: [
                                     Expanded(
                                       child: Card(
@@ -1114,8 +1531,7 @@ class _RequestScreenState extends State<RequestScreen>
                                           padding: EdgeInsets.all(15.r),
                                           child: Column(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .center,
+                                              MainAxisAlignment.center,
                                               children: [
                                                 Text(
                                                   'Days',
@@ -1129,13 +1545,12 @@ class _RequestScreenState extends State<RequestScreen>
                                                 Text(
                                                   '${pending.days!.length} Days',
                                                   textAlign:
-                                                      TextAlign.center,
+                                                  TextAlign.center,
                                                   style: TextStyle(
                                                       color: black,
                                                       fontSize: 13.sp,
                                                       fontWeight:
-                                                          FontWeight
-                                                              .bold),
+                                                      FontWeight.bold),
                                                 ),
                                               ]),
                                         ),
@@ -1148,11 +1563,12 @@ class _RequestScreenState extends State<RequestScreen>
                                           padding: EdgeInsets.all(15.r),
                                           child: Column(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .center,
+                                              MainAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  'Start Date',
+                                                  'Used Points',
+                                                  textAlign:
+                                                  TextAlign.center,
                                                   style: TextStyle(
                                                       color: grey2,
                                                       fontSize: 12.sp),
@@ -1161,16 +1577,14 @@ class _RequestScreenState extends State<RequestScreen>
                                                   height: 5.h,
                                                 ),
                                                 Text(
-                                                  DateFormat.yMMMd()
-                                                      .format(startDate),
+                                                  pending.totalConsumptionPoints.toString(),
                                                   textAlign:
-                                                      TextAlign.center,
+                                                  TextAlign.center,
                                                   style: TextStyle(
                                                       color: black,
                                                       fontSize: 13.sp,
                                                       fontWeight:
-                                                          FontWeight
-                                                              .bold),
+                                                      FontWeight.bold),
                                                 ),
                                               ]),
                                         ),
@@ -1183,11 +1597,11 @@ class _RequestScreenState extends State<RequestScreen>
                                           padding: EdgeInsets.all(15.r),
                                           child: Column(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .center,
+                                              MainAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  'End Date',
+                                                  'Total Distance',
+                                                  textAlign: TextAlign.center,
                                                   style: TextStyle(
                                                       color: grey2,
                                                       fontSize: 12.sp),
@@ -1196,16 +1610,14 @@ class _RequestScreenState extends State<RequestScreen>
                                                   height: 5.h,
                                                 ),
                                                 Text(
-                                                  DateFormat.yMMMd()
-                                                      .format(endDate),
+                                                  pending.consumptionKM.toString(),
                                                   textAlign:
-                                                      TextAlign.center,
+                                                  TextAlign.center,
                                                   style: TextStyle(
                                                       color: black,
                                                       fontSize: 13.sp,
                                                       fontWeight:
-                                                          FontWeight
-                                                              .bold),
+                                                      FontWeight.bold),
                                                 ),
                                               ]),
                                         ),
@@ -1219,11 +1631,11 @@ class _RequestScreenState extends State<RequestScreen>
                                               vertical: 15.r),
                                           child: Column(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .center,
+                                              MainAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  'Cost',
+                                                  'Total Price',
+                                                  textAlign: TextAlign.center,
                                                   style: TextStyle(
                                                       color: grey2,
                                                       fontSize: 13.sp),
@@ -1235,13 +1647,12 @@ class _RequestScreenState extends State<RequestScreen>
                                                   pending.totalPrice
                                                       .toString(),
                                                   textAlign:
-                                                      TextAlign.center,
+                                                  TextAlign.center,
                                                   style: TextStyle(
                                                       color: black,
                                                       fontSize: 13.sp,
                                                       fontWeight:
-                                                          FontWeight
-                                                              .bold),
+                                                      FontWeight.bold),
                                                 ),
                                               ]),
                                         ),

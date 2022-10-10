@@ -39,7 +39,8 @@ class RequestCubit extends Cubit<RequestState> {
     emit(RequestCurrentInitial());
     var body = {
       "status": ["arrive", "coming", "start"],
-      "page": index
+      "page": index,
+      "select-client": 'name image'
     };
     getRequestUseCase.execute(body).then((value) {
       emit(eitherLoadedOrErrorStateRequestCurrent(value));
@@ -60,7 +61,12 @@ class RequestCubit extends Cubit<RequestState> {
   }
 
   void getRequestUpComing(int index) async {
-    var body = {"status": "accept", "page": index, "sort": 'from.date:-1'};
+    var body = {
+      "status": "accept",
+      "page": index,
+      "sort": 'from.date:-1',
+      "select-client": 'name image'
+    };
     if (index > 1) {
       getRequestUseCase.execute(body).then((value) {
         emit(eitherLoadedOrErrorStateRequestUpComing2(value));
@@ -113,7 +119,8 @@ class RequestCubit extends Cubit<RequestState> {
     var body = {
       "status": ["end", "cancel", "reject"],
       "page": index,
-      "sort": 'from.date:-1'
+      "sort": 'from.date:-1',
+      "select-client": 'name image'
     };
     if (index > 1) {
       print('_controllerPast*******${requestPast.length}');
