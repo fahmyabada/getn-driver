@@ -55,6 +55,8 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
 
   void getTripsRequestDetails(int index, String id) async {
     var body = {"request": id, "page": index};
+    print(
+        "_controllerUpcoming*********** ${index}");
     if (index > 1) {
       getTripsRequestDetailsUseCase.execute(body).then((value) {
         emit(eitherLoadedOrErrorStateTripsRequestDetails2(value));

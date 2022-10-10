@@ -15,12 +15,22 @@ void navigateTo(context, widget) => Navigator.push(
 
 Future<bool> navigateToWithRefreshPagePrevious(context, widget) async {
   return await Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => widget,
-    ),
-  ) ??
+        context,
+        MaterialPageRoute(
+          builder: (context) => widget,
+        ),
+      ) ??
       false;
+}
+
+Future<String> navigateToWithRefreshPagePrevious2(context, widget) async {
+  return await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => widget,
+        ),
+      ) ??
+      "";
 }
 
 Widget defaultFormField(
@@ -73,7 +83,7 @@ Widget defaultFormField(
                 child: Icon(
                   prefix,
                   color: Colors.black87,
-                  size: 25.sm,
+                  size: 25.sp,
                 ),
               )
             : null,
@@ -134,7 +144,7 @@ Widget defaultFormField(
                 icon: Icon(
                   isPassword ? Icons.visibility_off : Icons.visibility,
                   color: Colors.black,
-                  size: 25.sm,
+                  size: 25.sp,
                 ))
             : null,
       ),
@@ -173,7 +183,7 @@ Widget defaultButton3(
             borderRadius: BorderRadius.circular(30.r),
           ),
           textStyle: TextStyle(
-              fontSize: 24.sm,
+              fontSize: 24.sp,
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.italic),
         ),
@@ -188,6 +198,10 @@ Widget defaultButton2(
         bool disablePress = true,
         required String text,
         required Color backColor,
+        int fontSize = 24,
+        int paddingVertical = 10,
+        int paddingHorizontal = 35,
+        int borderRadius = 20,
         bool colorBorder = false,
         required Color textColor}) =>
     ElevatedButton(
@@ -195,15 +209,16 @@ Widget defaultButton2(
       style: TextButton.styleFrom(
         backgroundColor: backColor,
         foregroundColor: textColor,
-        padding: EdgeInsets.symmetric(vertical: 10.r, horizontal: 35.r),
+        padding: EdgeInsets.symmetric(
+            vertical: paddingVertical.r, horizontal: paddingHorizontal.r),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.r),
+          borderRadius: BorderRadius.circular(borderRadius.r),
           side: colorBorder
               ? const BorderSide(color: grey2)
               : const BorderSide(color: Colors.transparent),
         ),
         textStyle: TextStyle(
-            fontSize: 24.sm,
+            fontSize: fontSize.sp,
             fontWeight: FontWeight.bold,
             fontStyle: FontStyle.italic),
       ),

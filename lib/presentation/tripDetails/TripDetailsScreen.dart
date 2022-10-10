@@ -1,11 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/tripDetails/trip_details_cubit.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TripDetailsScreen extends StatefulWidget {
   const TripDetailsScreen({Key? key, this.id}) : super(key: key);
@@ -30,6 +35,43 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
   };
   int? indexStatus;
 
+  // custom marker
+  final Set<Marker> _markers = <Marker>{};
+  final LatLng destinationLatLng = const LatLng(30.149350, 31.738539);
+  final LatLng initialLatLng = const LatLng(30.1541371, 31.7397189);
+  final Completer<GoogleMapController> _controller = Completer();
+
+  _setMapPins(List<LatLng> markersLocation) {
+    _markers.clear();
+    setState(() {
+      // for (var markerLocation in markersLocation) {
+      //   _markers.add(Marker(
+      //     markerId: MarkerId(markerLocation.toString()),
+      //     position: markerLocation,
+      //     icon: customIcon,
+      //   ));
+      // }
+      _markers.add(Marker(
+        markerId: MarkerId(destinationLatLng.toString()),
+        position: destinationLatLng,
+      ));
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    getIt<SharedPreferences>().setString('typeScreen', "");
+  }
+  @override
+  void initState() {
+    super.initState();
+
+    getIt<SharedPreferences>().setString('typeScreen', "tripDetails");
+    TripDetailsCubit.get(context).getTripDetails(widget.id!);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<TripDetailsCubit, TripDetailsState>(
@@ -44,7 +86,6 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
       },
       builder: (context, state) {
         return Scaffold(
-          backgroundColor: accentColor,
           appBar: AppBar(
             title: Text(
               'Trip Details',
@@ -55,8 +96,32 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
           ),
           body: Stack(
             children: [
-              Align(
-                alignment: Alignment.bottomCenter,
+              Container(
+                margin: EdgeInsets.only(bottom: 360.h),
+                child: GoogleMap(
+                  mapType: MapType.normal,
+                  rotateGesturesEnabled: true,
+                  zoomGesturesEnabled: true,
+                  trafficEnabled: false,
+                  tiltGesturesEnabled: false,
+                  scrollGesturesEnabled: true,
+                  compassEnabled: true,
+                  myLocationButtonEnabled: true,
+                  zoomControlsEnabled: true,
+                  mapToolbarEnabled: false,
+                  markers: _markers,
+                  initialCameraPosition:
+                      CameraPosition(target: initialLatLng, zoom: 13),
+                  onMapCreated: (GoogleMapController controller) {
+                    _controller.complete(controller);
+                    _setMapPins([const LatLng(30.1541371, 31.7397189)]);
+                  },
+                ),
+              ),
+              Positioned(
+                right: 1,
+                left: 1,
+                bottom: 1,
                 child: Stack(
                   children: [
                     Container(
@@ -107,7 +172,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                         .client2!
                                                         .name!,
                                                     style: TextStyle(
-                                                        fontSize: 18.sp,
+                                                        fontSize: 15.sp,
                                                         color: black,
                                                         fontWeight:
                                                             FontWeight.bold),
@@ -129,7 +194,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
-                                                  fontSize: 16.sp,
+                                                  fontSize: 14.sp,
                                                   color: grey2),
                                             ),
                                           ],
@@ -152,8 +217,6 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                 ),
                                 Container(
                                   color: white,
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 15.r),
                                   child: Column(
                                     children: [
                                       Row(
@@ -182,7 +245,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                     'Picked Point',
                                                     style: TextStyle(
                                                         color: black,
-                                                        fontSize: 15.sp,
+                                                        fontSize: 14.sp,
                                                         fontWeight:
                                                             FontWeight.bold),
                                                   ),
@@ -195,7 +258,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                         .placeTitle!,
                                                     style: TextStyle(
                                                         color: grey2,
-                                                        fontSize: 16.sp),
+                                                        fontSize: 13.sp),
                                                   ),
                                                 ],
                                               ),
@@ -217,7 +280,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                               .startDate!)),
                                                   style: TextStyle(
                                                     color: grey2,
-                                                    fontSize: 18.sp,
+                                                    fontSize: 14.sp,
                                                   ),
                                                 ),
                                                 Text(
@@ -230,7 +293,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                               .startDate!)),
                                                   style: TextStyle(
                                                       color: grey2,
-                                                      fontSize: 15.sp),
+                                                      fontSize: 13.sp),
                                                 ),
                                               ],
                                             ),
@@ -266,7 +329,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                     'Picked Point',
                                                     style: TextStyle(
                                                         color: black,
-                                                        fontSize: 15.sp,
+                                                        fontSize: 14.sp,
                                                         fontWeight:
                                                             FontWeight.bold),
                                                   ),
@@ -279,7 +342,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                         .placeTitle!,
                                                     style: TextStyle(
                                                         color: grey2,
-                                                        fontSize: 15.sp),
+                                                        fontSize: 13.sp),
                                                   ),
                                                 ],
                                               ),
@@ -306,7 +369,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                                     .endDate!)),
                                                         style: TextStyle(
                                                           color: grey2,
-                                                          fontSize: 18.sp,
+                                                          fontSize: 14.sp,
                                                         ),
                                                       ),
                                                       Text(
@@ -320,7 +383,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                                     .endDate!)),
                                                         style: TextStyle(
                                                             color: grey2,
-                                                            fontSize: 15.sp),
+                                                            fontSize: 13.sp),
                                                       ),
                                                     ],
                                                   ),
@@ -345,7 +408,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                     'Distance',
                                                     style: TextStyle(
                                                         color: grey2,
-                                                        fontSize: 15.sp),
+                                                        fontSize: 13.sp),
                                                   ),
                                                   SizedBox(
                                                     height: 5.r,
@@ -360,7 +423,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                         color: black,
-                                                        fontSize: 15.sp,
+                                                        fontSize: 13.sp,
                                                         fontWeight:
                                                             FontWeight.bold),
                                                   ),
@@ -379,7 +442,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                     'Points',
                                                     style: TextStyle(
                                                         color: grey2,
-                                                        fontSize: 15.sp),
+                                                        fontSize: 13.sp),
                                                   ),
                                                   SizedBox(
                                                     height: 5.r,
@@ -394,7 +457,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                         color: black,
-                                                        fontSize: 15.sp,
+                                                        fontSize: 13.sp,
                                                         fontWeight:
                                                             FontWeight.bold),
                                                   ),
@@ -412,7 +475,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                     '1 Km Points',
                                                     style: TextStyle(
                                                         color: grey2,
-                                                        fontSize: 15.sp),
+                                                        fontSize: 13.sp),
                                                   ),
                                                   SizedBox(
                                                     height: 5.r,
@@ -427,7 +490,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                         color: black,
-                                                        fontSize: 15.sp,
+                                                        fontSize: 13.sp,
                                                         fontWeight:
                                                             FontWeight.bold),
                                                   ),
@@ -476,6 +539,11 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                             text: btnStatus[
                                                                     '${TripDetailsCubit.get(context).tripDetails!.status}']![
                                                                 i],
+                                                            fontSize: 18,
+                                                            borderRadius: 10,
+                                                            paddingHorizontal:
+                                                                10,
+                                                            paddingVertical: 5,
                                                             backColor:
                                                                 greenColor,
                                                             textColor: white),
@@ -510,6 +578,10 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                                   btnStatus[
                                                                       '${TripDetailsCubit.get(context).tripDetails!.status}']![i]);
                                                         },
+                                                        fontSize: 18,
+                                                        borderRadius: 10,
+                                                        paddingHorizontal: 10,
+                                                        paddingVertical: 5,
                                                         text: btnStatus[
                                                             '${TripDetailsCubit.get(context).tripDetails!.status}']![i],
                                                         backColor: greenColor,
@@ -518,14 +590,14 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                           },
                                         ),
                                       ),
-                                      SizedBox(
-                                        height: 10.h,
-                                      ),
-                                      defaultButton3(
-                                          press: () {},
-                                          text: "Complete",
-                                          backColor: accentColor,
-                                          textColor: white),
+                                      // SizedBox(
+                                      //   height: 10.h,
+                                      // ),
+                                      // defaultButton3(
+                                      //     press: () {},
+                                      //     text: "Complete",
+                                      //     backColor: accentColor,
+                                      //     textColor: white),
                                       SizedBox(
                                         height: 20.h,
                                       ),

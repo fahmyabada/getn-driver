@@ -1,6 +1,3 @@
-import 'dart:async';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -17,8 +14,8 @@ import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/notificationService/local_notification_service.dart';
 import 'package:getn_driver/presentation/request/RequestScreen.dart';
 import 'package:getn_driver/presentation/request/request_cubit.dart';
-import 'package:getn_driver/presentation/requestDetails/RequestDetailsScreen.dart';
 import 'package:getn_driver/presentation/splash/splash_screen_cubit.dart';
+import 'package:getn_driver/presentation/tripDetails/trip_details_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -36,10 +33,10 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
+    getIt<SharedPreferences>().setString('typeScreen', "splashScreen");
     LocalNotificationService.initialize(context);
     registerNotification();
   }
-
 
   void registerNotification() async {
     // 2. Instantiate Firebase Messaging
@@ -86,12 +83,34 @@ class _SplashScreenState extends State<SplashScreen> {
           }
 
           if (message.notification != null) {
-            LocalNotificationService.createAndDisplayNotification(message);
+            if (getIt<SharedPreferences>().getString('typeScreen') ==
+                    'tripDetails' &&
+                message.data['type'] == "trip" &&
+                TripDetailsCubit.get(navigatorKey.currentContext)
+                        .tripDetails!
+                        .id ==
+                    message.data['typeId']) {
+              LocalNotificationService.createAndDisplayNotification(
+                  message, "inTripDetails");
+            } else if (getIt<SharedPreferences>().getString('typeScreen') ==
+                    'tripDetails' &&
+                message.data['type'] == "trip" &&
+                TripDetailsCubit.get(navigatorKey.currentContext)
+                        .tripDetails!
+                        .id !=
+                    message.data['typeId']) {
+              LocalNotificationService.createAndDisplayNotification(
+                  message, "");
+            } else {
+              LocalNotificationService.createAndDisplayNotification(
+                  message, "fromRequest");
+            }
           }
-          if (message.data['type'] != null) {
-            if (getIt<SharedPreferences>().getString('typeScreen') != null &&
-                getIt<SharedPreferences>().getString('typeScreen') ==
-                    message.data['type']) {
+          if (message.data['type'] != null &&
+              getIt<SharedPreferences>().getString('typeScreen') != null) {
+            if (getIt<SharedPreferences>().getString('typeScreen') ==
+                    'request' &&
+                message.data['type'] == 'request') {
               switch (message.data['page']) {
                 case "RequestCurrent":
                   RequestCubit.get(navigatorKey.currentContext)
@@ -151,13 +170,50 @@ class _SplashScreenState extends State<SplashScreen> {
             print("onMessageOpenedApp.data********${message.data}");
           }
           if (message.data['typeId'] != null) {
-            LocalNotificationService.goToNextScreen(message.data['typeId'], false);
+            if (getIt<SharedPreferences>().getString('typeScreen') != null &&
+                getIt<SharedPreferences>().getString('typeScreen') ==
+                    'requestDetails') {
+              if (message.data['type'] == "request") {
+                LocalNotificationService.goToNextScreen(message.data['typeId'],
+                    "pushReplacement", "requestDetails");
+              } else if (message.data['type'] == "trip") {
+                LocalNotificationService.goToNextScreen(
+                    message.data['parentId'],
+                    "pushReplacement",
+                    "requestDetails");
+              }
+            } else if (getIt<SharedPreferences>().getString('typeScreen') ==
+                    'tripDetails' &&
+                message.data['type'] == "trip" &&
+                TripDetailsCubit.get(navigatorKey.currentContext)
+                        .tripDetails!
+                        .id ==
+                    message.data['typeId']) {
+              LocalNotificationService.goToNextScreen(
+                  message.data['typeId'], "pushReplacement", "tripDetails");
+            } else if (getIt<SharedPreferences>().getString('typeScreen') ==
+                    'tripDetails' &&
+                message.data['type'] == "trip" &&
+                TripDetailsCubit.get(navigatorKey.currentContext)
+                        .tripDetails!
+                        .id !=
+                    message.data['typeId']) {
+              LocalNotificationService.goToNextScreen(
+                  message.data['parentId'], "pop", "");
+            } else {
+              if (message.data['type'] == "request") {
+                LocalNotificationService.goToNextScreen(
+                    message.data['typeId'], "push", "");
+              } else if (message.data['type'] == "trip") {
+                LocalNotificationService.goToNextScreen(
+                    message.data['parentId'], "push", "");
+              }
+            }
           }
         },
       );
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -176,7 +232,8 @@ class _SplashScreenState extends State<SplashScreen> {
               } else if (getIt<SharedPreferences>().getString("typeSign") ==
                   "signWithInformation") {
                 if (idRequest.isNotEmpty) {
-                  LocalNotificationService.goToNextScreen(idRequest, true);
+                  LocalNotificationService.goToNextScreen(
+                      idRequest, "pushAndRemoveUntil", "");
                 } else {
                   navigateAndFinish(context, const RequestScreen());
                 }

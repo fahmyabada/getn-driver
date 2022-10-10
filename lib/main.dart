@@ -6,16 +6,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:getn_driver/data/api/Dio_Helper.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/firebase_options.dart';
 import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
-import 'package:getn_driver/presentation/notificationService/local_notification_service.dart';
 import 'package:getn_driver/presentation/request/request_cubit.dart';
 import 'package:getn_driver/presentation/requestDetails/request_details_cubit.dart';
 import 'package:getn_driver/presentation/splash/SplashScreen.dart';
+import 'package:getn_driver/presentation/tripDetails/trip_details_cubit.dart';
 
 void main() async {
 // for error connection with api
@@ -56,37 +55,39 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       designSize: const Size(411, 891),
       minTextAdapt: true,
-      builder: (BuildContext context, child) =>
-          MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (context) => SignCubit(),
+      builder: (BuildContext context, child) => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => SignCubit(),
+          ),
+          BlocProvider(
+            create: (context) => RequestCubit(),
+          ),
+          BlocProvider(
+            create: (context) => RequestDetailsCubit(),
+          ),
+          BlocProvider(
+            create: (context) => TripDetailsCubit(),
+          ),
+        ],
+        child: MaterialApp(
+          navigatorKey: navigatorKey,
+          debugShowCheckedModeBanner: false,
+          title: 'GetNDriver',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            scaffoldBackgroundColor: white,
+            appBarTheme: const AppBarTheme(
+              iconTheme: IconThemeData(
+                color: Colors.black, //change your color here
               ),
-              BlocProvider(
-                create: (context) => RequestCubit(),
-              ),
-              BlocProvider(
-                create: (context) => RequestDetailsCubit(),
-              ),
-            ],
-            child: MaterialApp(
-              navigatorKey: navigatorKey,
-              debugShowCheckedModeBanner: false,
-              title: 'GetNDriver',
-              theme: ThemeData(
-                primarySwatch: Colors.blue,
-                scaffoldBackgroundColor: white,
-                appBarTheme: const AppBarTheme(
-                  iconTheme: IconThemeData(
-                    color: Colors.black, //change your color here
-                  ),
-                  color: white,
-                  elevation: 0.0,
-                ),
-              ),
-              home: const SplashScreen(),
+              color: white,
+              elevation: 0.0,
             ),
           ),
+          home: const SplashScreen(),
+        ),
+      ),
     );
   }
 }

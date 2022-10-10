@@ -6,11 +6,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/requestDetails/request_details_cubit.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/tripDetails/TripDetailsScreen.dart';
-import 'package:getn_driver/presentation/tripDetails/trip_details_cubit.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RequestDetailsScreen extends StatefulWidget {
   const RequestDetailsScreen({Key? key, this.idRequest}) : super(key: key);
@@ -35,14 +36,39 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     'pending': ['accept', 'reject']
   };
   int? indexStatus;
+  late ScrollController _controllerLoadingTrips;
+
+  void _loadMoreTrips() {
+    RequestDetailsCubit.get(context).loadingMoreTrips = false;
+    RequestDetailsCubit.get(context).getTripsRequestDetails(
+        RequestDetailsCubit.get(context).indexTrips, widget.idRequest!);
+  }
 
   @override
   void initState() {
     super.initState();
 
+    _controllerLoadingTrips = ScrollController();
+    getIt<SharedPreferences>().setString('typeScreen', "requestDetails");
+    RequestDetailsCubit.get(context).indexTrips = 0;
+    RequestDetailsCubit.get(context).trips = [];
+    RequestDetailsCubit.get(context).loadingMoreTrips = false;
+    RequestDetailsCubit.get(context).loadingTrips = false;
+    RequestDetailsCubit.get(context).loadingRequest = false;
+    RequestDetailsCubit.get(context).failureRequest = "";
+    RequestDetailsCubit.get(context).failureTrip = "";
     RequestDetailsCubit.get(context).getRequestDetails(widget.idRequest!);
     RequestDetailsCubit.get(context)
         .getTripsRequestDetails(1, widget.idRequest!);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _controllerLoadingTrips.removeListener(_loadMoreTrips);
+
+    getIt<SharedPreferences>().setString('typeScreen', "");
   }
 
   @override
@@ -77,9 +103,23 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               : RequestDetailsCubit.get(context).requestDetails!.id != null
                   ? Container(
                       margin: EdgeInsets.symmetric(
-                          horizontal: 20.r, vertical: 20.r),
+                          horizontal: 15.r, vertical: 20.r),
                       child: SingleChildScrollView(
                         scrollDirection: Axis.vertical,
+                        controller: _controllerLoadingTrips
+                          ..addListener(() async {
+
+                            if (_controllerLoadingTrips
+                                .position.extentAfter ==
+                                0) {
+                              if (RequestDetailsCubit.get(
+                                  context)
+                                  .loadingMoreTrips) {
+
+                                _loadMoreTrips();
+                              }
+                            }
+                          }),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -114,8 +154,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                               child: Text(
                                                 RequestDetailsCubit.get(context)
                                                     .requestDetails!
-                                                    .client2!
-                                                    .name!,
+                                                    .id!,
                                                 style: TextStyle(
                                                     fontSize: 20.sp,
                                                     color: black,
@@ -184,7 +223,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       'Trip start and date',
                                       style: TextStyle(
                                         color: black,
-                                        fontSize: 16.sp,
+                                        fontSize: 15.sp,
                                       ),
                                     ),
                                     Row(
@@ -198,7 +237,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                       .from!
                                                       .date!)),
                                           style: TextStyle(
-                                              color: grey2, fontSize: 16.sp),
+                                              color: grey2, fontSize: 14.sp),
                                         ),
                                         SizedBox(
                                           width: 15.w,
@@ -211,7 +250,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                   .date!)),
                                           style: TextStyle(
                                             color: grey2,
-                                            fontSize: 16.sp,
+                                            fontSize: 14.sp,
                                           ),
                                         ),
                                       ],
@@ -222,14 +261,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Expanded(
                                       child: Text(
                                         'Picked Location',
                                         style: TextStyle(
                                             color: greenColor,
-                                            fontSize: 19.sp,
+                                            fontSize: 16.sp,
                                             fontWeight: FontWeight.bold),
                                       ),
                                     ),
@@ -239,9 +277,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                             .requestDetails!
                                             .from!
                                             .placeTitle!,
+                                        textAlign: TextAlign.end,
                                         style: TextStyle(
                                           color: grey2,
-                                          fontSize: 16.sp,
+                                          fontSize: 15.sp,
                                         ),
                                       ),
                                     ),
@@ -375,6 +414,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                           "paid"
                                                       ? true
                                                       : false,
+                                                  fontSize: 18,
+                                                  paddingVertical: 1,
+                                                  paddingHorizontal: 20,
+                                                  borderRadius: 10,
                                                   text: btnStatus[
                                                       '${RequestDetailsCubit.get(context).requestDetails!.status}']![i],
                                                   backColor: greenColor,
@@ -444,6 +487,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                       "paid"
                                                   ? true
                                                   : false,
+                                              fontSize: 18,
+                                              paddingVertical: 1,
+                                              paddingHorizontal: 20,
+                                              borderRadius: 10,
                                               text: btnStatus[
                                                   '${RequestDetailsCubit.get(context).requestDetails!.status}']![i],
                                               backColor: greenColor,
@@ -464,7 +511,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     'the client you should paid first',
                                     style: TextStyle(
                                         color: accentColor,
-                                        fontSize: 17.sp,
+                                        fontSize: 15.sp,
                                         fontWeight: FontWeight.bold),
                                   ),
                             SizedBox(
@@ -502,7 +549,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                           return InkWell(
                                             child: Container(
                                               margin: EdgeInsets.symmetric(
-                                                  horizontal: 10.r,
                                                   vertical: 10.r),
                                               child: Card(
                                                 elevation: 5.r,
@@ -560,7 +606,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                                         color:
                                                                             grey2,
                                                                         fontSize:
-                                                                            16.sp),
+                                                                            14.sp),
                                                                   ),
                                                                 ],
                                                               ),
@@ -584,7 +630,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                                     color:
                                                                         grey2,
                                                                     fontSize:
-                                                                        18.sp,
+                                                                        14.sp,
                                                                   ),
                                                                 ),
                                                                 Text(
@@ -597,7 +643,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                                       color:
                                                                           grey2,
                                                                       fontSize:
-                                                                          15.sp),
+                                                                          13.sp),
                                                                 ),
                                                               ],
                                                             ),
@@ -645,7 +691,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                                   ),
                                                                   SizedBox(
                                                                       height:
-                                                                          10.h),
+                                                                          5.h),
                                                                   Text(
                                                                     trip.to!
                                                                         .placeTitle!,
@@ -653,7 +699,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                                         color:
                                                                             grey2,
                                                                         fontSize:
-                                                                            15.sp),
+                                                                            14.sp),
                                                                   ),
                                                                 ],
                                                               ),
@@ -675,7 +721,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                                     color:
                                                                         grey2,
                                                                     fontSize:
-                                                                        18.sp,
+                                                                        14.sp,
                                                                   ),
                                                                 ),
                                                                 Text(
@@ -687,7 +733,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                                       color:
                                                                           grey2,
                                                                       fontSize:
-                                                                          15.sp),
+                                                                          13.sp),
                                                                 ),
                                                               ],
                                                             ),
@@ -697,155 +743,159 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                       SizedBox(
                                                         height: 15.r,
                                                       ),
-                                                      Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Expanded(
-                                                            child: Card(
-                                                              color:
-                                                                  yellowLightColor,
-                                                              child: Padding(
-                                                                padding:
-                                                                    EdgeInsets
-                                                                        .all(15
-                                                                            .r),
-                                                                child: Column(
-                                                                    children: [
-                                                                      Text(
-                                                                        'Distance',
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                grey2,
-                                                                            fontSize:
-                                                                                15.sp),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            5.r,
-                                                                      ),
-                                                                      Text(
-                                                                        trip.consumptionKM!
-                                                                            .toStringAsFixed(2),
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                black,
-                                                                            fontSize:
-                                                                                15.sp,
-                                                                            fontWeight: FontWeight.bold),
-                                                                      ),
-                                                                    ]),
+                                                      IntrinsicHeight(
+                                                        child: Row(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Expanded(
+                                                              child: Card(
+                                                                color:
+                                                                    yellowLightColor,
+                                                                child: Padding(
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .all(10
+                                                                              .r),
+                                                                  child: Column(
+                                                                      children: [
+                                                                        Text(
+                                                                          'Distance',
+                                                                          style: TextStyle(
+                                                                              color: grey2,
+                                                                              fontSize: 14.sp),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height:
+                                                                              5.r,
+                                                                        ),
+                                                                        Text(
+                                                                          trip.consumptionKM!
+                                                                              .toStringAsFixed(2),
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: TextStyle(
+                                                                              color: black,
+                                                                              fontSize: 14.sp,
+                                                                              fontWeight: FontWeight.bold),
+                                                                        ),
+                                                                      ]),
+                                                                ),
                                                               ),
                                                             ),
-                                                          ),
-                                                          Expanded(
-                                                            child: Card(
-                                                              color: Colors
-                                                                  .redAccent
-                                                                  .withOpacity(
-                                                                      .3),
-                                                              child: Padding(
-                                                                padding:
-                                                                    EdgeInsets
-                                                                        .all(15
-                                                                            .r),
-                                                                child: Column(
-                                                                    children: [
-                                                                      Text(
-                                                                        'Points',
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                grey2,
-                                                                            fontSize:
-                                                                                15.sp),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            5.r,
-                                                                      ),
-                                                                      Text(
-                                                                        trip.consumptionPoints!
-                                                                            .toStringAsFixed(2),
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                black,
-                                                                            fontSize:
-                                                                                15.sp,
-                                                                            fontWeight: FontWeight.bold),
-                                                                      ),
-                                                                    ]),
+                                                            Expanded(
+                                                              child: Card(
+                                                                color: Colors
+                                                                    .redAccent
+                                                                    .withOpacity(
+                                                                        .3),
+                                                                child: Padding(
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .all(10
+                                                                              .r),
+                                                                  child: Column(
+                                                                      children: [
+                                                                        Text(
+                                                                          'Points',
+                                                                          style: TextStyle(
+                                                                              color: grey2,
+                                                                              fontSize: 14.sp),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height:
+                                                                              5.r,
+                                                                        ),
+                                                                        Text(
+                                                                          trip.consumptionPoints!
+                                                                              .toStringAsFixed(2),
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: TextStyle(
+                                                                              color: black,
+                                                                              fontSize: 14.sp,
+                                                                              fontWeight: FontWeight.bold),
+                                                                        ),
+                                                                      ]),
+                                                                ),
                                                               ),
                                                             ),
-                                                          ),
-                                                          Expanded(
-                                                            child: Card(
-                                                              color:
-                                                                  greenLightColor,
-                                                              child: Padding(
-                                                                padding:
-                                                                    EdgeInsets
-                                                                        .all(15
-                                                                            .r),
-                                                                child: Column(
-                                                                    children: [
-                                                                      Text(
-                                                                        '1 Km Points',
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                grey2,
-                                                                            fontSize:
-                                                                                15.sp),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            5.r,
-                                                                      ),
-                                                                      Text(
-                                                                        trip.oneKMPoints
-                                                                            .toString(),
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                black,
-                                                                            fontSize:
-                                                                                15.sp,
-                                                                            fontWeight: FontWeight.bold),
-                                                                      ),
-                                                                    ]),
+                                                            Expanded(
+                                                              child: Card(
+                                                                color:
+                                                                    greenLightColor,
+                                                                child: Padding(
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .all(10
+                                                                              .r),
+                                                                  child: Column(
+                                                                      children: [
+                                                                        Text(
+                                                                          '1 Km Points',
+                                                                          style: TextStyle(
+                                                                              color: grey2,
+                                                                              fontSize: 14.sp),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height:
+                                                                              5.r,
+                                                                        ),
+                                                                        Text(
+                                                                          trip.oneKMPoints
+                                                                              .toString(),
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: TextStyle(
+                                                                              color: black,
+                                                                              fontSize: 14.sp,
+                                                                              fontWeight: FontWeight.bold),
+                                                                        ),
+                                                                      ]),
+                                                                ),
                                                               ),
                                                             ),
-                                                          ),
-                                                        ],
+                                                          ],
+                                                        ),
                                                       ),
                                                     ],
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                            onTap: () {
-                                              navigateTo(
-                                                  context,
-                                                  BlocProvider(
-                                                    create: (context) =>
-                                                        TripDetailsCubit()
-                                                          ..getTripDetails(
-                                                              RequestDetailsCubit
-                                                                      .get(
-                                                                          context)
-                                                                  .trips[i]
-                                                                  .id!),
-                                                    child: TripDetailsScreen(
-                                                        id: RequestDetailsCubit
-                                                                .get(context)
-                                                            .trips[i]
-                                                            .id),
-                                                  ));
+                                            onTap: () async {
+                                              print(
+                                                  "typeId44************ ${RequestDetailsCubit.get(context).trips[i].id}");
+                                              String id =
+                                                  await navigateToWithRefreshPagePrevious2(
+                                                      context,
+                                                      TripDetailsScreen(
+                                                          id: RequestDetailsCubit
+                                                                  .get(context)
+                                                              .trips[i]
+                                                              .id));
+                                              setState(() {
+                                                print(
+                                                    "typeId33************ ${id}");
+                                                if (id.isNotEmpty) {
+                                                  getIt<SharedPreferences>().setString('typeScreen', "requestDetails");
+                                                  RequestDetailsCubit.get(context).indexTrips = 0;
+                                                  RequestDetailsCubit.get(context).trips = [];
+                                                  RequestDetailsCubit.get(context).loadingMoreTrips = false;
+                                                  RequestDetailsCubit.get(context).loadingTrips = false;
+                                                  RequestDetailsCubit.get(context).loadingRequest = false;
+                                                  RequestDetailsCubit.get(context).failureRequest = "";
+                                                  RequestDetailsCubit.get(context).failureTrip = "";
+                                                  RequestDetailsCubit.get(
+                                                          context)
+                                                      .getRequestDetails(id);
+                                                  RequestDetailsCubit.get(
+                                                          context)
+                                                      .getTripsRequestDetails(
+                                                          1, id);
+                                                }
+                                              });
                                             },
                                           );
                                         },
