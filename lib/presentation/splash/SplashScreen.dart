@@ -63,12 +63,16 @@ class _SplashScreenState extends State<SplashScreen> {
       // 1. This method call when app in terminated state and you get a notification
       // when you click on notification app open from terminated state and you can get notification data in this method
       _messaging.getInitialMessage().then((RemoteMessage? message) {
-        if (message?.data['typeId'] != null) {
+        if (message?.data['type'] != null) {
           if (kDebugMode) {
             print("getInitialMessage.listen********${message?.data}");
           }
           setState(() {
-            idRequest = message?.data['typeId'];
+            if (message?.data['type'] == "request") {
+              idRequest = message?.data['typeId'];
+            } else if (message?.data['type'] == "trip") {
+              idRequest = message?.data['parentId'];
+            }
           });
         }
       });
