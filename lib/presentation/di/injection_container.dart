@@ -23,6 +23,8 @@ import 'package:getn_driver/domain/usecase/auth/GetRoleUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/LoginUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/RegisterUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/SendOtpUseCase.dart';
+import 'package:getn_driver/domain/usecase/tripDetails/GetPlaceDetailsUseCase.dart';
+import 'package:getn_driver/domain/usecase/tripDetails/GetSearchLocationUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripDetails/GetTripDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripDetails/PutTripDetailsUseCase.dart';
 import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
@@ -52,6 +54,8 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => PutRequestDetailsUseCase(getIt()));
   getIt.registerLazySingleton(() => PutTripDetailsUseCase(getIt()));
   getIt.registerLazySingleton(() => GetTripDetailsUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetSearchLocationUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetPlaceDetailsUseCase(getIt()));
 
   // Repository
   getIt.registerLazySingleton<AuthRepository>(

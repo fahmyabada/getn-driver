@@ -1,12 +1,12 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:getn_driver/data/model/predictionsPlaceSearch/Predictions.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
+import 'package:getn_driver/presentation/tripDetails/LocationSearchDialog.dart';
 import 'package:getn_driver/presentation/tripDetails/trip_details_cubit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -36,27 +36,28 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
   int? indexStatus;
 
   // custom marker
-  final Set<Marker> _markers = <Marker>{};
-  final LatLng destinationLatLng = const LatLng(30.149350, 31.738539);
-  final LatLng initialLatLng = const LatLng(30.1541371, 31.7397189);
-  final Completer<GoogleMapController> _controller = Completer();
+  // final Set<Marker> _markers = <Marker>{};
+  // final LatLng destinationLatLng = const LatLng(30.149350, 31.738539);
+  // final LatLng initialLatLng = const LatLng(30.1541371, 31.7397189);
+  late GoogleMapController _controller;
+  late CameraPosition _cameraPosition;
 
-  _setMapPins(List<LatLng> markersLocation) {
-    _markers.clear();
-    setState(() {
-      // for (var markerLocation in markersLocation) {
-      //   _markers.add(Marker(
-      //     markerId: MarkerId(markerLocation.toString()),
-      //     position: markerLocation,
-      //     icon: customIcon,
-      //   ));
-      // }
-      _markers.add(Marker(
-        markerId: MarkerId(destinationLatLng.toString()),
-        position: destinationLatLng,
-      ));
-    });
-  }
+  // _setMapPins(List<LatLng> markersLocation) {
+  //   _markers.clear();
+  //   setState(() {
+  //     // for (var markerLocation in markersLocation) {
+  //     //   _markers.add(Marker(
+  //     //     markerId: MarkerId(markerLocation.toString()),
+  //     //     position: markerLocation,
+  //     //     icon: customIcon,
+  //     //   ));
+  //     // }
+  //     _markers.add(Marker(
+  //       markerId: MarkerId(destinationLatLng.toString()),
+  //       position: destinationLatLng,
+  //     ));
+  //   });
+  // }
 
   @override
   void dispose() {
@@ -64,10 +65,15 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
     super.dispose();
     getIt<SharedPreferences>().setString('typeScreen', "");
   }
+
   @override
   void initState() {
     super.initState();
 
+    TripDetailsCubit.get(context).onSuggestionSelected =
+        Predictions(description: "", placeId: "");
+    _cameraPosition =
+        const CameraPosition(target: LatLng(45.521563, -122.677433), zoom: 17);
     getIt<SharedPreferences>().setString('typeScreen', "tripDetails");
     TripDetailsCubit.get(context).getTripDetails(widget.id!);
   }
@@ -82,6 +88,15 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
           Navigator.pop(context);
           showToastt(
               text: state.message, state: ToastStates.error, context: context);
+        } else if (state is SearchLocationErrorState) {
+          Navigator.pop(context);
+          showToastt(
+              text: state.message, state: ToastStates.error, context: context);
+        } else if (state is SetPlaceDetailsSuccessState) {
+          _controller.animateCamera(CameraUpdate.newCameraPosition(
+              CameraPosition(
+                  target: LatLng(state.data!.lat!, state.data!.lng!),
+                  zoom: 17)));
         }
       },
       builder: (context, state) {
@@ -91,6 +106,23 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
               'Trip Details',
               style: TextStyle(color: primaryColor, fontSize: 20.sp),
             ),
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      // outside to dismiss
+                      builder: (BuildContext context) {
+                        return const LocationSearchDialog();
+                      },
+                    );
+                  },
+                  icon: Icon(
+                    Icons.search,
+                    size: 25.sp,
+                  ))
+            ],
             centerTitle: true,
             elevation: 1.0,
           ),
@@ -109,12 +141,17 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                   myLocationButtonEnabled: true,
                   zoomControlsEnabled: true,
                   mapToolbarEnabled: false,
-                  markers: _markers,
-                  initialCameraPosition:
-                      CameraPosition(target: initialLatLng, zoom: 13),
+                  onCameraIdle: (){
+                    print("searchLocation00*****************");
+
+                  },
+                  onCameraMove: (position){
+                    print("searchLocation*****************${position.target}");
+                  },
+
+                  initialCameraPosition: _cameraPosition,
                   onMapCreated: (GoogleMapController controller) {
-                    _controller.complete(controller);
-                    _setMapPins([const LatLng(30.1541371, 31.7397189)]);
+                    _controller = controller;
                   },
                 ),
               ),
