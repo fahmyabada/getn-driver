@@ -10,11 +10,11 @@ import 'package:getn_driver/domain/usecase/auth/EditInformationUserUseCase.dart'
 import 'package:getn_driver/domain/usecase/auth/LoginUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/GetCountriesUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/GetRoleUseCase.dart';
+import 'package:getn_driver/domain/usecase/auth/RegisterUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/SendOtpUseCase.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:meta/meta.dart';
 
-import '../../../domain/usecase/auth/RegisterUseCase.dart';
 import 'package:http_parser/http_parser.dart';
 
 part 'state.dart';

@@ -8,21 +8,21 @@ import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
-import 'package:getn_driver/presentation/request/request_cubit.dart';
-import 'package:getn_driver/presentation/requestDetails/RequestDetailsScreen.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
+import 'package:getn_driver/presentation/ui/request/requestDetails/RequestDetailsScreen.dart';
+import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class RequestScreen extends StatefulWidget {
-  const RequestScreen({Key? key, this.screenNotify}) : super(key: key);
+class RequestTabsScreen extends StatefulWidget {
+  const RequestTabsScreen({Key? key, this.screenNotify}) : super(key: key);
   final String? screenNotify;
 
   @override
-  State<RequestScreen> createState() => _RequestScreenState();
+  State<RequestTabsScreen> createState() => _RequestTabsScreenState();
 }
 
-class _RequestScreenState extends State<RequestScreen>
+class _RequestTabsScreenState extends State<RequestTabsScreen>
     with SingleTickerProviderStateMixin {
   int _currentIndex = 0;
   late ScrollController _controllerUpcoming;
@@ -56,10 +56,10 @@ class _RequestScreenState extends State<RequestScreen>
     }
 
     // first load
-    RequestCubit.get(context).getRequestCurrent(1);
     RequestCubit.get(context).getRequestUpComing(1);
     RequestCubit.get(context).getRequestPast(1);
     RequestCubit.get(context).getRequestPending(1);
+    RequestCubit.get(context).getRequestCurrent(1);
 
     RequestCubit.get(context).tabController!.addListener(() {
       setState(() {

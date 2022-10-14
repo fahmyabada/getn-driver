@@ -8,12 +8,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
-import 'package:getn_driver/presentation/auth/DriverInformationScreen.dart';
-import 'package:getn_driver/presentation/auth/SignUpDetails.dart';
-import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
+import 'package:getn_driver/presentation/ui/auth/DriverInformationScreen.dart';
+import 'package:getn_driver/presentation/ui/auth/SignUpDetailsScreen.dart';
+import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
-import 'package:getn_driver/presentation/request/RequestScreen.dart';
-import 'package:getn_driver/presentation/request/request_cubit.dart';
+import 'package:getn_driver/presentation/ui/request/requestTabs/RequestTabsScreen.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -220,7 +219,7 @@ class _OtpScreenState extends State<OtpScreen> {
               .setString('typeSign', "signWithInformation");
           navigateTo(
               context,
-              const RequestScreen());
+              const RequestTabsScreen());
         } else {
           getIt<SharedPreferences>().setString('typeSign', "sign");
           navigateTo(context, const DriverInformationScreen());

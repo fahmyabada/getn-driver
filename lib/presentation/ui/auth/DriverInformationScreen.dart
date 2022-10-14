@@ -3,11 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
-import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
-import 'package:getn_driver/presentation/auth/VerifyImage.dart';
+import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
+import 'package:getn_driver/presentation/ui/auth/VerifyImageScreen.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
-import 'package:getn_driver/presentation/request/RequestScreen.dart';
-import 'package:getn_driver/presentation/request/request_cubit.dart';
+import 'package:getn_driver/presentation/ui/request/requestTabs/RequestTabsScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DriverInformationScreen extends StatefulWidget {
@@ -28,7 +27,7 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
             getIt<SharedPreferences>().setString('typeSign', "signWithInformation");
             navigateTo(
                 context,
-                const RequestScreen());
+                const RequestTabsScreen());
           }else if (state is EditErrorState){
             print('*******EditErrorState');
             showToastt(

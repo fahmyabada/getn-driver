@@ -9,9 +9,9 @@ import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/strings.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
-import 'package:getn_driver/presentation/auth/OtpScreen.dart';
-import 'package:getn_driver/presentation/auth/SignUpScreen.dart';
-import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
+import 'package:getn_driver/presentation/ui/auth/OtpScreen.dart';
+import 'package:getn_driver/presentation/ui/auth/SignUpScreen.dart';
+import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);

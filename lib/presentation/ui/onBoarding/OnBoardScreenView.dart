@@ -5,8 +5,7 @@ import 'package:getn_driver/data/model/OnBoardingItem.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/strings.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
-import 'package:getn_driver/presentation/auth/SignInScreen.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:getn_driver/presentation/ui/auth/SignInScreen.dart';
 
 
 class OnBoardScreenView extends StatelessWidget {

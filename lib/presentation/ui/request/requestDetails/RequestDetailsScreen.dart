@@ -7,9 +7,10 @@ import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
-import 'package:getn_driver/presentation/requestDetails/request_details_cubit.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
-import 'package:getn_driver/presentation/tripDetails/TripDetailsScreen.dart';
+import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
+import 'package:getn_driver/presentation/ui/trip/addTrip/AddTripScreen.dart';
+import 'package:getn_driver/presentation/ui/trip/tripDetails/TripDetailsScreen.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -74,7 +75,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RequestDetailsCubit, RequestDetailsState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is RequestDetailsEditSuccessState) {
           RequestDetailsCubit.get(context).getRequestDetails(widget.idRequest!);
           RequestDetailsCubit.get(context)
@@ -83,6 +84,52 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           Navigator.pop(context);
           showToastt(
               text: state.message, state: ToastStates.error, context: context);
+        } else if (state is CurrentLocationSuccessState) {
+          navigateTo(
+              context,
+              AddTripScreen(
+                requestId: widget.idRequest!,
+                fromLatitude: state.position.latitude,
+                fromLongitude: state.position.longitude,
+              ));
+        } else if (state is CurrentLocationErrorState) {
+          if (kDebugMode) {
+            print('CurrentLocationErrorState********* ${state.error}');
+          }
+          if (state.error == "denied") {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              // outside to dismiss
+              builder: (BuildContext context) {
+                return CustomDialog(
+                  title: "Location",
+                  description: 'Location permissions are denied',
+                  press: () {
+                    Navigator.pop(context);
+                  },
+                  type: "checkLocationDenied",
+                );
+              },
+            );
+          } else if (state.error == "deniedForever") {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              // outside to dismiss
+              builder: (BuildContext mContext) {
+                return CustomDialog(
+                  title: "Location",
+                  description:
+                      'Location permissions are permanently denied\n You must enable the access location so that we can determine your location and save the visit\n choose setting and enable location then try back',
+                  press: () {
+                    Navigator.pop(context);
+                  },
+                  type: "checkLocationDeniedForever",
+                );
+              },
+            );
+          }
         }
       },
       builder: (context, state) {
@@ -108,20 +155,16 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         scrollDirection: Axis.vertical,
                         controller: _controllerLoadingTrips
                           ..addListener(() async {
-
-                            if (_controllerLoadingTrips
-                                .position.extentAfter ==
+                            if (_controllerLoadingTrips.position.extentAfter ==
                                 0) {
-                              if (RequestDetailsCubit.get(
-                                  context)
+                              if (RequestDetailsCubit.get(context)
                                   .loadingMoreTrips) {
-
                                 _loadMoreTrips();
                               }
                             }
                           }),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Row(
                               children: [
@@ -154,7 +197,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                               child: Text(
                                                 RequestDetailsCubit.get(context)
                                                     .requestDetails!
-                                                    .client2!.name!,
+                                                    .client2!
+                                                    .name!,
                                                 style: TextStyle(
                                                     fontSize: 20.sp,
                                                     color: black,
@@ -526,6 +570,22 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             SizedBox(
                               height: 15.h,
                             ),
+                            state is CurrentLocationLoading
+                                ? const Center(
+                                    child: CircularProgressIndicator(
+                                    color: black,
+                                  ))
+                                : defaultButton2(
+                                    text: 'Add Trip',
+                                    press: () {
+                                      RequestDetailsCubit.get(context)
+                                          .getCurrentLocation();
+                                    },
+                                    textColor: white,
+                                    backColor: accentColor),
+                            SizedBox(
+                              height: 15.h,
+                            ),
                             RequestDetailsCubit.get(context).loadingTrips
                                 ? const Center(
                                     child: CircularProgressIndicator(
@@ -868,7 +928,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                               print(
                                                   "typeId44************ ${RequestDetailsCubit.get(context).trips[i].id}");
                                               String id =
-                                                  await navigateToWithRefreshPagePrevious2(
+                                                  await navigateToWithRefreshPagePrevious(
                                                       context,
                                                       TripDetailsScreen(
                                                           id: RequestDetailsCubit
@@ -879,14 +939,30 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                 print(
                                                     "typeId33************ ${id}");
                                                 if (id.isNotEmpty) {
-                                                  getIt<SharedPreferences>().setString('typeScreen', "requestDetails");
-                                                  RequestDetailsCubit.get(context).indexTrips = 0;
-                                                  RequestDetailsCubit.get(context).trips = [];
-                                                  RequestDetailsCubit.get(context).loadingMoreTrips = false;
-                                                  RequestDetailsCubit.get(context).loadingTrips = false;
-                                                  RequestDetailsCubit.get(context).loadingRequest = false;
-                                                  RequestDetailsCubit.get(context).failureRequest = "";
-                                                  RequestDetailsCubit.get(context).failureTrip = "";
+                                                  getIt<SharedPreferences>()
+                                                      .setString('typeScreen',
+                                                          "requestDetails");
+                                                  RequestDetailsCubit.get(
+                                                          context)
+                                                      .indexTrips = 0;
+                                                  RequestDetailsCubit.get(
+                                                          context)
+                                                      .trips = [];
+                                                  RequestDetailsCubit.get(
+                                                          context)
+                                                      .loadingMoreTrips = false;
+                                                  RequestDetailsCubit.get(
+                                                          context)
+                                                      .loadingTrips = false;
+                                                  RequestDetailsCubit.get(
+                                                          context)
+                                                      .loadingRequest = false;
+                                                  RequestDetailsCubit.get(
+                                                          context)
+                                                      .failureRequest = "";
+                                                  RequestDetailsCubit.get(
+                                                          context)
+                                                      .failureTrip = "";
                                                   RequestDetailsCubit.get(
                                                           context)
                                                       .getRequestDetails(id);

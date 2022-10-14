@@ -32,27 +32,3 @@ class TripDetailsEditSuccessState extends TripDetailsInitial {
 
   TripDetailsEditSuccessState(this.data);
 }
-
-class SearchLocationErrorState extends TripDetailsInitial {
-  final String message;
-
-  SearchLocationErrorState(this.message);
-}
-
-class SetSuggestionSelectedState extends TripDetailsInitial {
-  final Predictions? data;
-
-  SetSuggestionSelectedState(this.data);
-}
-
-class SetPlaceDetailsErrorState extends TripDetailsInitial {
-  final String message;
-
-  SetPlaceDetailsErrorState(this.message);
-}
-
-class SetPlaceDetailsSuccessState extends TripDetailsInitial {
-  final Location? data;
-
-  SetPlaceDetailsSuccessState(this.data);
-}

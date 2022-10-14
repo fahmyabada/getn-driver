@@ -1,15 +1,17 @@
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:getn_driver/data/model/request/DataRequest.dart';
 import 'package:getn_driver/data/model/trips/Data.dart';
 import 'package:getn_driver/data/model/trips/Trips.dart';
 import 'package:getn_driver/domain/usecase/request/PutRequestUseCase.dart';
+import 'package:getn_driver/domain/usecase/requestDetails/GetCurrentLocationUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetRequestDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetTripsRequestDetailsUseCase.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:meta/meta.dart';
-import 'package:intl/intl.dart';
 
 part 'request_details_state.dart';
 
@@ -21,6 +23,7 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
   var getRequestDetailsUseCase = getIt<GetRequestDetailsUseCase>();
   var getTripsRequestDetailsUseCase = getIt<GetTripsRequestDetailsUseCase>();
   var putRequestUseCase = getIt<PutRequestUseCase>();
+  var getCurrentLocationUseCase = getIt<GetCurrentLocationUseCase>();
 
   DataRequest? requestDetails;
   List<Data> trips = [];
@@ -55,8 +58,7 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
 
   void getTripsRequestDetails(int index, String id) async {
     var body = {"request": id, "page": index};
-    print(
-        "_controllerUpcoming*********** ${index}");
+    print("_controllerUpcoming*********** ${index}");
     if (index > 1) {
       getTripsRequestDetailsUseCase.execute(body).then((value) {
         emit(eitherLoadedOrErrorStateTripsRequestDetails2(value));
@@ -120,6 +122,21 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
       return RequestDetailsEditErrorState(failure1);
     }, (data) {
       return RequestDetailsEditSuccessState(data);
+    });
+  }
+
+  void getCurrentLocation() async {
+    emit(CurrentLocationLoading());
+    final data = await getCurrentLocationUseCase.execute();
+    emit(eitherLoadedOrErrorStateCurrentLocation(data));
+  }
+
+  RequestDetailsState eitherLoadedOrErrorStateCurrentLocation(
+      Either<String, Position> data) {
+    return data.fold((failure) {
+      return CurrentLocationErrorState(failure);
+    }, (data) {
+      return CurrentLocationSuccessState(data);
     });
   }
 }

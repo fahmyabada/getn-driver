@@ -8,15 +8,15 @@ import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/strings.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/main.dart';
-import 'package:getn_driver/presentation/auth/DriverInformationScreen.dart';
-import 'package:getn_driver/presentation/auth/SignInScreen.dart';
+import 'package:getn_driver/presentation/ui/auth/DriverInformationScreen.dart';
+import 'package:getn_driver/presentation/ui/auth/SignInScreen.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/notificationService/local_notification_service.dart';
-import 'package:getn_driver/presentation/request/RequestScreen.dart';
-import 'package:getn_driver/presentation/request/request_cubit.dart';
-import 'package:getn_driver/presentation/requestDetails/request_details_cubit.dart';
-import 'package:getn_driver/presentation/splash/splash_screen_cubit.dart';
-import 'package:getn_driver/presentation/tripDetails/trip_details_cubit.dart';
+import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
+import 'package:getn_driver/presentation/ui/request/requestTabs/RequestTabsScreen.dart';
+import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
+import 'package:getn_driver/presentation/ui/splash/splash_screen_cubit.dart';
+import 'package:getn_driver/presentation/ui/trip/tripDetails/trip_details_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -311,7 +311,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   LocalNotificationService.goToNextScreen(
                       idRequest, "pushAndRemoveUntil", "");
                 } else {
-                  navigateAndFinish(context, const RequestScreen());
+                  navigateAndFinish(context, const RequestTabsScreen());
                 }
               } else {
                 navigateAndFinish(context, const SignInScreen());

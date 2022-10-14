@@ -44,3 +44,17 @@ class RequestDetailsEditSuccessState extends RequestDetailsState {
 
   RequestDetailsEditSuccessState(this.data);
 }
+
+class CurrentLocationLoading extends RequestDetailsState {}
+
+class CurrentLocationSuccessState extends RequestDetailsState {
+  final Position position;
+
+  CurrentLocationSuccessState(this.position);
+}
+
+class CurrentLocationErrorState extends RequestDetailsState {
+  final String error;
+
+  CurrentLocationErrorState(this.error);
+}

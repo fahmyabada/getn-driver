@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
-import 'package:getn_driver/presentation/auth/TermsScreen.dart';
-import 'package:getn_driver/presentation/auth/VerifyImage.dart';
-import 'package:getn_driver/presentation/auth/cubit/cubit.dart';
+import 'package:getn_driver/presentation/ui/auth/TermsScreen.dart';
+import 'package:getn_driver/presentation/ui/auth/VerifyImageScreen.dart';
+import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
 
 class SignUpDetailsScreen extends StatefulWidget {
   const SignUpDetailsScreen(

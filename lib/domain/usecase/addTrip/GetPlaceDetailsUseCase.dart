@@ -1,13 +1,13 @@
 import 'package:dartz/dartz.dart';
 import 'package:getn_driver/data/model/placeDetails/PlaceDetails.dart';
-import 'package:getn_driver/domain/repository/TripDetailsRepository.dart';
+import 'package:getn_driver/domain/repository/AddTripRepository.dart';
 
 class GetPlaceDetailsUseCase {
-  final TripDetailsRepository tripDetailsRepository;
+  final AddTripRepository addTripRepository;
 
-  GetPlaceDetailsUseCase(this.tripDetailsRepository);
+  GetPlaceDetailsUseCase(this.addTripRepository);
 
   Future<Either<String, PlaceDetails?>> execute(String placeId) {
-    return tripDetailsRepository.placeDetails(placeId);
+    return addTripRepository.placeDetails(placeId);
   }
 }

@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:getn_driver/main.dart';
-import 'package:getn_driver/presentation/request/request_cubit.dart';
-import 'package:getn_driver/presentation/requestDetails/RequestDetailsScreen.dart';
-import 'package:getn_driver/presentation/tripDetails/TripDetailsScreen.dart';
+import 'package:getn_driver/presentation/ui/request/requestDetails/RequestDetailsScreen.dart';
+import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
+import 'package:getn_driver/presentation/ui/trip/tripDetails/TripDetailsScreen.dart';
 
 class LocalNotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =

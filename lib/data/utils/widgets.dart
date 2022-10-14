@@ -13,25 +13,15 @@ void navigateTo(context, widget) => Navigator.push(
       ),
     );
 
-Future<bool> navigateToWithRefreshPagePrevious(context, widget) async {
+Future<dynamic> navigateToWithRefreshPagePrevious(context, widget) async {
   return await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => widget,
         ),
-      ) ??
-      false;
+      );
 }
 
-Future<String> navigateToWithRefreshPagePrevious2(context, widget) async {
-  return await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => widget,
-        ),
-      ) ??
-      "";
-}
 
 Widget defaultFormField(
         {TextEditingController? controller,

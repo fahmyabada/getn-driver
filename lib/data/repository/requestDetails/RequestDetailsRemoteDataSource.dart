@@ -15,6 +15,7 @@ abstract class RequestDetailsRemoteDataSource {
 
   Future<Either<String, DataRequest?>> putRequest(
       String id, String type, String comment);
+
 }
 
 class RequestDetailsRemoteDataSourceImpl
