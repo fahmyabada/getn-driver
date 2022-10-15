@@ -4,6 +4,8 @@ import 'package:getn_driver/data/repository/addTrip/AddTripRemoteDataSource.dart
 import 'package:getn_driver/data/repository/addTrip/AddTripRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/auth/AuthRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/auth/AuthRepositoryImpl.dart';
+import 'package:getn_driver/data/repository/recomendPlaces/RecomendPlacesRemoteDataSource.dart';
+import 'package:getn_driver/data/repository/recomendPlaces/RecomendPlacesRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/request/RequestRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/request/RequestRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/requestDetails/RequestDetailsRemoteDataSource.dart';
@@ -11,11 +13,13 @@ import 'package:getn_driver/data/repository/requestDetails/RequestDetailsReposit
 import 'package:getn_driver/data/repository/tripDetails/TripDetailsRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/tripDetails/TripDetailsRepositoryImpl.dart';
 import 'package:getn_driver/domain/repository/AddTripRepository.dart';
+import 'package:getn_driver/domain/repository/RecomendPlaceRepository.dart';
 import 'package:getn_driver/domain/repository/RequestDetailsRepository.dart';
 import 'package:getn_driver/domain/repository/RequestRepository.dart';
 import 'package:getn_driver/domain/repository/AuthRepository.dart';
 import 'package:getn_driver/domain/repository/TripDetailsRepository.dart';
 import 'package:getn_driver/domain/usecase/addTrip/CreateTripUseCase.dart';
+import 'package:getn_driver/domain/usecase/recomendPlaces/GetRecomendPlacesUseCase.dart';
 import 'package:getn_driver/domain/usecase/request/GetRequestUseCase.dart';
 import 'package:getn_driver/domain/usecase/request/PutRequestUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetCurrentLocationUseCase.dart';
@@ -63,6 +67,7 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => GetPlaceDetailsUseCase(getIt()));
   getIt.registerLazySingleton(() => GetCurrentLocationUseCase(getIt()));
   getIt.registerLazySingleton(() => CreateTripUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetRecomendPlacesUseCase(getIt()));
 
   // Repository
   getIt.registerLazySingleton<AuthRepository>(
@@ -100,6 +105,12 @@ Future<void> init() async {
     ),
   );
 
+  getIt.registerLazySingleton<RecomendPlaceRepository>(
+        () => RecomendPlacesRepositoryImpl(
+      getIt(),
+      getIt(),
+    ),
+  );
 
   // Data sources
   getIt.registerLazySingleton<AuthRemoteDataSource>(
@@ -117,6 +128,8 @@ Future<void> init() async {
   getIt.registerLazySingleton<AddTripRemoteDataSource>(
           () => AddTripRemoteDataSourceImpl());
 
+  getIt.registerLazySingleton<RecomendPlacesRemoteDataSource>(
+          () => RecomendPlacesRemoteDataSourceImpl());
 
   //! Core
   getIt.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(getIt()));

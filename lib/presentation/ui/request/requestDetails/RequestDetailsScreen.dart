@@ -85,6 +85,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           showToastt(
               text: state.message, state: ToastStates.error, context: context);
         } else if (state is CurrentLocationSuccessState) {
+          print('CurrentLocationSuccessState********* ');
           navigateTo(
               context,
               AddTripScreen(

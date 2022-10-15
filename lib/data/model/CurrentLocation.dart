@@ -3,10 +3,12 @@ class CurrentLocation {
     String? description,
     double? longitude,
     double? latitude,
+    bool? firstTime,
   }) {
     _description = description;
     _longitude = longitude;
     _latitude = latitude;
+    _firstTime = firstTime;
   }
 
   CurrentLocation.fromJson(dynamic json) {
@@ -18,6 +20,7 @@ class CurrentLocation {
   String? _description;
   double? _longitude;
   double? _latitude;
+  bool? _firstTime;
 
   String? get description => _description;
 
@@ -25,10 +28,12 @@ class CurrentLocation {
 
   double? get latitude => _latitude;
 
+  bool? get firstTime => _firstTime;
+
 
   @override
   String toString() {
-    return 'CurrentLocation{_description: $_description, _longitude: $_longitude, _latitude: $_latitude}';
+    return 'CurrentLocation{_description: $_description, _longitude: $_longitude, _latitude: $_latitude, _firstTime: $_firstTime}';
   }
 
   Map<String, dynamic> toJson() {

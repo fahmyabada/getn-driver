@@ -11,6 +11,7 @@ import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/ui/trip/addTrip/SearchMapScreen.dart';
 import 'package:getn_driver/presentation/ui/trip/addTrip/add_trip_cubit.dart';
+import 'package:getn_driver/presentation/ui/trip/recomendPlaces/RecomendPlacesScreen.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 
@@ -33,9 +34,9 @@ class _AddTripScreenState extends State<AddTripScreen> {
   var setMapController = TextEditingController();
   String toAddress = "", fromAddress = "";
   double? toLongitude, toLatitude;
-
+  bool firstTime = false;
   // custom marker
-  final Set<Marker> _markers = <Marker>{};
+  // final Set<Marker> _markers = <Marker>{};
 
   @override
   void initState() {
@@ -43,19 +44,16 @@ class _AddTripScreenState extends State<AddTripScreen> {
     getFromAddress();
     _cameraPosition = CameraPosition(
         target: LatLng(widget.fromLatitude!, widget.fromLongitude!), zoom: 17);
-    _markers.clear();
-    _markers.add(Marker(
-      markerId: MarkerId(
-          LatLng(widget.fromLatitude!, widget.fromLongitude!).toString()),
-      position: LatLng(widget.fromLatitude!, widget.fromLongitude!),
-    ));
   }
 
   Future<void> getFromAddress() async {
     List<Placemark> placeMarks = await placemarkFromCoordinates(
         widget.fromLatitude!, widget.fromLongitude!);
     Placemark place = placeMarks[0];
-    fromAddress = place.street!;
+    fromAddress =
+        '${place.street!}, ${place.administrativeArea!}, ${place.subAdministrativeArea!}, ${place.country!} ';
+    print("searchLocation11*****************${widget.fromLatitude!}");
+    print("searchLocation11*****************${widget.fromLongitude!}");
   }
 
   Future<double> getDistance(double toLatitude, double toLongitude) async {
@@ -103,16 +101,10 @@ class _AddTripScreenState extends State<AddTripScreen> {
                                   context, const SearchMapScreen())
                               as CurrentLocation;
                       setState(() {
+                        firstTime = data.firstTime!;
                         toAddress = data.description!;
                         toLongitude = data.longitude!;
                         toLatitude = data.latitude!;
-                        _markers.clear();
-                        _markers.add(Marker(
-                          markerId: MarkerId(
-                              LatLng(data.latitude!, data.longitude!)
-                                  .toString()),
-                          position: LatLng(data.latitude!, data.longitude!),
-                        ));
                         _controller.animateCamera(
                             CameraUpdate.newCameraPosition(CameraPosition(
                                 target: LatLng(data.latitude!, data.longitude!),
@@ -130,30 +122,55 @@ class _AddTripScreenState extends State<AddTripScreen> {
             body: Stack(
               children: [
                 Container(
-                  margin: EdgeInsets.only(bottom: 290.h),
-                  child: GoogleMap(
-                    mapType: MapType.normal,
-                    rotateGesturesEnabled: true,
-                    zoomGesturesEnabled: true,
-                    trafficEnabled: false,
-                    tiltGesturesEnabled: false,
-                    scrollGesturesEnabled: true,
-                    compassEnabled: true,
-                    myLocationButtonEnabled: true,
-                    zoomControlsEnabled: true,
-                    mapToolbarEnabled: false,
-                    markers: _markers,
-                    onCameraIdle: () {
-                      print("searchLocation00*****************");
-                    },
-                    onCameraMove: (position) {
-                      print(
-                          "searchLocation*****************${position.target}");
-                    },
-                    initialCameraPosition: _cameraPosition,
-                    onMapCreated: (GoogleMapController controller) {
-                      _controller = controller;
-                    },
+                  margin: EdgeInsets.only(bottom: 320.h),
+                  child: Stack(
+                    children: [
+                      GoogleMap(
+                        mapType: MapType.normal,
+                        rotateGesturesEnabled: true,
+                        zoomGesturesEnabled: true,
+                        trafficEnabled: false,
+                        tiltGesturesEnabled: false,
+                        scrollGesturesEnabled: true,
+                        compassEnabled: true,
+                        myLocationButtonEnabled: true,
+                        zoomControlsEnabled: true,
+                        mapToolbarEnabled: false,
+                        onCameraIdle: () async {
+                          print("onCameraIdle00********* " );
+                          if(!firstTime){
+                            if (toLatitude != null && toLongitude != null) {
+                              List<Placemark> placeMarks =
+                              await placemarkFromCoordinates(
+                                  toLatitude!, toLongitude!);
+                              Placemark place = placeMarks[0];
+                              setState(() {
+                                toAddress =
+                                '${place.street!}, ${place.administrativeArea!}, ${place.subAdministrativeArea!}, ${place.country!}';
+                              });
+                            }
+                          }
+                        },
+                        onCameraMove: (position) {
+                          print("onCameraIdle11********* " );
+                          setState(() {
+                            toLatitude = position.target.latitude;
+                            toLongitude = position.target.longitude;
+                          });
+                        },
+                        initialCameraPosition: _cameraPosition,
+                        onMapCreated: (GoogleMapController controller) {
+                          _controller = controller;
+                        },
+                      ),
+                      Align(
+                          alignment: Alignment.center,
+                          child: Icon(
+                            Icons.pin_drop,
+                            color: redColor,
+                            size: 70.sp,
+                          ))
+                    ],
                   ),
                 ),
                 Positioned(
@@ -199,17 +216,10 @@ class _AddTripScreenState extends State<AddTripScreen> {
                                             context, const SearchMapScreen())
                                         as CurrentLocation;
                                 setState(() {
+                                  firstTime = data.firstTime!;
                                   toAddress = data.description!;
                                   toLongitude = data.longitude!;
                                   toLatitude = data.latitude!;
-                                  _markers.clear();
-                                  _markers.add(Marker(
-                                    markerId: MarkerId(
-                                        LatLng(data.latitude!, data.longitude!)
-                                            .toString()),
-                                    position:
-                                        LatLng(data.latitude!, data.longitude!),
-                                  ));
                                   _controller.animateCamera(
                                       CameraUpdate.newCameraPosition(
                                           CameraPosition(
@@ -224,7 +234,26 @@ class _AddTripScreenState extends State<AddTripScreen> {
                             ),
                             defaultButton3(
                                 text: 'Recommended Places',
-                                press: () {},
+                                press: () async{
+                                  CurrentLocation data =
+                                      await navigateToWithRefreshPagePrevious(
+                                      context, const RecomendPlacesScreen())
+                                  as CurrentLocation;
+
+                                  print("RecomendPlacesScreen********* ${data.toString()}");
+                                  setState(() {
+                                    firstTime = data.firstTime!;
+                                    toAddress = data.description!;
+                                    toLongitude = data.longitude!;
+                                    toLatitude = data.latitude!;
+                                    _controller.animateCamera(
+                                        CameraUpdate.newCameraPosition(
+                                            CameraPosition(
+                                                target: LatLng(data.latitude!,
+                                                    data.longitude!),
+                                                zoom: 17)));
+                                  });
+                                },
                                 textColor: white,
                                 backColor: blueColor),
                             SizedBox(
@@ -270,7 +299,8 @@ class _AddTripScreenState extends State<AddTripScreen> {
                                                       toLongitude.toString(),
                                                 ),
                                                 request: widget.requestId,
-                                                consumptionKM: double.parse(value.toStringAsFixed(2))),
+                                                consumptionKM: double.parse(
+                                                    value.toStringAsFixed(2))),
                                           );
                                         });
                                       } else {

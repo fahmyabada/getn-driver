@@ -35,7 +35,8 @@ class _SearchMapScreenState extends State<SearchMapScreen> {
             Navigator.of(context).pop(CurrentLocation(
                 description: suggestionDescription,
                 latitude: state.data?.lat!,
-                longitude: state.data?.lng!));
+                longitude: state.data?.lng!,
+            firstTime: true));
           }
         },
         builder: (context, state) {
