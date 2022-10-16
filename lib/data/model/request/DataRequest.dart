@@ -23,8 +23,8 @@ class DataRequest {
     int? totalPoints,
     int? refund,
     int? totalPrice,
-    int? totalConsumptionPoints,
-    int? totalConsumptionKM,
+    double? totalConsumptionPoints,
+    double? totalConsumptionKM,
     String? paymentMethod,
     int? referenceId,
     String? paymentStatus,
@@ -84,13 +84,18 @@ class DataRequest {
     _consumptionKM = json['consumptionKM'] is int ? 0.0 : json['consumptionKM'];
     _packagesPoints = json['packagesPoints'];
     _totalPackagesPrice = json['totalPackagesPrice'];
-    _consumptionPackagesPoints = json['consumptionPackagesPoints'] is int ? 0.0 : json['consumptionKM'];
+    _consumptionPackagesPoints = json['consumptionPackagesPoints'] is int
+        ? 0.0
+        : json['consumptionPackagesPoints'];
     _consumptionPackagesKM = json['consumptionPackagesKM'];
     _totalPoints = json['totalPoints'];
     _refund = json['refund'];
     _totalPrice = json['totalPrice'];
-    _totalConsumptionPoints = json['totalConsumptionPoints'];
-    _totalConsumptionKM = json['totalConsumptionKM'];
+    _totalConsumptionPoints = json['totalConsumptionPoints'] is int
+        ? 0.0
+        : json['totalConsumptionPoints'];
+    _totalConsumptionKM =
+        json['totalConsumptionKM'] is int ? 0.0 : json['totalConsumptionKM'];
     _paymentMethod = json['paymentMethod'];
     _referenceId = json['referenceId'];
     _paymentStatus = json['paymentStatus'];
@@ -135,8 +140,8 @@ class DataRequest {
   int? _totalPoints;
   int? _refund;
   int? _totalPrice;
-  int? _totalConsumptionPoints;
-  int? _totalConsumptionKM;
+  double? _totalConsumptionPoints;
+  double? _totalConsumptionKM;
   String? _paymentMethod;
   int? _referenceId;
   String? _paymentStatus;
@@ -185,9 +190,9 @@ class DataRequest {
 
   int? get totalPrice => _totalPrice;
 
-  int? get totalConsumptionPoints => _totalConsumptionPoints;
+  double? get totalConsumptionPoints => _totalConsumptionPoints;
 
-  int? get totalConsumptionKM => _totalConsumptionKM;
+  double? get totalConsumptionKM => _totalConsumptionKM;
 
   String? get paymentMethod => _paymentMethod;
 

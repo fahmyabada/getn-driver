@@ -20,7 +20,6 @@ class TripDetailsCubit extends Cubit<TripDetailsState> {
 
   Data? tripDetails;
 
-
   void getTripDetails(String id) async {
     emit(TripDetailsLoading());
     getTripDetailsUseCase.execute(id).then((value) {
@@ -38,10 +37,10 @@ class TripDetailsCubit extends Cubit<TripDetailsState> {
     });
   }
 
-  void editTrip(String id, String type) async {
+  void editTrip(String id, String type, String comment) async {
     emit(TripDetailsEditInitial());
 
-    putTripDetailsUseCase.execute(id, type).then((value) {
+    putTripDetailsUseCase.execute(id, type, comment).then((value) {
       emit(eitherLoadedOrErrorStateTripEdit(value));
     });
   }
@@ -54,5 +53,4 @@ class TripDetailsCubit extends Cubit<TripDetailsState> {
       return TripDetailsEditSuccessState(data);
     });
   }
-
 }

@@ -7,6 +7,7 @@ import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/ui/trip/branchesPlaces/BranchesPlacesScreen.dart';
+import 'package:getn_driver/presentation/ui/trip/infoBranch/InfoBranchScreen.dart';
 import 'package:getn_driver/presentation/ui/trip/infoPlace/InfoPlaceScreen.dart';
 import 'package:getn_driver/presentation/ui/trip/recomendPlaces/recomend_places_cubit.dart';
 
@@ -161,18 +162,34 @@ class _RecomendPlacesScreenState extends State<RecomendPlacesScreen> {
                                 children: [
                                   defaultButton2(
                                       press: () async {
-                                        CurrentLocation location =
-                                            await navigateToWithRefreshPagePrevious(
-                                                context,
-                                                InfoPlaceScreen(
-                                                  id: data.id,
-                                                  type: "Place",
-                                                )) as CurrentLocation;
-                                        setState(() {
-                                          if (location.description != null) {
-                                            Navigator.of(context).pop(location);
-                                          }
-                                        });
+                                        if (data.branchesCount! >= 1) {
+                                          CurrentLocation location =
+                                              await navigateToWithRefreshPagePrevious(
+                                                      context,
+                                                      InfoBranchScreen(
+                                                          id: data.id))
+                                                  as CurrentLocation;
+                                          setState(() {
+                                            if (location.description != null) {
+                                              Navigator.of(context)
+                                                  .pop(location);
+                                            }
+                                          });
+                                        } else {
+                                          CurrentLocation location =
+                                              await navigateToWithRefreshPagePrevious(
+                                                  context,
+                                                  InfoPlaceScreen(
+                                                    id: data.id,
+                                                    type: "Place",
+                                                  )) as CurrentLocation;
+                                          setState(() {
+                                            if (location.description != null) {
+                                              Navigator.of(context)
+                                                  .pop(location);
+                                            }
+                                          });
+                                        }
                                       },
                                       text: 'Info',
                                       backColor: accentColor,

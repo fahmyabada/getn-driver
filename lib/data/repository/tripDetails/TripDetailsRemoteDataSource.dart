@@ -12,7 +12,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 abstract class TripDetailsRemoteDataSource {
   Future<Either<String, Data?>> getTripDetails(String id);
 
-  Future<Either<String, DataRequest?>> putTrip(String id, String type);
+  Future<Either<String, DataRequest?>> putTrip(
+      String id, String type, String comment);
 
   Future<Either<String, PredictionsPlaceSearch?>> searchLocation(String text);
 
@@ -79,9 +80,16 @@ class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
   }
 
   @override
-  Future<Either<String, DataRequest?>> putTrip(String id, String type) async {
+  Future<Either<String, DataRequest?>> putTrip(
+      String id, String type, String comment) async {
     try {
-      final formData = FormData.fromMap({"status": type});
+      FormData? formData;
+      if (type == "accept") {
+        formData = FormData.fromMap({"status": type});
+      } else {
+        formData = FormData.fromMap({"status": type, "comment": comment});
+      }
+
 
       return await DioHelper.putData(
               url: 'trip/$id',

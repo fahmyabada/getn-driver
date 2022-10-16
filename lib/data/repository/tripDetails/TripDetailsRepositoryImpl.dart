@@ -30,9 +30,12 @@ class TripDetailsRepositoryImpl extends TripDetailsRepository {
   }
 
   @override
-  Future<Either<String, DataRequest?>> putTrip(String id, String type) async {
+  Future<Either<String, DataRequest?>> putTrip(
+      String id, String type, String comment) async {
     if (await networkInfo.isConnected) {
-      return await tripDetailsRemoteDataSource.putTrip(id, type).then((value) {
+      return await tripDetailsRemoteDataSource
+          .putTrip(id, type, comment)
+          .then((value) {
         return value.fold((failure) {
           return Left(failure.toString());
         }, (data) {
