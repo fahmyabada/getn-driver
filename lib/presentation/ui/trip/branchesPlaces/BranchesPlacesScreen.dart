@@ -6,18 +6,21 @@ import 'package:getn_driver/data/model/CurrentLocation.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
-import 'package:getn_driver/presentation/ui/trip/branchesPlaces/BranchesPlacesScreen.dart';
+import 'package:getn_driver/presentation/ui/trip/branchesPlaces/branches_places_cubit.dart';
 import 'package:getn_driver/presentation/ui/trip/infoPlace/InfoPlaceScreen.dart';
-import 'package:getn_driver/presentation/ui/trip/recomendPlaces/recomend_places_cubit.dart';
 
-class RecomendPlacesScreen extends StatefulWidget {
-  const RecomendPlacesScreen({Key? key}) : super(key: key);
+class BranchesPlacesScreen extends StatefulWidget {
+  const BranchesPlacesScreen({
+    Key? key,
+    this.placeId,
+  }) : super(key: key);
+  final String? placeId;
 
   @override
-  State<RecomendPlacesScreen> createState() => _RecomendPlacesScreenState();
+  State<BranchesPlacesScreen> createState() => _BranchesPlacesScreenState();
 }
 
-class _RecomendPlacesScreenState extends State<RecomendPlacesScreen> {
+class _BranchesPlacesScreenState extends State<BranchesPlacesScreen> {
   double _userRating = 3.0;
   late ScrollController _scrollController;
 
@@ -30,8 +33,9 @@ class _RecomendPlacesScreenState extends State<RecomendPlacesScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => RecomendPlacesCubit()..getPlaces(1),
-      child: BlocConsumer<RecomendPlacesCubit, RecomendPlacesState>(
+      create: (context) =>
+          BranchesPlacesCubit()..getBranches(1, widget.placeId!),
+      child: BlocConsumer<BranchesPlacesCubit, BranchesPlacesState>(
         listener: (context, state) {
           // TODO: implement listener
         },
@@ -45,7 +49,7 @@ class _RecomendPlacesScreenState extends State<RecomendPlacesScreen> {
               centerTitle: true,
               elevation: 1.0,
             ),
-            body: state is GetPlacesInitial
+            body: state is GetBranchesInitial
                 ? const Center(
                     child: CircularProgressIndicator(
                       color: black,
@@ -55,20 +59,20 @@ class _RecomendPlacesScreenState extends State<RecomendPlacesScreen> {
                     controller: _scrollController
                       ..addListener(() async {
                         if (_scrollController.position.extentAfter == 0) {
-                          if (RecomendPlacesCubit.get(context).loadingPlaces) {
-                            print("RecomendPlacesScreen*********** ");
-                            RecomendPlacesCubit.get(context).loadingPlaces =
-                                false;
+                          if (BranchesPlacesCubit.get(context)
+                              .loadingBranches) {
+                            print("BranchesPlacesScreen*********** ");
+                            BranchesPlacesCubit.get(context).loadingBranches = false;
 
-                            RecomendPlacesCubit.get(context).getPlaces(
-                                RecomendPlacesCubit.get(context).indexPlaces);
+                            BranchesPlacesCubit.get(context).getBranches(
+                                BranchesPlacesCubit.get(context).indexBranches, widget.placeId!);
                           }
                         }
                       }),
                     scrollDirection: Axis.vertical,
-                    itemCount: RecomendPlacesCubit.get(context).places.length,
+                    itemCount: BranchesPlacesCubit.get(context).branches.length,
                     itemBuilder: (context, i) {
-                      final data = RecomendPlacesCubit.get(context).places[i];
+                      final data = BranchesPlacesCubit.get(context).branches[i];
                       return Card(
                         margin: EdgeInsets.symmetric(
                             horizontal: 15.r, vertical: 10.r),
@@ -87,7 +91,7 @@ class _RecomendPlacesScreenState extends State<RecomendPlacesScreen> {
                                     clipBehavior: Clip.antiAlias,
                                     child: ImageTools.image(
                                         fit: BoxFit.fill,
-                                        url: data.logo!.src,
+                                        url: data.image!.src,
                                         height: 70.w,
                                         width: 70.w),
                                   ),
@@ -106,7 +110,7 @@ class _RecomendPlacesScreenState extends State<RecomendPlacesScreen> {
                                             children: [
                                               Expanded(
                                                 child: Text(
-                                                  data.title!.en!,
+                                                  data.address!.en!,
                                                   style: TextStyle(
                                                       fontSize: 17.sp,
                                                       color: black,
@@ -120,7 +124,7 @@ class _RecomendPlacesScreenState extends State<RecomendPlacesScreen> {
                                             height: 5.h,
                                           ),
                                           Text(
-                                            data.address!.en!,
+                                            '${data.area}, ${data.city}, ${data.country}',
                                             style: TextStyle(
                                                 fontSize: 15.sp, color: grey2),
                                           ),
@@ -160,56 +164,44 @@ class _RecomendPlacesScreenState extends State<RecomendPlacesScreen> {
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   defaultButton2(
-                                      press: () async {
+                                      press: () async{
                                         CurrentLocation location =
                                             await navigateToWithRefreshPagePrevious(
-                                                context,
-                                                InfoPlaceScreen(
-                                                  id: data.id,
-                                                  type: "Place",
-                                                )) as CurrentLocation;
+                                            context, InfoPlaceScreen(id: data.id,type: "Branch",))
+                                        as CurrentLocation;
+                                        print("BranchesPlacesScreen************ ${location.toString()}");
                                         setState(() {
-                                          if (location.description != null) {
+                                          if(location.description != null){
                                             Navigator.of(context).pop(location);
                                           }
                                         });
+
                                       },
                                       text: 'Info',
                                       backColor: accentColor,
                                       textColor: white),
-                                  data.branchesCount! >= 1
-                                      ? defaultButton2(
-                                          press: () async {
-                                            CurrentLocation location =
-                                                await navigateToWithRefreshPagePrevious(
-                                                        context,
-                                                        BranchesPlacesScreen(
-                                                            placeId: data.id!))
-                                                    as CurrentLocation;
-                                            print(
-                                                "RecomendPlacesScreen********* ${location.toString()}");
+                                  defaultButton2(
+                                      press: () {
+                                        // print("placeId********* ${widget.placeId}");
+                                        // print("branchId********* ${data.id}");
+                                        // print("address********* ${data.address!.en!}");
+                                        // print("placeLatitude********* ${data.placeLatitude!}");
+                                        // print("placeLongitude********* ${data.placeLongitude!.toString()}");
 
-                                            Navigator.of(context).pop(location);
-                                          },
-                                          text: 'Branches',
-                                          backColor: blueColor,
-                                          textColor: white)
-                                      : defaultButton2(
-                                          press: () {
-                                            Navigator.of(context).pop(
-                                                CurrentLocation(
-                                                    placeId: data.id,
-                                                    description:
-                                                        data.title!.en!,
-                                                    latitude: double.parse(
-                                                        data.placeLatitude!),
-                                                    longitude: double.parse(
-                                                        data.placeLongitude!),
-                                                    firstTime: true));
-                                          },
-                                          text: 'Select',
-                                          backColor: blueColor,
-                                          textColor: white),
+                                        Navigator.of(context).pop(
+                                            CurrentLocation(
+                                                placeId: widget.placeId,
+                                                branchId: data.id,
+                                                description: data.address!.en!,
+                                                latitude: double.parse(
+                                                    data.placeLatitude!),
+                                                longitude: double.parse(
+                                                    data.placeLongitude!),
+                                                firstTime: true));
+                                      },
+                                      text: 'Select',
+                                      backColor: blueColor,
+                                      textColor: white),
                                 ],
                               )
                             ],

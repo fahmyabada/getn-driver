@@ -9,7 +9,7 @@ import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
-import 'package:getn_driver/presentation/ui/trip/addTrip/AddTripScreen.dart';
+import 'package:getn_driver/presentation/ui/trip/tripCreate/TripCreateScreen.dart';
 import 'package:getn_driver/presentation/ui/trip/tripDetails/TripDetailsScreen.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,6 +36,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     'cancel': [],
     'pending': ['accept', 'reject']
   };
+
   int? indexStatus;
   late ScrollController _controllerLoadingTrips;
 
@@ -88,7 +89,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           print('CurrentLocationSuccessState********* ');
           navigateTo(
               context,
-              AddTripScreen(
+              TripCreateScreen(
                 requestId: widget.idRequest!,
                 fromLatitude: state.position.latitude,
                 fromLongitude: state.position.longitude,
@@ -847,10 +848,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                             ),
                                                             Expanded(
                                                               child: Card(
-                                                                color: Colors
-                                                                    .redAccent
-                                                                    .withOpacity(
-                                                                        .3),
+                                                                color: rough,
                                                                 child: Padding(
                                                                   padding:
                                                                       EdgeInsets

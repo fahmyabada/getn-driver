@@ -15,10 +15,10 @@ class DataRequest {
     int? subtotalPoints,
     int? subtotalPrice,
     double? consumptionPoints,
-    int? consumptionKM,
+    double? consumptionKM,
     int? packagesPoints,
     int? totalPackagesPrice,
-    int? consumptionPackagesPoints,
+    double? consumptionPackagesPoints,
     int? consumptionPackagesKM,
     int? totalPoints,
     int? refund,
@@ -81,10 +81,10 @@ class DataRequest {
     _subtotalPoints = json['subtotalPoints'];
     _subtotalPrice = json['subtotalPrice'];
     _consumptionPoints = double.parse(json['consumptionPoints'].toString());
-    _consumptionKM = json['consumptionKM'];
+    _consumptionKM = json['consumptionKM'] is int ? 0.0 : json['consumptionKM'];
     _packagesPoints = json['packagesPoints'];
     _totalPackagesPrice = json['totalPackagesPrice'];
-    _consumptionPackagesPoints = json['consumptionPackagesPoints'];
+    _consumptionPackagesPoints = json['consumptionPackagesPoints'] is int ? 0.0 : json['consumptionKM'];
     _consumptionPackagesKM = json['consumptionPackagesKM'];
     _totalPoints = json['totalPoints'];
     _refund = json['refund'];
@@ -127,10 +127,10 @@ class DataRequest {
   int? _subtotalPoints;
   int? _subtotalPrice;
   double? _consumptionPoints;
-  int? _consumptionKM;
+  double? _consumptionKM;
   int? _packagesPoints;
   int? _totalPackagesPrice;
-  int? _consumptionPackagesPoints;
+  double? _consumptionPackagesPoints;
   int? _consumptionPackagesKM;
   int? _totalPoints;
   int? _refund;
@@ -153,6 +153,8 @@ class DataRequest {
 
   From? get from => _from;
 
+  To? get to2 => _to2;
+
   String? get createdAt => _createdAt;
 
   String? get updatedAt => _updatedAt;
@@ -167,13 +169,13 @@ class DataRequest {
 
   double? get consumptionPoints => _consumptionPoints;
 
-  int? get consumptionKM => _consumptionKM;
+  double? get consumptionKM => _consumptionKM;
 
   int? get packagesPoints => _packagesPoints;
 
   int? get totalPackagesPrice => _totalPackagesPrice;
 
-  int? get consumptionPackagesPoints => _consumptionPackagesPoints;
+  double? get consumptionPackagesPoints => _consumptionPackagesPoints;
 
   int? get consumptionPackagesKM => _consumptionPackagesKM;
 

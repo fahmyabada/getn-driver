@@ -1,17 +1,18 @@
 import 'package:dartz/dartz.dart';
 import 'package:getn_driver/data/api/network_info.dart';
+import 'package:getn_driver/data/model/CreateTripModel.dart';
 import 'package:getn_driver/data/model/placeDetails/PlaceDetails.dart';
 import 'package:getn_driver/data/model/predictionsPlaceSearch/PredictionsPlaceSearch.dart';
 import 'package:getn_driver/data/model/trips/Data.dart';
-import 'package:getn_driver/data/repository/addTrip/AddTripRemoteDataSource.dart';
+import 'package:getn_driver/data/repository/tripCreate/TripCreateRemoteDataSource.dart';
 import 'package:getn_driver/data/utils/constant.dart';
-import 'package:getn_driver/domain/repository/AddTripRepository.dart';
+import 'package:getn_driver/domain/repository/TripCreateRepository.dart';
 
-class AddTripRepositoryImpl extends AddTripRepository {
-  final AddTripRemoteDataSource addTripRemoteDataSource;
+class TripCreateRepositoryImpl extends TripCreateRepository {
+  final TripCreateRemoteDataSource addTripRemoteDataSource;
   final NetworkInfo networkInfo;
 
-  AddTripRepositoryImpl(this.addTripRemoteDataSource, this.networkInfo);
+  TripCreateRepositoryImpl(this.addTripRemoteDataSource, this.networkInfo);
 
   @override
   Future<Either<String, PredictionsPlaceSearch?>> searchLocation(
@@ -45,7 +46,7 @@ class AddTripRepositoryImpl extends AddTripRepository {
   }
 
   @override
-  Future<Either<String, Data?>> createTrip(Data data) async {
+  Future<Either<String, Data?>> createTrip(CreateTripModel data) async {
     if (await networkInfo.isConnected) {
       return await addTripRemoteDataSource.createTrip(data).then((value) {
         return value.fold((failure) {

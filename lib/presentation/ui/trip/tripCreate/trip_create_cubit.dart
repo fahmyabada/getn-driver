@@ -2,22 +2,23 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:getn_driver/data/model/CreateTripModel.dart';
 import 'package:getn_driver/data/model/placeDetails/Location.dart';
 import 'package:getn_driver/data/model/placeDetails/PlaceDetails.dart';
 import 'package:getn_driver/data/model/predictionsPlaceSearch/Predictions.dart';
 import 'package:getn_driver/data/model/trips/Data.dart';
-import 'package:getn_driver/domain/usecase/addTrip/CreateTripUseCase.dart';
-import 'package:getn_driver/domain/usecase/addTrip/GetPlaceDetailsUseCase.dart';
-import 'package:getn_driver/domain/usecase/addTrip/GetSearchLocationUseCase.dart';
+import 'package:getn_driver/domain/usecase/tripCreate/CreateTripUseCase.dart';
+import 'package:getn_driver/domain/usecase/tripCreate/GetPlaceDetailsUseCase.dart';
+import 'package:getn_driver/domain/usecase/tripCreate/GetSearchLocationUseCase.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:meta/meta.dart';
 
-part 'add_trip_state.dart';
+part 'trip_create_state.dart';
 
-class AddTripCubit extends Cubit<AddTripState> {
-  AddTripCubit() : super(AddTripInitial());
+class TripCreateCubit extends Cubit<TripCreateState> {
+  TripCreateCubit() : super(AddTripInitial());
 
-  static AddTripCubit get(context) => BlocProvider.of(context);
+  static TripCreateCubit get(context) => BlocProvider.of(context);
 
   var getSearchLocationUseCase = getIt<GetSearchLocationUseCase>();
   var getPlaceDetailsUseCase = getIt<GetPlaceDetailsUseCase>();
@@ -42,7 +43,7 @@ class AddTripCubit extends Cubit<AddTripState> {
     });
   }
 
-  AddTripState eitherLoadedOrErrorStatePlaceDetails(
+  TripCreateState eitherLoadedOrErrorStatePlaceDetails(
       Either<String, PlaceDetails?> data) {
     return data.fold((failure1) {
       return SetPlaceDetailsErrorState(failure1);
@@ -51,14 +52,14 @@ class AddTripCubit extends Cubit<AddTripState> {
     });
   }
 
-  void createTrip(Data data) async {
+  void createTrip(CreateTripModel data) async {
     emit(CreateTripInitial());
     createTripUseCase.execute(data).then((value) {
       emit(eitherLoadedOrErrorStateCreateTrip(value));
     });
   }
 
-  AddTripState eitherLoadedOrErrorStateCreateTrip(
+  TripCreateState eitherLoadedOrErrorStateCreateTrip(
       Either<String, Data?> data) {
     return data.fold((failure1) {
       return CreateTripErrorState(failure1);

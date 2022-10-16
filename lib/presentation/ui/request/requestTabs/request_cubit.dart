@@ -24,15 +24,15 @@ class RequestCubit extends Cubit<RequestState> {
   List<DataRequest> requestCurrent = [];
 
   List<DataRequest> requestUpComing = [];
-  int indexUpComing = 0;
+  int indexUpComing = 1;
   bool loadingUpComing = false;
 
   List<DataRequest> requestPast = [];
-  int indexPast = 0;
+  int indexPast = 1;
   bool loadingPast = false;
 
   List<DataRequest> requestPending = [];
-  int indexPending = 0;
+  int indexPending = 1;
   bool loadingPending = false;
 
   void getRequestCurrent(int index) async {

@@ -8,30 +8,32 @@ import 'Title.dart';
 
 class Data {
   Data({
-      Brief? brief, 
-      Address? address, 
-      Banner? banner, 
-      Desc? desc, 
-      Logo? logo, 
-      Title? title, 
-      int? seq, 
-      bool? status, 
-      String? updatedAt, 
-      List<String>? categories, 
-      String? createdAt, 
-      int? visits, 
-      int? branchesCount, 
-      int? totalRatings, 
-      int? ratingsCount, 
-      int? ratingsAverage, 
-      int? totalExpectedRatings, 
-      String? id, 
-      String? owner, 
-      String? placeLongitude, 
-      String? placeLatitude, 
-      String? user, 
-      List<Gallery>? gallery, 
-      int? v,}){
+    Brief? brief,
+    Address? address,
+    Banner? banner,
+    Desc? desc,
+    Logo? logo,
+    Title? title,
+    int? seq,
+    bool? status,
+    String? updatedAt,
+    List<String>? categories,
+    String? createdAt,
+    int? visits,
+    int? branchesCount,
+    int? totalRatings,
+    int? ratingsCount,
+    int? ratingsAverage,
+    int? totalExpectedRatings,
+    String? id,
+    String? owner,
+    String? placeLongitude,
+    String? placeLatitude,
+    String? place,
+    String? user,
+    List<Gallery>? gallery,
+    int? v,
+  }) {
     _brief = brief;
     _address = address;
     _banner = banner;
@@ -54,21 +56,25 @@ class Data {
     _placeLongitude = placeLongitude;
     _placeLatitude = placeLatitude;
     _user = user;
+    _place = place;
     _gallery = gallery;
     _v = v;
-}
+  }
 
   Data.fromJson(dynamic json) {
     _brief = json['brief'] != null ? Brief.fromJson(json['brief']) : null;
-    _address = json['address'] != null ? Address.fromJson(json['address']) : null;
+    _address =
+        json['address'] != null ? Address.fromJson(json['address']) : null;
     _banner = json['banner'] != null ? Banner.fromJson(json['banner']) : null;
     _desc = json['desc'] != null ? Desc.fromJson(json['desc']) : null;
     _logo = json['logo'] != null ? Logo.fromJson(json['logo']) : null;
+    _image = json['image'] != null ? Logo.fromJson(json['image']) : null;
     _title = json['title'] != null ? Title.fromJson(json['title']) : null;
     _seq = json['seq'];
     _status = json['status'];
     _updatedAt = json['updatedAt'];
-    _categories = json['categories'] != null ? json['categories'].cast<String>() : [];
+    _categories =
+        json['categories'] != null ? json['categories'].cast<String>() : [];
     _createdAt = json['createdAt'];
     _visits = json['visits'];
     _branchesCount = json['branchesCount'];
@@ -77,9 +83,14 @@ class Data {
     _ratingsAverage = json['ratingsAverage'];
     _totalExpectedRatings = json['totalExpectedRatings'];
     _id = json['_id'];
+    _city = json['city'];
+    _country = json['country'];
+    _area = json['area'];
     _owner = json['owner'];
-    _placeLongitude = json['placeLongitude'];
+    _owner = json['owner'];
+    _place = json['place'];
     _placeLatitude = json['placeLatitude'];
+    _placeLongitude = json['placeLongitude'];
     _user = json['user'];
     if (json['gallery'] != null) {
       _gallery = [];
@@ -89,17 +100,20 @@ class Data {
     }
     _v = json['__v'];
   }
+
   Brief? _brief;
   Address? _address;
   Banner? _banner;
   Desc? _desc;
   Logo? _logo;
+  Logo? _image;
   Title? _title;
   int? _seq;
   bool? _status;
   String? _updatedAt;
   List<String>? _categories;
   String? _createdAt;
+  String? _place;
   int? _visits;
   int? _branchesCount;
   int? _totalRatings;
@@ -108,6 +122,9 @@ class Data {
   int? _totalExpectedRatings;
   String? _id;
   String? _owner;
+  String? _city;
+  String? _area;
+  String? _country;
   String? _placeLongitude;
   String? _placeLatitude;
   String? _user;
@@ -115,28 +132,61 @@ class Data {
   int? _v;
 
   Brief? get brief => _brief;
+
   Address? get address => _address;
+
   Banner? get banner => _banner;
+
   Desc? get desc => _desc;
+
   Logo? get logo => _logo;
+
+  Logo? get image => _image;
+
   Title? get title => _title;
+
   int? get seq => _seq;
+
   bool? get status => _status;
+
   String? get updatedAt => _updatedAt;
+
+  String? get place => _place;
+
   List<String>? get categories => _categories;
+
   String? get createdAt => _createdAt;
+
   int? get visits => _visits;
+
   int? get branchesCount => _branchesCount;
+
   int? get totalRatings => _totalRatings;
+
   int? get ratingsCount => _ratingsCount;
+
   int? get ratingsAverage => _ratingsAverage;
+
   int? get totalExpectedRatings => _totalExpectedRatings;
+
   String? get id => _id;
+
+  String? get city => _city;
+
+  String? get area => _area;
+
+  String? get country => _country;
+
   String? get owner => _owner;
+
   String? get placeLongitude => _placeLongitude;
+
   String? get placeLatitude => _placeLatitude;
+
   String? get user => _user;
+
   List<Gallery>? get gallery => _gallery;
+
   int? get v => _v;
 
   Map<String, dynamic> toJson() {
@@ -181,5 +231,4 @@ class Data {
     map['__v'] = _v;
     return map;
   }
-
 }

@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "177189268795-k9jptiohcdvr2r0cfmcjrdem4f60e1bt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.getn.client",
+            "certificate_hash": "b44d0cc6e0dfb50972e429612106f431e7bb9f16"
+          }
+        },
+        {
+          "client_id": "177189268795-titcgo0b9dpdv842a7qnh9k6kivpadkl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.getn.client",
+            "certificate_hash": "6df5aaae196d52f98486255efc6c01521284c78d"
+          }
+        },
+        {
           "client_id": "177189268795-5ipmj8k1kb0pp9cnkdbqjrken5pvd6v0.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -50,6 +66,22 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "177189268795-kvfpntt75stov0p0ue33nl8k2t13khgt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.getn.driver",
+            "certificate_hash": "cd91132927252f3ef3939552fcd726d0031d5a55"
+          }
+        },
+        {
+          "client_id": "177189268795-tg51kakg5l6piu2fp6iq1dv7lmevcbf0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.getn.driver",
+            "certificate_hash": "7ffcc536dde3242e170327b9069c7e14aac9e646"
+          }
+        },
         {
           "client_id": "177189268795-5ipmj8k1kb0pp9cnkdbqjrken5pvd6v0.apps.googleusercontent.com",
           "client_type": 3

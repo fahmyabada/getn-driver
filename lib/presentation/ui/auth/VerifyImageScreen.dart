@@ -215,12 +215,14 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
                                 widget.role!,
                                 SignCubit.get(context).terms,
                                 _imageFileList!.path.toString());
-                          } else if (widget.typeScreen == "frontNationalId") {
+                          }
+                          else if (widget.typeScreen == "frontNationalId") {
                             SignCubit.get(context)
                                 .setChangeUpdateBool("frontNationalId", true);
                             SignCubit.get(context).frontNationalIdString =
                                 _imageFileList!.path.toString();
-                          } else if (widget.typeScreen == "backNationalId") {
+                          }
+                          else if (widget.typeScreen == "backNationalId") {
                             SignCubit.get(context)
                                 .setChangeUpdateBool("backNationalId", true);
                             SignCubit.get(context).backNationalIdString =

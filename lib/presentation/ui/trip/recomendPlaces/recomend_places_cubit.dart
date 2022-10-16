@@ -16,7 +16,7 @@ class RecomendPlacesCubit extends Cubit<RecomendPlacesState> {
 
   var getRecomendPlacesUseCase = getIt<GetRecomendPlacesUseCase>();
   List<Data> places = [];
-  int indexPlaces = 0;
+  int indexPlaces = 1;
   bool loadingPlaces = false;
 
   void getPlaces(int index) async {

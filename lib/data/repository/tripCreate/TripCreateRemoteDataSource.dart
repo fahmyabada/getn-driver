@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:getn_driver/data/api/Dio_Helper.dart';
+import 'package:getn_driver/data/model/CreateTripModel.dart';
 import 'package:getn_driver/data/model/placeDetails/PlaceDetails.dart';
 import 'package:getn_driver/data/model/predictionsPlaceSearch/PredictionsPlaceSearch.dart';
 import 'package:getn_driver/data/model/trips/Data.dart';
@@ -9,15 +10,15 @@ import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-abstract class AddTripRemoteDataSource {
+abstract class TripCreateRemoteDataSource {
   Future<Either<String, PredictionsPlaceSearch?>> searchLocation(String text);
 
   Future<Either<String, PlaceDetails?>> placeDetails(String placeId);
 
-  Future<Either<String, Data?>> createTrip(Data data);
+  Future<Either<String, Data?>> createTrip(CreateTripModel data);
 }
 
-class AddTripRemoteDataSourceImpl implements AddTripRemoteDataSource {
+class TripCreateRemoteDataSourceImpl implements TripCreateRemoteDataSource {
   @override
   Future<Either<String, PredictionsPlaceSearch?>> searchLocation(
       String text) async {
@@ -82,7 +83,7 @@ class AddTripRemoteDataSourceImpl implements AddTripRemoteDataSource {
   }
 
   @override
-  Future<Either<String, Data?>> createTrip(Data data) async {
+  Future<Either<String, Data?>> createTrip(CreateTripModel data) async {
     try {
       var body = jsonEncode({
         "from": {
@@ -94,7 +95,9 @@ class AddTripRemoteDataSourceImpl implements AddTripRemoteDataSource {
         "to": {
           "placeTitle": data.to?.placeTitle,
           "placeLatitude": data.to?.placeLatitude,
-          "placeLongitude": data.to?.placeLongitude
+          "placeLongitude": data.to?.placeLongitude,
+          "place": data.placeId!.isNotEmpty ? data.placeId : null,
+          "branch": data.branchId!.isNotEmpty ? data.branchId : null
         },
         "request": data.request,
         "consumptionKM": data.consumptionKM.toString()

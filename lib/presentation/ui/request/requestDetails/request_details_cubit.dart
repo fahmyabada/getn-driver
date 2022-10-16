@@ -27,7 +27,7 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
 
   DataRequest? requestDetails;
   List<Data> trips = [];
-  int indexTrips = 0;
+  int indexTrips = 1;
   bool loadingMoreTrips = false;
   bool loadingTrips = false;
   bool loadingRequest = false;

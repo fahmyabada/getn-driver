@@ -6,7 +6,7 @@ import 'package:getn_driver/data/model/CurrentLocation.dart';
 import 'package:getn_driver/data/model/predictionsPlaceSearch/Predictions.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
-import 'package:getn_driver/presentation/ui/trip/addTrip/add_trip_cubit.dart';
+import 'package:getn_driver/presentation/ui/trip/tripCreate/trip_create_cubit.dart';
 
 class SearchMapScreen extends StatefulWidget {
   const SearchMapScreen({Key? key}) : super(key: key);
@@ -22,8 +22,8 @@ class _SearchMapScreenState extends State<SearchMapScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AddTripCubit(),
-      child: BlocConsumer<AddTripCubit, AddTripState>(
+      create: (context) => TripCreateCubit(),
+      child: BlocConsumer<TripCreateCubit, TripCreateState>(
         listener: (context, state) {
           if (state is SearchLocationErrorState) {
             Navigator.pop(context);
@@ -72,7 +72,7 @@ class _SearchMapScreenState extends State<SearchMapScreen> {
                 ),
                 suggestionsCallback: (pattern) async {
                   return pattern.isNotEmpty
-                      ? await AddTripCubit.get(context).searchLocation(pattern)
+                      ? await TripCreateCubit.get(context).searchLocation(pattern)
                       : [Predictions(placeId: "", description: "")];
                 },
                 itemBuilder: (context, Predictions suggestion) {
@@ -111,7 +111,7 @@ class _SearchMapScreenState extends State<SearchMapScreen> {
                   print("My location is " + suggestion.description!);
                   setState(() {
                     suggestionDescription = suggestion.description!;
-                    AddTripCubit.get(context)
+                    TripCreateCubit.get(context)
                         .getPlaceDetails(suggestion.placeId!);
                   });
                 },

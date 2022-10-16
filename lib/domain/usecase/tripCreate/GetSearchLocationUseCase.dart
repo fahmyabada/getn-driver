@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:getn_driver/data/model/predictionsPlaceSearch/PredictionsPlaceSearch.dart';
-import 'package:getn_driver/domain/repository/AddTripRepository.dart';
+import 'package:getn_driver/domain/repository/TripCreateRepository.dart';
 
 class GetSearchLocationUseCase {
-  final AddTripRepository addTripRepository;
+  final TripCreateRepository addTripRepository;
 
   GetSearchLocationUseCase(this.addTripRepository);
 

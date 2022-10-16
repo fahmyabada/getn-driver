@@ -3,20 +3,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:getn_driver/data/model/CreateTripModel.dart';
 import 'package:getn_driver/data/model/CurrentLocation.dart';
 import 'package:getn_driver/data/model/request/From.dart';
-import 'package:getn_driver/data/model/trips/Data.dart';
 import 'package:getn_driver/data/model/trips/To.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
-import 'package:getn_driver/presentation/ui/trip/addTrip/SearchMapScreen.dart';
-import 'package:getn_driver/presentation/ui/trip/addTrip/add_trip_cubit.dart';
+import 'package:getn_driver/presentation/ui/trip/tripCreate/SearchMapScreen.dart';
+import 'package:getn_driver/presentation/ui/trip/tripCreate/trip_create_cubit.dart';
 import 'package:getn_driver/presentation/ui/trip/recomendPlaces/RecomendPlacesScreen.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 
-class AddTripScreen extends StatefulWidget {
-  const AddTripScreen(
+class TripCreateScreen extends StatefulWidget {
+  const TripCreateScreen(
       {Key? key, this.requestId, this.fromLatitude, this.fromLongitude})
       : super(key: key);
 
@@ -25,16 +25,17 @@ class AddTripScreen extends StatefulWidget {
   final double? fromLongitude;
 
   @override
-  State<AddTripScreen> createState() => _AddTripScreenState();
+  State<TripCreateScreen> createState() => _TripCreateScreenState();
 }
 
-class _AddTripScreenState extends State<AddTripScreen> {
+class _TripCreateScreenState extends State<TripCreateScreen> {
   late GoogleMapController _controller;
   late CameraPosition _cameraPosition;
   var setMapController = TextEditingController();
-  String toAddress = "", fromAddress = "";
+  String toAddress = "", fromAddress = "", placeId = "", branchId = "";
   double? toLongitude, toLatitude;
   bool firstTime = false;
+
   // custom marker
   // final Set<Marker> _markers = <Marker>{};
 
@@ -58,18 +59,19 @@ class _AddTripScreenState extends State<AddTripScreen> {
 
   Future<double> getDistance(double toLatitude, double toLongitude) async {
     return Geolocator.distanceBetween(
-      widget.fromLatitude!,
-      widget.fromLongitude!,
-      toLatitude,
-      toLongitude,
-    );
+          widget.fromLatitude!,
+          widget.fromLongitude!,
+          toLatitude,
+          toLongitude,
+        ) /
+        1000;
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AddTripCubit(),
-      child: BlocConsumer<AddTripCubit, AddTripState>(
+      create: (context) => TripCreateCubit(),
+      child: BlocConsumer<TripCreateCubit, TripCreateState>(
         listener: (context, state) {
           if (state is CreateTripSuccessState) {
             if (state.data!.id!.isNotEmpty) {
@@ -105,6 +107,8 @@ class _AddTripScreenState extends State<AddTripScreen> {
                         toAddress = data.description!;
                         toLongitude = data.longitude!;
                         toLatitude = data.latitude!;
+                        placeId = "";
+                        branchId = "";
                         _controller.animateCamera(
                             CameraUpdate.newCameraPosition(CameraPosition(
                                 target: LatLng(data.latitude!, data.longitude!),
@@ -137,22 +141,22 @@ class _AddTripScreenState extends State<AddTripScreen> {
                         zoomControlsEnabled: true,
                         mapToolbarEnabled: false,
                         onCameraIdle: () async {
-                          print("onCameraIdle00********* " );
-                          if(!firstTime){
+                          print("onCameraIdle00********* ");
+                          if (!firstTime) {
                             if (toLatitude != null && toLongitude != null) {
                               List<Placemark> placeMarks =
-                              await placemarkFromCoordinates(
-                                  toLatitude!, toLongitude!);
+                                  await placemarkFromCoordinates(
+                                      toLatitude!, toLongitude!);
                               Placemark place = placeMarks[0];
                               setState(() {
                                 toAddress =
-                                '${place.street!}, ${place.administrativeArea!}, ${place.subAdministrativeArea!}, ${place.country!}';
+                                    '${place.street!}, ${place.administrativeArea!}, ${place.subAdministrativeArea!}, ${place.country!}';
                               });
                             }
                           }
                         },
                         onCameraMove: (position) {
-                          print("onCameraIdle11********* " );
+                          print("onCameraIdle11********* ");
                           setState(() {
                             toLatitude = position.target.latitude;
                             toLongitude = position.target.longitude;
@@ -220,6 +224,8 @@ class _AddTripScreenState extends State<AddTripScreen> {
                                   toAddress = data.description!;
                                   toLongitude = data.longitude!;
                                   toLatitude = data.latitude!;
+                                  placeId = "";
+                                  branchId = "";
                                   _controller.animateCamera(
                                       CameraUpdate.newCameraPosition(
                                           CameraPosition(
@@ -234,18 +240,26 @@ class _AddTripScreenState extends State<AddTripScreen> {
                             ),
                             defaultButton3(
                                 text: 'Recommended Places',
-                                press: () async{
+                                press: () async {
                                   CurrentLocation data =
                                       await navigateToWithRefreshPagePrevious(
-                                      context, const RecomendPlacesScreen())
-                                  as CurrentLocation;
+                                              context,
+                                              const RecomendPlacesScreen())
+                                          as CurrentLocation;
 
-                                  print("RecomendPlacesScreen********* ${data.toString()}");
+                                  print(
+                                      "TripCreateScreen********* ${data.toString()}");
                                   setState(() {
                                     firstTime = data.firstTime!;
                                     toAddress = data.description!;
                                     toLongitude = data.longitude!;
                                     toLatitude = data.latitude!;
+                                    data.placeId != null
+                                        ? placeId = data.placeId!
+                                        : placeId = "";
+                                    data.branchId != null
+                                        ? branchId = data.branchId!
+                                        : branchId = "";
                                     _controller.animateCamera(
                                         CameraUpdate.newCameraPosition(
                                             CameraPosition(
@@ -279,8 +293,8 @@ class _AddTripScreenState extends State<AddTripScreen> {
                                           print(
                                               "toLatitude********* ${currentDate}");
 
-                                          AddTripCubit.get(context).createTrip(
-                                            Data(
+                                          TripCreateCubit.get(context).createTrip(
+                                            CreateTripModel(
                                                 from: From(
                                                   placeTitle: fromAddress,
                                                   placeLatitude: widget
@@ -298,6 +312,8 @@ class _AddTripScreenState extends State<AddTripScreen> {
                                                   placeLongitude:
                                                       toLongitude.toString(),
                                                 ),
+                                                placeId: placeId,
+                                                branchId: branchId,
                                                 request: widget.requestId,
                                                 consumptionKM: double.parse(
                                                     value.toStringAsFixed(2))),
