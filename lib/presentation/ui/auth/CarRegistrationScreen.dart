@@ -38,8 +38,8 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
 
   Future selectImageSource(ImageSource imageSource, String type) async {
     try {
-      final idToken = await FirebaseAuth.instance.currentUser!.getIdToken();
-      print('idToken***************** =$idToken');
+      // final idToken = await FirebaseAuth.instance.currentUser!.getIdToken();
+      // print('idToken***************** =$idToken');
 
       final XFile? pickedFile = await _picker.pickImage(
         source: imageSource,
