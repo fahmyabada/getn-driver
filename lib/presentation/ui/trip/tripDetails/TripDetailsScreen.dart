@@ -35,6 +35,30 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
     'cancel': []
   };
 
+  var btnStatus2 = {
+    'pending': ['Accept', 'Reject'],
+    'accept': ['On My Way'],
+    'on_my_way': ['Arrive'],
+    'arrive': ['Start'],
+    'coming': ['Start'],
+    'start': ['End'],
+    'end': [],
+    'reject': [],
+    'cancel': []
+  };
+
+  var txtStatusRunning = {
+    'pending': 'Pending',
+    'accept': 'Accept',
+    'on_my_way': 'On My Way',
+    'arrive':  'Arrive',
+    'coming': 'Coming',
+    'start': 'Start',
+    'end': 'End',
+    'reject': 'Reject',
+    'cancel': 'Cancel'
+  };
+
   int? indexStatus;
 
   // custom marker
@@ -537,7 +561,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                             paddingHorizontal:
                                                                 60,
                                                             borderRadius: 10,
-                                                            text: btnStatus[
+                                                            text: btnStatus2[
                                                                     '${TripDetailsCubit.get(context).tripDetails!.status}']![
                                                                 0],
                                                             backColor:
@@ -584,7 +608,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                         paddingVertical: 1,
                                                         paddingHorizontal: 60,
                                                         borderRadius: 10,
-                                                        text: btnStatus[
+                                                        text: btnStatus2[
                                                             '${TripDetailsCubit.get(context).tripDetails!.status}']![1],
                                                         backColor: greenColor,
                                                         textColor: white),
@@ -618,7 +642,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                               paddingHorizontal:
                                                                   70,
                                                               borderRadius: 10,
-                                                              text: btnStatus[
+                                                              text: btnStatus2[
                                                                       '${TripDetailsCubit.get(context).tripDetails!.status}']![
                                                                   0],
                                                               backColor:
@@ -669,12 +693,9 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                             ),
                             Text(
                               TripDetailsCubit.get(context)
-                                          .tripDetails!
-                                          .status !=
+                                          .tripDetails !=
                                       null
-                                  ? TripDetailsCubit.get(context)
-                                      .tripDetails!
-                                      .status!
+                                  ? txtStatusRunning[TripDetailsCubit.get(context).tripDetails!.status!]!
                                   : 'Running',
                               style: TextStyle(
                                   color: greenColor,

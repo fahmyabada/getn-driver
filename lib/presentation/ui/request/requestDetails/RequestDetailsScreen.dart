@@ -37,6 +37,18 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     'cancel': []
   };
 
+  var btnStatus2 = {
+    'pending': ['Accept', 'Reject'],
+    'accept': ['On My Way'],
+    'on_my_way': ['Arrive'],
+    'arrive': ['Start'],
+    'coming': ['Start'],
+    'start': ['End'],
+    'end': [],
+    'reject': [],
+    'cancel': []
+  };
+
   int? indexStatus;
   late ScrollController _controllerLoadingTrips;
 
@@ -135,6 +147,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         }
       },
       builder: (context, state) {
+        final currentDate = DateTime.now();
+        
         return Scaffold(
           appBar: AppBar(
             title: Text(
@@ -373,7 +387,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                   paddingVertical: 1,
                                                   paddingHorizontal: 60,
                                                   borderRadius: 10,
-                                                  text: btnStatus[
+                                                  text: btnStatus2[
                                                       '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
                                                   backColor: greenColor,
                                                   textColor: white)
@@ -382,29 +396,84 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                 ),
                                           defaultButton2(
                                               press: () {
-                                                showDialog(
-                                                  context: context,
-                                                  barrierDismissible: true,
-                                                  // outside to dismiss
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return CustomDialog(
-                                                      title:
-                                                          'Do you want to reject?',
-                                                      description:
-                                                          'If you want to be rejected, you must first enter the reason for rejection and press OK..',
-                                                      backgroundColor: white,
-                                                      btnOkColor: accentColor,
-                                                      btnCancelColor: grey,
-                                                      id: RequestDetailsCubit
-                                                              .get(context)
-                                                          .requestDetails!
-                                                          .id,
-                                                      titleColor: accentColor,
-                                                      descColor: black,
-                                                    );
-                                                  },
+                                                final currentDate =
+                                                DateTime.now();
+                                                final dateDeadline = DateFormat(
+                                                    "yyyy-MM-ddTHH:mm")
+                                                    .parse(
+                                                    RequestDetailsCubit
+                                                        .get(
+                                                        context)
+                                                        .requestDetails!
+                                                        .from!
+                                                        .date!)
+                                                    .subtract(
+                                                  const Duration(
+                                                    hours: 24,
+                                                  ),
                                                 );
+
+                                                if (currentDate.isBefore(
+                                                    dateDeadline)) {
+                                                  showDialog(
+                                                    context: context,
+                                                    barrierDismissible:
+                                                    true,
+                                                    // outside to dismiss
+                                                    builder: (BuildContext
+                                                    context) {
+                                                      return CustomDialog(
+                                                        title: 'Warning',
+                                                        description:
+                                                        'you will charged a cancelation fee..',
+                                                        backgroundColor:
+                                                        white,
+                                                        btnOkColor:
+                                                        accentColor,
+                                                        btnCancelColor:
+                                                        grey,
+                                                        id: RequestDetailsCubit
+                                                            .get(
+                                                            context)
+                                                            .requestDetails!
+                                                            .id,
+                                                        titleColor:
+                                                        accentColor,
+                                                        descColor: black,
+                                                      );
+                                                    },
+                                                  );
+                                                } else {
+                                                  showDialog(
+                                                    context: context,
+                                                    barrierDismissible:
+                                                    true,
+                                                    // outside to dismiss
+                                                    builder: (BuildContext
+                                                    context) {
+                                                      return CustomDialog(
+                                                        title:
+                                                        'Do you want to reject?',
+                                                        description:
+                                                        'If you want to be rejected, you must first enter the reason for rejection and press OK..',
+                                                        backgroundColor:
+                                                        white,
+                                                        btnOkColor:
+                                                        accentColor,
+                                                        btnCancelColor:
+                                                        grey,
+                                                        id: RequestDetailsCubit
+                                                            .get(
+                                                            context)
+                                                            .requestDetails!
+                                                            .id,
+                                                        titleColor:
+                                                        accentColor,
+                                                        descColor: black,
+                                                      );
+                                                    },
+                                                  );
+                                                }
                                               },
                                               disablePress: RequestDetailsCubit
                                                               .get(context)
@@ -417,7 +486,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                               paddingVertical: 1,
                                               paddingHorizontal: 60,
                                               borderRadius: 10,
-                                              text: btnStatus[
+                                              text: btnStatus2[
                                                   '${RequestDetailsCubit.get(context).requestDetails!.status}']![1],
                                               backColor: greenColor,
                                               textColor: white),
@@ -460,7 +529,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                     paddingVertical: 1,
                                                     paddingHorizontal: 70,
                                                     borderRadius: 10,
-                                                    text: btnStatus[
+                                                    text: btnStatus2[
                                                         '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
                                                     backColor: greenColor,
                                                     textColor: white)
@@ -503,7 +572,20 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     RequestDetailsCubit.get(context)
                                             .requestDetails!
                                             .status ==
-                                        "start"
+                                        "start" &&
+                                    currentDate.isBefore(
+                                      DateFormat("yyyy-MM-ddTHH:mm").parse(
+                                          RequestDetailsCubit.get(context)
+                                              .requestDetails!
+                                              .to!),
+                                    ) &&
+                                    currentDate.isAfter(
+                                      DateFormat("yyyy-MM-ddTHH:mm").parse(
+                                          RequestDetailsCubit.get(context)
+                                              .requestDetails!
+                                              .from!
+                                              .date!),
+                                    )
                                 ? state is CurrentLocationLoading
                                     ? const Center(
                                         child: CircularProgressIndicator(

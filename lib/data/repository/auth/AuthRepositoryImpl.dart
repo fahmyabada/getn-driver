@@ -1,13 +1,14 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/src/form_data.dart';
 import 'package:getn_driver/data/api/network_info.dart';
-import 'package:getn_driver/data/model/country/Data.dart';
+import 'package:getn_driver/data/model/country/Data.dart' as country;
 import 'package:getn_driver/data/model/role/DataRole.dart';
 import 'package:getn_driver/data/model/sendOtp/SendOtpData.dart';
 import 'package:getn_driver/data/model/signModel/SignModel.dart';
 import 'package:getn_driver/data/repository/auth/AuthRemoteDataSource.dart';
 import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/domain/repository/AuthRepository.dart';
+import 'package:getn_driver/data/model/carCategory/Data.dart' as category;
 
 class AuthRepositoryImpl extends AuthRepository {
   final AuthRemoteDataSource authRemoteDataSource;
@@ -16,7 +17,7 @@ class AuthRepositoryImpl extends AuthRepository {
   AuthRepositoryImpl(this.authRemoteDataSource, this.networkInfo);
 
   @override
-  Future<Either<String, List<Data>?>> getCountries() async {
+  Future<Either<String, List<country.Data>?>> getCountries() async {
     if (await networkInfo.isConnected) {
       return await authRemoteDataSource.getCountries().then((value) {
         return value.fold((failure) {
@@ -29,6 +30,52 @@ class AuthRepositoryImpl extends AuthRepository {
       return Left(networkFailureMessage);
     }
   }
+
+  @override
+  Future<Either<String, List<category.Data>?>> getCarCategory() async{
+    if (await networkInfo.isConnected) {
+      return await authRemoteDataSource.getCarCategory().then((value) {
+        return value.fold((failure) {
+          return Left(failure.toString());
+        }, (data) {
+          return Right(data);
+        });
+      });
+    } else {
+      return Left(networkFailureMessage);
+    }
+  }
+
+  @override
+  Future<Either<String, List<category.Data>?>> getCarModel() async{
+    if (await networkInfo.isConnected) {
+      return await authRemoteDataSource.getCarModel().then((value) {
+        return value.fold((failure) {
+          return Left(failure.toString());
+        }, (data) {
+          return Right(data);
+        });
+      });
+    } else {
+      return Left(networkFailureMessage);
+    }
+  }
+
+  @override
+  Future<Either<String, List<category.Data>?>> getColor() async{
+    if (await networkInfo.isConnected) {
+      return await authRemoteDataSource.getColor().then((value) {
+        return value.fold((failure) {
+          return Left(failure.toString());
+        }, (data) {
+          return Right(data);
+        });
+      });
+    } else {
+      return Left(networkFailureMessage);
+    }
+  }
+
 
   @override
   Future<Either<String, List<DataRole>?>> getRole() async {
@@ -124,4 +171,7 @@ class AuthRepositoryImpl extends AuthRepository {
       return Left(networkFailureMessage);
     }
   }
+
+
+
 }

@@ -9,6 +9,7 @@ import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
+import 'package:getn_driver/presentation/ui/auth/CarRegistrationScreen.dart';
 import 'package:getn_driver/presentation/ui/request/requestDetails/RequestDetailsScreen.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
 import 'package:intl/intl.dart';
@@ -150,9 +151,14 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
     }, builder: (context, state) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(
-            'Requests',
-            style: TextStyle(color: primaryColor, fontSize: 20.sp),
+          title: InkWell(
+            onTap: (){
+              navigateTo(context, CarRegistrationScreen());
+            },
+            child: Text(
+              'Requests',
+              style: TextStyle(color: primaryColor, fontSize: 20.sp),
+            ),
           ),
           centerTitle: true,
           elevation: 1.0,

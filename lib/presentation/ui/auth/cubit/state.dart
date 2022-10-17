@@ -19,6 +19,42 @@ class CountriesSuccessState extends SignState {
   CountriesSuccessState(this.data);
 }
 
+class CarModelErrorState extends SignState {
+  final String message;
+
+  CarModelErrorState(this.message);
+}
+
+class CarModelSuccessState extends SignState {
+  final List<category.Data>? data;
+
+  CarModelSuccessState(this.data);
+}
+
+class CarCategoryErrorState extends SignState {
+  final String message;
+
+  CarCategoryErrorState(this.message);
+}
+
+class CarCategorySuccessState extends SignState {
+  final List<category.Data>? data;
+
+  CarCategorySuccessState(this.data);
+}
+
+class ColorErrorState extends SignState {
+  final String message;
+
+  ColorErrorState(this.message);
+}
+
+class ColorSuccessState extends SignState {
+  final List<category.Data>? data;
+
+  ColorSuccessState(this.data);
+}
+
 class RoleLoading extends SignState {}
 
 class RoleErrorState extends SignState {

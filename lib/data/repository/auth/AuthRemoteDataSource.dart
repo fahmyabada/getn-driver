@@ -1,6 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:getn_driver/data/api/Dio_Helper.dart';
+import 'package:getn_driver/data/model/carCategory/CarCategory.dart';
+import 'package:getn_driver/data/model/carCategory/Data.dart' as category;
 import 'package:getn_driver/data/model/country/CountryData.dart';
 import 'package:getn_driver/data/model/country/Data.dart';
 import 'package:getn_driver/data/model/role/DataRole.dart';
@@ -14,6 +16,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class AuthRemoteDataSource {
   Future<Either<String, List<Data>?>> getCountries();
+
+  Future<Either<String, List<category.Data>?>> getCarCategory();
+
+  Future<Either<String, List<category.Data>?>> getCarModel();
+
+  Future<Either<String, List<category.Data>?>> getColor();
 
   Future<Either<String, List<DataRole>?>> getRole();
 
@@ -184,7 +192,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           'fjsadkjfgdshfgjhjhvmgfdhvjkhdfjkhgkljfklghg54654654j65g456hk456hj4k6546hj4k64jh6k';
 
       return await DioHelper.postData2(
-              url: 'driver/auth/login', data: formData, apiKey: apiKey,firebaseToken: firebaseToken)
+              url: 'driver/auth/login',
+              data: formData,
+              apiKey: apiKey,
+              firebaseToken: firebaseToken)
           .then((value) {
         if (value.statusCode == 200) {
           if (SignModel.fromJson(value.data).id != null) {
@@ -222,4 +233,76 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       return Left(handleError(error));
     }
   }
+
+  @override
+  Future<Either<String, List<category.Data>?>> getCarCategory() async {
+    try {
+      var body = {
+        "limit": 99999,
+      };
+
+      return await DioHelper.getData(url: 'car-subcategory', query: body)
+          .then((value) {
+        if (value.statusCode == 200) {
+          if (CarCategory.fromJson(value.data).data != null) {
+            return Right(CarCategory.fromJson(value.data!).data!);
+          } else {
+            return const Left("Not Found Car Category");
+          }
+        } else {
+          return Left(serverFailureMessage);
+        }
+      });
+    } on Exception catch (error) {
+      return Left(handleError(error));
+    }
+  }
+
+  @override
+  Future<Either<String, List<category.Data>?>> getCarModel() async {
+    try {
+      var body = {
+        "limit": 99999,
+      };
+
+      return await DioHelper.getData(url: 'car-model', query: body)
+          .then((value) {
+        if (value.statusCode == 200) {
+          if (CarCategory.fromJson(value.data).data != null) {
+            return Right(CarCategory.fromJson(value.data!).data!);
+          } else {
+            return const Left("Not Found Car Model");
+          }
+        } else {
+          return Left(serverFailureMessage);
+        }
+      });
+    } on Exception catch (error) {
+      return Left(handleError(error));
+    }
+  }
+
+  @override
+  Future<Either<String, List<category.Data>?>> getColor() async {
+    try {
+      var body = {
+        "limit": 99999,
+      };
+
+      return await DioHelper.getData(url: 'color', query: body).then((value) {
+        if (value.statusCode == 200) {
+          if (CarCategory.fromJson(value.data).data != null) {
+            return Right(CarCategory.fromJson(value.data!).data!);
+          } else {
+            return const Left("Not Found Color");
+          }
+        } else {
+          return Left(serverFailureMessage);
+        }
+      });
+    } on Exception catch (error) {
+      return Left(handleError(error));
+    }
+  }
+
 }
