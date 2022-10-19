@@ -99,13 +99,31 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               text: state.message, state: ToastStates.error, context: context);
         } else if (state is CurrentLocationSuccessState) {
           print('CurrentLocationSuccessState********* ');
-          navigateTo(
+          String id = await navigateToWithRefreshPagePrevious(
               context,
               TripCreateScreen(
                 requestId: widget.idRequest!,
                 fromLatitude: state.position.latitude,
                 fromLongitude: state.position.longitude,
-              ));
+              ),
+          );
+          setState(() {
+            print(
+                "CurrentLocationSuccessState************ ${id}");
+            if (id.isNotEmpty) {
+              getIt<SharedPreferences>().setString('typeScreen', "requestDetails");
+              RequestDetailsCubit.get(context).indexTrips = 1;
+              RequestDetailsCubit.get(context).trips = [];
+              RequestDetailsCubit.get(context).loadingMoreTrips = false;
+              RequestDetailsCubit.get(context).loadingTrips = false;
+              RequestDetailsCubit.get(context).loadingRequest = false;
+              RequestDetailsCubit.get(context).failureRequest = "";
+              RequestDetailsCubit.get(context).failureTrip = "";
+              RequestDetailsCubit.get(context).getRequestDetails(id);
+              RequestDetailsCubit.get(context)
+                  .getTripsRequestDetails(1, id);
+            }
+          });
         } else if (state is CurrentLocationErrorState) {
           if (kDebugMode) {
             print('CurrentLocationErrorState********* ${state.error}');
@@ -148,7 +166,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       },
       builder: (context, state) {
         final currentDate = DateTime.now();
-        
+
         return Scaffold(
           appBar: AppBar(
             title: Text(
@@ -279,6 +297,55 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Status :',
+                                          style: TextStyle(
+                                            color: black,
+                                            fontSize: 15.sp,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 5.w,
+                                        ),
+                                        Text(
+                                          RequestDetailsCubit.get(context)
+                                              .requestDetails!
+                                              .status!,
+                                          style: TextStyle(
+                                              color: grey2, fontSize: 14.sp),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Payment Status :',
+                                          style: TextStyle(
+                                            color: black,
+                                            fontSize: 15.sp,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 5.w,
+                                        ),
+                                        Text(
+                                          RequestDetailsCubit.get(context)
+                                              .requestDetails!
+                                              .paymentStatus!,
+                                          style: TextStyle(
+                                              color: grey2, fontSize: 14.sp),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10.h),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
                                     Text(
                                       'Trip start and date',
                                       style: TextStyle(
@@ -300,7 +367,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                               color: grey2, fontSize: 14.sp),
                                         ),
                                         SizedBox(
-                                          width: 15.w,
+                                          width: 5.w,
                                         ),
                                         Text(
                                           DateFormat.jm().format(DateTime.parse(
@@ -319,6 +386,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                 ),
                                 SizedBox(height: 10.h),
                                 Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
@@ -397,48 +465,41 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                           defaultButton2(
                                               press: () {
                                                 final currentDate =
-                                                DateTime.now();
+                                                    DateTime.now();
                                                 final dateDeadline = DateFormat(
-                                                    "yyyy-MM-ddTHH:mm")
+                                                        "yyyy-MM-ddTHH:mm")
                                                     .parse(
-                                                    RequestDetailsCubit
-                                                        .get(
-                                                        context)
-                                                        .requestDetails!
-                                                        .from!
-                                                        .date!)
+                                                        RequestDetailsCubit.get(
+                                                                context)
+                                                            .requestDetails!
+                                                            .from!
+                                                            .date!)
                                                     .subtract(
-                                                  const Duration(
-                                                    hours: 24,
-                                                  ),
-                                                );
+                                                      const Duration(
+                                                        hours: 24,
+                                                      ),
+                                                    );
 
-                                                if (currentDate.isBefore(
-                                                    dateDeadline)) {
+                                                if (currentDate
+                                                    .isBefore(dateDeadline)) {
                                                   showDialog(
                                                     context: context,
-                                                    barrierDismissible:
-                                                    true,
+                                                    barrierDismissible: true,
                                                     // outside to dismiss
-                                                    builder: (BuildContext
-                                                    context) {
+                                                    builder:
+                                                        (BuildContext context) {
                                                       return CustomDialog(
                                                         title: 'Warning',
                                                         description:
-                                                        'you will charged a cancelation fee..',
-                                                        backgroundColor:
-                                                        white,
-                                                        btnOkColor:
-                                                        accentColor,
-                                                        btnCancelColor:
-                                                        grey,
+                                                            'you will charged a cancelation fee..',
+                                                        backgroundColor: white,
+                                                        btnOkColor: accentColor,
+                                                        btnCancelColor: grey,
                                                         id: RequestDetailsCubit
-                                                            .get(
-                                                            context)
+                                                                .get(context)
                                                             .requestDetails!
                                                             .id,
-                                                        titleColor:
-                                                        accentColor,
+                                                        titleColor: accentColor,
                                                         descColor: black,
                                                       );
                                                     },
@@ -446,29 +507,23 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                 } else {
                                                   showDialog(
                                                     context: context,
-                                                    barrierDismissible:
-                                                    true,
+                                                    barrierDismissible: true,
                                                     // outside to dismiss
-                                                    builder: (BuildContext
-                                                    context) {
+                                                    builder:
+                                                        (BuildContext context) {
                                                       return CustomDialog(
                                                         title:
-                                                        'Do you want to reject?',
+                                                            'Do you want to reject?',
                                                         description:
-                                                        'If you want to be rejected, you must first enter the reason for rejection and press OK..',
-                                                        backgroundColor:
-                                                        white,
-                                                        btnOkColor:
-                                                        accentColor,
-                                                        btnCancelColor:
-                                                        grey,
+                                                            'If you want to be rejected, you must first enter the reason for rejection and press OK..',
+                                                        backgroundColor: white,
+                                                        btnOkColor: accentColor,
+                                                        btnCancelColor: grey,
                                                         id: RequestDetailsCubit
-                                                            .get(
-                                                            context)
+                                                                .get(context)
                                                             .requestDetails!
                                                             .id,
-                                                        titleColor:
-                                                        accentColor,
+                                                        titleColor: accentColor,
                                                         descColor: black,
                                                       );
                                                     },
@@ -495,13 +550,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     : Center(
                                         child: state
                                                 is! RequestDetailsEditInitial
-                                            ? RequestDetailsCubit.get(
-                                                                context)
+                                            ? RequestDetailsCubit.get(context)
                                                             .requestDetails!
                                                             .status !=
                                                         null &&
-                                                    btnStatus[
-                                                            '${RequestDetailsCubit.get(context).requestDetails!.status}']!
+                                                    btnStatus['${RequestDetailsCubit.get(context).requestDetails!.status}']!
                                                         .isNotEmpty
                                                 ? defaultButton2(
                                                     press: () {
@@ -517,21 +570,29 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                                   '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
                                                               "");
                                                     },
-                                                    disablePress: RequestDetailsCubit
-                                                                    .get(
+                                                    disablePress:
+                                                        RequestDetailsCubit.get(
                                                                         context)
-                                                                .requestDetails
-                                                                ?.paymentStatus! ==
-                                                            "paid"
-                                                        ? true
-                                                        : false,
+                                                                    .requestDetails
+                                                                    ?.paymentStatus! ==
+                                                                "paid"
+                                                            ? true
+                                                            : false,
                                                     fontSize: 25,
                                                     paddingVertical: 1,
                                                     paddingHorizontal: 70,
                                                     borderRadius: 10,
-                                                    text: btnStatus2[
-                                                        '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
-                                                    backColor: greenColor,
+                                                    text:
+                                                        btnStatus2['${RequestDetailsCubit.get(context).requestDetails!.status}']![
+                                                            0],
+                                                    backColor:
+                                                        btnStatus2['${RequestDetailsCubit.get(context).requestDetails!.status}']![0] ==
+                                                                    "End" ||
+                                                                btnStatus2['${RequestDetailsCubit.get(context).requestDetails!.status}']![
+                                                                        0] ==
+                                                                    "Cancel"
+                                                            ? redColor
+                                                            : greenColor,
                                                     textColor: white)
                                                 : Container()
                                             : const CircularProgressIndicator(
@@ -640,7 +701,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                       Row(
                                                         crossAxisAlignment:
                                                             CrossAxisAlignment
-                                                                .center,
+                                                                .start,
                                                         children: [
                                                           Icon(
                                                             Icons.location_on,
@@ -696,6 +757,29 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                                   CrossAxisAlignment
                                                                       .end,
                                                               children: [
+                                                                Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                                  children: [
+                                                                    Text(
+                                                                      'Status :',
+                                                                      style: TextStyle(
+                                                                        color: black,
+                                                                        fontSize: 15.sp,
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: 5.w,
+                                                                    ),
+                                                                    Text(
+                                                                      trip.status!,
+                                                                      style: TextStyle(
+                                                                          color: grey2, fontSize: 14.sp),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 15.h,
+                                                                ),
                                                                 Text(
                                                                   DateFormat
                                                                           .jm()
@@ -728,12 +812,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                         ],
                                                       ),
                                                       SizedBox(
-                                                        height: 15.r,
+                                                        height: 15.h,
                                                       ),
                                                       Row(
                                                         crossAxisAlignment:
                                                             CrossAxisAlignment
-                                                                .center,
+                                                                .start,
                                                         children: [
                                                           Icon(
                                                             Icons.location_on,
@@ -818,7 +902,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                         ],
                                                       ),
                                                       SizedBox(
-                                                        height: 15.r,
+                                                        height: 15.h,
                                                       ),
                                                       IntrinsicHeight(
                                                         child: Row(
@@ -940,50 +1024,31 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                             ),
                                             onTap: () async {
                                               print(
-                                                  "typeId44************ ${RequestDetailsCubit.get(context).trips[i].id}");
+                                                  "typeId44************ ${widget.idRequest!}");
                                               String id =
                                                   await navigateToWithRefreshPagePrevious(
                                                       context,
                                                       TripDetailsScreen(
-                                                          id: RequestDetailsCubit
+                                                          idTrip: RequestDetailsCubit
                                                                   .get(context)
                                                               .trips[i]
-                                                              .id));
+                                                              .id,
+                                                      idRequest: widget.idRequest!,));
                                               setState(() {
                                                 print(
                                                     "typeId33************ ${id}");
                                                 if (id.isNotEmpty) {
-                                                  getIt<SharedPreferences>()
-                                                      .setString('typeScreen',
-                                                          "requestDetails");
-                                                  RequestDetailsCubit.get(
-                                                          context)
-                                                      .indexTrips = 0;
-                                                  RequestDetailsCubit.get(
-                                                          context)
-                                                      .trips = [];
-                                                  RequestDetailsCubit.get(
-                                                          context)
-                                                      .loadingMoreTrips = false;
-                                                  RequestDetailsCubit.get(
-                                                          context)
-                                                      .loadingTrips = false;
-                                                  RequestDetailsCubit.get(
-                                                          context)
-                                                      .loadingRequest = false;
-                                                  RequestDetailsCubit.get(
-                                                          context)
-                                                      .failureRequest = "";
-                                                  RequestDetailsCubit.get(
-                                                          context)
-                                                      .failureTrip = "";
-                                                  RequestDetailsCubit.get(
-                                                          context)
-                                                      .getRequestDetails(id);
-                                                  RequestDetailsCubit.get(
-                                                          context)
-                                                      .getTripsRequestDetails(
-                                                          1, id);
+                                                  getIt<SharedPreferences>().setString('typeScreen', "requestDetails");
+                                                  RequestDetailsCubit.get(context).indexTrips = 1;
+                                                  RequestDetailsCubit.get(context).trips = [];
+                                                  RequestDetailsCubit.get(context).loadingMoreTrips = false;
+                                                  RequestDetailsCubit.get(context).loadingTrips = false;
+                                                  RequestDetailsCubit.get(context).loadingRequest = false;
+                                                  RequestDetailsCubit.get(context).failureRequest = "";
+                                                  RequestDetailsCubit.get(context).failureTrip = "";
+                                                  RequestDetailsCubit.get(context).getRequestDetails(id);
+                                                  RequestDetailsCubit.get(context)
+                                                      .getTripsRequestDetails(1, id);
                                                 }
                                               });
                                             },

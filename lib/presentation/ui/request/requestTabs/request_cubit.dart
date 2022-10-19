@@ -50,6 +50,7 @@ class RequestCubit extends Cubit<RequestState> {
   RequestState eitherLoadedOrErrorStateRequestCurrent(
       Either<String, Request?> data) {
     return data.fold((failure1) {
+      requestCurrent.clear();
       return RequestCurrentErrorState(failure1);
     }, (data) {
       if (data!.data!.isNotEmpty) {
@@ -65,7 +66,8 @@ class RequestCubit extends Cubit<RequestState> {
       "status": "accept",
       "page": index,
       "sort": 'from.date:-1',
-      "select-client": 'name image'
+      "select-client": 'name image',
+      "paymentStatus": "paid",
     };
     if (index > 1) {
       getRequestUseCase.execute(body).then((value) {
@@ -83,6 +85,7 @@ class RequestCubit extends Cubit<RequestState> {
   RequestState eitherLoadedOrErrorStateRequestUpComing(
       Either<String, Request?> data) {
     return data.fold((failure1) {
+      requestUpComing.clear();
       return RequestUpComingErrorState(failure1);
     }, (data) {
       if (data!.data!.isNotEmpty) {
@@ -123,8 +126,6 @@ class RequestCubit extends Cubit<RequestState> {
       "select-client": 'name image'
     };
     if (index > 1) {
-      print('_controllerPast*******${requestPast.length}');
-      print('_controllerPast22*******${index}');
       getRequestUseCase.execute(body).then((value) {
         emit(eitherLoadedOrErrorStateRequestPast2(value));
       });
@@ -139,6 +140,7 @@ class RequestCubit extends Cubit<RequestState> {
   RequestState eitherLoadedOrErrorStateRequestPast(
       Either<String, Request?> data) {
     return data.fold((failure1) {
+      requestPast.clear();
       return RequestPastErrorState(failure1);
     }, (data) {
       if (data!.data!.isNotEmpty) {
@@ -175,10 +177,11 @@ class RequestCubit extends Cubit<RequestState> {
 
   void getRequestPending(int index) async {
     var body = {
-      "status": "pending",
+      "status": ["pending","accept"],
       "page": index,
       "sort": 'createdAt:-1',
-      "select-client": 'name image'
+      "select-client": 'name image',
+      "paymentStatus": 'pending',
     };
     if (index > 1) {
       getRequestUseCase.execute(body).then((value) {
@@ -195,6 +198,7 @@ class RequestCubit extends Cubit<RequestState> {
   RequestState eitherLoadedOrErrorStateRequestPending(
       Either<String, Request?> data) {
     return data.fold((failure1) {
+      requestPending.clear();
       return RequestPendingErrorState(failure1);
     }, (data) {
       if (data!.data!.isNotEmpty) {

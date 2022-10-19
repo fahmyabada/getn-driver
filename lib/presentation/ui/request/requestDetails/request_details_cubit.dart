@@ -47,8 +47,10 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
     return data.fold((failure1) {
       loadingRequest = false;
       failureRequest = failure1;
+      print("RequestDetailsErrorState*********** $failure1");
       return RequestDetailsErrorState(failure1);
     }, (data) {
+      print("RequestDetailsSuccessState*********** ${data}");
       requestDetails = data;
       loadingRequest = false;
 
@@ -58,7 +60,7 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
 
   void getTripsRequestDetails(int index, String id) async {
     var body = {"request": id, "page": index};
-    print("_controllerUpcoming*********** ${index}");
+    print("getTripsRequestDetails*********** $body");
     if (index > 1) {
       getTripsRequestDetailsUseCase.execute(body).then((value) {
         emit(eitherLoadedOrErrorStateTripsRequestDetails2(value));
@@ -77,9 +79,12 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
     return data.fold((failure1) {
       failureTrip = failure1;
       loadingTrips = false;
+      trips.clear();
+      print("TripsErrorState*********** $failure1");
       return TripsErrorState(failure1);
     }, (data) {
       if (data!.data!.isNotEmpty) {
+        print("TripsSuccessState*********** ${data.data!}");
         trips.clear();
         trips.addAll(data.data!);
         indexTrips = indexTrips + 1;

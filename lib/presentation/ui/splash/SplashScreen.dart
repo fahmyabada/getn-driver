@@ -8,6 +8,7 @@ import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/strings.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/main.dart';
+import 'package:getn_driver/presentation/ui/auth/CarRegistrationScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/DriverInformationScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/SignInScreen.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
@@ -307,13 +308,17 @@ class _SplashScreenState extends State<SplashScreen> {
                 navigateAndFinish(context, const DriverInformationScreen());
               } else if (getIt<SharedPreferences>().getString("typeSign") ==
                   "signWithInformation") {
+                navigateAndFinish(context, const RequestTabsScreen());
+                // navigateAndFinish(context, const CarRegistrationScreen());
+              } else if (getIt<SharedPreferences>().getString("typeSign") ==
+                  "signWithCarRegistration") {
                 if (idRequest.isNotEmpty) {
                   LocalNotificationService.goToNextScreen(
                       idRequest, "pushAndRemoveUntil", "");
                 } else {
                   navigateAndFinish(context, const RequestTabsScreen());
                 }
-              } else {
+              }else {
                 navigateAndFinish(context, const SignInScreen());
               }
             } else {

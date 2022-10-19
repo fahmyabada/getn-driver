@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,8 +9,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/model/carCategory/Data.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
+import 'package:getn_driver/presentation/ui/request/requestTabs/RequestTabsScreen.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CarRegistrationScreen extends StatefulWidget {
   const CarRegistrationScreen({Key? key}) : super(key: key);
@@ -26,15 +30,16 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
   final areaController = TextEditingController();
   final addressController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  final formKey2 = GlobalKey<FormState>();
   Data? dropDownValueCarModel;
-  Data? dropDownValueCarCategory;
+  Data? dropDownValueCarSubCategory;
   Data? dropDownValueColor;
   dynamic _pickImageError;
   File? _imageFrontCar, _imageBackCar;
   final ImagePicker _picker = ImagePicker();
   String frontCarLicenseImage = "";
   String backCarLicenseImage = "";
+  List<File> listGallery = [File("")];
+  List<String> listGalleryValue = [];
 
   Future selectImageSource(ImageSource imageSource, String type) async {
     try {
@@ -49,18 +54,22 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
 
       setState(() {
         if (type == "carFront") {
-          // for hide image if exist first time
           _imageFrontCar = File(pickedFile!.path);
           frontCarLicenseImage = _imageFrontCar!.path.toString();
           if (kDebugMode) {
-            print('_imageFrontCar***************** =${_imageFrontCar!.path}}');
+            print('_imageFrontCar***************** =${_imageFrontCar!.path}');
           }
         } else if (type == "carBack") {
-          // for hide image if exist first time
           _imageBackCar = File(pickedFile!.path);
           backCarLicenseImage = _imageBackCar!.path.toString();
           if (kDebugMode) {
-            print('_imageBackCar***************** =${_imageBackCar!.path}}');
+            print('_imageBackCar***************** =${_imageBackCar!.path}');
+          }
+        } else if (type == "galley") {
+          listGallery.insert(listGallery.length - 1, File(pickedFile!.path));
+          listGalleryValue.add(File(pickedFile.path).path.toString());
+          if (kDebugMode) {
+            print('pickedFile***************** =${_imageBackCar!.path}');
           }
         }
       });
@@ -71,17 +80,26 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => SignCubit()
         ..getColor()
         ..getCarModel()
-        ..getCarCategory(),
+        ..getCarSubCategory(),
       child: BlocConsumer<SignCubit, SignState>(
         listener: (context, state) {
-          // TODO: implement listener
+          if (state is CarCreateSuccessState) {
+            if (kDebugMode) {
+              print('*******CarCreateSuccessState');
+            }
+            getIt<SharedPreferences>().setString('typeSign', "signWithCarRegistration");
+
+            navigateTo(context, const RequestTabsScreen());
+          } else if (state is CarCreateErrorState) {
+            showToastt(
+                text: state.message, state: ToastStates.error, context: context);
+          }
         },
         builder: (context, state) {
           return Scaffold(
@@ -108,7 +126,7 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                         height: 50.h,
                       ),
                       // carModel
-                      SignCubit.get(context).carCategoryLoading
+                      SignCubit.get(context).carSubCategoryLoading
                           ? const CircularProgressIndicator(color: black)
                           : Container(
                               width: 1.sw,
@@ -143,7 +161,7 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                                   style: const TextStyle(color: Colors.grey),
                                   onChanged: (Data? value) {
                                     setState(() {
-                                      dropDownValueCarCategory = value;
+                                      dropDownValueCarSubCategory = value;
                                     });
                                   },
                                   hint: Container(
@@ -152,7 +170,7 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                                         horizontal: 10.r, vertical: 5.r),
                                     child: Center(
                                       child: Text(
-                                          dropDownValueCarCategory
+                                          dropDownValueCarSubCategory
                                                   ?.title?.en! ??
                                               "Car Model",
                                           maxLines: 2,
@@ -163,7 +181,7 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                                     ),
                                   ),
                                   items: SignCubit.get(context)
-                                      .carCategory
+                                      .carSubCategory
                                       .map((selectedCountry) {
                                     return DropdownMenuItem<Data>(
                                       value: selectedCountry,
@@ -292,89 +310,89 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                       SignCubit.get(context).colorsLoading
                           ? const CircularProgressIndicator(color: black)
                           : Container(
-                        width: 1.sw,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50.r),
-                          border: Border.all(
-                            width: 1,
-                            color: Colors.black,
-                          ),
-                        ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton2(
-                            //      value: controller.selectedCountry?.value,
-                            dropdownDecoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(14.r),
-                              border: Border.all(
-                                width: 1,
-                                color: Colors.black,
-                              ),
-                            ),
-                            isExpanded: true,
-                            iconSize: 40.sp,
-                            icon: Container(
-                              margin:
-                              EdgeInsetsDirectional.only(end: 18.r),
-                              child: Icon(
-                                Icons.arrow_drop_down,
-                                color: grey2,
-                                size: 40.sp,
-                              ),
-                            ),
-                            style: const TextStyle(color: Colors.grey),
-                            onChanged: (Data? value) {
-                              setState(() {
-                                dropDownValueColor = value;
-                              });
-                            },
-                            hint: Container(
                               width: 1.sw,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10.r, vertical: 5.r),
-                              child: Center(
-                                child: Text(
-                                    dropDownValueColor?.title?.en! ??
-                                        "Color",
-                                    maxLines: 2,
-                                    style: TextStyle(
-                                        overflow: TextOverflow.ellipsis,
-                                        color: Colors.black,
-                                        fontSize: 20.sp)),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50.r),
+                                border: Border.all(
+                                  width: 1,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton2(
+                                  //      value: controller.selectedCountry?.value,
+                                  dropdownDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14.r),
+                                    border: Border.all(
+                                      width: 1,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  isExpanded: true,
+                                  iconSize: 40.sp,
+                                  icon: Container(
+                                    margin:
+                                        EdgeInsetsDirectional.only(end: 18.r),
+                                    child: Icon(
+                                      Icons.arrow_drop_down,
+                                      color: grey2,
+                                      size: 40.sp,
+                                    ),
+                                  ),
+                                  style: const TextStyle(color: Colors.grey),
+                                  onChanged: (Data? value) {
+                                    setState(() {
+                                      dropDownValueColor = value;
+                                    });
+                                  },
+                                  hint: Container(
+                                    width: 1.sw,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 10.r, vertical: 5.r),
+                                    child: Center(
+                                      child: Text(
+                                          dropDownValueColor?.title?.en! ??
+                                              "Color",
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                              overflow: TextOverflow.ellipsis,
+                                              color: Colors.black,
+                                              fontSize: 20.sp)),
+                                    ),
+                                  ),
+                                  items: SignCubit.get(context)
+                                      .colors
+                                      .map((selectedCountry) {
+                                    return DropdownMenuItem<Data>(
+                                      value: selectedCountry,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(selectedCountry.title?.en ?? "",
+                                              textAlign: TextAlign.center,
+                                              maxLines: 1,
+                                              style: TextStyle(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  color: Colors.black,
+                                                  fontSize: 20.sp)),
+                                          SizedBox(
+                                            height: 5.h,
+                                          ),
+                                          // divider
+                                          Container(
+                                            width: 1.sw,
+                                            height: 1.h,
+                                            color: Colors.grey[400],
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
                               ),
                             ),
-                            items: SignCubit.get(context)
-                                .colors
-                                .map((selectedCountry) {
-                              return DropdownMenuItem<Data>(
-                                value: selectedCountry,
-                                child: Column(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.center,
-                                  children: [
-                                    Text(selectedCountry.title?.en ?? "",
-                                        textAlign: TextAlign.center,
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                            overflow:
-                                            TextOverflow.ellipsis,
-                                            color: Colors.black,
-                                            fontSize: 20.sp)),
-                                    SizedBox(
-                                      height: 5.h,
-                                    ),
-                                    // divider
-                                    Container(
-                                      width: 1.sw,
-                                      height: 1.h,
-                                      color: Colors.grey[400],
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
                       SizedBox(
                         height: 20.h,
                       ),
@@ -537,8 +555,125 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                       SizedBox(
                         height: 20.h,
                       ),
+                      Text(
+                        'Gallery',
+                        style: TextStyle(
+                            fontSize: 24.sp,
+                            color: black,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                      GridView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: listGallery.length ,
+                        shrinkWrap: true,
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 150.sp,
+                            crossAxisSpacing: 20.w,
+                            mainAxisSpacing: 20.h),
+                        itemBuilder: (context, i) {
+                          if (i == listGallery.length - 1) {
+                            return Padding(
+                              padding: EdgeInsets.all(20.r),
+                              child: CircleAvatar(
+                                backgroundColor: accentColor,
+                                child: IconButton(
+                                  icon: Icon(Icons.add,
+                                      size: 35.sp, color: white),
+                                  onPressed: () {
+                                    selectImageSource(
+                                        ImageSource.camera, "galley");
+                                  },
+                                ),
+                              ),
+                            );
+                          } else {
+                            return Stack(
+                              children: [
+                                Container(
+                                    height: 200.h,
+                                    width: 250.w,
+                                    decoration: BoxDecoration(
+                                      color: white,
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(25.r),
+                                      border: Border.all(color: Colors.black),
+                                    ),
+                                    child: SizedBox(
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(25.r),
+                                        child: Image.file(
+                                          listGallery[i],
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                    ),
+                                ),
+                                Align(
+                                  alignment: AlignmentDirectional.bottomEnd,
+                                  child: CircleAvatar(
+                                    backgroundColor: accentColor,
+                                    child: IconButton(
+                                      icon: Icon(Icons.close,
+                                          size: 25.sp, color: white),
+                                      onPressed: () {
+                                        setState(() {
+                                          listGallery.removeAt(i);
+                                          listGalleryValue.removeAt(i);
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                        },
+                      ),
+                      SizedBox(
+                        height: 60.h,
+                      ),
+                      defaultButton3(
+                          press: () async{
+                            print("CarModel*****************${dropDownValueCarSubCategory?.title!.en} ++ ${dropDownValueCarSubCategory?.id!}");
+                            print("CarModelYear*****************${dropDownValueCarModel?.title!.en} ++ ${dropDownValueCarModel?.id!}");
+                            print("color*****************${dropDownValueColor?.title!.en} ++ ${dropDownValueColor?.id!}");
+                            print("CarNum*****************${carNumberController.text}");
+                            print("city*****************${cityController.text}");
+                            print("area*****************${areaController.text}");
+                            print("address*****************${addressController.text}");
+                            print("fontCar*****************$frontCarLicenseImage");
+                            print("backCar*****************$backCarLicenseImage");
+                            print("gallery*****************${listGalleryValue.toString()}");
+                            if (dropDownValueCarSubCategory != null &&
+                                dropDownValueCarModel != null &&
+                                dropDownValueColor != null && formKey.currentState!.validate() && frontCarLicenseImage.isNotEmpty
+                            && backCarLicenseImage.isNotEmpty && listGalleryValue.length > 1){
+                              var formData = FormData.fromMap({
+                                'carModel': dropDownValueCarSubCategory?.id!,
+                                'carModelYear': dropDownValueCarModel?.id!,
+                                'carColor': dropDownValueColor?.id!,
+                                'carNumber': carNumberController.text.toString(),
+                                'city': cityController.text.toString(),
+                                'area': areaController.text.toString(),
+                                'address': addressController.text.toString(),
+                                'frontCarLicenseImage': await MultipartFile.fromFile(frontCarLicenseImage,
+                                    filename: frontCarLicenseImage, contentType: MediaType("image", "jpeg")),
+                                'backCarLicenseImage': await MultipartFile.fromFile(backCarLicenseImage,
+                                    filename: backCarLicenseImage, contentType: MediaType("image", "jpeg")),
+                              });
 
-
+                              // SignCubit.get(context).carCreate(formData);
+                            }else{
+                              showToastt(
+                                  text: "please fill all data first...", state: ToastStates.error, context: context);
+                            }
+                          },
+                          text: "Save",
+                          backColor: accentColor,
+                          textColor: white),
                     ],
                   ),
                 ),

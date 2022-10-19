@@ -17,11 +17,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 abstract class AuthRemoteDataSource {
   Future<Either<String, List<Data>?>> getCountries();
 
-  Future<Either<String, List<category.Data>?>> getCarCategory();
+  Future<Either<String, List<category.Data>?>> getCarSubCategory();
 
   Future<Either<String, List<category.Data>?>> getCarModel();
 
   Future<Either<String, List<category.Data>?>> getColor();
+
+  Future<Either<String, List<category.Data>?>> carCreate(FormData data);
 
   Future<Either<String, List<DataRole>?>> getRole();
 
@@ -235,7 +237,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<Either<String, List<category.Data>?>> getCarCategory() async {
+  Future<Either<String, List<category.Data>?>> getCarSubCategory() async {
     try {
       var body = {
         "limit": 99999,
@@ -295,6 +297,30 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
             return Right(CarCategory.fromJson(value.data!).data!);
           } else {
             return const Left("Not Found Color");
+          }
+        } else {
+          return Left(serverFailureMessage);
+        }
+      });
+    } on Exception catch (error) {
+      return Left(handleError(error));
+    }
+  }
+
+  @override
+  Future<Either<String, List<category.Data>?>> carCreate(FormData data) async{
+    try {
+
+      return await DioHelper.postData2(
+          url: 'car',
+          data: data,
+          )
+          .then((value) {
+        if (value.statusCode == 200) {
+          if (CarCategory.fromJson(value.data).data != null) {
+            return Right(CarCategory.fromJson(value.data!).data!);
+          } else {
+            return Left(SignModel.fromJson(value.data).message!.toString());
           }
         } else {
           return Left(serverFailureMessage);

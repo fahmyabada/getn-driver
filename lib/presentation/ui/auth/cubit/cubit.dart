@@ -6,6 +6,7 @@ import 'package:getn_driver/data/model/country/Data.dart';
 import 'package:getn_driver/data/model/role/DataRole.dart';
 import 'package:getn_driver/data/model/sendOtp/SendOtpData.dart';
 import 'package:getn_driver/data/model/signModel/SignModel.dart';
+import 'package:getn_driver/domain/usecase/auth/CarCreateUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/EditInformationUserUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/GetCarCategoryUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/GetCarModelUseCase.dart';
@@ -29,21 +30,22 @@ class SignCubit extends Cubit<SignState> {
 
   var getRoleUseCase = getIt<GetRoleUseCase>();
   var getCountriesUseCase = getIt<GetCountriesUseCase>();
-  var getCarCategoryUseCase = getIt<GetCarCategoryUseCase>();
+  var getSubCarCategoryUseCase = getIt<GetCarSubCategoryUseCase>();
   var getCarModelUseCase = getIt<GetCarModelUseCase>();
   var getColorUseCase = getIt<GetColorUseCase>();
   var sendOtpUseCase = getIt<SendOtpUseCase>();
   var registerUseCase = getIt<RegisterUseCase>();
   var loginUseCase = getIt<LoginUseCase>();
   var editInformationUserUseCase = getIt<EditInformationUserUseCase>();
+  var carCreateUseCase = getIt<CarCreateUseCase>();
 
   List<Data> countries = [];
   List<category.Data> colors = [];
   List<category.Data> carModel = [];
-  List<category.Data> carCategory = [];
+  List<category.Data> carSubCategory = [];
   List<DataRole> roles = [];
   bool carModelLoading = false;
-  bool carCategoryLoading = false;
+  bool carSubCategoryLoading = false;
   bool colorsLoading = false;
   bool terms = false;
   bool frontNationalId = false;
@@ -93,14 +95,13 @@ class SignCubit extends Cubit<SignState> {
     }, (data) {
       carModelLoading = false;
       carModel = data!;
-      print("getCarModel************ ${carModel.toString()}");
       return CarModelSuccessState(data);
     });
   }
 
-  void getCarCategory() async {
-    carCategoryLoading = true;
-    getCarCategoryUseCase.execute().then((value) {
+  void getCarSubCategory() async {
+    carSubCategoryLoading = true;
+    getSubCarCategoryUseCase.execute().then((value) {
       emit(eitherLoadedOrErrorStateCarCategory(value));
     });
   }
@@ -108,12 +109,12 @@ class SignCubit extends Cubit<SignState> {
   SignState eitherLoadedOrErrorStateCarCategory(
       Either<String, List<category.Data>?> data) {
     return data.fold((failure1) {
-      carCategoryLoading = false;
-      return CarCategoryErrorState(failure1);
+      carSubCategoryLoading = false;
+      return CarSubCategoryErrorState(failure1);
     }, (data) {
-      carCategoryLoading = false;
-      carCategory = data!;
-      return CarCategorySuccessState(data);
+      carSubCategoryLoading = false;
+      carSubCategory = data!;
+      return CarSubCategorySuccessState(data);
     });
   }
 
@@ -287,5 +288,21 @@ class SignCubit extends Cubit<SignState> {
     }
 
     emit(DriverInformationLoading());
+  }
+
+
+  void carCreate(FormData data) async {
+    emit(CarCreateLoading());
+    carCreateUseCase.execute(data).then((value) {
+      emit(eitherLoadedOrErrorStateCarCreate(value));
+    });
+  }
+
+  SignState eitherLoadedOrErrorStateCarCreate(Either<String, List<category.Data>?> data) {
+    return data.fold((failure1) {
+      return CarCreateErrorState(failure1);
+    }, (data) {
+      return CarCreateSuccessState(data);
+    });
   }
 }

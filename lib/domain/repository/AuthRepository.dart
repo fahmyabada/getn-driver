@@ -9,11 +9,13 @@ import 'package:getn_driver/data/model/signModel/SignModel.dart';
 abstract class AuthRepository {
   Future<Either<String, List<Data>?>> getCountries();
 
-  Future<Either<String, List<category.Data>?>> getCarCategory();
+  Future<Either<String, List<category.Data>?>> getCarSubCategory();
 
   Future<Either<String, List<category.Data>?>> getCarModel();
 
   Future<Either<String, List<category.Data>?>> getColor();
+
+  Future<Either<String, List<category.Data>?>> carCreate(FormData data);
 
   Future<Either<String, List<DataRole>?>> getRole();
 

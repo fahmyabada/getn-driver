@@ -220,7 +220,7 @@ class LocalNotificationService {
             builder: (context) => BlocProvider(
                 create: (context) => RequestCubit(),
                 child: TripDetailsScreen(
-                  id: id,
+                  idTrip: id,
                 )),
           ),
         );

@@ -31,16 +31,16 @@ class CarModelSuccessState extends SignState {
   CarModelSuccessState(this.data);
 }
 
-class CarCategoryErrorState extends SignState {
+class CarSubCategoryErrorState extends SignState {
   final String message;
 
-  CarCategoryErrorState(this.message);
+  CarSubCategoryErrorState(this.message);
 }
 
-class CarCategorySuccessState extends SignState {
+class CarSubCategorySuccessState extends SignState {
   final List<category.Data>? data;
 
-  CarCategorySuccessState(this.data);
+  CarSubCategorySuccessState(this.data);
 }
 
 class ColorErrorState extends SignState {
@@ -133,6 +133,20 @@ class SignInSuccessState extends SignState {
   final SignModel data;
 
   SignInSuccessState(this.data);
+}
+
+class CarCreateLoading extends SignState {}
+
+class CarCreateErrorState extends SignState {
+  final String message;
+
+  CarCreateErrorState(this.message);
+}
+
+class CarCreateSuccessState extends SignState {
+  final List<category.Data>? data;
+
+  CarCreateSuccessState(this.data);
 }
 
 class EditLoading extends SignState {}

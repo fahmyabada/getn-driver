@@ -27,6 +27,7 @@ import 'package:getn_driver/domain/repository/RequestDetailsRepository.dart';
 import 'package:getn_driver/domain/repository/RequestRepository.dart';
 import 'package:getn_driver/domain/repository/AuthRepository.dart';
 import 'package:getn_driver/domain/repository/TripDetailsRepository.dart';
+import 'package:getn_driver/domain/usecase/auth/CarCreateUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/GetCarCategoryUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/GetCarModelUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/GetColorUseCase.dart';
@@ -88,9 +89,10 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => InfoPlaceUseCase(getIt()));
   getIt.registerLazySingleton(() => GetBranchesInfoBranchUseCase(getIt()));
   getIt.registerLazySingleton(() => InfoPlaceBranchUseCase(getIt()));
-  getIt.registerLazySingleton(() => GetCarCategoryUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetCarSubCategoryUseCase(getIt()));
   getIt.registerLazySingleton(() => GetCarModelUseCase(getIt()));
   getIt.registerLazySingleton(() => GetColorUseCase(getIt()));
+  getIt.registerLazySingleton(() => CarCreateUseCase(getIt()));
 
   // Repository
   getIt.registerLazySingleton<AuthRepository>(
