@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:getn_driver/data/api/Dio_Helper.dart';
 import 'package:getn_driver/data/model/carCategory/CarCategory.dart';
 import 'package:getn_driver/data/model/carCategory/Data.dart' as category;
+import 'package:getn_driver/data/model/carRegisteration/CarRegisterationModel.dart';
 import 'package:getn_driver/data/model/country/CountryData.dart';
 import 'package:getn_driver/data/model/country/Data.dart';
 import 'package:getn_driver/data/model/role/DataRole.dart';
@@ -23,7 +24,7 @@ abstract class AuthRemoteDataSource {
 
   Future<Either<String, List<category.Data>?>> getColor();
 
-  Future<Either<String, List<category.Data>?>> carCreate(FormData data);
+  Future<Either<String, CarRegisterationModel?>> carCreate(FormData data);
 
   Future<Either<String, List<DataRole>?>> getRole();
 
@@ -308,20 +309,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<Either<String, List<category.Data>?>> carCreate(FormData data) async{
+  Future<Either<String, CarRegisterationModel?>> carCreate(FormData data) async {
     try {
-
-      return await DioHelper.postData2(
-          url: 'car',
-          data: data,
-          )
-          .then((value) {
+      return await DioHelper.postData3(
+        url: 'car',
+        data: data,
+        token: getIt<SharedPreferences>().getString("token")
+      ).then((value) {
         if (value.statusCode == 200) {
-          if (CarCategory.fromJson(value.data).data != null) {
-            return Right(CarCategory.fromJson(value.data!).data!);
-          } else {
-            return Left(SignModel.fromJson(value.data).message!.toString());
-          }
+          return Right(CarRegisterationModel.fromJson(value.data!));
         } else {
           return Left(serverFailureMessage);
         }
@@ -330,5 +326,4 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       return Left(handleError(error));
     }
   }
-
 }

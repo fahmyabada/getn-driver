@@ -27,7 +27,7 @@ class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
           if (Request.fromJson(value.data).data!.isNotEmpty) {
             return Right(Request.fromJson(value.data!));
           } else {
-            return const Left("Not Found Roles");
+            return const Left("Not Found Data");
           }
         } else {
           return Left(serverFailureMessage);

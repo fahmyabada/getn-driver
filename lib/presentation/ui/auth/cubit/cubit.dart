@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:getn_driver/data/model/carRegisteration/CarRegisterationModel.dart';
 import 'package:getn_driver/data/model/country/Data.dart';
 import 'package:getn_driver/data/model/role/DataRole.dart';
 import 'package:getn_driver/data/model/sendOtp/SendOtpData.dart';
@@ -298,7 +299,7 @@ class SignCubit extends Cubit<SignState> {
     });
   }
 
-  SignState eitherLoadedOrErrorStateCarCreate(Either<String, List<category.Data>?> data) {
+  SignState eitherLoadedOrErrorStateCarCreate(Either<String, CarRegisterationModel?> data) {
     return data.fold((failure1) {
       return CarCreateErrorState(failure1);
     }, (data) {

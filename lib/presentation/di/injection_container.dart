@@ -1,9 +1,13 @@
 import 'package:get_it/get_it.dart';
 import 'package:getn_driver/data/api/network_info.dart';
+import 'package:getn_driver/data/repository/editProfile/EditProfileRemoteDataSource.dart';
+import 'package:getn_driver/data/repository/editProfile/EditProfileRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/infoBranch/InfoBranchRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/infoBranch/InfoBranchRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/infoPlace/InfoPlaceRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/infoPlace/InfoPlaceRepositoryImpl.dart';
+import 'package:getn_driver/data/repository/policies/PoliciesRemoteDataSource.dart';
+import 'package:getn_driver/data/repository/policies/PoliciesRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/tripCreate/TripCreateRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/tripCreate/TripCreateRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/auth/AuthRemoteDataSource.dart';
@@ -18,8 +22,10 @@ import 'package:getn_driver/data/repository/requestDetails/RequestDetailsRemoteD
 import 'package:getn_driver/data/repository/requestDetails/RequestDetailsRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/tripDetails/TripDetailsRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/tripDetails/TripDetailsRepositoryImpl.dart';
+import 'package:getn_driver/domain/repository/EditProfileRepository.dart';
 import 'package:getn_driver/domain/repository/InfoBranchRepository.dart';
 import 'package:getn_driver/domain/repository/InfoPlaceRepository.dart';
+import 'package:getn_driver/domain/repository/PoliciesRepository.dart';
 import 'package:getn_driver/domain/repository/TripCreateRepository.dart';
 import 'package:getn_driver/domain/repository/BranchesPlaceRepository.dart';
 import 'package:getn_driver/domain/repository/RecomendPlaceRepository.dart';
@@ -31,9 +37,14 @@ import 'package:getn_driver/domain/usecase/auth/CarCreateUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/GetCarCategoryUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/GetCarModelUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/GetColorUseCase.dart';
+import 'package:getn_driver/domain/usecase/editProfile/GetAreaEditProfileUseCase.dart';
+import 'package:getn_driver/domain/usecase/editProfile/GetCitiesEditProfileUseCase.dart';
+import 'package:getn_driver/domain/usecase/editProfile/GetCountriesEditProfileUseCase.dart';
+import 'package:getn_driver/domain/usecase/editProfile/GetProfileDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/infoBranch/GetBranchesInfoBranchUseCase.dart';
 import 'package:getn_driver/domain/usecase/infoBranch/InfoPlaceBranchUseCase.dart';
 import 'package:getn_driver/domain/usecase/infoPlace/InfoPlaceUseCase.dart';
+import 'package:getn_driver/domain/usecase/policies/GetPoliciesUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripCreate/CreateTripUseCase.dart';
 import 'package:getn_driver/domain/usecase/branchesPlaces/GetBranchesPlacesUseCase.dart';
 import 'package:getn_driver/domain/usecase/recomendPlaces/GetRecomendPlacesUseCase.dart';
@@ -93,6 +104,11 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => GetCarModelUseCase(getIt()));
   getIt.registerLazySingleton(() => GetColorUseCase(getIt()));
   getIt.registerLazySingleton(() => CarCreateUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetPoliciesUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetProfileDetailsUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetCountriesEditProfileUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetCitiesEditProfileUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetAreaEditProfileUseCase(getIt()));
 
   // Repository
   getIt.registerLazySingleton<AuthRepository>(
@@ -158,6 +174,20 @@ Future<void> init() async {
     ),
   );
 
+  getIt.registerLazySingleton<PoliciesRepository>(
+        () => PoliciesRepositoryImpl(
+      getIt(),
+      getIt(),
+    ),
+  );
+
+  getIt.registerLazySingleton<EditProfileRepository>(
+        () => EditProfileRepositoryImpl(
+      getIt(),
+      getIt(),
+    ),
+  );
+
   // Data sources
   getIt.registerLazySingleton<AuthRemoteDataSource>(
       () => AuthRemoteDataSourceImpl());
@@ -185,6 +215,12 @@ Future<void> init() async {
 
   getIt.registerLazySingleton<InfoBranchRemoteDataSource>(
           () => InfoBranchRemoteDataSourceImpl());
+
+  getIt.registerLazySingleton<PoliciesRemoteDataSource>(
+          () => PoliciesRemoteDataSourceImpl());
+
+  getIt.registerLazySingleton<EditProfileRemoteDataSource>(
+          () => EditProfileRemoteDataSourceImpl());
 
   //! Core
   getIt.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(getIt()));

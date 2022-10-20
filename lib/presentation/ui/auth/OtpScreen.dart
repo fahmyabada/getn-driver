@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/presentation/ui/auth/CarRegistrationScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/DriverInformationScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/SignUpDetailsScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
@@ -220,7 +221,13 @@ class _OtpScreenState extends State<OtpScreen> {
           navigateTo(
               context,
               const RequestTabsScreen());
-        } else {
+        } else if (state.data.hasCar != null && !state.data.hasCar!) {
+          getIt<SharedPreferences>()
+              .setString('typeSign', "signWithInformation");
+          navigateTo(
+              context,
+              const CarRegistrationScreen());
+        }else {
           getIt<SharedPreferences>().setString('typeSign', "sign");
           navigateTo(context, const DriverInformationScreen());
         }

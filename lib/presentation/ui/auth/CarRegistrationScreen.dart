@@ -12,8 +12,8 @@ import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/RequestTabsScreen.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CarRegistrationScreen extends StatefulWidget {
@@ -39,7 +39,7 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
   String frontCarLicenseImage = "";
   String backCarLicenseImage = "";
   List<File> listGallery = [File("")];
-  List<String> listGalleryValue = [];
+  List<MultipartFile> listGalleryValue = [];
 
   Future selectImageSource(ImageSource imageSource, String type) async {
     try {
@@ -52,7 +52,7 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
         maxHeight: 200.h,
       );
 
-      setState(() {
+      setState(() async{
         if (type == "carFront") {
           _imageFrontCar = File(pickedFile!.path);
           frontCarLicenseImage = _imageFrontCar!.path.toString();
@@ -67,10 +67,13 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
           }
         } else if (type == "galley") {
           listGallery.insert(listGallery.length - 1, File(pickedFile!.path));
-          listGalleryValue.add(File(pickedFile.path).path.toString());
-          if (kDebugMode) {
-            print('pickedFile***************** =${_imageBackCar!.path}');
-          }
+          final data = await MultipartFile.fromFile(File(pickedFile.path).path.toString(),
+              filename: File(pickedFile.path).path.toString(), contentType: MediaType("image", "jpeg"));
+          listGalleryValue.add(data);
+          // listGalleryValue.add(File(pickedFile.path).path.toString());
+          // if (kDebugMode) {
+          //   print('pickedFile***************** =${_imageBackCar!.path}');
+          // }
         }
       });
     } catch (e) {
@@ -93,9 +96,11 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
             if (kDebugMode) {
               print('*******CarCreateSuccessState');
             }
-            getIt<SharedPreferences>().setString('typeSign', "signWithCarRegistration");
+            if(state.data!.carModel !=null && state.data!.carNumber != null){
+              getIt<SharedPreferences>().setString('typeSign', "signWithCarRegistration");
 
-            navigateTo(context, const RequestTabsScreen());
+              navigateTo(context, const RequestTabsScreen());
+            }
           } else if (state is CarCreateErrorState) {
             showToastt(
                 text: state.message, state: ToastStates.error, context: context);
@@ -410,7 +415,7 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                               validatorText: carNumberController.text,
                               validatorMessage: "Enter Car Number Please..",
                               onEditingComplete: () {
-                                FocusScope.of(context).unfocus();
+                                FocusScope.of(context).nextFocus();
                               },
                             ),
                             SizedBox(
@@ -442,7 +447,7 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                               validatorText: areaController.text,
                               validatorMessage: "Enter Area Please..",
                               onEditingComplete: () {
-                                FocusScope.of(context).unfocus();
+                                FocusScope.of(context).nextFocus();
                               },
                             ),
                             SizedBox(
@@ -650,22 +655,40 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                             if (dropDownValueCarSubCategory != null &&
                                 dropDownValueCarModel != null &&
                                 dropDownValueColor != null && formKey.currentState!.validate() && frontCarLicenseImage.isNotEmpty
-                            && backCarLicenseImage.isNotEmpty && listGalleryValue.length > 1){
+                            && backCarLicenseImage.isNotEmpty && listGalleryValue.isNotEmpty){
                               var formData = FormData.fromMap({
                                 'carModel': dropDownValueCarSubCategory?.id!,
                                 'carModelYear': dropDownValueCarModel?.id!,
                                 'carColor': dropDownValueColor?.id!,
-                                'carNumber': carNumberController.text.toString(),
+                                'carNumber':
+                                    carNumberController.text.toString(),
                                 'city': cityController.text.toString(),
                                 'area': areaController.text.toString(),
                                 'address': addressController.text.toString(),
-                                'frontCarLicenseImage': await MultipartFile.fromFile(frontCarLicenseImage,
-                                    filename: frontCarLicenseImage, contentType: MediaType("image", "jpeg")),
-                                'backCarLicenseImage': await MultipartFile.fromFile(backCarLicenseImage,
-                                    filename: backCarLicenseImage, contentType: MediaType("image", "jpeg")),
+                                'gallery': listGalleryValue,
+                                    // .map((item) {
+                                    // print("gallery********$item");
+                                   // MultipartFile.fromFileSync(item,
+                                   //    filename: item,
+                                   //    contentType:
+                                   //    MediaType("image", "jpeg"));
+                              // })
+                              //       .toList(),
+                                'frontCarLicenseImage':
+                                    await MultipartFile.fromFile(
+                                        frontCarLicenseImage,
+                                        filename: frontCarLicenseImage,
+                                        contentType:
+                                            MediaType("image", "jpeg")),
+                                'backCarLicenseImage':
+                                    await MultipartFile.fromFile(
+                                        backCarLicenseImage,
+                                        filename: backCarLicenseImage,
+                                        contentType:
+                                            MediaType("image", "jpeg")),
                               });
-
-                              // SignCubit.get(context).carCreate(formData);
+                              print("FormData****************${formData.toString()}");
+                              SignCubit.get(context).carCreate(formData);
                             }else{
                               showToastt(
                                   text: "please fill all data first...", state: ToastStates.error, context: context);

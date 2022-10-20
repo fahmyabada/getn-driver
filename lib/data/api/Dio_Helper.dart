@@ -55,6 +55,19 @@ class DioHelper {
     return await dio.post(url, queryParameters: query, data: data);
   }
 
+  static Future<Response> postData3({
+    required String url,
+    Map<String, dynamic>? query,
+    FormData? data,
+    String? token,
+  }) async {
+    dio.options.headers = {
+      // 'Content-Type': 'multipart/form-data',
+      'Authorization': 'bearerAuth $token',
+    };
+    return await dio.post(url, queryParameters: query, data: data);
+  }
+
   static Future<Response> putData({
     required String url,
     Map<String, dynamic>? query,

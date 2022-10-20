@@ -27,24 +27,26 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   double _userRating = 3.0;
   var btnStatus = {
     'pending': ['accept', 'reject'],
-    'accept': ['on_my_way'],
-    'on_my_way': ['arrive'],
-    'arrive': ['start'],
-    'coming': ['start'],
-    'start': ['end'],
+    'accept': ['on_my_way', 'reject'],
+    'on_my_way': ['arrive', 'reject'],
+    'arrive': ['start', 'reject'],
+    'coming': ['start', 'reject'],
+    'start': ['end','mid_pause'],
     'end': [],
+    'mid_pause': [],
     'reject': [],
     'cancel': []
   };
 
   var btnStatus2 = {
     'pending': ['Accept', 'Reject'],
-    'accept': ['On My Way'],
-    'on_my_way': ['Arrive'],
-    'arrive': ['Start'],
-    'coming': ['Start'],
-    'start': ['End'],
+    'accept': ['On My Way', 'Cancel'],
+    'on_my_way': ['Arrive', 'Cancel'],
+    'arrive': ['Start', 'Cancel'],
+    'coming': ['Start', 'Cancel'],
+    'start': ['End','Cancel'],
     'end': [],
+    'mid_pause': [],
     'reject': [],
     'cancel': []
   };
@@ -100,18 +102,18 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         } else if (state is CurrentLocationSuccessState) {
           print('CurrentLocationSuccessState********* ');
           String id = await navigateToWithRefreshPagePrevious(
-              context,
-              TripCreateScreen(
-                requestId: widget.idRequest!,
-                fromLatitude: state.position.latitude,
-                fromLongitude: state.position.longitude,
-              ),
+            context,
+            TripCreateScreen(
+              requestId: widget.idRequest!,
+              fromLatitude: state.position.latitude,
+              fromLongitude: state.position.longitude,
+            ),
           );
           setState(() {
-            print(
-                "CurrentLocationSuccessState************ ${id}");
+            print("CurrentLocationSuccessState************ ${id}");
             if (id.isNotEmpty) {
-              getIt<SharedPreferences>().setString('typeScreen', "requestDetails");
+              getIt<SharedPreferences>()
+                  .setString('typeScreen', "requestDetails");
               RequestDetailsCubit.get(context).indexTrips = 1;
               RequestDetailsCubit.get(context).trips = [];
               RequestDetailsCubit.get(context).loadingMoreTrips = false;
@@ -120,8 +122,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               RequestDetailsCubit.get(context).failureRequest = "";
               RequestDetailsCubit.get(context).failureTrip = "";
               RequestDetailsCubit.get(context).getRequestDetails(id);
-              RequestDetailsCubit.get(context)
-                  .getTripsRequestDetails(1, id);
+              RequestDetailsCubit.get(context).getTripsRequestDetails(1, id);
             }
           });
         } else if (state is CurrentLocationErrorState) {
@@ -421,16 +422,14 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             ),
                             SizedBox(
                                 height: 50.h,
-                                child: RequestDetailsCubit.get(context)
-                                            .requestDetails!
-                                            .status ==
-                                        "pending"
-                                    ? Row(
+                                child:
+                                Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceEvenly,
                                         children: [
                                           state is! RequestDetailsEditInitial
-                                              ? defaultButton2(
+                                              ?
+                                          defaultButton2(
                                                   press: () {
                                                     RequestDetailsCubit.get(
                                                             context)
@@ -441,8 +440,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                                 .requestDetails!
                                                                 .id!,
                                                             btnStatus[
-                                                                '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
-                                                            "");
+                                                          '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
+                                                      "");
                                                   },
                                                   disablePress: RequestDetailsCubit
                                                                   .get(context)
@@ -458,7 +457,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                   text: btnStatus2[
                                                       '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
                                                   backColor: greenColor,
-                                                  textColor: white)
+                                                  textColor: white,
+                                          )
                                               : const CircularProgressIndicator(
                                                   color: accentColor,
                                                 ),
@@ -504,7 +504,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                       );
                                                     },
                                                   );
-                                                } else {
+                                                }
+                                                else {
                                                   showDialog(
                                                     context: context,
                                                     barrierDismissible: true,
@@ -547,58 +548,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                               textColor: white),
                                         ],
                                       )
-                                    : Center(
-                                        child: state
-                                                is! RequestDetailsEditInitial
-                                            ? RequestDetailsCubit.get(context)
-                                                            .requestDetails!
-                                                            .status !=
-                                                        null &&
-                                                    btnStatus['${RequestDetailsCubit.get(context).requestDetails!.status}']!
-                                                        .isNotEmpty
-                                                ? defaultButton2(
-                                                    press: () {
-                                                      RequestDetailsCubit.get(
-                                                              context)
-                                                          .editRequest(
-                                                              RequestDetailsCubit
-                                                                      .get(
-                                                                          context)
-                                                                  .requestDetails!
-                                                                  .id!,
-                                                              btnStatus[
-                                                                  '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
-                                                              "");
-                                                    },
-                                                    disablePress:
-                                                        RequestDetailsCubit.get(
-                                                                        context)
-                                                                    .requestDetails
-                                                                    ?.paymentStatus! ==
-                                                                "paid"
-                                                            ? true
-                                                            : false,
-                                                    fontSize: 25,
-                                                    paddingVertical: 1,
-                                                    paddingHorizontal: 70,
-                                                    borderRadius: 10,
-                                                    text:
-                                                        btnStatus2['${RequestDetailsCubit.get(context).requestDetails!.status}']![
-                                                            0],
-                                                    backColor:
-                                                        btnStatus2['${RequestDetailsCubit.get(context).requestDetails!.status}']![0] ==
-                                                                    "End" ||
-                                                                btnStatus2['${RequestDetailsCubit.get(context).requestDetails!.status}']![
-                                                                        0] ==
-                                                                    "Cancel"
-                                                            ? redColor
-                                                            : greenColor,
-                                                    textColor: white)
-                                                : Container()
-                                            : const CircularProgressIndicator(
-                                                color: accentColor,
-                                              ),
-                                      )),
+                                    ),
                             SizedBox(
                               height: 15.h,
                             ),
@@ -758,22 +708,31 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                                       .end,
                                                               children: [
                                                                 Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .end,
                                                                   children: [
                                                                     Text(
                                                                       'Status :',
-                                                                      style: TextStyle(
-                                                                        color: black,
-                                                                        fontSize: 15.sp,
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color:
+                                                                            black,
+                                                                        fontSize:
+                                                                            15.sp,
                                                                       ),
                                                                     ),
                                                                     SizedBox(
-                                                                      width: 5.w,
+                                                                      width:
+                                                                          5.w,
                                                                     ),
                                                                     Text(
                                                                       trip.status!,
                                                                       style: TextStyle(
-                                                                          color: grey2, fontSize: 14.sp),
+                                                                          color:
+                                                                              grey2,
+                                                                          fontSize:
+                                                                              14.sp),
                                                                     ),
                                                                   ],
                                                                 ),
@@ -1029,26 +988,50 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                   await navigateToWithRefreshPagePrevious(
                                                       context,
                                                       TripDetailsScreen(
-                                                          idTrip: RequestDetailsCubit
-                                                                  .get(context)
-                                                              .trips[i]
-                                                              .id,
-                                                      idRequest: widget.idRequest!,));
+                                                        idTrip:
+                                                            RequestDetailsCubit
+                                                                    .get(
+                                                                        context)
+                                                                .trips[i]
+                                                                .id,
+                                                        idRequest:
+                                                            widget.idRequest!,
+                                                      ));
                                               setState(() {
                                                 print(
                                                     "typeId33************ ${id}");
                                                 if (id.isNotEmpty) {
-                                                  getIt<SharedPreferences>().setString('typeScreen', "requestDetails");
-                                                  RequestDetailsCubit.get(context).indexTrips = 1;
-                                                  RequestDetailsCubit.get(context).trips = [];
-                                                  RequestDetailsCubit.get(context).loadingMoreTrips = false;
-                                                  RequestDetailsCubit.get(context).loadingTrips = false;
-                                                  RequestDetailsCubit.get(context).loadingRequest = false;
-                                                  RequestDetailsCubit.get(context).failureRequest = "";
-                                                  RequestDetailsCubit.get(context).failureTrip = "";
-                                                  RequestDetailsCubit.get(context).getRequestDetails(id);
-                                                  RequestDetailsCubit.get(context)
-                                                      .getTripsRequestDetails(1, id);
+                                                  getIt<SharedPreferences>()
+                                                      .setString('typeScreen',
+                                                          "requestDetails");
+                                                  RequestDetailsCubit.get(
+                                                          context)
+                                                      .indexTrips = 1;
+                                                  RequestDetailsCubit.get(
+                                                          context)
+                                                      .trips = [];
+                                                  RequestDetailsCubit.get(
+                                                          context)
+                                                      .loadingMoreTrips = false;
+                                                  RequestDetailsCubit.get(
+                                                          context)
+                                                      .loadingTrips = false;
+                                                  RequestDetailsCubit.get(
+                                                          context)
+                                                      .loadingRequest = false;
+                                                  RequestDetailsCubit.get(
+                                                          context)
+                                                      .failureRequest = "";
+                                                  RequestDetailsCubit.get(
+                                                          context)
+                                                      .failureTrip = "";
+                                                  RequestDetailsCubit.get(
+                                                          context)
+                                                      .getRequestDetails(id);
+                                                  RequestDetailsCubit.get(
+                                                          context)
+                                                      .getTripsRequestDetails(
+                                                          1, id);
                                                 }
                                               });
                                             },

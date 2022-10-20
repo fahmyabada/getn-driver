@@ -12,6 +12,7 @@ class SignModel {
     VerifyImage? backNationalImage,
     VerifyImage? verifyImage,
     String? name,
+    bool? hasCar,
     Ratings? ratings,
     int? ratingsCount,
     String? phone,
@@ -28,6 +29,7 @@ class SignModel {
     _name = name;
     _ratings = ratings;
     _ratingsCount = ratingsCount;
+    _hasCar = hasCar;
     _phone = phone;
     _birthDate = birthDate;
     _country = country;
@@ -52,6 +54,7 @@ class SignModel {
         json['ratings'] != null ? Ratings.fromJson(json['ratings']) : null;
     _ratingsCount = json['ratingsCount'];
     _phone = json['phone'];
+    _hasCar = json['hasCar'];
     _birthDate = json['birthDate'];
     _country =
         json['country'] != null ? Country.fromJson(json['country']) : null;
@@ -69,6 +72,7 @@ class SignModel {
   Ratings? _ratings;
   int? _ratingsCount;
   String? _phone;
+  bool? _hasCar;
   String? _birthDate;
   Country? _country;
   String? _token;
@@ -85,6 +89,8 @@ class SignModel {
   VerifyImage? get verifyImage => _verifyImage;
 
   String? get name => _name;
+
+  bool? get hasCar => _hasCar;
 
   Ratings? get ratings => _ratings;
 
@@ -116,6 +122,7 @@ class SignModel {
     if (_verifyImage != null) {
       map['verifyImage'] = _verifyImage?.toJson();
     }
+    map['hasCar'] = _hasCar;
     map['name'] = _name;
     if (_ratings != null) {
       map['ratings'] = _ratings?.toJson();

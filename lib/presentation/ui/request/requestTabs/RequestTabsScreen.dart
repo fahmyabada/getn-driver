@@ -151,7 +151,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
         appBar: AppBar(
           title: InkWell(
             onTap: () {
-              navigateTo(context, CarRegistrationScreen());
+              navigateTo(context, const CarRegistrationScreen());
             },
             child: Text(
               'Requests',
@@ -2148,12 +2148,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                       ),
           ],
         ),
-        drawer: Container(
-          child: Text(
-            "abdaullah rashwan",
-            style: TextStyle(fontSize: 20.sp, color: Colors.red),
-          ),
-        ),
+        drawer: const DrawerMenu(),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _currentIndex,
           onTap: (index) {

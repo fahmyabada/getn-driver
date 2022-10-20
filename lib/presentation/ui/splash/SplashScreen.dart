@@ -308,8 +308,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 navigateAndFinish(context, const DriverInformationScreen());
               } else if (getIt<SharedPreferences>().getString("typeSign") ==
                   "signWithInformation") {
-                navigateAndFinish(context, const RequestTabsScreen());
-                // navigateAndFinish(context, const CarRegistrationScreen());
+                navigateAndFinish(context, const CarRegistrationScreen());
               } else if (getIt<SharedPreferences>().getString("typeSign") ==
                   "signWithCarRegistration") {
                 if (idRequest.isNotEmpty) {

@@ -4,7 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/presentation/di/injection_container.dart';
+import 'package:getn_driver/presentation/ui/auth/SignInScreen.dart';
+import 'package:getn_driver/presentation/ui/policies/PoliciesScreen.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomDialog extends StatelessWidget {
   final String? title, description, type, id;
@@ -243,28 +247,28 @@ class CustomDialog2 extends StatelessWidget {
                   children: [
                     state is! RequestEditInitial
                         ? MaterialButton(
-                        height: 30.h,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.r)),
-                        color: btnOkColor,
-                        minWidth: 80.w,
-                        onPressed: () {
-                          if (formKeyRequest.currentState!.validate()) {
-                            RequestCubit.get(context).editRequest(
-                                id!,
-                                "reject",
-                                commentController.text.toString());
-                          }
-                        },
-                        child: Text(
-                          'Ok',
-                          style: TextStyle(color: white, fontSize: 15.sp),
-                        ))
+                            height: 30.h,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.r)),
+                            color: btnOkColor,
+                            minWidth: 80.w,
+                            onPressed: () {
+                              if (formKeyRequest.currentState!.validate()) {
+                                RequestCubit.get(context).editRequest(
+                                    id!,
+                                    "reject",
+                                    commentController.text.toString());
+                              }
+                            },
+                            child: Text(
+                              'Ok',
+                              style: TextStyle(color: white, fontSize: 15.sp),
+                            ))
                         : Center(
-                      child: CircularProgressIndicator(
-                        color: btnOkColor,
-                      ),
-                    ),
+                            child: CircularProgressIndicator(
+                              color: btnOkColor,
+                            ),
+                          ),
                     SizedBox(
                       width: 30.w,
                     ),
@@ -290,3 +294,138 @@ class CustomDialog2 extends StatelessWidget {
   }
 }
 
+class DrawerMenu extends StatelessWidget {
+  const DrawerMenu({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        children: <Widget>[
+          DrawerHeader(
+            decoration: const BoxDecoration(color: Color(0xff47B5FF)),
+            child: SizedBox(
+              height: 200,
+              child: Padding(
+                  padding: EdgeInsets.only(
+                    top: 30.r,
+                  ),
+                  child: Row(
+                    children: [
+                      const CircleAvatar(
+                        radius: 40.0,
+                        backgroundColor: Color(0xFF778899),
+                        backgroundImage: NetworkImage(
+                            "https://www.pphfoundation.ca/wp-content/uploads/2018/05/default-avatar.png"), // for Network image
+                      ),
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            getIt<SharedPreferences>().getString("name") ?? "",
+                            style: TextStyle(
+                                color: white,
+                                fontSize: 20.sp,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            "+20${getIt<SharedPreferences>().getString("phone")}",
+                            style: TextStyle(
+                              color: white,
+                              fontSize: 20.sp,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )),
+            ),
+          ),
+          ListTile(
+            title: Text(
+              "Home",
+              style: TextStyle(
+                color: grey2,
+                fontSize: 20.sp,
+              ),
+            ),
+            leading: const Icon(Icons.home, color: grey2),
+            onTap: () {},
+          ),
+          ListTile(
+            title: Text(
+              "Wallet",
+              style: TextStyle(
+                color: grey2,
+                fontSize: 20.sp,
+              ),
+            ),
+            leading: const Icon(
+              Icons.account_balance_wallet,
+              color: grey2,
+            ),
+            onTap: () {},
+          ),
+          ListTile(
+            title: Text(
+              "Notification",
+              style: TextStyle(
+                color: grey2,
+                fontSize: 20.sp,
+              ),
+            ),
+            leading: const Icon(Icons.notifications, color: grey2),
+            onTap: () {},
+          ),
+          ListTile(
+            title: Text(
+              "Settings",
+              style: TextStyle(
+                color: grey2,
+                fontSize: 20.sp,
+              ),
+            ),
+            leading: const Icon(Icons.settings, color: grey2),
+            onTap: () {},
+          ),
+          ListTile(
+            title: Text(
+              "Policies",
+              style: TextStyle(
+                color: grey2,
+                fontSize: 20.sp,
+              ),
+            ),
+            leading: const Icon(
+              Icons.policy,
+              color: grey2,
+            ),
+            onTap: () {
+              navigateTo(context, PoliciesScreen());
+            },
+          ),
+          ListTile(
+            title: Text(
+              "SignOut",
+              style: TextStyle(
+                color: grey2,
+                fontSize: 20.sp,
+              ),
+            ),
+            leading: const Icon(Icons.exit_to_app, color: grey2),
+            onTap: () {
+              getIt<SharedPreferences>()
+                  .clear().then((value) {
+                navigateAndFinish(context, const SignInScreen());
+              });
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}

@@ -144,7 +144,7 @@ class CarCreateErrorState extends SignState {
 }
 
 class CarCreateSuccessState extends SignState {
-  final List<category.Data>? data;
+  final CarRegisterationModel? data;
 
   CarCreateSuccessState(this.data);
 }

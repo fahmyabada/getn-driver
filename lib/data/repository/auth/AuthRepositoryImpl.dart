@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/src/form_data.dart';
 import 'package:getn_driver/data/api/network_info.dart';
 import 'package:getn_driver/data/model/carCategory/Data.dart' as category;
+import 'package:getn_driver/data/model/carRegisteration/CarRegisterationModel.dart';
 import 'package:getn_driver/data/model/country/Data.dart' as country;
 import 'package:getn_driver/data/model/role/DataRole.dart';
 import 'package:getn_driver/data/model/sendOtp/SendOtpData.dart';
@@ -172,7 +173,7 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
-  Future<Either<String, List<category.Data>?>> carCreate(FormData data) async {
+  Future<Either<String, CarRegisterationModel?>> carCreate(FormData data) async {
     if (await networkInfo.isConnected) {
       return await authRemoteDataSource.carCreate(data).then((value) {
         return value.fold((failure) {
