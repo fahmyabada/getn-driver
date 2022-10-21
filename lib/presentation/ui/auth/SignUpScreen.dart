@@ -59,6 +59,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           if (kDebugMode) {
             print('verificationFailed***********${authException.message!}');
           }
+          showToastt(
+              text: authException.message!, state: ToastStates.error, context: context);
           setState(() {
             authStatus = "Authentication failed";
           });
@@ -119,9 +121,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
         if (kDebugMode) {
           print('SignUpScreen*******SendOtpSignUpSuccessState');
         }
-        print("phoneSignupScreen******************${splitPhone2}}");
+        print("phoneSignupScreen******************${dropDownValueCountry!.code}$splitPhone2");
         verifyPhone(
-            '${dropDownValueCountry!.code}${phoneController.text}');
+            '${dropDownValueCountry!.code}$splitPhone2');
       } else if (state is SendOtpSignUpErrorState) {
         if (kDebugMode) {
           print('SignUpScreen*******SendOtpSignUpErrorState');
@@ -304,27 +306,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         }
                         if (phoneController.text.startsWith('0') &&
                             phoneController.text.length > 1) {
-                          final splitPhone = const TextEditingValue().copyWith(
-                            text: phoneController.text
-                                .replaceAll(RegExp(r'^0+(?=.)'), ''),
-                            selection: phoneController.selection.copyWith(
-                              baseOffset: phoneController.text.length - 1,
-                              extentOffset: phoneController.text.length - 1,
-                            ),
-                          );
-                          setState(() {
-                            splitPhone2 = splitPhone.text.toString();
-                          });
-                          SignCubit.get(context).sendOtp(
-                              "register",
-                              splitPhone2,
-                              dropDownValueCountry!.id!);
+                          if(phoneController.text.length >= 11){
+                            final splitPhone = const TextEditingValue().copyWith(
+                              text: phoneController.text
+                                  .replaceAll(RegExp(r'^0+(?=.)'), ''),
+                              selection: phoneController.selection.copyWith(
+                                baseOffset: phoneController.text.length - 1,
+                                extentOffset: phoneController.text.length - 1,
+                              ),
+                            );
+                            print("phoneController*******${splitPhone.text.toString()}");
+                            setState(() {
+                              splitPhone2 = splitPhone.text.toString();
+                            });
+                            SignCubit.get(context).sendOtp(
+                                "register",
+                                splitPhone2,
+                                dropDownValueCountry!.id!);
+                          }else{
+                            showToastt(
+                                text: "The mobile number is not less than 11 digits",
+                                state: ToastStates.error,
+                                context: context);
+                          }
+
                         } else {
-                          splitPhone2 = phoneController.text.toString();
-                          SignCubit.get(context).sendOtp(
-                              "register",
-                              phoneController.text.toString(),
-                              dropDownValueCountry!.id!);
+                            if(phoneController.text.length >= 10) {
+                              splitPhone2 = phoneController.text.toString();
+                              SignCubit.get(context).sendOtp(
+                                  "register",
+                                  phoneController.text.toString(),
+                                  dropDownValueCountry!.id!);
+                            }else{
+                              showToastt(
+                                  text: "The mobile number is not less than 10 digits",
+                                  state: ToastStates.error,
+                                  context: context);
+                            }
                         }
                       }
                     } else {

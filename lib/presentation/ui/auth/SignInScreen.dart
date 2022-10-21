@@ -59,6 +59,9 @@ class _SignInScreenState extends State<SignInScreen> {
           if (kDebugMode) {
             print('verificationFailed***********${authException.message!}');
           }
+          showToastt(
+              text: authException.message!, state: ToastStates.error, context: context);
+
           setState(() {
             authStatus = "Authentication failed";
           });
