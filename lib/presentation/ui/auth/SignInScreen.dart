@@ -171,102 +171,105 @@ class _SignInScreenState extends State<SignInScreen> {
                   state is CountriesLoading
                       ? const CircularProgressIndicator(color: black)
                       : SignCubit.get(context).countries.isNotEmpty
-                          ? SizedBox(
-                              width: 100.w,
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton2(
-                                  //      value: controller.selectedCountry?.value,
-                                  dropdownDecoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(14.r),
-                                    border: Border.all(
-                                      width: 1,
-                                      color: Colors.grey[400] ?? Colors.black,
-                                    ),
+                          ? Expanded(
+                    flex: 2,
+                    child: DropdownButtonHideUnderline(
+                              child: DropdownButton2(
+                                //      value: controller.selectedCountry?.value,
+                                dropdownDecoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14.r),
+                                  border: Border.all(
+                                    width: 1,
+                                    color: Colors.grey[400] ?? Colors.black,
                                   ),
-                                  isExpanded: true,
-                                  iconSize: 0.0,
-                                  dropdownWidth: 350.w,
-                                  style: const TextStyle(color: Colors.grey),
-                                  onChanged: (Data? value) {
-                                    setState(() {
-                                      dropDownValueCountry = value;
-                                    });
-                                  },
-                                  hint: Center(
+                                ),
+                                isExpanded: true,
+                                iconSize: 0.0,
+                                dropdownWidth: 350.w,
+                                style: const TextStyle(color: Colors.grey),
+                                onChanged: (Data? value) {
+                                  setState(() {
+                                    dropDownValueCountry = value;
+                                  });
+                                },
+                                hint: Center(
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                    children: [
+                                      ImageTools.image(
+                                        fit: BoxFit.contain,
+                                        url:
+                                            dropDownValueCountry!.icon!.src ??
+                                                " ",
+                                        height: 35.w,
+                                        width: 35.w,
+                                      ),
+                                      const Icon(
+                                        Icons.keyboard_arrow_down_sharp,
+                                        color: Color.fromARGB(
+                                            207, 204, 204, 213),
+                                      ),
+                                      SizedBox(
+                                        width: 2.w,
+                                      ),
+                                      Text(dropDownValueCountry!.code ?? "",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 20.sp)),
+                                    ],
+                                  ),
+                                ),
+                                items: SignCubit.get(context)
+                                    .countries
+                                    .map((selectedCountry) {
+                                  return DropdownMenuItem<Data>(
+                                    value: selectedCountry,
                                     child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
                                       children: [
                                         ImageTools.image(
                                           fit: BoxFit.contain,
-                                          url:
-                                              dropDownValueCountry!.icon!.src ??
-                                                  " ",
-                                          height: 35.w,
-                                          width: 35.w,
-                                        ),
-                                        const Icon(
-                                          Icons.keyboard_arrow_down_sharp,
-                                          color: Color.fromARGB(
-                                              207, 204, 204, 213),
+                                          url: selectedCountry.icon?.src ??
+                                              " ",
+                                          height: 30.w,
+                                          width: 30.w,
                                         ),
                                         SizedBox(
-                                          width: 2.w,
+                                          width: 10.w,
                                         ),
-                                        Text(dropDownValueCountry!.code ?? "",
+                                        Text(selectedCountry.title?.en ?? " ",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 20.sp)),
+                                        SizedBox(
+                                          width: 10.w,
+                                        ),
+                                        Text(selectedCountry.code ?? "",
                                             style: TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 20.sp)),
                                       ],
                                     ),
-                                  ),
-                                  items: SignCubit.get(context)
-                                      .countries
-                                      .map((selectedCountry) {
-                                    return DropdownMenuItem<Data>(
-                                      value: selectedCountry,
-                                      child: Row(
-                                        children: [
-                                          ImageTools.image(
-                                            fit: BoxFit.contain,
-                                            url: selectedCountry.icon?.src ??
-                                                " ",
-                                            height: 30.w,
-                                            width: 30.w,
-                                          ),
-                                          SizedBox(
-                                            width: 10.w,
-                                          ),
-                                          Text(selectedCountry.title?.en ?? " ",
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 20.sp)),
-                                          SizedBox(
-                                            width: 10.w,
-                                          ),
-                                          Text(selectedCountry.code ?? "",
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 20.sp)),
-                                        ],
-                                      ),
-                                    );
-                                  }).toList(),
-                                ),
+                                  );
+                                }).toList(),
                               ),
-                            )
-                          : IconButton(
-                              icon: const Icon(Icons.cloud_upload,
-                                  color: redColor),
-                              onPressed: () {
-                                SignCubit.get(context).getCountries();
-                              }),
+                            ),
+                          )
+                          : Expanded(
+                            child: IconButton(
+                                icon: const Icon(Icons.cloud_upload,
+                                    color: redColor),
+                                onPressed: () {
+                                  SignCubit.get(context).getCountries();
+                                }),
+                          ),
                   SizedBox(
                     width: 5.w,
                   ),
                   Expanded(
+                    flex: 4,
                     child: Form(
                       key: formKey,
                       child: defaultFormField(
