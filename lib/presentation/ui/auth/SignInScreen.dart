@@ -26,6 +26,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Data? dropDownValueCountry;
   String splitPhone2 = "";
   String? verificationId, authStatus = "", otp;
+  bool signInLoading = false;
 
   @override
   void initState() {
@@ -36,7 +37,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Future<void> verifyPhone(phoneNumber) async {
     await FirebaseAuth.instance.verifyPhoneNumber(
 
-      /// Make sure to prefix with your country code
+        /// Make sure to prefix with your country code
         phoneNumber: phoneNumber,
 
         ///No duplicated SMS will be sent out upon re-entry (before timeout).
@@ -60,13 +61,18 @@ class _SignInScreenState extends State<SignInScreen> {
             print('verificationFailed***********${authException.message!}');
           }
           showToastt(
-              text: authException.message!, state: ToastStates.error, context: context);
+              text: authException.message!,
+              state: ToastStates.error,
+              context: context);
 
           setState(() {
             authStatus = "Authentication failed";
+            signInLoading = false;
           });
           showToastt(
-              text: "Authentication failed", state: ToastStates.error, context: context);
+              text: "Authentication failed",
+              state: ToastStates.error,
+              context: context);
         },
 
         /// This is called after the OTP is sent. Gives a `verificationId` and `code`
@@ -75,6 +81,7 @@ class _SignInScreenState extends State<SignInScreen> {
           verificationId = verId;
           setState(() {
             authStatus = "OTP has been successfully send";
+            signInLoading = false;
           });
           navigateTo(
             context,
@@ -117,14 +124,15 @@ class _SignInScreenState extends State<SignInScreen> {
               'SignInScreen*******CountriesSuccessState${SignCubit.get(context).countries[0].icon!.src} ');
         }
         dropDownValueCountry = SignCubit.get(context).countries[0];
-      }
-      else if (state is SendOtpSignInSuccessState) {
+      } else if (state is SendOtpSignInSuccessState) {
         if (kDebugMode) {
           print('SignInScreen*******SendOtpSignInSuccessState');
         }
-        verifyPhone(
-            '${dropDownValueCountry!.code}$splitPhone2');
+        verifyPhone('${dropDownValueCountry!.code}$splitPhone2');
       } else if (state is SendOtpSignInErrorState) {
+        setState((){
+          signInLoading = false;
+        });
         if (kDebugMode) {
           print('*******SendOtpSignInErrorState');
         }
@@ -172,99 +180,99 @@ class _SignInScreenState extends State<SignInScreen> {
                       ? const CircularProgressIndicator(color: black)
                       : SignCubit.get(context).countries.isNotEmpty
                           ? Expanded(
-                    flex: 2,
-                    child: DropdownButtonHideUnderline(
-                              child: DropdownButton2(
-                                //      value: controller.selectedCountry?.value,
-                                dropdownDecoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(14.r),
-                                  border: Border.all(
-                                    width: 1,
-                                    color: Colors.grey[400] ?? Colors.black,
+                              flex: 2,
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton2(
+                                  //      value: controller.selectedCountry?.value,
+                                  dropdownDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14.r),
+                                    border: Border.all(
+                                      width: 1,
+                                      color: Colors.grey[400] ?? Colors.black,
+                                    ),
                                   ),
-                                ),
-                                isExpanded: true,
-                                iconSize: 0.0,
-                                dropdownWidth: 350.w,
-                                style: const TextStyle(color: Colors.grey),
-                                onChanged: (Data? value) {
-                                  setState(() {
-                                    dropDownValueCountry = value;
-                                  });
-                                },
-                                hint: Center(
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.center,
-                                    children: [
-                                      ImageTools.image(
-                                        fit: BoxFit.contain,
-                                        url:
-                                            dropDownValueCountry!.icon!.src ??
-                                                " ",
-                                        height: 35.w,
-                                        width: 35.w,
-                                      ),
-                                      const Icon(
-                                        Icons.keyboard_arrow_down_sharp,
-                                        color: Color.fromARGB(
-                                            207, 204, 204, 213),
-                                      ),
-                                      SizedBox(
-                                        width: 2.w,
-                                      ),
-                                      Text(dropDownValueCountry!.code ?? "",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 20.sp)),
-                                    ],
-                                  ),
-                                ),
-                                items: SignCubit.get(context)
-                                    .countries
-                                    .map((selectedCountry) {
-                                  return DropdownMenuItem<Data>(
-                                    value: selectedCountry,
+                                  isExpanded: true,
+                                  iconSize: 0.0,
+                                  dropdownWidth: 350.w,
+                                  style: const TextStyle(color: Colors.grey),
+                                  onChanged: (Data? value) {
+                                    setState(() {
+                                      dropDownValueCountry = value;
+                                    });
+                                  },
+                                  hint: Center(
                                     child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         ImageTools.image(
                                           fit: BoxFit.contain,
-                                          url: selectedCountry.icon?.src ??
-                                              " ",
-                                          height: 30.w,
-                                          width: 30.w,
+                                          url:
+                                              dropDownValueCountry!.icon!.src ??
+                                                  " ",
+                                          height: 35.w,
+                                          width: 35.w,
+                                        ),
+                                        const Icon(
+                                          Icons.keyboard_arrow_down_sharp,
+                                          color: Color.fromARGB(
+                                              207, 204, 204, 213),
                                         ),
                                         SizedBox(
-                                          width: 10.w,
+                                          width: 2.w,
                                         ),
-                                        Text(selectedCountry.title?.en ?? " ",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 20.sp)),
-                                        SizedBox(
-                                          width: 10.w,
-                                        ),
-                                        Text(selectedCountry.code ?? "",
+                                        Text(dropDownValueCountry!.code ?? "",
                                             style: TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 20.sp)),
                                       ],
                                     ),
-                                  );
-                                }).toList(),
+                                  ),
+                                  items: SignCubit.get(context)
+                                      .countries
+                                      .map((selectedCountry) {
+                                    return DropdownMenuItem<Data>(
+                                      value: selectedCountry,
+                                      child: Row(
+                                        children: [
+                                          ImageTools.image(
+                                            fit: BoxFit.contain,
+                                            url: selectedCountry.icon?.src ??
+                                                " ",
+                                            height: 30.w,
+                                            width: 30.w,
+                                          ),
+                                          SizedBox(
+                                            width: 10.w,
+                                          ),
+                                          Text(selectedCountry.title?.en ?? " ",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 20.sp)),
+                                          SizedBox(
+                                            width: 10.w,
+                                          ),
+                                          Text(selectedCountry.code ?? "",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 20.sp)),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
                               ),
-                            ),
-                          )
+                            )
                           : Expanded(
-                            child: IconButton(
-                                icon: const Icon(Icons.cloud_upload,
-                                    color: redColor),
-                                onPressed: () {
-                                  SignCubit.get(context).getCountries();
-                                }),
-                          ),
+                              child: IconButton(
+                                  icon: const Icon(Icons.cloud_upload,
+                                      color: redColor),
+                                  onPressed: () {
+                                    SignCubit.get(context).getCountries();
+                                  }),
+                            ),
                   SizedBox(
                     width: 5.w,
                   ),
@@ -292,49 +300,59 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
-              child: defaultButton3(
-                  press: () {
-                    if (dropDownValueCountry != null) {
-                      if (formKey.currentState!.validate()) {
-                        FocusScopeNode currentFocus = FocusScope.of(context);
-                        if (!currentFocus.hasPrimaryFocus) {
-                          currentFocus.focusedChild?.unfocus();
-                        }
-                        if (phoneController.text.startsWith('0') &&
-                            phoneController.text.length > 1) {
-                          final splitPhone = const TextEditingValue().copyWith(
-                            text: phoneController.text
-                                .replaceAll(RegExp(r'^0+(?=.)'), ''),
-                            selection: phoneController.selection.copyWith(
-                              baseOffset: phoneController.text.length - 1,
-                              extentOffset: phoneController.text.length - 1,
-                            ),
-                          );
-                          setState(() {
-                            splitPhone2 = splitPhone.text.toString();
-                          });
+              child: signInLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        color: black,
+                      ),
+                    )
+                  : defaultButton3(
+                      press: () {
+                        if (dropDownValueCountry != null) {
+                          if (formKey.currentState!.validate()) {
+                            FocusScopeNode currentFocus =
+                                FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.focusedChild?.unfocus();
+                            }
+                            if (phoneController.text.startsWith('0') &&
+                                phoneController.text.length > 1) {
+                              final splitPhone =
+                                  const TextEditingValue().copyWith(
+                                text: phoneController.text
+                                    .replaceAll(RegExp(r'^0+(?=.)'), ''),
+                                selection: phoneController.selection.copyWith(
+                                  baseOffset: phoneController.text.length - 1,
+                                  extentOffset: phoneController.text.length - 1,
+                                ),
+                              );
+                              setState(() {
+                                splitPhone2 = splitPhone.text.toString();
+                                signInLoading = true;
+                              });
 
-                          SignCubit.get(context).sendOtp(
-                              "login",
-                              splitPhone2,
-                              dropDownValueCountry!.id!);
+                              SignCubit.get(context).sendOtp("login",
+                                  splitPhone2, dropDownValueCountry!.id!);
+                            } else {
+                              setState(() {
+                                signInLoading = true;
+                              });
+                              splitPhone2 = phoneController.text.toString();
+
+                              SignCubit.get(context).sendOtp("login",
+                                  splitPhone2, dropDownValueCountry!.id!);
+                            }
+                          }
                         } else {
-                          splitPhone2 = phoneController.text.toString();
-
-                          SignCubit.get(context).sendOtp(
-                              "login", splitPhone2, dropDownValueCountry!.id!);
+                          showToastt(
+                              text: "country code note found",
+                              state: ToastStates.error,
+                              context: context);
                         }
-                      }
-                    } else {
-                      showToastt(
-                          text: "country code note found",
-                          state: ToastStates.error,
-                          context: context);
-                    }
-                  },
-                  text: "Next",
-                  backColor: accentColor,
-                  textColor: white),
+                      },
+                      text: "Next",
+                      backColor: accentColor,
+                      textColor: white),
             ),
             SizedBox(
               height: 10.h,
@@ -366,6 +384,4 @@ class _SignInScreenState extends State<SignInScreen> {
       );
     });
   }
-
-
 }

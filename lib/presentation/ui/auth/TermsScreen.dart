@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
-import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
 
 class TermsScreen extends StatelessWidget {
   const TermsScreen({Key? key}) : super(key: key);
@@ -90,8 +89,7 @@ class TermsScreen extends StatelessWidget {
                 margin: EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
                 child: defaultButton3(
                     press: () {
-                      SignCubit.get(context).setTerms(true);
-                      Navigator.of(context).pop();
+                      Navigator.of(context).pop(true);
                     },
                     text: "Accept",
                     backColor: accentColor,

@@ -48,21 +48,7 @@ class SignCubit extends Cubit<SignState> {
   bool carModelLoading = false;
   bool carSubCategoryLoading = false;
   bool colorsLoading = false;
-  bool terms = false;
-  bool frontNationalId = false;
-  bool backNationalId = false;
 
-  // bool frontPassport = false;
-  // bool backPassport = false;
-  bool frontDriverLicence = false;
-  bool backDriverLicence = false;
-  String? frontNationalIdString;
-  String? backNationalIdString;
-
-  // String? frontPassportString;
-  // String? backPassportString;
-  String? frontDriverLicenceString;
-  String? backDriverLicenceString;
 
   void getCountries() async {
     emit(CountriesLoading());
@@ -155,7 +141,6 @@ class SignCubit extends Cubit<SignState> {
   }
 
   void sendOtp(String type, String phone, String countryId) async {
-    emit(SendOtpLoading());
     sendOtpUseCase.execute(type, phone, countryId).then((value) {
       emit(eitherLoadedOrErrorStateSendOtp(type, value));
     });
@@ -264,33 +249,6 @@ class SignCubit extends Cubit<SignState> {
       return EditSuccessState(data);
     });
   }
-
-  void setTerms(bool data) {
-    terms = data;
-
-    emit(TermsSuccessState());
-  }
-
-  void setChangeUpdateBool(String type, bool data) {
-    if (type == "frontNationalId") {
-      frontNationalId = data;
-    } else if (type == "backNationalId") {
-      backNationalId = data;
-    }
-    // else if (type == "frontPassport") {
-    //   frontPassport = data;
-    // } else if (type == "backPassport") {
-    //   backPassport = data;
-    // }
-    else if (type == "frontDriverLicence") {
-      frontDriverLicence = data;
-    } else if (type == "backDriverLicence") {
-      backDriverLicence = data;
-    }
-
-    emit(DriverInformationLoading());
-  }
-
 
   void carCreate(FormData data) async {
     emit(CarCreateLoading());

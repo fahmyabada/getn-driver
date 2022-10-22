@@ -9,8 +9,8 @@ import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/strings.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
-import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
 import 'package:getn_driver/presentation/ui/auth/OtpScreen.dart';
+import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -25,6 +25,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Data? dropDownValueCountry;
   String splitPhone2 = "";
   String? verificationId, authStatus = "", otp;
+  bool signUpLoading = false;
 
   @override
   void initState() {
@@ -35,7 +36,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Future<void> verifyPhone(phoneNumber) async {
     await FirebaseAuth.instance.verifyPhoneNumber(
 
-      /// Make sure to prefix with your country code
+        /// Make sure to prefix with your country code
         phoneNumber: phoneNumber,
 
         ///No duplicated SMS will be sent out upon re-entry (before timeout).
@@ -60,9 +61,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
             print('verificationFailed***********${authException.message!}');
           }
           showToastt(
-              text: authException.message!, state: ToastStates.error, context: context);
+              text: authException.message!,
+              state: ToastStates.error,
+              context: context);
           setState(() {
             authStatus = "Authentication failed";
+            signUpLoading = false;
           });
         },
 
@@ -72,6 +76,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           verificationId = verId;
           setState(() {
             authStatus = "OTP has been successfully send";
+            signUpLoading = false;
           });
           navigateTo(
             context,
@@ -102,35 +107,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
         if (kDebugMode) {
           print('SignUpScreen*******CountriesLoading');
         }
-      }
-      else if (state is CountriesErrorState) {
+      } else if (state is CountriesErrorState) {
         if (kDebugMode) {
           print('SignUpScreen*******CountriesErrorState ${state.message}');
         }
         showToastt(
             text: state.message, state: ToastStates.error, context: context);
-      }
-      else if (state is CountriesSuccessState) {
+      } else if (state is CountriesSuccessState) {
         if (kDebugMode) {
           print(
               'SignUpScreen*******CountriesSuccessState${SignCubit.get(context).countries[0].icon!.src} ');
         }
         dropDownValueCountry = SignCubit.get(context).countries[0];
-      }
-      else if (state is SendOtpSignUpSuccessState) {
+      } else if (state is SendOtpSignUpSuccessState) {
         if (kDebugMode) {
           print('SignUpScreen*******SendOtpSignUpSuccessState');
         }
-        print("phoneSignupScreen******************${dropDownValueCountry!.code}$splitPhone2");
-        verifyPhone(
-            '${dropDownValueCountry!.code}$splitPhone2');
+        print(
+            "phoneSignupScreen******************${dropDownValueCountry!.code}$splitPhone2");
+        verifyPhone('${dropDownValueCountry!.code}$splitPhone2');
       } else if (state is SendOtpSignUpErrorState) {
+        setState(() {
+          signUpLoading = false;
+        });
         if (kDebugMode) {
           print('SignUpScreen*******SendOtpSignUpErrorState');
         }
         if (state.message == "{phone:  Already user}") {
           showToastt(
-              text: "Already you have account \n SignIn please..", state: ToastStates.error, context: context);
+              text: "Already you have account \n SignIn please..",
+              state: ToastStates.error,
+              context: context);
           Navigator.pop(context);
         } else {
           showToastt(
@@ -179,99 +186,99 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ? const CircularProgressIndicator(color: black)
                       : SignCubit.get(context).countries.isNotEmpty
                           ? Expanded(
-                    flex: 2,
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton2(
-                                //      value: controller.selectedCountry?.value,
-                                dropdownDecoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(14.r),
-                                  border: Border.all(
-                                    width: 1,
-                                    color: Colors.grey[400] ?? Colors.black,
+                              flex: 2,
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton2(
+                                  //      value: controller.selectedCountry?.value,
+                                  dropdownDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14.r),
+                                    border: Border.all(
+                                      width: 1,
+                                      color: Colors.grey[400] ?? Colors.black,
+                                    ),
                                   ),
-                                ),
-                                isExpanded: true,
-                                iconSize: 0.0,
-                                dropdownWidth: 350.w,
-                                style: const TextStyle(color: Colors.grey),
-                                onChanged: (Data? value) {
-                                  setState(() {
-                                    dropDownValueCountry = value;
-                                  });
-                                },
-                                hint: Center(
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.center,
-                                    children: [
-                                      ImageTools.image(
-                                        fit: BoxFit.contain,
-                                        url:
-                                            dropDownValueCountry!.icon!.src ??
-                                                " ",
-                                        height: 35.w,
-                                        width: 35.w,
-                                      ),
-                                      const Icon(
-                                        Icons.keyboard_arrow_down_sharp,
-                                        color: Color.fromARGB(
-                                            207, 204, 204, 213),
-                                      ),
-                                      SizedBox(
-                                        width: 2.w,
-                                      ),
-                                      Text(dropDownValueCountry!.code ?? "",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 20.sp)),
-                                    ],
-                                  ),
-                                ),
-                                items: SignCubit.get(context)
-                                    .countries
-                                    .map((selectedCountry) {
-                                  return DropdownMenuItem<Data>(
-                                    value: selectedCountry,
+                                  isExpanded: true,
+                                  iconSize: 0.0,
+                                  dropdownWidth: 350.w,
+                                  style: const TextStyle(color: Colors.grey),
+                                  onChanged: (Data? value) {
+                                    setState(() {
+                                      dropDownValueCountry = value;
+                                    });
+                                  },
+                                  hint: Center(
                                     child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         ImageTools.image(
                                           fit: BoxFit.contain,
-                                          url: selectedCountry.icon?.src ??
-                                              " ",
-                                          height: 30.w,
-                                          width: 30.w,
+                                          url:
+                                              dropDownValueCountry!.icon!.src ??
+                                                  " ",
+                                          height: 35.w,
+                                          width: 35.w,
+                                        ),
+                                        const Icon(
+                                          Icons.keyboard_arrow_down_sharp,
+                                          color: Color.fromARGB(
+                                              207, 204, 204, 213),
                                         ),
                                         SizedBox(
-                                          width: 10.w,
+                                          width: 2.w,
                                         ),
-                                        Text(selectedCountry.title?.en ?? " ",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 20.sp)),
-                                        SizedBox(
-                                          width: 10.w,
-                                        ),
-                                        Text(selectedCountry.code ?? "",
+                                        Text(dropDownValueCountry!.code ?? "",
                                             style: TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 20.sp)),
                                       ],
                                     ),
-                                  );
-                                }).toList(),
+                                  ),
+                                  items: SignCubit.get(context)
+                                      .countries
+                                      .map((selectedCountry) {
+                                    return DropdownMenuItem<Data>(
+                                      value: selectedCountry,
+                                      child: Row(
+                                        children: [
+                                          ImageTools.image(
+                                            fit: BoxFit.contain,
+                                            url: selectedCountry.icon?.src ??
+                                                " ",
+                                            height: 30.w,
+                                            width: 30.w,
+                                          ),
+                                          SizedBox(
+                                            width: 10.w,
+                                          ),
+                                          Text(selectedCountry.title?.en ?? " ",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 20.sp)),
+                                          SizedBox(
+                                            width: 10.w,
+                                          ),
+                                          Text(selectedCountry.code ?? "",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 20.sp)),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
                               ),
-                            ),
-                          )
+                            )
                           : Expanded(
-                            child: IconButton(
-                                icon: const Icon(Icons.cloud_upload,
-                                    color: redColor),
-                                onPressed: () {
-                                  SignCubit.get(context).getCountries();
-                                }),
-                          ),
+                              child: IconButton(
+                                  icon: const Icon(Icons.cloud_upload,
+                                      color: redColor),
+                                  onPressed: () {
+                                    SignCubit.get(context).getCountries();
+                                  }),
+                            ),
                   SizedBox(
                     width: 5.w,
                   ),
@@ -299,65 +306,78 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
-              child: defaultButton3(
-                  press: () {
-                    if (dropDownValueCountry != null) {
-                      if (formKey.currentState!.validate()) {
-                        FocusScopeNode currentFocus = FocusScope.of(context);
-                        if (!currentFocus.hasPrimaryFocus) {
-                          currentFocus.focusedChild?.unfocus();
-                        }
-                        if (phoneController.text.startsWith('0') &&
-                            phoneController.text.length > 1) {
-                          if(phoneController.text.length >= 11){
-                            final splitPhone = const TextEditingValue().copyWith(
-                              text: phoneController.text
-                                  .replaceAll(RegExp(r'^0+(?=.)'), ''),
-                              selection: phoneController.selection.copyWith(
-                                baseOffset: phoneController.text.length - 1,
-                                extentOffset: phoneController.text.length - 1,
-                              ),
-                            );
-                            print("phoneController*******${splitPhone.text.toString()}");
-                            setState(() {
-                              splitPhone2 = splitPhone.text.toString();
-                            });
-                            SignCubit.get(context).sendOtp(
-                                "register",
-                                splitPhone2,
-                                dropDownValueCountry!.id!);
-                          }else{
-                            showToastt(
-                                text: "The mobile number is not less than 11 digits",
-                                state: ToastStates.error,
-                                context: context);
-                          }
-
-                        } else {
-                            if(phoneController.text.length >= 10) {
-                              splitPhone2 = phoneController.text.toString();
-                              SignCubit.get(context).sendOtp(
-                                  "register",
-                                  phoneController.text.toString(),
-                                  dropDownValueCountry!.id!);
-                            }else{
-                              showToastt(
-                                  text: "The mobile number is not less than 10 digits",
-                                  state: ToastStates.error,
-                                  context: context);
+              child: signUpLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        color: black,
+                      ),
+                    )
+                  : defaultButton3(
+                      press: () {
+                        if (dropDownValueCountry != null) {
+                          if (formKey.currentState!.validate()) {
+                            FocusScopeNode currentFocus =
+                                FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.focusedChild?.unfocus();
                             }
+                            if (phoneController.text.startsWith('0') &&
+                                phoneController.text.length > 1) {
+                              if (phoneController.text.length >= 11) {
+                                final splitPhone =
+                                    const TextEditingValue().copyWith(
+                                  text: phoneController.text
+                                      .replaceAll(RegExp(r'^0+(?=.)'), ''),
+                                  selection: phoneController.selection.copyWith(
+                                    baseOffset: phoneController.text.length - 1,
+                                    extentOffset:
+                                        phoneController.text.length - 1,
+                                  ),
+                                );
+                                print(
+                                    "phoneController*******${splitPhone.text.toString()}");
+                                setState(() {
+                                  splitPhone2 = splitPhone.text.toString();
+                                  signUpLoading = true;
+                                });
+                                SignCubit.get(context).sendOtp("register",
+                                    splitPhone2, dropDownValueCountry!.id!);
+                              } else {
+                                showToastt(
+                                    text:
+                                        "The mobile number is not less than 11 digits",
+                                    state: ToastStates.error,
+                                    context: context);
+                              }
+                            } else {
+                              if (phoneController.text.length >= 10) {
+                                setState(() {
+                                  signUpLoading = true;
+                                });
+                                splitPhone2 = phoneController.text.toString();
+                                SignCubit.get(context).sendOtp(
+                                    "register",
+                                    phoneController.text.toString(),
+                                    dropDownValueCountry!.id!);
+                              } else {
+                                showToastt(
+                                    text:
+                                        "The mobile number is not less than 10 digits",
+                                    state: ToastStates.error,
+                                    context: context);
+                              }
+                            }
+                          }
+                        } else {
+                          showToastt(
+                              text: "country code note found",
+                              state: ToastStates.error,
+                              context: context);
                         }
-                      }
-                    } else {
-                      showToastt(
-                          text: "country code note found",
-                          state: ToastStates.error,
-                          context: context);
-                    }
-                  },
-                  text: "Next",
-                  backColor: accentColor,
-                  textColor: white),
+                      },
+                      text: "Next",
+                      backColor: accentColor,
+                      textColor: white),
             ),
           ],
         ),

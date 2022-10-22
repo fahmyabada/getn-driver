@@ -13,6 +13,7 @@ import 'package:getn_driver/presentation/ui/auth/DriverInformationScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/SignInScreen.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/notificationService/local_notification_service.dart';
+import 'package:getn_driver/presentation/ui/onBoarding/OnBoardScreenView.dart';
 import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/RequestTabsScreen.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
@@ -318,42 +319,19 @@ class _SplashScreenState extends State<SplashScreen> {
                   navigateAndFinish(context, const RequestTabsScreen());
                 }
               }else {
-                navigateAndFinish(context, const SignInScreen());
+                navigateAndFinish(context,  OnBoardScreenView());
               }
             } else {
-              navigateAndFinish(context, const SignInScreen());
+              navigateAndFinish(context,  OnBoardScreenView());
             }
           }
         }, builder: (context, state) {
-          return Scaffold(
-            backgroundColor: primaryColor,
-            body: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 40.r, right: 40.r),
-                  child: Text(
-                    Strings.perfectTaxiBooking,
-                    style: TextStyle(fontSize: 30.sp, color: Colors.white),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                SizedBox(
-                  height: 40.h,
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 85.r),
-                  height: 15.h,
-                  child: const LinearProgressIndicator(
-                    backgroundColor: Colors.white,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      accentColor,
-                    ),
-                    //value: 0.8,
-                  ),
-                )
-              ],
+          return const Scaffold(
+            backgroundColor: white,
+            body: Center(
+              child: Image(
+                image: AssetImage('assets/logoGif.gif'),
+              ),
             ),
           );
         }));

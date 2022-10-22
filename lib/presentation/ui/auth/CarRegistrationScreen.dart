@@ -40,6 +40,7 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
   String backCarLicenseImage = "";
   List<File> listGallery = [File("")];
   List<MultipartFile> listGalleryValue = [];
+  bool carLoading = false;
 
   Future selectImageSource(ImageSource imageSource, String type) async {
     try {
@@ -52,7 +53,7 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
         maxHeight: 200.h,
       );
 
-      setState(() async{
+      setState(() async {
         if (type == "carFront") {
           _imageFrontCar = File(pickedFile!.path);
           frontCarLicenseImage = _imageFrontCar!.path.toString();
@@ -67,8 +68,10 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
           }
         } else if (type == "galley") {
           listGallery.insert(listGallery.length - 1, File(pickedFile!.path));
-          final data = await MultipartFile.fromFile(File(pickedFile.path).path.toString(),
-              filename: File(pickedFile.path).path.toString(), contentType: MediaType("image", "jpeg"));
+          final data = await MultipartFile.fromFile(
+              File(pickedFile.path).path.toString(),
+              filename: File(pickedFile.path).path.toString(),
+              contentType: MediaType("image", "jpeg"));
           listGalleryValue.add(data);
           // listGalleryValue.add(File(pickedFile.path).path.toString());
           // if (kDebugMode) {
@@ -96,14 +99,23 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
             if (kDebugMode) {
               print('*******CarCreateSuccessState');
             }
-            if(state.data!.carModel !=null && state.data!.carNumber != null){
-              getIt<SharedPreferences>().setString('typeSign', "signWithCarRegistration");
+            setState(() {
+              carLoading = false;
+            });
+            if (state.data!.carModel != null && state.data!.carNumber != null) {
+              getIt<SharedPreferences>()
+                  .setString('typeSign', "signWithCarRegistration");
 
               navigateTo(context, const RequestTabsScreen());
             }
           } else if (state is CarCreateErrorState) {
+            setState(() {
+              carLoading = false;
+            });
             showToastt(
-                text: state.message, state: ToastStates.error, context: context);
+                text: state.message,
+                state: ToastStates.error,
+                context: context);
           }
         },
         builder: (context, state) {
@@ -572,7 +584,7 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                       ),
                       GridView.builder(
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: listGallery.length ,
+                        itemCount: listGallery.length,
                         shrinkWrap: true,
                         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                             maxCrossAxisExtent: 150.sp,
@@ -598,23 +610,23 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                             return Stack(
                               children: [
                                 Container(
-                                    height: 200.h,
-                                    width: 250.w,
-                                    decoration: BoxDecoration(
-                                      color: white,
-                                      shape: BoxShape.rectangle,
+                                  height: 200.h,
+                                  width: 250.w,
+                                  decoration: BoxDecoration(
+                                    color: white,
+                                    shape: BoxShape.rectangle,
+                                    borderRadius: BorderRadius.circular(25.r),
+                                    border: Border.all(color: Colors.black),
+                                  ),
+                                  child: SizedBox(
+                                    child: ClipRRect(
                                       borderRadius: BorderRadius.circular(25.r),
-                                      border: Border.all(color: Colors.black),
-                                    ),
-                                    child: SizedBox(
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(25.r),
-                                        child: Image.file(
-                                          listGallery[i],
-                                          fit: BoxFit.fill,
-                                        ),
+                                      child: Image.file(
+                                        listGallery[i],
+                                        fit: BoxFit.fill,
                                       ),
                                     ),
+                                  ),
                                 ),
                                 Align(
                                   alignment: AlignmentDirectional.bottomEnd,
@@ -640,63 +652,90 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                       SizedBox(
                         height: 60.h,
                       ),
-                      defaultButton3(
-                          press: () async{
-                            print("CarModel*****************${dropDownValueCarSubCategory?.title!.en} ++ ${dropDownValueCarSubCategory?.id!}");
-                            print("CarModelYear*****************${dropDownValueCarModel?.title!.en} ++ ${dropDownValueCarModel?.id!}");
-                            print("color*****************${dropDownValueColor?.title!.en} ++ ${dropDownValueColor?.id!}");
-                            print("CarNum*****************${carNumberController.text}");
-                            print("city*****************${cityController.text}");
-                            print("area*****************${areaController.text}");
-                            print("address*****************${addressController.text}");
-                            print("fontCar*****************$frontCarLicenseImage");
-                            print("backCar*****************$backCarLicenseImage");
-                            print("gallery*****************${listGalleryValue.toString()}");
-                            if (dropDownValueCarSubCategory != null &&
-                                dropDownValueCarModel != null &&
-                                dropDownValueColor != null && formKey.currentState!.validate() && frontCarLicenseImage.isNotEmpty
-                            && backCarLicenseImage.isNotEmpty && listGalleryValue.isNotEmpty){
-                              var formData = FormData.fromMap({
-                                'carModel': dropDownValueCarSubCategory?.id!,
-                                'carModelYear': dropDownValueCarModel?.id!,
-                                'carColor': dropDownValueColor?.id!,
-                                'carNumber':
-                                    carNumberController.text.toString(),
-                                'city': cityController.text.toString(),
-                                'area': areaController.text.toString(),
-                                'address': addressController.text.toString(),
-                                'gallery': listGalleryValue,
+                      carLoading
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                                color: black,
+                              ),
+                            )
+                          : defaultButton3(
+                              press: () async {
+                                print(
+                                    "CarModel*****************${dropDownValueCarSubCategory?.title!.en} ++ ${dropDownValueCarSubCategory?.id!}");
+                                print(
+                                    "CarModelYear*****************${dropDownValueCarModel?.title!.en} ++ ${dropDownValueCarModel?.id!}");
+                                print(
+                                    "color*****************${dropDownValueColor?.title!.en} ++ ${dropDownValueColor?.id!}");
+                                print(
+                                    "CarNum*****************${carNumberController.text}");
+                                print(
+                                    "city*****************${cityController.text}");
+                                print(
+                                    "area*****************${areaController.text}");
+                                print(
+                                    "address*****************${addressController.text}");
+                                print(
+                                    "fontCar*****************$frontCarLicenseImage");
+                                print(
+                                    "backCar*****************$backCarLicenseImage");
+                                print(
+                                    "gallery*****************${listGalleryValue.toString()}");
+                                if (dropDownValueCarSubCategory != null &&
+                                    dropDownValueCarModel != null &&
+                                    dropDownValueColor != null &&
+                                    formKey.currentState!.validate() &&
+                                    frontCarLicenseImage.isNotEmpty &&
+                                    backCarLicenseImage.isNotEmpty &&
+                                    listGalleryValue.isNotEmpty) {
+                                  setState(() {
+                                    carLoading = true;
+                                  });
+                                  var formData = FormData.fromMap({
+                                    'carModel':
+                                        dropDownValueCarSubCategory?.id!,
+                                    'carModelYear': dropDownValueCarModel?.id!,
+                                    'carColor': dropDownValueColor?.id!,
+                                    'carNumber':
+                                        carNumberController.text.toString(),
+                                    'city': cityController.text.toString(),
+                                    'area': areaController.text.toString(),
+                                    'address':
+                                        addressController.text.toString(),
+                                    'gallery': listGalleryValue,
                                     // .map((item) {
                                     // print("gallery********$item");
-                                   // MultipartFile.fromFileSync(item,
-                                   //    filename: item,
-                                   //    contentType:
-                                   //    MediaType("image", "jpeg"));
-                              // })
-                              //       .toList(),
-                                'frontCarLicenseImage':
-                                    await MultipartFile.fromFile(
-                                        frontCarLicenseImage,
-                                        filename: frontCarLicenseImage,
-                                        contentType:
-                                            MediaType("image", "jpeg")),
-                                'backCarLicenseImage':
-                                    await MultipartFile.fromFile(
-                                        backCarLicenseImage,
-                                        filename: backCarLicenseImage,
-                                        contentType:
-                                            MediaType("image", "jpeg")),
-                              });
-                              print("FormData****************${formData.toString()}");
-                              SignCubit.get(context).carCreate(formData);
-                            }else{
-                              showToastt(
-                                  text: "please fill all data first...", state: ToastStates.error, context: context);
-                            }
-                          },
-                          text: "Save",
-                          backColor: accentColor,
-                          textColor: white),
+                                    // MultipartFile.fromFileSync(item,
+                                    //    filename: item,
+                                    //    contentType:
+                                    //    MediaType("image", "jpeg"));
+                                    // })
+                                    //       .toList(),
+                                    'frontCarLicenseImage':
+                                        await MultipartFile.fromFile(
+                                            frontCarLicenseImage,
+                                            filename: frontCarLicenseImage,
+                                            contentType:
+                                                MediaType("image", "jpeg")),
+                                    'backCarLicenseImage':
+                                        await MultipartFile.fromFile(
+                                            backCarLicenseImage,
+                                            filename: backCarLicenseImage,
+                                            contentType:
+                                                MediaType("image", "jpeg")),
+                                  });
+                                  print(
+                                      "FormData****************${formData.toString()}");
+                                  SignCubit.get(context).carCreate(formData);
+                                } else {
+                                  showToastt(
+                                      text: "please fill all data first...",
+                                      state: ToastStates.error,
+                                      context: context);
+                                }
+                              },
+                              text: "Save",
+                              backColor: accentColor,
+                              textColor: white),
                     ],
                   ),
                 ),

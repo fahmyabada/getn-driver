@@ -30,6 +30,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
   final fullNameController = TextEditingController();
   final emailController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  bool terms = false;
 
   @override
   void initState() {
@@ -164,9 +165,9 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                     MaterialTapTargetSize.shrinkWrap,
                                 focusColor: Theme.of(context).focusColor,
                                 //   activeColor: Theme.of(context).colorScheme.secondary,
-                                value: SignCubit.get(context).terms,
+                                value: terms,
                                 onChanged: (value) {
-                                  SignCubit.get(context).setTerms(value!);
+                                  terms = value!;
                                 },
                               ),
                             ),
@@ -182,9 +183,13 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     InkWell(
-                                      onTap: () {
-                                        navigateTo(
+                                      onTap: () async{
+                                      bool value = await navigateToWithRefreshPagePrevious(
                                             context, const TermsScreen());
+
+                                      setState(() {
+                                        terms = value;
+                                      });
                                       },
                                       child: Text("Terms & condition ",
                                           style: TextStyle(
@@ -205,7 +210,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                           child: defaultButton3(
                               press: () {
                                 if (formKey.currentState!.validate()) {
-                                  if (SignCubit.get(context).terms) {
+                                  if (terms) {
                                     navigateTo(
                                       context,
                                       VerifyImageScreen(
@@ -217,6 +222,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                         countryId: widget.countryId,
                                         firebaseToken: widget.firebaseToken,
                                         role: groupValueId,
+                                        terms: terms,
                                       ),
                                     );
                                   } else {

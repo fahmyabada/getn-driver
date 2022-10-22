@@ -8,11 +8,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/ui/auth/CarRegistrationScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/DriverInformationScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/SignUpDetailsScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
-import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/RequestTabsScreen.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -215,21 +215,17 @@ class _OtpScreenState extends State<OtpScreen> {
         if (state.data.token != null) {
           getIt<SharedPreferences>().setString('token', state.data.token!);
         }
-        if (state.data.frontNationalImage!.src != null) {
-          getIt<SharedPreferences>()
-              .setString('typeSign', "signWithInformation");
-          navigateTo(
-              context,
-              const RequestTabsScreen());
+        if (state.data.frontNationalImage?.src == null) {
+          getIt<SharedPreferences>().setString('typeSign', "sign");
+          navigateTo(context, const DriverInformationScreen());
         } else if (state.data.hasCar != null && !state.data.hasCar!) {
           getIt<SharedPreferences>()
               .setString('typeSign', "signWithInformation");
-          navigateTo(
-              context,
-              const CarRegistrationScreen());
-        }else {
-          getIt<SharedPreferences>().setString('typeSign', "sign");
-          navigateTo(context, const DriverInformationScreen());
+          navigateTo(context, const CarRegistrationScreen());
+        } else {
+          getIt<SharedPreferences>()
+              .setString('typeSign', "signWithInformation");
+          navigateTo(context, const RequestTabsScreen());
         }
       } else if (state is SignInErrorState) {
         if (kDebugMode) {
@@ -261,7 +257,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 25.r),
                   child: Text(
-                    "Enter the 4- digit code sent to \n ${widget.phoneWithCountry}",
+                    "Enter the 6- digit code sent to \n ${widget.phoneWithCountry}",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -289,13 +285,13 @@ class _OtpScreenState extends State<OtpScreen> {
                     },
                     obscureText: false,
                     pinTheme: PinTheme(
-                      shape: PinCodeFieldShape.box,
-                      borderRadius: BorderRadius.circular(5),
-                      fieldHeight: 50,
-                      fieldWidth: 40,
-                      activeFillColor: Colors.white,
-                      inactiveFillColor: Colors.white,inactiveColor: blueLight
-                    ),
+                        shape: PinCodeFieldShape.box,
+                        borderRadius: BorderRadius.circular(5),
+                        fieldHeight: 50,
+                        fieldWidth: 40,
+                        activeFillColor: Colors.white,
+                        inactiveFillColor: Colors.white,
+                        inactiveColor: blueLight),
                     cursorColor: Colors.black,
                     animationDuration: const Duration(milliseconds: 300),
                     enableActiveFill: true,
@@ -350,7 +346,8 @@ class _OtpScreenState extends State<OtpScreen> {
                 buildTime(context),
                 SizedBox(height: 32.h),
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
+                  margin:
+                      EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
                   child: defaultButton3(
                       press: () {
                         nextButton();

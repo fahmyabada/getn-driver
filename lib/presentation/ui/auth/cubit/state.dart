@@ -69,8 +69,6 @@ class RoleSuccessState extends SignState {
   RoleSuccessState(this.data);
 }
 
-class SendOtpLoading extends SignState {}
-
 class SendOtpSignInErrorState extends SignState {
   final String message;
 
