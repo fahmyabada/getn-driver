@@ -38,7 +38,7 @@ class RequestCubit extends Cubit<RequestState> {
   void getRequestCurrent(int index) async {
     emit(RequestCurrentInitial());
     var body = {
-      "status": ["arrive", "coming", "start"],
+      "status": ["arrive", "coming", "start","on_my_way"],
       "page": index,
       "select-client": 'name image'
     };
@@ -181,7 +181,7 @@ class RequestCubit extends Cubit<RequestState> {
       "page": index,
       "sort": 'createdAt:-1',
       "select-client": 'name image',
-      "paymentStatus": 'pending',
+      "paymentStatus": ["pending","need_confirm","failed"],
     };
     if (index > 1) {
       getRequestUseCase.execute(body).then((value) {

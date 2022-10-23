@@ -10,6 +10,7 @@ import 'package:getn_driver/presentation/ui/auth/CarRegistrationScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/DriverInformationScreen.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/notificationService/local_notification_service.dart';
+import 'package:getn_driver/presentation/ui/auth/SignInScreen.dart';
 import 'package:getn_driver/presentation/ui/onBoarding/OnBoardScreenView.dart';
 import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/RequestTabsScreen.dart';
@@ -316,10 +317,10 @@ class _SplashScreenState extends State<SplashScreen> {
                   navigateAndFinish(context, const RequestTabsScreen());
                 }
               }else {
-                navigateAndFinish(context,  OnBoardScreenView());
+                navigateAndFinish(context,  SignInScreen());
               }
             } else {
-              navigateAndFinish(context,  OnBoardScreenView());
+              navigateAndFinish(context,  SignInScreen());
             }
           }
         }, builder: (context, state) {

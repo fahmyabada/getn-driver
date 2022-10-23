@@ -31,7 +31,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     'on_my_way': ['arrive', 'reject'],
     'arrive': ['start', 'reject'],
     'coming': ['start', 'reject'],
-    'start': ['end','mid_pause'],
+    'start': ['end', 'mid_pause'],
     'end': [],
     'mid_pause': [],
     'reject': [],
@@ -44,7 +44,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     'on_my_way': ['Arrive', 'Cancel'],
     'arrive': ['Start', 'Cancel'],
     'coming': ['Start', 'Cancel'],
-    'start': ['End','Cancel'],
+    'start': ['End', 'Cancel'],
     'end': [],
     'mid_pause': [],
     'reject': [],
@@ -96,7 +96,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           RequestDetailsCubit.get(context)
               .getTripsRequestDetails(1, widget.idRequest!);
         } else if (state is RequestDetailsEditErrorState) {
-          Navigator.pop(context);
+          // Navigator.pop(context);
           showToastt(
               text: state.message, state: ToastStates.error, context: context);
         } else if (state is CurrentLocationSuccessState) {
@@ -420,138 +420,168 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             SizedBox(
                               height: 15.h,
                             ),
-                            SizedBox(
-                                height: 50.h,
-                                child:
-                                Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          state is! RequestDetailsEditInitial
-                                              ?
-                                          defaultButton2(
-                                                  press: () {
-                                                    RequestDetailsCubit.get(
-                                                            context)
-                                                        .editRequest(
-                                                            RequestDetailsCubit
+                            btnStatus[
+                            '${RequestDetailsCubit.get(context).requestDetails!.status}']!
+                                .isNotEmpty
+                                ? Column(
+                                    children: [
+                                      SizedBox(
+                                          height: 50.h,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              state is! RequestDetailsEditInitial
+                                                  ? Expanded(
+                                                      child: defaultButton2(
+                                                        press: () {
+                                                          RequestDetailsCubit
+                                                                  .get(context)
+                                                              .editRequest(
+                                                                  RequestDetailsCubit
+                                                                          .get(
+                                                                              context)
+                                                                      .requestDetails!
+                                                                      .id!,
+                                                                  btnStatus[
+                                                                      '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
+                                                                  "");
+                                                        },
+                                                        disablePress: RequestDetailsCubit
+                                                                        .get(
+                                                                            context)
+                                                                    .requestDetails
+                                                                    ?.paymentStatus! ==
+                                                                "paid"
+                                                            ? true
+                                                            : false,
+                                                        fontSize: 20,
+                                                        paddingVertical: 1,
+                                                        paddingHorizontal: 10,
+                                                        borderRadius: 10,
+                                                        text: btnStatus2[
+                                                            '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
+                                                        backColor: greenColor,
+                                                        textColor: white,
+                                                      ),
+                                                    )
+                                                  : Expanded(
+                                                      child: SizedBox(
+                                                        width: 20.w,
+                                                        child:
+                                                            const CircularProgressIndicator(
+                                                          color: accentColor,
+                                                        ),
+                                                      ),
+                                                    ),
+                                              SizedBox(width: 20.w,),
+                                              Expanded(
+                                                child: defaultButton2(
+                                                    press: () {
+                                                      final currentDate =
+                                                          DateTime.now();
+                                                      final dateDeadline = DateFormat(
+                                                              "yyyy-MM-ddTHH:mm")
+                                                          .parse(RequestDetailsCubit
+                                                                  .get(context)
+                                                              .requestDetails!
+                                                              .from!
+                                                              .date!)
+                                                          .subtract(
+                                                            const Duration(
+                                                              hours: 24,
+                                                            ),
+                                                          );
+
+                                                      if (currentDate.isBefore(
+                                                          dateDeadline)) {
+                                                        showDialog(
+                                                          context: context,
+                                                          barrierDismissible:
+                                                              true,
+                                                          // outside to dismiss
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return CustomDialog(
+                                                              title: 'Warning',
+                                                              description:
+                                                                  'you will charged a cancelation fee..',
+                                                              backgroundColor:
+                                                                  white,
+                                                              btnOkColor:
+                                                                  accentColor,
+                                                              btnCancelColor:
+                                                                  grey,
+                                                              id: RequestDetailsCubit
+                                                                      .get(
+                                                                          context)
+                                                                  .requestDetails!
+                                                                  .id,
+                                                              titleColor:
+                                                                  accentColor,
+                                                              descColor: black,
+                                                            );
+                                                          },
+                                                        );
+                                                      }
+                                                      else {
+                                                        showDialog(
+                                                          context: context,
+                                                          barrierDismissible:
+                                                              true,
+                                                          // outside to dismiss
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return CustomDialog(
+                                                              title:
+                                                                  'Do you want to reject?',
+                                                              description:
+                                                                  'If you want to be rejected, you must first enter the reason for rejection and press OK..',
+                                                              backgroundColor:
+                                                                  white,
+                                                              btnOkColor:
+                                                                  accentColor,
+                                                              btnCancelColor:
+                                                                  grey,
+                                                              id: RequestDetailsCubit
+                                                                      .get(
+                                                                          context)
+                                                                  .requestDetails!
+                                                                  .id,
+                                                              titleColor:
+                                                                  accentColor,
+                                                              descColor: black,
+                                                            );
+                                                          },
+                                                        );
+                                                      }
+                                                    },
+                                                    disablePress: RequestDetailsCubit
                                                                     .get(
                                                                         context)
-                                                                .requestDetails!
-                                                                .id!,
-                                                            btnStatus[
-                                                          '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
-                                                      "");
-                                                  },
-                                                  disablePress: RequestDetailsCubit
-                                                                  .get(context)
-                                                              .requestDetails
-                                                              ?.paymentStatus! ==
-                                                          "paid"
-                                                      ? true
-                                                      : false,
-                                                  fontSize: 25,
-                                                  paddingVertical: 1,
-                                                  paddingHorizontal: 60,
-                                                  borderRadius: 10,
-                                                  text: btnStatus2[
-                                                      '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
-                                                  backColor: greenColor,
-                                                  textColor: white,
-                                          )
-                                              : const CircularProgressIndicator(
-                                                  color: accentColor,
-                                                ),
-                                          defaultButton2(
-                                              press: () {
-                                                final currentDate =
-                                                    DateTime.now();
-                                                final dateDeadline = DateFormat(
-                                                        "yyyy-MM-ddTHH:mm")
-                                                    .parse(
-                                                        RequestDetailsCubit.get(
-                                                                context)
-                                                            .requestDetails!
-                                                            .from!
-                                                            .date!)
-                                                    .subtract(
-                                                      const Duration(
-                                                        hours: 24,
-                                                      ),
-                                                    );
+                                                                .requestDetails
+                                                                ?.paymentStatus! ==
+                                                            "paid"
+                                                        ? true
+                                                        : false,
+                                                    fontSize: 20,
+                                                    paddingVertical: 1,
+                                                    paddingHorizontal: 10,
+                                                    borderRadius: 10,
+                                                    text: btnStatus2[
+                                                        '${RequestDetailsCubit.get(context).requestDetails!.status}']![1],
+                                                    backColor: greenColor,
+                                                    textColor: white),
+                                              ),
+                                            ],
+                                          )),
+                                      SizedBox(
+                                        height: 15.h,
+                                      ),
+                                    ],
+                                  )
+                                : Container(),
 
-                                                if (currentDate
-                                                    .isBefore(dateDeadline)) {
-                                                  showDialog(
-                                                    context: context,
-                                                    barrierDismissible: true,
-                                                    // outside to dismiss
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return CustomDialog(
-                                                        title: 'Warning',
-                                                        description:
-                                                            'you will charged a cancelation fee..',
-                                                        backgroundColor: white,
-                                                        btnOkColor: accentColor,
-                                                        btnCancelColor: grey,
-                                                        id: RequestDetailsCubit
-                                                                .get(context)
-                                                            .requestDetails!
-                                                            .id,
-                                                        titleColor: accentColor,
-                                                        descColor: black,
-                                                      );
-                                                    },
-                                                  );
-                                                }
-                                                else {
-                                                  showDialog(
-                                                    context: context,
-                                                    barrierDismissible: true,
-                                                    // outside to dismiss
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return CustomDialog(
-                                                        title:
-                                                            'Do you want to reject?',
-                                                        description:
-                                                            'If you want to be rejected, you must first enter the reason for rejection and press OK..',
-                                                        backgroundColor: white,
-                                                        btnOkColor: accentColor,
-                                                        btnCancelColor: grey,
-                                                        id: RequestDetailsCubit
-                                                                .get(context)
-                                                            .requestDetails!
-                                                            .id,
-                                                        titleColor: accentColor,
-                                                        descColor: black,
-                                                      );
-                                                    },
-                                                  );
-                                                }
-                                              },
-                                              disablePress: RequestDetailsCubit
-                                                              .get(context)
-                                                          .requestDetails
-                                                          ?.paymentStatus! ==
-                                                      "paid"
-                                                  ? true
-                                                  : false,
-                                              fontSize: 25,
-                                              paddingVertical: 1,
-                                              paddingHorizontal: 60,
-                                              borderRadius: 10,
-                                              text: btnStatus2[
-                                                  '${RequestDetailsCubit.get(context).requestDetails!.status}']![1],
-                                              backColor: greenColor,
-                                              textColor: white),
-                                        ],
-                                      )
-                                    ),
-                            SizedBox(
-                              height: 15.h,
-                            ),
                             RequestDetailsCubit.get(context)
                                         .requestDetails
                                         ?.paymentStatus! ==

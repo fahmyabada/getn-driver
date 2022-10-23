@@ -203,7 +203,7 @@ class _OtpScreenState extends State<OtpScreen> {
           print('OtpScreen*******SignInSuccessState');
         }
         showToastt(
-            text: "user already have account",
+            text: "login successfully",
             state: ToastStates.success,
             context: context);
         if (state.data.phone != null) {

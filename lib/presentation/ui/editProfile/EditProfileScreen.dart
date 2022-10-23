@@ -1,9 +1,11 @@
 // import 'dart:io';
 //
+// import 'package:dropdown_button2/dropdown_button2.dart';
 // import 'package:flutter/foundation.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:getn_driver/data/model/country/Data.dart';
 // import 'package:getn_driver/data/utils/colors.dart';
 // import 'package:getn_driver/data/utils/image_tools.dart';
 // import 'package:getn_driver/data/utils/widgets.dart';
@@ -34,6 +36,9 @@
 //   final nameController = TextEditingController();
 //   final emailController = TextEditingController();
 //   final birthDateController = TextEditingController();
+//   final addressController = TextEditingController();
+//
+//   Data? dropDownValueCountries;
 //
 //
 //   Future selectImageSource(ImageSource imageSource, String type) async {
@@ -75,7 +80,7 @@
 //       create: (context) => EditProfileCubit()..getProfileDetails(),
 //       child: BlocConsumer<EditProfileCubit, EditProfileState>(
 //         listener: (context, state) {
-//           // TODO: implement listener
+//           if(state is )
 //         },
 //         builder: (context, state) {
 //           return Scaffold(
@@ -308,6 +313,80 @@
 //                                     leading: Icon(Icons.location_on_outlined),
 //                                     contentPadding: EdgeInsets.all(0),
 //                                   ),
+//                                   DropdownButtonHideUnderline(
+//                                     child: DropdownButton2(
+//                                       //      value: controller.selectedCountry?.value,
+//                                       dropdownDecoration: BoxDecoration(
+//                                         borderRadius: BorderRadius.circular(14.r),
+//                                         border: Border.all(
+//                                           width: 1,
+//                                           color: Colors.black,
+//                                         ),
+//                                       ),
+//                                       isExpanded: true,
+//                                       iconSize: 40.sp,
+//                                       icon: Container(
+//                                         margin:
+//                                         EdgeInsetsDirectional.only(end: 18.r),
+//                                         child: Icon(
+//                                           Icons.arrow_drop_down,
+//                                           color: grey2,
+//                                           size: 40.sp,
+//                                         ),
+//                                       ),
+//                                       style: const TextStyle(color: Colors.grey),
+//                                       onChanged: (Data? value) {
+//                                         setState(() {
+//                                           dropDownValueCarModel = value;
+//                                         });
+//                                       },
+//                                       hint: Container(
+//                                         width: 1.sw,
+//                                         padding: EdgeInsets.symmetric(
+//                                             horizontal: 10.r, vertical: 5.r),
+//                                         child: Center(
+//                                           child: Text(
+//                                               dropDownValueCarModel?.title?.en! ??
+//                                                   "year",
+//                                               maxLines: 2,
+//                                               style: TextStyle(
+//                                                   overflow: TextOverflow.ellipsis,
+//                                                   color: Colors.black,
+//                                                   fontSize: 20.sp)),
+//                                         ),
+//                                       ),
+//                                       items: EditProfileCubit.get(context)
+//                                           .countries
+//                                           .map((selectedCountry) {
+//                                         return DropdownMenuItem<Data>(
+//                                           value: selectedCountry,
+//                                           child: Column(
+//                                             mainAxisAlignment:
+//                                             MainAxisAlignment.center,
+//                                             children: [
+//                                               Text(selectedCountry.title?.en ?? "",
+//                                                   textAlign: TextAlign.center,
+//                                                   maxLines: 1,
+//                                                   style: TextStyle(
+//                                                       overflow:
+//                                                       TextOverflow.ellipsis,
+//                                                       color: Colors.black,
+//                                                       fontSize: 20.sp)),
+//                                               SizedBox(
+//                                                 height: 5.h,
+//                                               ),
+//                                               // divider
+//                                               Container(
+//                                                 width: 1.sw,
+//                                                 height: 1.h,
+//                                                 color: Colors.grey[400],
+//                                               ),
+//                                             ],
+//                                           ),
+//                                         );
+//                                       }).toList(),
+//                                     ),
+//                                   )
 //                                   CustomDropDown<ProfileCountry?>(
 //                                     value: controller.selectedCountry.value,
 //                                     items: controller.countries
@@ -397,24 +476,24 @@
 //                                     //   }
 //                                     // },
 //                                   ),
-//                                   const SizedBox(
-//                                     height: 16,
+//                                    SizedBox(
+//                                     height: 16.h,
 //                                   ),
-//                                   CustomTextFormField(
-//                                     controller: controller.addressController,
-//                                     hint: 'Address',
-//                                     label: 'Address',
-//                                     inputType: TextInputType.streetAddress,
-//                                     onValidate: (value) {
-//                                       if (value == null || value.isEmpty) {
-//                                         return 'Enter your address';
-//                                       } else {
-//                                         return null;
-//                                       }
+//                                   defaultFormField(
+//                                     controller: addressController,
+//                                     type: TextInputType.text,
+//                                     label: "Address",
+//                                     textSize: 20,
+//                                     border: false,
+//                                     borderRadius: 50,
+//                                     validatorText: addressController.text,
+//                                     validatorMessage: "Enter Address Please..",
+//                                     onEditingComplete: () {
+//                                       FocusScope.of(context).unfocus();
 //                                     },
 //                                   ),
-//                                   const SizedBox(
-//                                     height: 40,
+//                                    SizedBox(
+//                                     height: 40.h,
 //                                   ),
 //                                   RoundedLoadingButton(
 //                                     controller: controller.submitBtnController,

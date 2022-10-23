@@ -57,9 +57,6 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
     }
 
     // first load
-    RequestCubit.get(context).getRequestUpComing(1);
-    RequestCubit.get(context).getRequestPast(1);
-    RequestCubit.get(context).getRequestPending(1);
     RequestCubit.get(context).getRequestCurrent(1);
 
     RequestCubit.get(context).tabController!.addListener(() {

@@ -18,3 +18,45 @@ class EditProfileSuccessState extends EditProfileState {
 
   EditProfileSuccessState(this.data);
 }
+
+class CountriesLoading extends EditProfileState {}
+
+class CountriesErrorState extends EditProfileState {
+  final String message;
+
+  CountriesErrorState(this.message);
+}
+
+class CountriesSuccessState extends EditProfileState {
+  final List<Data>? data;
+
+  CountriesSuccessState(this.data);
+}
+
+class CityLoading extends EditProfileState {}
+
+class CityErrorState extends EditProfileState {
+  final String message;
+
+  CityErrorState(this.message);
+}
+
+class CitySuccessState extends EditProfileState {
+  final List<Data>? data;
+
+  CitySuccessState(this.data);
+}
+
+class AreaLoading extends EditProfileState {}
+
+class AreaErrorState extends EditProfileState {
+  final String message;
+
+  AreaErrorState(this.message);
+}
+
+class AreaSuccessState extends EditProfileState {
+  final List<Data>? data;
+
+  AreaSuccessState(this.data);
+}
