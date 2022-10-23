@@ -120,7 +120,7 @@ class RequestCubit extends Cubit<RequestState> {
 
   void getRequestPast(int index) async {
     var body = {
-      "status": ["end", "cancel", "reject"],
+      "status": ["end", "cancel", "reject", "mid_pause"],
       "page": index,
       "sort": 'from.date:-1',
       "select-client": 'name image'

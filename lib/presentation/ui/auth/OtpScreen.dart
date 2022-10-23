@@ -222,9 +222,10 @@ class _OtpScreenState extends State<OtpScreen> {
           getIt<SharedPreferences>()
               .setString('typeSign', "signWithInformation");
           navigateTo(context, const CarRegistrationScreen());
-        } else {
+        } else if (state.data.hasCar != null && state.data.hasCar!
+        && state.data.frontNationalImage?.src != null) {
           getIt<SharedPreferences>()
-              .setString('typeSign', "signWithInformation");
+              .setString('typeSign', "signWithCarRegistration");
           navigateTo(context, const RequestTabsScreen());
         }
       } else if (state is SignInErrorState) {

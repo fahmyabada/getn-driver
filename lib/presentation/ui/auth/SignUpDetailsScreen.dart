@@ -46,203 +46,191 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
         groupValueId = state.data![0].id!;
       }
     }, builder: (context, state) {
-      return Scaffold(
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: SizedBox(
-              height: 1.sh,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      return SafeArea(
+        child: Scaffold(
+          body: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
+            child: Column(
+              children: [
+                Column(
                   children: [
-                    Expanded(
+                    Text(
+                      "Complete your Registration",
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                          fontSize: 25.sp,
+                          fontWeight: FontWeight.bold,
+                          color: primaryColor),
+                    ),
+                    SizedBox(
+                      height: 50.h,
+                    ),
+                    Form(
+                      key: formKey,
                       child: Column(
                         children: [
-                          SizedBox(
-                            height: 30.h,
-                          ),
-                          Text(
-                            "Complete your Registration",
-                            textAlign: TextAlign.start,
-                            style: TextStyle(
-                                fontSize: 25.sp,
-                                fontWeight: FontWeight.bold,
-                                color: primaryColor),
-                          ),
-                          SizedBox(
-                            height: 50.h,
-                          ),
-                          Form(
-                            key: formKey,
-                            child: Column(
-                              children: [
-                                defaultFormField(
-                                  controller: fullNameController,
-                                  type: TextInputType.text,
-                                  label: "Full Name",
-                                  textSize: 20,
-                                  border: false,
-                                  borderRadius: 50,
-                                  validatorText: fullNameController.text,
-                                  validatorMessage: "Enter Full Name Please..",
-                                  onEditingComplete: () {
-                                    FocusScope.of(context).nextFocus();
-                                  },
-                                ),
-                                SizedBox(
-                                  height: 20.h,
-                                ),
-                                defaultFormField(
-                                  controller: emailController,
-                                  type: TextInputType.text,
-                                  label: "Email",
-                                  textSize: 20,
-                                  border: false,
-                                  borderRadius: 50,
-                                  validatorText: emailController.text,
-                                  validatorMessage: "Enter Email Please..",
-                                  onEditingComplete: () {
-                                    FocusScope.of(context).unfocus();
-                                  },
-                                ),
-                              ],
-                            ),
+                          defaultFormField(
+                            controller: fullNameController,
+                            type: TextInputType.text,
+                            label: "Full Name",
+                            textSize: 20,
+                            border: false,
+                            borderRadius: 50,
+                            validatorText: fullNameController.text,
+                            validatorMessage: "Enter Full Name Please..",
+                            onEditingComplete: () {
+                              FocusScope.of(context).nextFocus();
+                            },
                           ),
                           SizedBox(
-                            height: 40.h,
+                            height: 20.h,
                           ),
-                          Row(
-                            children: [
-                              Text(
-                                "Role",
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                    fontSize: 20.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: black),
-                              ),
-                              state is RoleLoading
-                                  ? Container(
-                                      margin: EdgeInsetsDirectional.only(
-                                          start: 30.r),
-                                      child: const CircularProgressIndicator(
-                                          color: black),
-                                    )
-                                  : SignCubit.get(context).roles.isNotEmpty
-                                      ? Expanded(
-                                          child: radioButtonTypeDriverLayout(
-                                              context),
-                                        )
-                                      : Container(
-                                          margin: EdgeInsetsDirectional.only(
-                                              start: 30.r),
-                                          child: IconButton(
-                                              icon: Icon(
-                                                Icons.cloud_upload,
-                                                color: redColor,
-                                                size: 60.sp,
-                                              ),
-                                              onPressed: () {
-                                                SignCubit.get(context)
-                                                    .getRole();
-                                              }),
-                                        ),
-                            ],
+                          defaultFormField(
+                            controller: emailController,
+                            type: TextInputType.text,
+                            label: "Email",
+                            textSize: 20,
+                            border: false,
+                            borderRadius: 50,
+                            validatorText: emailController.text,
+                            validatorMessage: "Enter Email Please..",
+                            onEditingComplete: () {
+                              FocusScope.of(context).unfocus();
+                            },
                           ),
                         ],
                       ),
                     ),
-                    Column(
+                    SizedBox(
+                      height: 40.h,
+                    ),
+                    Row(
                       children: [
-                        Row(
+                        Text(
+                          "Role",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.bold,
+                              color: black),
+                        ),
+                        state is RoleLoading
+                            ? Container(
+                                margin:
+                                    EdgeInsetsDirectional.only(start: 30.r),
+                                child: const CircularProgressIndicator(
+                                    color: black),
+                              )
+                            : SignCubit.get(context).roles.isNotEmpty
+                                ? Expanded(
+                                    child: radioButtonTypeDriverLayout(
+                                        context),
+                                  )
+                                : Container(
+                                    margin: EdgeInsetsDirectional.only(
+                                        start: 30.r),
+                                    child: IconButton(
+                                        icon: Icon(
+                                          Icons.cloud_upload,
+                                          color: redColor,
+                                          size: 60.sp,
+                                        ),
+                                        onPressed: () {
+                                          SignCubit.get(context).getRole();
+                                        }),
+                                  ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: 210.h,),
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        Checkbox(
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                          focusColor: Theme.of(context).focusColor,
+                          //   activeColor: Theme.of(context).colorScheme.secondary,
+                          value: terms,
+                          onChanged: (value) {
+                            setState(() {
+                              terms = value!;
+                            });
+                          },
+                        ),
+                        SizedBox(width: 20.h),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(
-                              width: 10.0,
-                              height: 24.0,
-                              child: Checkbox(
-                                materialTapTargetSize:
-                                    MaterialTapTargetSize.shrinkWrap,
-                                focusColor: Theme.of(context).focusColor,
-                                //   activeColor: Theme.of(context).colorScheme.secondary,
-                                value: terms,
-                                onChanged: (value) {
-                                  terms = value!;
-                                },
-                              ),
-                            ),
-                            SizedBox(width: 20.h),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            Text("i confirm that i have read & agree to the",
+                                style:
+                                    TextStyle(fontSize: 17.sp, color: black)),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text(
-                                    "i confirm that i have read & agree to the",
-                                    style: TextStyle(
-                                        fontSize: 17.sp, color: black)),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    InkWell(
-                                      onTap: () async{
-                                      bool value = await navigateToWithRefreshPagePrevious(
+                                InkWell(
+                                  onTap: () async {
+                                    bool value =
+                                        await navigateToWithRefreshPagePrevious(
                                             context, const TermsScreen());
 
-                                      setState(() {
-                                        terms = value;
-                                      });
-                                      },
-                                      child: Text("Terms & condition ",
-                                          style: TextStyle(
-                                              fontSize: 17.sp,
-                                              color: accentColor)),
-                                    ),
-                                    Text("and Privacy Policy",
-                                        style: TextStyle(
-                                            fontSize: 17.sp, color: black)),
-                                  ],
-                                )
+                                    setState(() {
+                                      terms = value;
+                                    });
+                                  },
+                                  child: Text("Terms & condition ",
+                                      style: TextStyle(
+                                          fontSize: 17.sp,
+                                          color: accentColor)),
+                                ),
+                                Text("and Privacy Policy",
+                                    style: TextStyle(
+                                        fontSize: 17.sp, color: black)),
                               ],
                             )
                           ],
-                        ),
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
-                          child: defaultButton3(
-                              press: () {
-                                if (formKey.currentState!.validate()) {
-                                  if (terms) {
-                                    navigateTo(
-                                      context,
-                                      VerifyImageScreen(
-                                        typeScreen: "register",
-                                        fullName:
-                                            fullNameController.text.toString(),
-                                        email: emailController.text.toString(),
-                                        phone: widget.phone,
-                                        countryId: widget.countryId,
-                                        firebaseToken: widget.firebaseToken,
-                                        role: groupValueId,
-                                        terms: terms,
-                                      ),
-                                    );
-                                  } else {
-                                    showToastt(
-                                        text:
-                                            "check in Terms & condition first..",
-                                        state: ToastStates.error,
-                                        context: context);
-                                  }
-                                }
-                              },
-                              text: "Next",
-                              backColor: accentColor,
-                              textColor: white),
-                        ),
+                        )
                       ],
-                    )
+                    ),
+                    Container(
+                      margin: EdgeInsetsDirectional.only(
+                          start: 25.r, end: 25.r, top: 30.r),
+                      child: defaultButton3(
+                          press: () {
+                            if (formKey.currentState!.validate()) {
+                              if (terms) {
+                                navigateTo(
+                                  context,
+                                  VerifyImageScreen(
+                                    typeScreen: "register",
+                                    fullName:
+                                        fullNameController.text.toString(),
+                                    email: emailController.text.toString(),
+                                    phone: widget.phone,
+                                    countryId: widget.countryId,
+                                    firebaseToken: widget.firebaseToken,
+                                    role: groupValueId,
+                                    terms: terms,
+                                  ),
+                                );
+                              } else {
+                                showToastt(
+                                    text:
+                                        "check in Terms & condition first..",
+                                    state: ToastStates.error,
+                                    context: context);
+                              }
+                            }
+                          },
+                          text: "Next",
+                          backColor: accentColor,
+                          textColor: white),
+                    ),
                   ],
-                ),
-              ),
+                )
+              ],
             ),
           ),
         ),
