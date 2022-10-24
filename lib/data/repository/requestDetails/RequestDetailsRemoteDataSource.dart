@@ -42,7 +42,7 @@ class RequestDetailsRemoteDataSourceImpl
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    }  catch (error) {
       return Left(handleError(error));
     }
   }
@@ -66,7 +66,7 @@ class RequestDetailsRemoteDataSourceImpl
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    }  catch (error) {
       return Left(handleError(error));
     }
   }
@@ -97,7 +97,7 @@ class RequestDetailsRemoteDataSourceImpl
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    }  catch (error) {
       return Left(handleError(error));
     }
   }

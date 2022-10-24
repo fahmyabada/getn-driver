@@ -273,7 +273,7 @@ class LocalNotificationService {
         //payload : holds the data that is passed through the notification when the notification is tapped
         payload: '$payloadValue,$type',
       );
-    } on Exception catch (e) {
+    }  catch (e) {
       if (kDebugMode) {
         print(e);
       }

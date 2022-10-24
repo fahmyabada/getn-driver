@@ -37,6 +37,7 @@ import 'package:getn_driver/domain/usecase/auth/CarCreateUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/GetCarCategoryUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/GetCarModelUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/GetColorUseCase.dart';
+import 'package:getn_driver/domain/usecase/editProfile/EditProfileUserUseCase.dart';
 import 'package:getn_driver/domain/usecase/editProfile/GetAreaEditProfileUseCase.dart';
 import 'package:getn_driver/domain/usecase/editProfile/GetCitiesEditProfileUseCase.dart';
 import 'package:getn_driver/domain/usecase/editProfile/GetCountriesEditProfileUseCase.dart';
@@ -109,6 +110,7 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => GetCountriesEditProfileUseCase(getIt()));
   getIt.registerLazySingleton(() => GetCitiesEditProfileUseCase(getIt()));
   getIt.registerLazySingleton(() => GetAreaEditProfileUseCase(getIt()));
+  getIt.registerLazySingleton(() => EditProfileUserUseCase(getIt()));
 
   // Repository
   getIt.registerLazySingleton<AuthRepository>(

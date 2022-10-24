@@ -11,7 +11,6 @@ class Country {
       String? id, 
       String? zip, 
       String? code, 
-      String? user, 
       int? v,}){
     _title = title;
     _icon = icon;
@@ -21,7 +20,6 @@ class Country {
     _id = id;
     _zip = zip;
     _code = code;
-    _user = user;
     _v = v;
 }
 
@@ -34,7 +32,6 @@ class Country {
     _id = json['_id'];
     _zip = json['zip'];
     _code = json['code'];
-    _user = json['user'];
     _v = json['__v'];
   }
   Title? _title;
@@ -45,7 +42,6 @@ class Country {
   String? _id;
   String? _zip;
   String? _code;
-  String? _user;
   int? _v;
 
   Title? get title => _title;
@@ -56,8 +52,13 @@ class Country {
   String? get id => _id;
   String? get zip => _zip;
   String? get code => _code;
-  String? get user => _user;
   int? get v => _v;
+
+
+  @override
+  String toString() {
+    return 'Country{_title: $_title, _id: $_id, _code: $_code}';
+  }
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -73,7 +74,6 @@ class Country {
     map['_id'] = _id;
     map['zip'] = _zip;
     map['code'] = _code;
-    map['user'] = _user;
     map['__v'] = _v;
     return map;
   }

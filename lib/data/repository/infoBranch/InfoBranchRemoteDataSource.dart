@@ -27,7 +27,7 @@ class InfoBranchRemoteDataSourceImpl implements InfoBranchRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    }  catch (error) {
       return Left(handleError(error));
     }
   }
@@ -50,7 +50,7 @@ class InfoBranchRemoteDataSourceImpl implements InfoBranchRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    }  catch (error) {
       return Left(handleError(error));
     }
   }

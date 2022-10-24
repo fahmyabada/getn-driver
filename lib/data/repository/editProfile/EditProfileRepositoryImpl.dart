@@ -1,7 +1,9 @@
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:getn_driver/data/api/network_info.dart';
-import 'package:getn_driver/data/model/country/Data.dart';
 import 'package:getn_driver/data/model/editProfile/EditProfileModel.dart';
+import 'package:getn_driver/data/model/signModel/Country.dart';
+import 'package:getn_driver/data/model/signModel/SignModel.dart';
 import 'package:getn_driver/data/repository/editProfile/EditProfileRemoteDataSource.dart';
 import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/domain/repository/EditProfileRepository.dart';
@@ -30,7 +32,7 @@ class EditProfileRepositoryImpl extends EditProfileRepository {
   }
 
   @override
-  Future<Either<String, List<Data>?>> getArea(
+  Future<Either<String, List<Country>?>> getArea(
       String countryId, String cityId) async {
     if (await networkInfo.isConnected) {
       return await editProfileRemoteDataSource
@@ -48,7 +50,7 @@ class EditProfileRepositoryImpl extends EditProfileRepository {
   }
 
   @override
-  Future<Either<String, List<Data>?>> getCities(String countryId) async {
+  Future<Either<String, List<Country>?>> getCities(String countryId) async {
     if (await networkInfo.isConnected) {
       return await editProfileRemoteDataSource
           .getCities(countryId)
@@ -65,9 +67,26 @@ class EditProfileRepositoryImpl extends EditProfileRepository {
   }
 
   @override
-  Future<Either<String, List<Data>?>> getCountries() async {
+  Future<Either<String, List<Country>?>> getCountries() async {
     if (await networkInfo.isConnected) {
       return await editProfileRemoteDataSource.getCountries().then((value) {
+        return value.fold((failure) {
+          return Left(failure.toString());
+        }, (data) {
+          return Right(data);
+        });
+      });
+    } else {
+      return Left(networkFailureMessage);
+    }
+  }
+
+  @override
+  Future<Either<String, SignModel>> editProfileDetails(FormData data) async {
+    if (await networkInfo.isConnected) {
+      return await editProfileRemoteDataSource
+          .editProfileDetails(data)
+          .then((value) {
         return value.fold((failure) {
           return Left(failure.toString());
         }, (data) {

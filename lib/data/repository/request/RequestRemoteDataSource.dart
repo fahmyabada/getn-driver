@@ -33,7 +33,7 @@ class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    }  catch (error) {
       return Left(handleError(error));
     }
   }
@@ -64,7 +64,7 @@ class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    }  catch (error) {
       return Left(handleError(error));
     }
   }

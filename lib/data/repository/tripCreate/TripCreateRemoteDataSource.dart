@@ -45,7 +45,7 @@ class TripCreateRemoteDataSourceImpl implements TripCreateRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    }  catch (error) {
       return Left(handleError(error));
     }
   }
@@ -77,7 +77,7 @@ class TripCreateRemoteDataSourceImpl implements TripCreateRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    }  catch (error) {
       return Left(handleError(error));
     }
   }
@@ -120,7 +120,7 @@ class TripCreateRemoteDataSourceImpl implements TripCreateRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    }  catch (error) {
       return Left(handleError(error));
     }
   }

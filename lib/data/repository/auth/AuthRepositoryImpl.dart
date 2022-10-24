@@ -3,9 +3,9 @@ import 'package:dio/src/form_data.dart';
 import 'package:getn_driver/data/api/network_info.dart';
 import 'package:getn_driver/data/model/carCategory/Data.dart' as category;
 import 'package:getn_driver/data/model/carRegisteration/CarRegisterationModel.dart';
-import 'package:getn_driver/data/model/country/Data.dart' as country;
 import 'package:getn_driver/data/model/role/DataRole.dart';
 import 'package:getn_driver/data/model/sendOtp/SendOtpData.dart';
+import 'package:getn_driver/data/model/signModel/Country.dart';
 import 'package:getn_driver/data/model/signModel/SignModel.dart';
 import 'package:getn_driver/data/repository/auth/AuthRemoteDataSource.dart';
 import 'package:getn_driver/data/utils/constant.dart';
@@ -18,7 +18,7 @@ class AuthRepositoryImpl extends AuthRepository {
   AuthRepositoryImpl(this.authRemoteDataSource, this.networkInfo);
 
   @override
-  Future<Either<String, List<country.Data>?>> getCountries() async {
+  Future<Either<String, List<Country>?>> getCountries() async {
     if (await networkInfo.isConnected) {
       return await authRemoteDataSource.getCountries().then((value) {
         return value.fold((failure) {
@@ -155,7 +155,7 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
-  Future<Either<String, SignModel>> editInformationUserUseCase(
+  Future<Either<String, SignModel>> editInformationUser(
       FormData data) async {
     if (await networkInfo.isConnected) {
       return await authRemoteDataSource
@@ -173,7 +173,8 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
-  Future<Either<String, CarRegisterationModel?>> carCreate(FormData data) async {
+  Future<Either<String, CarRegisterationModel?>> carCreate(
+      FormData data) async {
     if (await networkInfo.isConnected) {
       return await authRemoteDataSource.carCreate(data).then((value) {
         return value.fold((failure) {

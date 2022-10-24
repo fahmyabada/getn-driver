@@ -11,6 +11,7 @@ import 'package:getn_driver/presentation/ui/auth/DriverInformationScreen.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/notificationService/local_notification_service.dart';
 import 'package:getn_driver/presentation/ui/auth/SignInScreen.dart';
+import 'package:getn_driver/presentation/ui/editProfile/EditProfileScreen.dart';
 import 'package:getn_driver/presentation/ui/onBoarding/OnBoardScreenView.dart';
 import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/RequestTabsScreen.dart';

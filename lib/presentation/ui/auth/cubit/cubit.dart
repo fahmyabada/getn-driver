@@ -3,9 +3,9 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:getn_driver/data/model/carRegisteration/CarRegisterationModel.dart';
-import 'package:getn_driver/data/model/country/Data.dart';
 import 'package:getn_driver/data/model/role/DataRole.dart';
 import 'package:getn_driver/data/model/sendOtp/SendOtpData.dart';
+import 'package:getn_driver/data/model/signModel/Country.dart';
 import 'package:getn_driver/data/model/signModel/SignModel.dart';
 import 'package:getn_driver/domain/usecase/auth/CarCreateUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/EditInformationUserUseCase.dart';
@@ -40,7 +40,7 @@ class SignCubit extends Cubit<SignState> {
   var editInformationUserUseCase = getIt<EditInformationUserUseCase>();
   var carCreateUseCase = getIt<CarCreateUseCase>();
 
-  List<Data> countries = [];
+  List<Country> countries = [];
   List<category.Data> colors = [];
   List<category.Data> carModel = [];
   List<category.Data> carSubCategory = [];
@@ -58,8 +58,9 @@ class SignCubit extends Cubit<SignState> {
   }
 
   SignState eitherLoadedOrErrorStateCountries(
-      Either<String, List<Data>?> data) {
+      Either<String, List<Country>?> data) {
     return data.fold((failure1) {
+      countries.clear();
       return CountriesErrorState(failure1);
     }, (data) {
       countries = data!;

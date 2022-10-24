@@ -1,24 +1,25 @@
-import 'Data.dart';
+import 'package:getn_driver/data/model/signModel/Country.dart';
 
 class CountryData {
   CountryData({
-      List<Data>? data, 
-      int? totalCount, 
-      int? tableCount, 
-      int? page, 
-      int? limit,}){
+    List<Country>? data,
+    int? totalCount,
+    int? tableCount,
+    int? page,
+    String? limit,
+  }) {
     _data = data;
     _totalCount = totalCount;
     _tableCount = tableCount;
     _page = page;
     _limit = limit;
-}
+  }
 
   CountryData.fromJson(dynamic json) {
     if (json['data'] != null) {
       _data = [];
       json['data'].forEach((v) {
-        _data?.add(Data.fromJson(v));
+        _data?.add(Country.fromJson(v));
       });
     }
     _totalCount = json['totalCount'];
@@ -26,17 +27,22 @@ class CountryData {
     _page = json['page'];
     _limit = json['limit'];
   }
-  List<Data>? _data;
+
+  List<Country>? _data;
   int? _totalCount;
   int? _tableCount;
   int? _page;
-  int? _limit;
+  String? _limit;
 
-  List<Data>? get data => _data;
+  List<Country>? get data => _data;
+
   int? get totalCount => _totalCount;
+
   int? get tableCount => _tableCount;
+
   int? get page => _page;
-  int? get limit => _limit;
+
+  String? get limit => _limit;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -49,5 +55,4 @@ class CountryData {
     map['limit'] = _limit;
     return map;
   }
-
 }

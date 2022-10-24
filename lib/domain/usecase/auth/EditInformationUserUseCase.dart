@@ -11,6 +11,6 @@ class EditInformationUserUseCase {
   Future<Either<String, SignModel>> execute(
     FormData data,
   ) {
-    return signInRepository.editInformationUserUseCase(data);
+    return signInRepository.editInformationUser(data);
   }
 }

@@ -5,10 +5,10 @@ import 'package:getn_driver/data/model/carCategory/CarCategory.dart';
 import 'package:getn_driver/data/model/carCategory/Data.dart' as category;
 import 'package:getn_driver/data/model/carRegisteration/CarRegisterationModel.dart';
 import 'package:getn_driver/data/model/country/CountryData.dart';
-import 'package:getn_driver/data/model/country/Data.dart';
 import 'package:getn_driver/data/model/role/DataRole.dart';
 import 'package:getn_driver/data/model/role/Role.dart';
 import 'package:getn_driver/data/model/sendOtp/SendOtpData.dart';
+import 'package:getn_driver/data/model/signModel/Country.dart';
 import 'package:getn_driver/data/model/signModel/SignModel.dart';
 import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
@@ -16,7 +16,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class AuthRemoteDataSource {
-  Future<Either<String, List<Data>?>> getCountries();
+  Future<Either<String, List<Country>?>> getCountries();
 
   Future<Either<String, List<category.Data>?>> getCarSubCategory();
 
@@ -49,26 +49,26 @@ abstract class AuthRemoteDataSource {
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
-  Future<Either<String, List<Data>?>> getCountries() async {
+  Future<Either<String, List<Country>?>> getCountries() async {
     try {
       return await DioHelper.getData(url: 'country').then((value) {
         if (value.statusCode == 200) {
-          if (CountryData.fromJson(value.data).data != null) {
-            return Right(CountryData.fromJson(value.data!).data!);
-          } else {
-            return const Left("Not Found Countries");
+          try {
+            if (CountryData.fromJson(value.data).data != null) {
+              return Right(CountryData.fromJson(value.data!).data!);
+            } else {
+              return const Left("Not Found Countries");
+            }
+          } catch (error) {
+            return Left(handleError(error));
           }
         } else {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    } catch (error) {
       return Left(handleError(error));
     }
-    // {
-    //   print("request*********** ${request.toString()}");
-    //   return const Left("you have error when get Countries");
-    // }
   }
 
   @override
@@ -87,7 +87,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    } catch (error) {
       return Left(handleError(error));
     }
     // {
@@ -126,7 +126,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    } catch (error) {
       return Left(handleError(error));
     }
   }
@@ -177,7 +177,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    } catch (error) {
       return Left(handleError(error));
     }
   }
@@ -210,7 +210,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    } catch (error) {
       return Left(handleError(error));
     }
   }
@@ -220,7 +220,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       FormData data) async {
     try {
       return await DioHelper.putData2(
-              url: 'driver/auth/edit-profile', data: data)
+              url: 'driver/auth/edit-profile',
+              data: data,
+              token: getIt<SharedPreferences>().getString("token"))
           .then((value) {
         if (value.statusCode == 200) {
           if (SignModel.fromJson(value.data).id != null) {
@@ -232,7 +234,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    } catch (error) {
       return Left(handleError(error));
     }
   }
@@ -256,7 +258,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    } catch (error) {
       return Left(handleError(error));
     }
   }
@@ -280,7 +282,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    } catch (error) {
       return Left(handleError(error));
     }
   }
@@ -303,26 +305,27 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    } catch (error) {
       return Left(handleError(error));
     }
   }
 
   @override
-  Future<Either<String, CarRegisterationModel?>> carCreate(FormData data) async {
+  Future<Either<String, CarRegisterationModel?>> carCreate(
+      FormData data) async {
     try {
       return await DioHelper.postData3(
-        url: 'car',
-        data: data,
-        token: getIt<SharedPreferences>().getString("token")
-      ).then((value) {
+              url: 'car',
+              data: data,
+              token: getIt<SharedPreferences>().getString("token"))
+          .then((value) {
         if (value.statusCode == 200) {
           return Right(CarRegisterationModel.fromJson(value.data!));
         } else {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    } catch (error) {
       return Left(handleError(error));
     }
   }

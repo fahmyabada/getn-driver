@@ -26,7 +26,7 @@ class InfoPlaceRemoteDataSourceImpl implements InfoPlaceRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    }  catch (error) {
       return Left(handleError(error));
     }
   }
@@ -47,7 +47,7 @@ class InfoPlaceRemoteDataSourceImpl implements InfoPlaceRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    }  catch (error) {
       return Left(handleError(error));
     }
   }

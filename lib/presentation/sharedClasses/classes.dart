@@ -8,6 +8,7 @@ import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/ui/auth/SignInScreen.dart';
 import 'package:getn_driver/presentation/ui/policies/PoliciesScreen.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
+import 'package:getn_driver/presentation/ui/setting/SettingScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomDialog extends StatelessWidget {
@@ -390,7 +391,9 @@ class DrawerMenu extends StatelessWidget {
               ),
             ),
             leading: const Icon(Icons.settings, color: grey2),
-            onTap: () {},
+            onTap: () {
+              navigateTo(context, const SettingScreen());
+            },
           ),
           ListTile(
             title: Text(

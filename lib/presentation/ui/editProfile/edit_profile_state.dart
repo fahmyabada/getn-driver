@@ -28,7 +28,7 @@ class CountriesErrorState extends EditProfileState {
 }
 
 class CountriesSuccessState extends EditProfileState {
-  final List<Data>? data;
+  final List<Country>? data;
 
   CountriesSuccessState(this.data);
 }
@@ -42,7 +42,7 @@ class CityErrorState extends EditProfileState {
 }
 
 class CitySuccessState extends EditProfileState {
-  final List<Data>? data;
+  final List<Country>? data;
 
   CitySuccessState(this.data);
 }
@@ -56,7 +56,21 @@ class AreaErrorState extends EditProfileState {
 }
 
 class AreaSuccessState extends EditProfileState {
-  final List<Data>? data;
+  final List<Country>? data;
 
   AreaSuccessState(this.data);
+}
+
+class EditLoading extends EditProfileState {}
+
+class EditErrorState extends EditProfileState {
+  final String message;
+
+  EditErrorState(this.message);
+}
+
+class EditSuccessState extends EditProfileState {
+  final SignModel data;
+
+  EditSuccessState(this.data);
 }

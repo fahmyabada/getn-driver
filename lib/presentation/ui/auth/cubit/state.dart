@@ -14,7 +14,7 @@ class CountriesErrorState extends SignState {
 }
 
 class CountriesSuccessState extends SignState {
-  final List<Data>? data;
+  final List<Country>? data;
 
   CountriesSuccessState(this.data);
 }

@@ -112,7 +112,7 @@ class _OtpScreenState extends State<OtpScreen> {
         showToastt(
             text: "uncorrect code", state: ToastStates.error, context: context);
       }
-    } on Exception catch (error) {
+    }  catch (error) {
       print("Exception*************${error}");
       if (widget.type == "login") {
         showToastt(

@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:getn_driver/data/model/country/Data.dart';
+import 'package:getn_driver/data/model/signModel/Country.dart';
 import 'package:getn_driver/domain/repository/AuthRepository.dart';
 
 class GetCountriesUseCase {
@@ -7,7 +7,7 @@ class GetCountriesUseCase {
 
   GetCountriesUseCase(this.signInRepository);
 
-  Future<Either<String, List<Data>?>> execute() {
+  Future<Either<String, List<Country>?>> execute() {
     return signInRepository.getCountries();
   }
 }

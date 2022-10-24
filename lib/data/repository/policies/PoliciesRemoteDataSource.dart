@@ -24,7 +24,7 @@ class PoliciesRemoteDataSourceImpl implements PoliciesRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    }  catch (error) {
       return Left(handleError(error));
     }
   }

@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:getn_driver/data/model/country/Data.dart';
+import 'package:getn_driver/data/model/signModel/Country.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/strings.dart';
@@ -22,7 +22,7 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   var formKey = GlobalKey<FormState>();
   var phoneController = TextEditingController();
-  Data? dropDownValueCountry;
+  Country? dropDownValueCountry;
   String splitPhone2 = "";
   String? verificationId, authStatus = "", otp;
   bool signUpLoading = false;
@@ -201,7 +201,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   iconSize: 0.0,
                                   dropdownWidth: 350.w,
                                   style: const TextStyle(color: Colors.grey),
-                                  onChanged: (Data? value) {
+                                  onChanged: (Country? value) {
                                     setState(() {
                                       dropDownValueCountry = value;
                                     });
@@ -239,7 +239,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   items: SignCubit.get(context)
                                       .countries
                                       .map((selectedCountry) {
-                                    return DropdownMenuItem<Data>(
+                                    return DropdownMenuItem<Country>(
                                       value: selectedCountry,
                                       child: Row(
                                         children: [

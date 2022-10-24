@@ -1,8 +1,6 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:getn_driver/presentation/di/injection_container.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class DioHelper {
   static late Dio dio;
@@ -77,24 +75,18 @@ class DioHelper {
     dio.options.headers = {
       'Authorization': 'bearerAuth $token',
     };
-    return await dio.put(
-      url,
-      queryParameters: query,
-      data: data
-    );
+    return await dio.put(url, queryParameters: query, data: data);
   }
 
   static Future<Response> putData2({
     required String url,
     FormData? data,
     String? header,
+    String? token,
   }) async {
-    getIt<SharedPreferences>().getString("token") != null
-        ? dio.options.headers = {
-            'Authorization':
-                'bearerAuth ${getIt<SharedPreferences>().getString("token")}',
-          }
-        : null;
+    dio.options.headers = {
+      'Authorization': 'bearerAuth $token',
+    };
     return await dio.put(
       url,
       data: data,
@@ -110,4 +102,3 @@ class MyHttpOverrides extends HttpOverrides {
           (X509Certificate cert, String host, int port) => true;
   }
 }
-

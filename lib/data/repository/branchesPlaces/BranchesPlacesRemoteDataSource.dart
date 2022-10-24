@@ -28,7 +28,7 @@ class BranchesPlacesRemoteDataSourceImpl
           return Left(serverFailureMessage);
         }
       });
-    } on Exception catch (error) {
+    }  catch (error) {
       return Left(handleError(error));
     }
   }

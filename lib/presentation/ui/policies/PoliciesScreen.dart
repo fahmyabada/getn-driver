@@ -7,7 +7,6 @@ import 'package:getn_driver/presentation/ui/policies/PolicyDetailsScreen.dart';
 class PoliciesScreen extends StatelessWidget {
   PoliciesScreen({Key? key}) : super(key: key);
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   bodyWidget(BuildContext context) {
     return SingleChildScrollView(
@@ -116,7 +115,6 @@ class PoliciesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
           'Policies',

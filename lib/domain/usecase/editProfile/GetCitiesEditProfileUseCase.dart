@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:getn_driver/data/model/country/Data.dart';
+import 'package:getn_driver/data/model/signModel/Country.dart';
 import 'package:getn_driver/domain/repository/EditProfileRepository.dart';
 
 class GetCitiesEditProfileUseCase {
@@ -7,7 +7,7 @@ class GetCitiesEditProfileUseCase {
 
   GetCitiesEditProfileUseCase(this.editProfileRepository);
 
-  Future<Either<String, List<Data>?>> execute(String countryId) {
+  Future<Either<String, List<Country>?>> execute(String countryId) {
     return editProfileRepository.getCities(countryId);
   }
 }
