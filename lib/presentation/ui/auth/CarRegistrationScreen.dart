@@ -26,9 +26,6 @@ class CarRegistrationScreen extends StatefulWidget {
 class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
   final carModelController = TextEditingController();
   final carNumberController = TextEditingController();
-  final cityController = TextEditingController();
-  final areaController = TextEditingController();
-  final addressController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   Data? dropDownValueCarModel;
   Data? dropDownValueCarSubCategory;
@@ -433,51 +430,6 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                             SizedBox(
                               height: 20.h,
                             ),
-                            defaultFormField(
-                              controller: cityController,
-                              type: TextInputType.text,
-                              label: "City",
-                              textSize: 20,
-                              border: false,
-                              borderRadius: 50,
-                              validatorText: cityController.text,
-                              validatorMessage: "Enter City Please..",
-                              onEditingComplete: () {
-                                FocusScope.of(context).nextFocus();
-                              },
-                            ),
-                            SizedBox(
-                              height: 20.h,
-                            ),
-                            defaultFormField(
-                              controller: areaController,
-                              type: TextInputType.text,
-                              label: "Area",
-                              textSize: 20,
-                              border: false,
-                              borderRadius: 50,
-                              validatorText: areaController.text,
-                              validatorMessage: "Enter Area Please..",
-                              onEditingComplete: () {
-                                FocusScope.of(context).nextFocus();
-                              },
-                            ),
-                            SizedBox(
-                              height: 20.h,
-                            ),
-                            defaultFormField(
-                              controller: addressController,
-                              type: TextInputType.text,
-                              label: "Address",
-                              textSize: 20,
-                              border: false,
-                              borderRadius: 50,
-                              validatorText: addressController.text,
-                              validatorMessage: "Enter Address Please..",
-                              onEditingComplete: () {
-                                FocusScope.of(context).unfocus();
-                              },
-                            ),
                           ],
                         ),
                       ),
@@ -669,12 +621,6 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                                 print(
                                     "CarNum*****************${carNumberController.text}");
                                 print(
-                                    "city*****************${cityController.text}");
-                                print(
-                                    "area*****************${areaController.text}");
-                                print(
-                                    "address*****************${addressController.text}");
-                                print(
                                     "fontCar*****************$frontCarLicenseImage");
                                 print(
                                     "backCar*****************$backCarLicenseImage");
@@ -697,19 +643,7 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                                     'carColor': dropDownValueColor?.id!,
                                     'carNumber':
                                         carNumberController.text.toString(),
-                                    'city': cityController.text.toString(),
-                                    'area': areaController.text.toString(),
-                                    'address':
-                                        addressController.text.toString(),
                                     'gallery': listGalleryValue,
-                                    // .map((item) {
-                                    // print("gallery********$item");
-                                    // MultipartFile.fromFileSync(item,
-                                    //    filename: item,
-                                    //    contentType:
-                                    //    MediaType("image", "jpeg"));
-                                    // })
-                                    //       .toList(),
                                     'frontCarLicenseImage':
                                         await MultipartFile.fromFile(
                                             frontCarLicenseImage,

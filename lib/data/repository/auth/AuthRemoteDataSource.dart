@@ -12,11 +12,15 @@ import 'package:getn_driver/data/model/signModel/Country.dart';
 import 'package:getn_driver/data/model/signModel/SignModel.dart';
 import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class AuthRemoteDataSource {
   Future<Either<String, List<Country>?>> getCountries();
+
+  Future<Either<String, List<Country>?>> getCities(String countryId);
+
+  Future<Either<String, List<Country>?>> getArea(
+      String countryId, String cityId);
 
   Future<Either<String, List<category.Data>?>> getCarSubCategory();
 
@@ -35,14 +39,7 @@ abstract class AuthRemoteDataSource {
       String phone, String countryId, String firebaseToken);
 
   Future<Either<String, SignModel>> register(
-      String phone,
-      String countryId,
-      String email,
-      String firebaseToken,
-      String fullName,
-      String role,
-      bool terms,
-      String photo);
+      FormData data, String firebaseToken);
 
   Future<Either<String, SignModel>> editInformationUserUseCase(FormData data);
 }
@@ -51,7 +48,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<Either<String, List<Country>?>> getCountries() async {
     try {
-      return await DioHelper.getData(url: 'country').then((value) {
+      var body = {
+        "limit": 999,
+      };
+      return await DioHelper.getData(url: 'country', query: body).then((value) {
         if (value.statusCode == 200) {
           try {
             if (CountryData.fromJson(value.data).data != null) {
@@ -61,6 +61,55 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
             }
           } catch (error) {
             return Left(handleError(error));
+          }
+        } else {
+          return Left(serverFailureMessage);
+        }
+      });
+    } catch (error) {
+      return Left(handleError(error));
+    }
+  }
+
+  @override
+  Future<Either<String, List<Country>?>> getArea(
+      String countryId, String cityId) async {
+    try {
+      var body = {
+        "country": countryId,
+        "city": cityId,
+        "limit": 999,
+      };
+      print("getArea*********** ${body.toString()}");
+      return await DioHelper.getData(url: 'area', query: body).then((value) {
+        if (value.statusCode == 200) {
+          if (CountryData.fromJson(value.data).data != null) {
+            return Right(CountryData.fromJson(value.data!).data!);
+          } else {
+            return const Left("Not Found Area");
+          }
+        } else {
+          return Left(serverFailureMessage);
+        }
+      });
+    } catch (error) {
+      return Left(handleError(error));
+    }
+  }
+
+  @override
+  Future<Either<String, List<Country>?>> getCities(String countryId) async {
+    try {
+      var body = {
+        "country": countryId,
+        "limit": 999,
+      };
+      return await DioHelper.getData(url: 'city', query: body).then((value) {
+        if (value.statusCode == 200) {
+          if (CountryData.fromJson(value.data).data != null) {
+            return Right(CountryData.fromJson(value.data!).data!);
+          } else {
+            return const Left("Not Found Cities");
           }
         } else {
           return Left(serverFailureMessage);
@@ -133,36 +182,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<Either<String, SignModel>> register(
-      String phone,
-      String countryId,
-      String email,
-      String firebaseToken,
-      String fullName,
-      String role,
-      bool terms,
-      String photo) async {
+      FormData data, String firebaseToken) async {
     try {
-      String fileName = photo.split('/').last;
-
-      var formData = FormData.fromMap({
-        'phone': phone,
-        'country': countryId,
-        'role': role,
-        'email': email,
-        'name': fullName,
-        'fcmToken': getIt<SharedPreferences>().getString("fcmToken"),
-        'verifyImage': await MultipartFile.fromFile(photo,
-            filename: fileName, contentType: MediaType("image", "jpeg")),
-        'acceptTermsAndConditions': terms,
-      });
-
       const headers = 'multipart/form-data';
       const apiKey =
           'fjsadkjfgdshfgjhjhvmgfdhvjkhdfjkhgkljfklghg54654654j65g456hk456hj4k6546hj4k64jh6k';
 
       return await DioHelper.postData2(
               url: 'driver/auth/register',
-              data: formData,
+              data: data,
               header: headers,
               apiKey: apiKey,
               firebaseToken: firebaseToken)

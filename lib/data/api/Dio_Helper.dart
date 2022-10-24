@@ -81,7 +81,6 @@ class DioHelper {
   static Future<Response> putData2({
     required String url,
     FormData? data,
-    String? header,
     String? token,
   }) async {
     dio.options.headers = {

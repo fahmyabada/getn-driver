@@ -85,6 +85,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               verificationId: verificationId,
               phone: splitPhone2,
               countryId: dropDownValueCountry!.id!,
+              countryName: dropDownValueCountry!.title!.en!,
               phoneWithCountry: '${dropDownValueCountry!.code}$splitPhone2',
             ),
           );

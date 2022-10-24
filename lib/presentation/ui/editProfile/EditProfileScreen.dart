@@ -27,7 +27,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final formKey = GlobalKey<FormState>();
 
   dynamic _pickImageError;
-
   File? _imageUser;
   final ImagePicker _picker = ImagePicker();
   String userImage = "";
@@ -40,12 +39,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Country? dropDownValueCountries;
   Country? dropDownValueCity;
   Country? dropDownValueArea;
-  String _selectedDate = '';
-  String _dateCount = '';
-  String _range = '';
-  String _rangeCount = '';
   bool imageRemote = false;
-
+  List<DateTime> availabilities = [];
+  List<String> availabilitiesValues = [];
   Future selectImageSource(ImageSource imageSource) async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
@@ -73,14 +69,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => EditProfileCubit()
-        ..getProfileDetails()
-        ..getCountries(),
+        ..getProfileDetails(),
       child: BlocConsumer<EditProfileCubit, EditProfileState>(
         listener: (context, state) {
           if (state is EditProfileSuccessState) {
             if (state.data!.country!.id != null) {
               setState(() {
                 dropDownValueCountries = state.data!.country!;
+                EditProfileCubit.get(context).getCountries();
+              });
+            }
+            if (state.data!.availabilities!.isNotEmpty) {
+              setState(() {
+                for (var element in state.data!.availabilities!) {
+                 availabilities.add(DateTime.parse(element));
+                }
               });
             }
             if (state.data!.image!.src != null) {
@@ -110,9 +113,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 birthDateController.text =  formatted;
               });
             }
-          } else if (state is CountriesSuccessState) {
+          }
+          else if (state is CountriesSuccessState) {
             EditProfileCubit.get(context).getCity(dropDownValueCountries!.id!);
-          } else if (state is CitySuccessState) {
+          }
+          else if (state is CitySuccessState) {
             if (state.data!.isNotEmpty) {
               setState(() {
                 dropDownValueCity = state.data?.first;
@@ -120,11 +125,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               EditProfileCubit.get(context)
                   .getArea(dropDownValueCountries!.id!, dropDownValueCity!.id!);
             }
-          } else if (state is AreaSuccessState) {
+          }
+          else if (state is AreaSuccessState) {
             if (state.data!.isNotEmpty) {
               dropDownValueArea = state.data?.first;
             }
-          } else if (state is EditSuccessState) {
+          }
+          else if (state is EditSuccessState) {
             print('EditSuccessState*******');
 
             if (state.data.phone != null) {
@@ -134,7 +141,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               getIt<SharedPreferences>().setString('name', state.data.name!);
             }
             Navigator.pop(context);
-          } else if (state is EditErrorState) {
+          }
+          else if (state is EditErrorState) {
             print('EditErrorState*******');
             showToastt(
                 text: state.message,
@@ -304,7 +312,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     ),
                                     Text(
                                       'Personal Information',
-                                      style: TextStyle(fontSize: 18.sp),
+                                      style: TextStyle(fontSize: 18.sp,fontWeight: FontWeight.bold),
                                     ),
                                   ],
                                 ),
@@ -406,7 +414,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     ),
                                     Text(
                                       'Address',
-                                      style: TextStyle(fontSize: 18.sp),
+                                      style: TextStyle(fontSize: 18.sp,fontWeight: FontWeight.bold),
                                     ),
                                   ],
                                 ),
@@ -939,11 +947,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 SizedBox(
                                   height: 40.h,
                                 ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.event_available,
+                                      size: 25.sp,
+                                      color: grey2,
+                                    ),
+                                    SizedBox(
+                                      width: 10.w,
+                                    ),
+                                    Text(
+                                      'Availabilities',
+                                      style: TextStyle(fontSize: 18.sp,fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 25.h,
+                                ),
                                 SfDateRangePicker(
                                   onSelectionChanged: _onSelectionChanged,
                                   selectionMode:
                                       DateRangePickerSelectionMode.multiple,
+                                  initialSelectedDates: availabilities,
                                 ),
+
                                 SizedBox(
                                   height: 40.h,
                                 ),
@@ -961,7 +991,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                               dropDownValueCity != null &&
                                               dropDownValueArea != null &&
                                               userImage.isNotEmpty &&
-                                              _dateCount.isNotEmpty) {
+                                              availabilities.isNotEmpty) {
                                             FocusScopeNode currentFocus =
                                                 FocusScope.of(context);
                                             if (!currentFocus.hasPrimaryFocus) {
@@ -969,7 +999,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                   ?.unfocus();
                                             }
 
-                                            print('_imageUser1***************** =${userImage}');
+
                                             EditProfileCubit.get(context)
                                                 .editProfileDetails(
                                                     nameController.text
@@ -982,7 +1012,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                     dropDownValueCity!.id!,
                                                     dropDownValueArea!.id!,
                                                     userImage,
-                                                    _dateCount,
+                                                    availabilitiesValues,
                                                     imageRemote);
                                           } else {
                                             showToastt(
@@ -1018,22 +1048,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     /// [List<PickerDateRange] when the widget [SfDateRangeSelectionMode] set as
     /// multi range.
     setState(() {
-      if (args.value is PickerDateRange) {
-        _range = '${DateFormat('dd/MM/yyyy').format(args.value.startDate)} -'
-            // ignore: lines_longer_than_80_chars
-            ' ${DateFormat('dd/MM/yyyy').format(args.value.endDate ?? args.value.startDate)}';
-      } else if (args.value is DateTime) {
-        _selectedDate = args.value.toString();
-      } else if (args.value is List<DateTime>) {
-        _dateCount = args.value.toString();
-      } else {
-        _rangeCount = args.value.length.toString();
+     if (args.value is List<DateTime>) {
+        setState((){
+          availabilities = args.value;
+          availabilitiesValues = availabilities.map((e) => e.toString()).toList();
+          // availabilitiesValues = availabilities.map((e) => '"$e"').toList();
+          // availabilitiesValues = availabilities.map((e) => DateFormat('yyyy-MM-dd').format(e)).toList();
+
+          print('_imageUser1***************** =${availabilitiesValues.toString()}');
+        });
+        print("availabilities11**********${availabilities.length}");
       }
 
-      print("_range***************$_range");
-      print("_selectedDate***************$_selectedDate");
-      print("_dateCount***************$_dateCount");
-      print("_rangeCount***************$_rangeCount");
+      print("availabilities***************${availabilities.toString()}");
     });
   }
 }

@@ -24,7 +24,8 @@ class OtpScreen extends StatefulWidget {
       required this.countryId,
       required this.type,
       this.verificationId,
-      required this.phoneWithCountry})
+      required this.phoneWithCountry,
+      this.countryName})
       : super(key: key);
 
   final String phone;
@@ -32,6 +33,7 @@ class OtpScreen extends StatefulWidget {
   final String? verificationId;
   final String countryId;
   final String type;
+  final String? countryName;
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -100,6 +102,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 SignUpDetailsScreen(
                   phone: widget.phone,
                   countryId: widget.countryId,
+                  countryName: widget.countryName,
                   firebaseToken:
                       getIt<SharedPreferences>().getString('firebaseToken')!,
                 ));
@@ -112,7 +115,7 @@ class _OtpScreenState extends State<OtpScreen> {
         showToastt(
             text: "uncorrect code", state: ToastStates.error, context: context);
       }
-    }  catch (error) {
+    } catch (error) {
       print("Exception*************${error}");
       if (widget.type == "login") {
         showToastt(
@@ -222,8 +225,9 @@ class _OtpScreenState extends State<OtpScreen> {
           getIt<SharedPreferences>()
               .setString('typeSign', "signWithInformation");
           navigateTo(context, const CarRegistrationScreen());
-        } else if (state.data.hasCar != null && state.data.hasCar!
-        && state.data.frontNationalImage?.src != null) {
+        } else if (state.data.hasCar != null &&
+            state.data.hasCar! &&
+            state.data.frontNationalImage?.src != null) {
           getIt<SharedPreferences>()
               .setString('typeSign', "signWithCarRegistration");
           navigateTo(context, const RequestTabsScreen());

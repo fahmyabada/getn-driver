@@ -51,6 +51,7 @@ class EditProfileCubit extends Cubit<EditProfileState> {
       Either<String, EditProfileModel?> data) {
     return data.fold((failure1) {
       failure = failure1;
+      print("EditProfileErrorState**********${failure1}");
       return EditProfileErrorState(failure1);
     }, (data) {
       profileDetails = data;
@@ -135,12 +136,12 @@ class EditProfileCubit extends Cubit<EditProfileState> {
       String idCity,
       String idArea,
       String userImage,
-      String date,
+      List<String> availabilities,
       // if take photo from device or from server
       bool imageRemote) async {
     loadingEdit = true;
     emit(EditLoading());
-    String userImageId = userImage.split('/').last;
+    String userImageName = userImage.split('/').last;
     FormData formData;
     if (imageRemote) {
       formData = FormData.fromMap({
@@ -150,19 +151,22 @@ class EditProfileCubit extends Cubit<EditProfileState> {
         'country': idCountries,
         'city': idCity,
         'area': idArea,
+        'availabilities': availabilities,
       });
     } else {
       formData = FormData.fromMap({
         'image': await MultipartFile.fromFile(userImage,
-            filename: userImageId, contentType: MediaType("image", "jpeg")),
+            filename: userImageName, contentType: MediaType("image", "jpeg")),
         'name': name,
         'email': email,
         'birthDate': birthDate,
         'country': idCountries,
         'city': idCity,
         'area': idArea,
+        'availabilities': availabilities,
       });
     }
+    print('_imageUser00***************** =${formData.fields.toString()}');
     editProfileUserUseCase.execute(formData).then((value) {
       emit(eitherLoadedOrErrorStateEditInformation(value));
     });

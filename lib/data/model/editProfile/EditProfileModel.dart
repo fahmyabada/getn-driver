@@ -53,7 +53,6 @@ class EditProfileModel {
     _backDriveImage = backDriveImage;
     _ratings = ratings;
     _wallet = wallet;
-    _holdWallet = holdWallet;
     _status = status;
     _acceptTermsAndConditions = acceptTermsAndConditions;
     _acceptPermissions = acceptPermissions;
@@ -94,7 +93,6 @@ class EditProfileModel {
     _backDriveImage = json['backDriveImage'] != null ? Image.fromJson(json['backDriveImage']) : null;
     _ratings = json['ratings'] != null ? Ratings.fromJson(json['ratings']) : null;
     _wallet = json['wallet'];
-    _holdWallet = json['holdWallet'];
     _status = json['status'];
     _acceptTermsAndConditions = json['acceptTermsAndConditions'];
     _acceptPermissions = json['acceptPermissions'];
@@ -133,7 +131,6 @@ class EditProfileModel {
   Image? _backDriveImage;
   Ratings? _ratings;
   int? _wallet;
-  int? _holdWallet;
   bool? _status;
   bool? _acceptTermsAndConditions;
   bool? _acceptPermissions;
@@ -172,7 +169,6 @@ class EditProfileModel {
   Image? get backDriveImage => _backDriveImage;
   Ratings? get ratings => _ratings;
   int? get wallet => _wallet;
-  int? get holdWallet => _holdWallet;
   bool? get status => _status;
   bool? get acceptTermsAndConditions => _acceptTermsAndConditions;
   bool? get acceptPermissions => _acceptPermissions;
@@ -225,7 +221,6 @@ class EditProfileModel {
       map['ratings'] = _ratings?.toJson();
     }
     map['wallet'] = _wallet;
-    map['holdWallet'] = _holdWallet;
     map['status'] = _status;
     map['acceptTermsAndConditions'] = _acceptTermsAndConditions;
     map['acceptPermissions'] = _acceptPermissions;

@@ -23,7 +23,13 @@ class VerifyImageScreen extends StatefulWidget {
       this.firebaseToken,
       this.role,
       this.typeScreen,
-      this.terms})
+      this.terms,
+      this.birthDate,
+      this.cityId,
+      this.areaId,
+      this.addressId,
+      this.availabilities,
+      this.userImage})
       : super(key: key);
 
   final String? typeScreen;
@@ -34,6 +40,12 @@ class VerifyImageScreen extends StatefulWidget {
   final String? fullName;
   final String? role;
   final bool? terms;
+  final String? birthDate;
+  final String? cityId;
+  final String? areaId;
+  final String? addressId;
+  final String? availabilities;
+  final String? userImage;
 
   @override
   State<VerifyImageScreen> createState() => _VerifyImageScreenState();
@@ -224,6 +236,18 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
                                     "SignUpDetails***********_imageFileList::>> ${_imageFileList!.path.toString()}}");
                                 print(
                                     "SignUpDetails***********terms::>> ${widget.terms}}");
+                                print(
+                                    "SignUpDetails***********terms::>> ${widget.birthDate}}");
+                                print(
+                                    "SignUpDetails***********terms::>> ${widget.cityId}}");
+                                print(
+                                    "SignUpDetails***********terms::>> ${widget.areaId}}");
+                                print(
+                                    "SignUpDetails***********terms::>> ${widget.addressId}}");
+                                print(
+                                    "SignUpDetails***********terms::>> ${widget.availabilities}}");
+                                print(
+                                    "SignUpDetails***********terms::>> ${widget.userImage}}");
                                 setState(() {
                                   verifyImageLoading = true;
                                 });
@@ -235,7 +259,13 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
                                     widget.fullName!,
                                     widget.role!,
                                     widget.terms!,
-                                    _imageFileList!.path.toString());
+                                    _imageFileList!.path.toString(),
+                                    widget.birthDate!,
+                                    widget.cityId!,
+                                    widget.areaId!,
+                                    widget.addressId!,
+                                    widget.availabilities!,
+                                    widget.userImage!);
                               } else if (widget.typeScreen ==
                                   "frontNationalId") {
                                 Navigator.of(context).pop(ImageVerify(

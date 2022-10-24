@@ -19,6 +19,34 @@ class CountriesSuccessState extends SignState {
   CountriesSuccessState(this.data);
 }
 
+class CityLoading extends SignState {}
+
+class CityErrorState extends SignState {
+  final String message;
+
+  CityErrorState(this.message);
+}
+
+class CitySuccessState extends SignState {
+  final List<Country>? data;
+
+  CitySuccessState(this.data);
+}
+
+class AreaLoading extends SignState {}
+
+class AreaErrorState extends SignState {
+  final String message;
+
+  AreaErrorState(this.message);
+}
+
+class AreaSuccessState extends SignState {
+  final List<Country>? data;
+
+  AreaSuccessState(this.data);
+}
+
 class CarModelErrorState extends SignState {
   final String message;
 

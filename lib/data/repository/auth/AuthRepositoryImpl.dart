@@ -33,6 +33,39 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
+  Future<Either<String, List<Country>?>> getArea(
+      String countryId, String cityId) async {
+    if (await networkInfo.isConnected) {
+      return await authRemoteDataSource
+          .getArea(countryId, cityId)
+          .then((value) {
+        return value.fold((failure) {
+          return Left(failure.toString());
+        }, (data) {
+          return Right(data);
+        });
+      });
+    } else {
+      return Left(networkFailureMessage);
+    }
+  }
+
+  @override
+  Future<Either<String, List<Country>?>> getCities(String countryId) async {
+    if (await networkInfo.isConnected) {
+      return await authRemoteDataSource.getCities(countryId).then((value) {
+        return value.fold((failure) {
+          return Left(failure.toString());
+        }, (data) {
+          return Right(data);
+        });
+      });
+    } else {
+      return Left(networkFailureMessage);
+    }
+  }
+
+  @override
   Future<Either<String, List<category.Data>?>> getCarSubCategory() async {
     if (await networkInfo.isConnected) {
       return await authRemoteDataSource.getCarSubCategory().then((value) {
@@ -111,19 +144,10 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
-  Future<Either<String, SignModel>> register(
-      String phone,
-      String countryId,
-      String email,
-      String firebaseToken,
-      String fullName,
-      String role,
-      bool terms,
-      String photo) async {
+  Future<Either<String, SignModel>> register(FormData data,String firebaseToken) async {
     if (await networkInfo.isConnected) {
       return await authRemoteDataSource
-          .register(phone, countryId, email, firebaseToken, fullName, role,
-              terms, photo)
+          .register(data,firebaseToken)
           .then((value) {
         return value.fold((failure) {
           return Left(failure.toString());
@@ -155,8 +179,7 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
-  Future<Either<String, SignModel>> editInformationUser(
-      FormData data) async {
+  Future<Either<String, SignModel>> editInformationUser(FormData data) async {
     if (await networkInfo.isConnected) {
       return await authRemoteDataSource
           .editInformationUserUseCase(data)
