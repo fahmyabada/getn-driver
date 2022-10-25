@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:getn_driver/data/utils/colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void navigateAndFinish(context, widget) => Navigator.pushAndRemoveUntil(
     context, MaterialPageRoute(builder: (context) => widget), (route) => false);
@@ -22,6 +25,32 @@ Future<dynamic> navigateToWithRefreshPagePrevious(context, widget) async {
       );
 }
 
+Future<void> makePhoneCall(String phoneNumber) async {
+  final Uri launchUri = Uri(
+    scheme: 'tel',
+    path: phoneNumber,
+  );
+  await launchUrl(launchUri);
+}
+
+
+Future<void> openWhatsapp(String whatsapp,BuildContext context) async {
+  var androidUrl = "whatsapp://send?phone=$whatsapp";
+  var iosUrl = "https://wa.me/$whatsapp";
+
+  try {
+    if (Platform.isIOS) {
+      await launchUrl(Uri.parse(iosUrl));
+    } else {
+      await launchUrl(Uri.parse(androidUrl));
+    }
+  } on Exception {
+    showToastt(
+        text: "whatsapp no installed",
+        state: ToastStates.error,
+        context: context);
+  }
+}
 
 Widget defaultFormField(
         {TextEditingController? controller,

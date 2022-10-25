@@ -21,42 +21,12 @@ abstract class TripDetailsRemoteDataSource {
 }
 
 class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
-  @override
-  Future<Either<String, DataRequest?>> putRequest(
-      String id, String type, String comment) async {
-    try {
-      FormData? formData;
-      if (type == "accept") {
-        formData = FormData.fromMap({"status": type});
-      } else {
-        formData = FormData.fromMap({"status": type, "comment": comment});
-      }
-
-      return await DioHelper.putData(
-              url: 'request/$id',
-              data: formData,
-              token: getIt<SharedPreferences>().getString("token"))
-          .then((value) {
-        if (value.statusCode == 200) {
-          if (DataRequest.fromJson(value.data).id!.isNotEmpty) {
-            return Right(DataRequest.fromJson(value.data!));
-          } else {
-            return const Left("have error when response request");
-          }
-        } else {
-          return Left(serverFailureMessage);
-        }
-      });
-    }  catch (error) {
-      return Left(handleError(error));
-    }
-  }
 
   @override
   Future<Either<String, Data?>> getTripDetails(String id) async {
     try {
       var body = {
-        "select-client": "name image",
+        "select-client": "name image phone whatsapp",
       };
 
       return await DioHelper.getData(

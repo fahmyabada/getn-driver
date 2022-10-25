@@ -240,6 +240,84 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                     fontSize: 14.sp,
                                                     color: grey2),
                                               ),
+                                              SizedBox(
+                                                height: 5.h,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Expanded(
+                                                    child:
+                                                        defaultButtonWithIcon(
+                                                            press: () {
+                                                              if (TripDetailsCubit
+                                                                          .get(
+                                                                              context)
+                                                                      .tripDetails
+                                                                      ?.client2
+                                                                      ?.phone !=
+                                                                  null) {
+                                                                makePhoneCall(
+                                                                    '${TripDetailsCubit.get(context).tripDetails?.client2?.country?.code}${TripDetailsCubit.get(context).tripDetails?.client2?.phone}');
+                                                              } else {
+                                                                showToastt(
+                                                                    text:
+                                                                        "this client not have phone...",
+                                                                    state: ToastStates
+                                                                        .error,
+                                                                    context:
+                                                                        context);
+                                                              }
+                                                            },
+                                                            fontSize: 18,
+                                                            paddingVertical: 1,
+                                                            paddingHorizontal:
+                                                                5,
+                                                            borderRadius: 10,
+                                                            text: 'Call Client',
+                                                            backColor:
+                                                                greenColor,
+                                                            textColor: white,
+                                                            icon: Icons.phone),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 5.w,
+                                                  ),
+                                                  Expanded(
+                                                    child:
+                                                        defaultButtonWithIcon(
+                                                            press: () {
+                                                              if (TripDetailsCubit
+                                                                          .get(
+                                                                              context)
+                                                                      .tripDetails
+                                                                      ?.client2
+                                                                      ?.whatsApp !=
+                                                                  null) {
+                                                                openWhatsapp(
+                                                                    '${TripDetailsCubit.get(context).tripDetails?.client2?.country?.code}${TripDetailsCubit.get(context).tripDetails?.client2?.whatsApp}',
+                                                                    context);
+                                                              } else {
+                                                                openWhatsapp(
+                                                                    '${TripDetailsCubit.get(context).tripDetails?.client2?.country?.code}${TripDetailsCubit.get(context).tripDetails?.client2?.phone}',
+                                                                    context);
+                                                              }
+                                                            },
+                                                            fontSize: 18,
+                                                            paddingVertical: 1,
+                                                            paddingHorizontal:
+                                                                5,
+                                                            borderRadius: 10,
+                                                            text: 'WhatsApp',
+                                                            backColor:
+                                                                greenColor,
+                                                            textColor: white,
+                                                            icon:
+                                                                Icons.whatsapp),
+                                                  ),
+                                                ],
+                                              )
                                             ],
                                           ),
                                         ),
@@ -553,142 +631,140 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                         ),
                                         SizedBox(
                                             height: 50.h,
-                                            child: TripDetailsCubit.get(context)
-                                                        .tripDetails!
-                                                        .status ==
-                                                    "pending"
-                                                ? Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceEvenly,
-                                                    children: [
-                                                      state
-                                                              is! TripDetailsEditInitial
-                                                          ? Expanded(
-                                                            child: defaultButton2(
-                                                                press: () {
-                                                                  TripDetailsCubit.get(context).editTrip(
-                                                                      TripDetailsCubit.get(
-                                                                              context)
-                                                                          .tripDetails!
-                                                                          .id!,
-                                                                      btnStatus[
-                                                                          '${TripDetailsCubit.get(context).tripDetails!.status}']![0],
-                                                                      "");
-                                                                },
-                                                                fontSize: 20,
-                                                                paddingVertical:
-                                                                    1,
-                                                                paddingHorizontal:
-                                                                    10,
-                                                                borderRadius: 10,
-                                                                text: btnStatus2[
-                                                                        '${TripDetailsCubit.get(context).tripDetails!.status}']![
-                                                                    0],
-                                                                backColor:
-                                                                    greenColor,
-                                                                textColor: white),
-                                                          )
-                                                          : Expanded(
-                                                            child: SizedBox(
-                                                              width: 20.w,
-                                                              child: const CircularProgressIndicator(
-                                                                  color:
-                                                                      accentColor,
+                                            child:
+                                                TripDetailsCubit.get(context)
+                                                            .tripDetails!
+                                                            .status ==
+                                                        "pending"
+                                                    ? Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceEvenly,
+                                                        children: [
+                                                          state is! TripDetailsEditInitial
+                                                              ? Expanded(
+                                                                  child: defaultButton2(
+                                                                      press: () {
+                                                                        TripDetailsCubit.get(context).editTrip(
+                                                                            TripDetailsCubit.get(context).tripDetails!.id!,
+                                                                            btnStatus['${TripDetailsCubit.get(context).tripDetails!.status}']![0],
+                                                                            "");
+                                                                      },
+                                                                      fontSize: 20,
+                                                                      paddingVertical: 1,
+                                                                      paddingHorizontal: 10,
+                                                                      borderRadius: 10,
+                                                                      text: btnStatus2['${TripDetailsCubit.get(context).tripDetails!.status}']![0],
+                                                                      backColor: greenColor,
+                                                                      textColor: white),
+                                                                )
+                                                              : Expanded(
+                                                                  child:
+                                                                      SizedBox(
+                                                                    width: 20.w,
+                                                                    child:
+                                                                        const CircularProgressIndicator(
+                                                                      color:
+                                                                          accentColor,
+                                                                    ),
+                                                                  ),
                                                                 ),
-                                                            ),
+                                                          Expanded(
+                                                            child:
+                                                                defaultButton2(
+                                                                    press: () {
+                                                                      showDialog(
+                                                                        context:
+                                                                            context,
+                                                                        barrierDismissible:
+                                                                            true,
+                                                                        // outside to dismiss
+                                                                        builder:
+                                                                            (BuildContext
+                                                                                context) {
+                                                                          return CustomDialog(
+                                                                            title:
+                                                                                'Do you want to reject?',
+                                                                            description:
+                                                                                'If you want to be rejected, you must first enter the reason for rejection and press OK..',
+                                                                            backgroundColor:
+                                                                                white,
+                                                                            btnOkColor:
+                                                                                accentColor,
+                                                                            btnCancelColor:
+                                                                                grey,
+                                                                            id: TripDetailsCubit.get(context).tripDetails!.id,
+                                                                            titleColor:
+                                                                                accentColor,
+                                                                            descColor:
+                                                                                black,
+                                                                          );
+                                                                        },
+                                                                      );
+                                                                    },
+                                                                    fontSize:
+                                                                        20,
+                                                                    paddingVertical:
+                                                                        1,
+                                                                    paddingHorizontal:
+                                                                        10,
+                                                                    borderRadius:
+                                                                        10,
+                                                                    text: btnStatus2[
+                                                                            '${TripDetailsCubit.get(context).tripDetails!.status}']![
+                                                                        1],
+                                                                    backColor:
+                                                                        greenColor,
+                                                                    textColor:
+                                                                        white),
                                                           ),
-                                                      Expanded(
-                                                        child: defaultButton2(
-                                                            press: () {
-                                                              showDialog(
-                                                                context: context,
-                                                                barrierDismissible:
-                                                                    true,
-                                                                // outside to dismiss
-                                                                builder:
-                                                                    (BuildContext
-                                                                        context) {
-                                                                  return CustomDialog(
-                                                                    title:
-                                                                        'Do you want to reject?',
-                                                                    description:
-                                                                        'If you want to be rejected, you must first enter the reason for rejection and press OK..',
-                                                                    backgroundColor:
-                                                                        white,
-                                                                    btnOkColor:
-                                                                        accentColor,
-                                                                    btnCancelColor:
-                                                                        grey,
-                                                                    id: TripDetailsCubit
-                                                                            .get(
-                                                                                context)
-                                                                        .tripDetails!
-                                                                        .id,
-                                                                    titleColor:
-                                                                        accentColor,
-                                                                    descColor:
-                                                                        black,
-                                                                  );
-                                                                },
-                                                              );
-                                                            },
-                                                            fontSize: 20,
-                                                            paddingVertical: 1,
-                                                            paddingHorizontal: 10,
-                                                            borderRadius: 10,
-                                                            text: btnStatus2[
-                                                                '${TripDetailsCubit.get(context).tripDetails!.status}']![1],
-                                                            backColor: greenColor,
-                                                            textColor: white),
-                                                      ),
-                                                    ],
-                                                  )
-                                                : Center(
-                                                    child: state
-                                                            is! TripDetailsEditInitial
-                                                        ? TripDetailsCubit.get(
-                                                                            context)
-                                                                        .tripDetails!
-                                                                        .status !=
-                                                                    null &&
-                                                                btnStatus[
-                                                                        '${TripDetailsCubit.get(context).tripDetails!.status}']!
-                                                                    .isNotEmpty
-                                                            ? defaultButton2(
-                                                                press: () {
-                                                                  TripDetailsCubit.get(context).editTrip(
-                                                                      TripDetailsCubit.get(
-                                                                              context)
-                                                                          .tripDetails!
-                                                                          .id!,
-                                                                      btnStatus[
-                                                                          '${TripDetailsCubit.get(context).tripDetails!.status}']![0],
-                                                                      "");
-                                                                },
-                                                                fontSize: 22,
-                                                                paddingVertical:
-                                                                    1,
-                                                                paddingHorizontal:
-                                                                    50,
-                                                                borderRadius:
-                                                                    10,
-                                                                text: btnStatus2[
-                                                                        '${TripDetailsCubit.get(context).tripDetails!.status}']![
-                                                                    0],
-                                                                backColor: btnStatus2['${TripDetailsCubit.get(context).tripDetails!.status}']![0] ==
-                                                                            "End" ||
-                                                                        btnStatus2['${TripDetailsCubit.get(context).tripDetails!.status}']![0] ==
-                                                                            "Cancel"
-                                                                    ? redColor
-                                                                    : greenColor,
-                                                                textColor:
-                                                                    white)
-                                                            : Container()
-                                                        : const CircularProgressIndicator(
-                                                            color: accentColor,
-                                                          ),
-                                                  )),
+                                                        ],
+                                                      )
+                                                    : Center(
+                                                        child: state
+                                                                is! TripDetailsEditInitial
+                                                            ? TripDetailsCubit.get(context)
+                                                                            .tripDetails!
+                                                                            .status !=
+                                                                        null &&
+                                                                    btnStatus[
+                                                                            '${TripDetailsCubit.get(context).tripDetails!.status}']!
+                                                                        .isNotEmpty
+                                                                ? defaultButton2(
+                                                                    press: () {
+                                                                      TripDetailsCubit.get(context).editTrip(
+                                                                          TripDetailsCubit.get(context)
+                                                                              .tripDetails!
+                                                                              .id!,
+                                                                          btnStatus['${TripDetailsCubit.get(context).tripDetails!.status}']![
+                                                                              0],
+                                                                          "");
+                                                                    },
+                                                                    fontSize:
+                                                                        22,
+                                                                    paddingVertical:
+                                                                        1,
+                                                                    paddingHorizontal:
+                                                                        50,
+                                                                    borderRadius:
+                                                                        10,
+                                                                    text:
+                                                                        btnStatus2['${TripDetailsCubit.get(context).tripDetails!.status}']![
+                                                                            0],
+                                                                    backColor: btnStatus2['${TripDetailsCubit.get(context).tripDetails!.status}']![0] ==
+                                                                                "End" ||
+                                                                            btnStatus2['${TripDetailsCubit.get(context).tripDetails!.status}']![0] ==
+                                                                                "Cancel"
+                                                                        ? redColor
+                                                                        : greenColor,
+                                                                    textColor:
+                                                                        white)
+                                                                : Container()
+                                                            : const CircularProgressIndicator(
+                                                                color:
+                                                                    accentColor,
+                                                              ),
+                                                      )),
 
                                         // SizedBox(
                                         //   height: 10.h,

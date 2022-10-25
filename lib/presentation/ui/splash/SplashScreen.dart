@@ -7,12 +7,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/main.dart';
-import 'package:getn_driver/presentation/ui/auth/CarRegistrationScreen.dart';
-import 'package:getn_driver/presentation/ui/auth/DriverInformationScreen.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/notificationService/local_notification_service.dart';
-import 'package:getn_driver/presentation/ui/auth/SignInScreen.dart';
-import 'package:getn_driver/presentation/ui/editProfile/EditProfileScreen.dart';
+import 'package:getn_driver/presentation/ui/auth/CarRegistrationScreen.dart';
+import 'package:getn_driver/presentation/ui/auth/DriverInformationScreen.dart';
 import 'package:getn_driver/presentation/ui/onBoarding/OnBoardScreenView.dart';
 import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/RequestTabsScreen.dart';
@@ -101,7 +99,8 @@ class _SplashScreenState extends State<SplashScreen> {
                       message.data['typeId']) {
                 // here if i get same trip id i will refresh page and show notification
                 // without enable clickable
-                LocalNotificationService.goToNextScreen(message.data['typeId'], "pushReplacement", "tripDetails");
+                LocalNotificationService.goToNextScreen(
+                    message.data['typeId'], "pushReplacement", "tripDetails");
                 LocalNotificationService.createAndDisplayNotification(
                     message, "inSameTrip");
               } else if (getIt<SharedPreferences>().getString('typeScreen') ==
@@ -134,7 +133,8 @@ class _SplashScreenState extends State<SplashScreen> {
                       message.data['typeId']) {
                 // here if i get same request id i will refresh page and show notification
                 // without enable clickable
-                LocalNotificationService.goToNextScreen(message.data['typeId'], "pushReplacement", "requestDetails");
+                LocalNotificationService.goToNextScreen(message.data['typeId'],
+                    "pushReplacement", "requestDetails");
                 LocalNotificationService.createAndDisplayNotification(
                     message, "inSameRequest");
               } else if (getIt<SharedPreferences>().getString('typeScreen') ==
@@ -318,12 +318,11 @@ class _SplashScreenState extends State<SplashScreen> {
                 } else {
                   navigateAndFinish(context, const RequestTabsScreen());
                 }
-              }else {
-                navigateAndFinish(context,  SignInScreen());
+              } else {
+                navigateAndFinish(context, OnBoardScreenView());
               }
-            }
-            else {
-              navigateAndFinish(context,  SignInScreen());
+            } else {
+              navigateAndFinish(context, OnBoardScreenView());
             }
           }
         }, builder: (context, state) {

@@ -49,7 +49,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
   dynamic _pickImageError;
   Country? dropDownValueCity;
   Country? dropDownValueArea;
-  List<String> availabilities = [];
+  List<DateTime> availabilities = [];
+  List<String> availabilitiesValues = [];
 
   @override
   void initState() {
@@ -243,6 +244,23 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                         validatorMessage: "Enter Email Please..",
                         onEditingComplete: () {
                           FocusScope.of(context).unfocus();
+                        },
+                      ),
+                      SizedBox(
+                        height: 16.h,
+                      ),
+                      defaultFormField(
+                        controller: whatsAppController,
+                        type: TextInputType.number,
+                        label: "WhatsApp",
+                        textSize: 20,
+                        border: false,
+                        borderRadius: 50,
+                        validatorText: whatsAppController.text,
+                        validatorMessage:
+                        "Enter WhatsApp Please..",
+                        onEditingComplete: () {
+                          FocusScope.of(context).nextFocus();
                         },
                       ),
                       SizedBox(
@@ -721,10 +739,28 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                             dropDownValueCity != null &&
                             dropDownValueArea != null &&
                             userImage.isNotEmpty &&
-                            addressController
-                                .text.isNotEmpty &&
-                            availabilities.isNotEmpty) {
+                            addressController.text.isNotEmpty &&
+                            availabilitiesValues.isNotEmpty) {
                           if (terms) {
+                            String whatsApp = "";
+                            if (whatsAppController.text.startsWith('0') &&
+                                whatsAppController.text.length > 1) {
+                              final splitPhone =
+                                  const TextEditingValue().copyWith(
+                                text: whatsAppController.text
+                                    .replaceAll(RegExp(r'^0+(?=.)'), ''),
+                                selection:
+                                    whatsAppController.selection.copyWith(
+                                  baseOffset:
+                                      whatsAppController.text.length - 1,
+                                  extentOffset:
+                                      whatsAppController.text.length - 1,
+                                ),
+                              );
+                              whatsApp = splitPhone.text.toString();
+                            } else {
+                              whatsApp = whatsAppController.text.toString();
+                            }
                             navigateTo(
                               context,
                               VerifyImageScreen(
@@ -738,12 +774,12 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                   cityId: dropDownValueCity!.id!,
                                   areaId: dropDownValueArea!.id!,
                                   address: addressController.text.toString(),
-                                  availabilities: availabilities,
+                                  availabilities: availabilitiesValues,
                                   firebaseToken: widget.firebaseToken,
                                   role: groupValueId,
                                   terms: terms,
                                   userImage: userImage,
-                                  whatsApp: whatsAppController.text.toString()),
+                                  whatsApp: whatsApp),
                             );
                           } else {
                             showToastt(
@@ -851,7 +887,9 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
     setState(() {
       if (args.value is List<DateTime>) {
         setState(() {
-          availabilities = args.value.map((e) => e.toString()).toList();
+          availabilities = args.value;
+          availabilitiesValues =
+              availabilities.map((e) => e.toString()).toList();
         });
       }
     });

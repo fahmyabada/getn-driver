@@ -96,7 +96,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
 
   @override
   void dispose() {
-    RequestCubit.get(context).tabController!.dispose();
+    // RequestCubit.get(context).tabController!.dispose();
     super.dispose();
     _controllerUpcoming.removeListener(_loadMoreUpComing);
     _controllerPast.removeListener(_loadMorePast);

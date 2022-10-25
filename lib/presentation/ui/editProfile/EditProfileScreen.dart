@@ -106,6 +106,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               });
             }
 
+
+
             if (state.data!.birthDate != null) {
               setState(() {
                 final DateFormat displayFormater =
@@ -1012,6 +1014,37 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                   .text.isNotEmpty &&
                                               userImage.isNotEmpty &&
                                               availabilities.isNotEmpty) {
+                                            String whatsApp = "";
+                                            if (whatsAppController.text
+                                                    .startsWith('0') &&
+                                                whatsAppController.text.length >
+                                                    1) {
+                                              final splitPhone =
+                                                  const TextEditingValue()
+                                                      .copyWith(
+                                                text: whatsAppController.text
+                                                    .replaceAll(
+                                                        RegExp(r'^0+(?=.)'),
+                                                        ''),
+                                                selection: whatsAppController
+                                                    .selection
+                                                    .copyWith(
+                                                  baseOffset: whatsAppController
+                                                          .text.length -
+                                                      1,
+                                                  extentOffset:
+                                                      whatsAppController
+                                                              .text.length -
+                                                          1,
+                                                ),
+                                              );
+                                              whatsApp =
+                                                  splitPhone.text.toString();
+                                            } else {
+                                              whatsApp = whatsAppController.text
+                                                  .toString();
+                                            }
+
                                             FocusScopeNode currentFocus =
                                                 FocusScope.of(context);
                                             if (!currentFocus.hasPrimaryFocus) {
@@ -1035,12 +1068,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                     imageRemote,
                                                     addressController.text
                                                         .toString(),
-                                                    whatsAppController.text
-                                                        .toString());
+                                                    whatsApp);
                                           } else {
                                             showToastt(
                                                 text:
-                                                'Be sure to choose image and fill personal information ,address and availability',
+                                                    'Be sure to choose image and fill personal information ,address and availability',
                                                 state: ToastStates.error,
                                                 context: context);
                                           }
