@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -138,9 +140,13 @@ class EditProfileCubit extends Cubit<EditProfileState> {
       String userImage,
       List<String> availabilities,
       // if take photo from device or from server
-      bool imageRemote) async {
+      bool imageRemote,
+      String address,
+      String whatsApp,
+      ) async {
     loadingEdit = true;
     emit(EditLoading());
+    final body =jsonEncode(availabilities);
     String userImageName = userImage.split('/').last;
     FormData formData;
     if (imageRemote) {
@@ -151,7 +157,9 @@ class EditProfileCubit extends Cubit<EditProfileState> {
         'country': idCountries,
         'city': idCity,
         'area': idArea,
-        'availabilities': availabilities,
+        'availabilities': body,
+        'address': address,
+        'whatsapp': whatsApp,
       });
     } else {
       formData = FormData.fromMap({
@@ -163,10 +171,11 @@ class EditProfileCubit extends Cubit<EditProfileState> {
         'country': idCountries,
         'city': idCity,
         'area': idArea,
-        'availabilities': availabilities,
+        'availabilities': body,
+        'address': address,
+        'whatsapp': whatsApp,
       });
     }
-    print('_imageUser00***************** =${formData.fields.toString()}');
     editProfileUserUseCase.execute(formData).then((value) {
       emit(eitherLoadedOrErrorStateEditInformation(value));
     });

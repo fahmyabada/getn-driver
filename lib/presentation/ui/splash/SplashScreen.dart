@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/main.dart';
@@ -320,16 +321,21 @@ class _SplashScreenState extends State<SplashScreen> {
               }else {
                 navigateAndFinish(context,  SignInScreen());
               }
-            } else {
+            }
+            else {
               navigateAndFinish(context,  SignInScreen());
             }
           }
         }, builder: (context, state) {
-          return const Scaffold(
+          return Scaffold(
             backgroundColor: white,
             body: Center(
-              child: Image(
-                image: AssetImage('assets/logoGif.gif'),
+              child: SizedBox(
+                width: 300.w,
+                height: 500.h,
+                child: const Image(
+                  image: AssetImage('assets/logoGif2.gif'),
+                ),
               ),
             ),
           );

@@ -27,9 +27,10 @@ class VerifyImageScreen extends StatefulWidget {
       this.birthDate,
       this.cityId,
       this.areaId,
-      this.addressId,
+      this.address,
       this.availabilities,
-      this.userImage})
+      this.userImage,
+      this.whatsApp})
       : super(key: key);
 
   final String? typeScreen;
@@ -43,9 +44,10 @@ class VerifyImageScreen extends StatefulWidget {
   final String? birthDate;
   final String? cityId;
   final String? areaId;
-  final String? addressId;
-  final String? availabilities;
+  final String? address;
+  final List<String>? availabilities;
   final String? userImage;
+  final String? whatsApp;
 
   @override
   State<VerifyImageScreen> createState() => _VerifyImageScreenState();
@@ -233,21 +235,21 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
                                 print(
                                     "SignUpDetails***********codeOtp::>> ${widget.role}");
                                 print(
-                                    "SignUpDetails***********_imageFileList::>> ${_imageFileList!.path.toString()}}");
+                                    "SignUpDetails***********_imageFileList::>> ${_imageFileList!.path.toString()}");
                                 print(
-                                    "SignUpDetails***********terms::>> ${widget.terms}}");
+                                    "SignUpDetails***********terms::>> ${widget.terms}");
                                 print(
-                                    "SignUpDetails***********terms::>> ${widget.birthDate}}");
+                                    "SignUpDetails***********terms::>> ${widget.birthDate}");
                                 print(
-                                    "SignUpDetails***********terms::>> ${widget.cityId}}");
+                                    "SignUpDetails***********terms::>> ${widget.cityId}");
                                 print(
-                                    "SignUpDetails***********terms::>> ${widget.areaId}}");
+                                    "SignUpDetails***********terms::>> ${widget.areaId}");
                                 print(
-                                    "SignUpDetails***********terms::>> ${widget.addressId}}");
+                                    "SignUpDetails***********terms::>> ${widget.address}");
                                 print(
-                                    "SignUpDetails***********terms::>> ${widget.availabilities}}");
+                                    "SignUpDetails***********terms::>> ${widget.availabilities}");
                                 print(
-                                    "SignUpDetails***********terms::>> ${widget.userImage}}");
+                                    "SignUpDetails***********terms::>> ${widget.userImage}");
                                 setState(() {
                                   verifyImageLoading = true;
                                 });
@@ -263,9 +265,10 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
                                     widget.birthDate!,
                                     widget.cityId!,
                                     widget.areaId!,
-                                    widget.addressId!,
+                                    widget.address!,
                                     widget.availabilities!,
-                                    widget.userImage!);
+                                    widget.userImage!,
+                                    widget.whatsApp!);
                               } else if (widget.typeScreen ==
                                   "frontNationalId") {
                                 Navigator.of(context).pop(ImageVerify(

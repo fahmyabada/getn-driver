@@ -308,7 +308,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                   SizedBox(
                                                     height: 5.h,
                                                   ),
-                                                  RatingBar.builder(
+                                                  /*RatingBar.builder(
                                                     minRating: _userRating,
                                                     itemBuilder:
                                                         (context, index) =>
@@ -327,7 +327,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                     unratedColor: Colors.amber
                                                         .withAlpha(50),
                                                     direction: Axis.horizontal,
-                                                  ),
+                                                  ),*/
                                                 ],
                                               ),
                                             ),
@@ -777,7 +777,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                   SizedBox(
                                                     height: 5.h,
                                                   ),
-                                                  RatingBar.builder(
+                                                 /* RatingBar.builder(
                                                     minRating: _userRating,
                                                     itemBuilder:
                                                         (context, index) =>
@@ -796,7 +796,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                     unratedColor: Colors.amber
                                                         .withAlpha(50),
                                                     direction: Axis.horizontal,
-                                                  ),
+                                                  ),*/
                                                 ],
                                               ),
                                             ),
@@ -1244,7 +1244,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                   SizedBox(
                                                     height: 5.h,
                                                   ),
-                                                  RatingBar.builder(
+                                                  /*RatingBar.builder(
                                                     minRating: _userRating,
                                                     itemBuilder:
                                                         (context, index) =>
@@ -1263,7 +1263,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                     unratedColor: Colors.amber
                                                         .withAlpha(50),
                                                     direction: Axis.horizontal,
-                                                  ),
+                                                  ),*/
                                                 ],
                                               ),
                                             ),
@@ -1715,7 +1715,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                 SizedBox(
                                                   height: 5.h,
                                                 ),
-                                                RatingBar.builder(
+                                                /*RatingBar.builder(
                                                   minRating: _userRating,
                                                   itemBuilder:
                                                       (context, index) =>
@@ -1734,7 +1734,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                   unratedColor: Colors.amber
                                                       .withAlpha(50),
                                                   direction: Axis.horizontal,
-                                                ),
+                                                ),*/
                                               ],
                                             ),
                                           ),

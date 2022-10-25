@@ -21,7 +21,7 @@ class SignUpDetailsScreen extends StatefulWidget {
       required this.countryId,
       required this.phone,
       required this.firebaseToken,
-        this.countryName})
+      this.countryName})
       : super(key: key);
 
   final String phone;
@@ -40,6 +40,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
   final emailController = TextEditingController();
   final birthDateController = TextEditingController();
   final addressController = TextEditingController();
+  final whatsAppController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   bool terms = false;
   File? _imageUser;
@@ -48,10 +49,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
   dynamic _pickImageError;
   Country? dropDownValueCity;
   Country? dropDownValueArea;
-  String _selectedDate = '';
-  String _dateCount = '';
-  String _range = '';
-  String _rangeCount = '';
+  List<String> availabilities = [];
 
   @override
   void initState() {
@@ -59,7 +57,6 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
     SignCubit.get(context).getRole();
     SignCubit.get(context).getCity(widget.countryId);
   }
-
 
   Future selectImageSource(ImageSource imageSource) async {
     try {
@@ -83,15 +80,13 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SignCubit, SignState>(listener: (context, state) {
       if (state is RoleSuccessState) {
         print("RoleSuccessState**************${state.data![0].id}");
         groupValueId = state.data![0].id!;
-      }
-      else if (state is CitySuccessState) {
+      } else if (state is CitySuccessState) {
         if (state.data!.isNotEmpty) {
           setState(() {
             dropDownValueCity = state.data?.first;
@@ -99,8 +94,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
           SignCubit.get(context)
               .getArea(widget.countryId, dropDownValueCity!.id!);
         }
-      }
-      else if (state is AreaSuccessState) {
+      } else if (state is AreaSuccessState) {
         if (state.data!.isNotEmpty) {
           dropDownValueArea = state.data?.first;
         }
@@ -109,7 +103,11 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
       return SafeArea(
         child: Scaffold(
           appBar: AppBar(
-            leading: const Icon(Icons.arrow_back,size: 0,color: black,),
+            leading: const Icon(
+              Icons.arrow_back,
+              size: 0,
+              color: black,
+            ),
             title: Text(
               "Complete your Registration",
               textAlign: TextAlign.start,
@@ -138,8 +136,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                 alignment: Alignment.center,
                                 children: [
                                   ClipRRect(
-                                    borderRadius:
-                                        BorderRadius.circular(20.r),
+                                    borderRadius: BorderRadius.circular(20.r),
                                     child: Image.file(
                                       _imageUser!,
                                       width: 150.w,
@@ -207,7 +204,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                     ),
                     Text(
                       'Personal Information',
-                      style: TextStyle(fontSize: 18.sp,fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 18.sp, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -260,10 +258,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                             textSize: 20,
                             border: false,
                             borderRadius: 50,
-                            validatorText:
-                            birthDateController.text,
-                            validatorMessage:
-                            "Enter Birthday Please..",
+                            validatorText: birthDateController.text,
+                            validatorMessage: "Enter Birthday Please..",
                             onEditingComplete: () {
                               FocusScope.of(context).unfocus();
                             },
@@ -271,8 +267,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                         ),
                         onTap: () async {
                           final now = DateTime.now();
-                          final pickedDate =
-                          await showDatePicker(
+                          final pickedDate = await showDatePicker(
                             context: context,
                             initialDate: now,
                             firstDate: DateTime(now.year - 100),
@@ -281,8 +276,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
 
                           if (pickedDate != null) {
                             birthDateController.text =
-                                DateFormat("yyyy-MM-dd")
-                                    .format(pickedDate);
+                                DateFormat("yyyy-MM-dd").format(pickedDate);
                           }
                         },
                       ),
@@ -309,7 +303,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                     ),
                     Text(
                       'Address',
-                      style: TextStyle(fontSize: 18.sp,fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 18.sp, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -318,7 +313,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                 ),
                 Container(
                   width: 1.sw,
-                  padding: EdgeInsets.all(15.r) ,
+                  padding: EdgeInsets.all(15.r),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50.r),
                     border: Border.all(
@@ -326,7 +321,11 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                       color: Colors.black,
                     ),
                   ),
-                  child: Center(child: Text(widget.countryName!,style: TextStyle(fontSize: 20.sp,color: black),)),
+                  child: Center(
+                      child: Text(
+                    widget.countryName!,
+                    style: TextStyle(fontSize: 20.sp, color: black),
+                  )),
                 ),
                 SizedBox(
                   height: 16.h,
@@ -354,14 +353,13 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                   ),
                                   MaterialButton(
                                     onPressed: () {
-                                      SignCubit.get(context).getCity(
-                                          widget.countryId);
+                                      SignCubit.get(context)
+                                          .getCity(widget.countryId);
                                     },
                                     child: Text(
                                       'Retry',
                                       style: TextStyle(
-                                          color: accentColor,
-                                          fontSize: 20.sp),
+                                          color: accentColor, fontSize: 20.sp),
                                     ),
                                   )
                                 ],
@@ -382,8 +380,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                   child: DropdownButton2(
                                     //      value: controller.selectedCountry?.value,
                                     dropdownDecoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.circular(14.r),
+                                      borderRadius: BorderRadius.circular(14.r),
                                       border: Border.all(
                                         width: 1,
                                         color: Colors.black,
@@ -392,23 +389,21 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                     isExpanded: true,
                                     iconSize: 40.sp,
                                     icon: Container(
-                                      margin: EdgeInsetsDirectional.only(
-                                          end: 18.r),
+                                      margin:
+                                          EdgeInsetsDirectional.only(end: 18.r),
                                       child: Icon(
                                         Icons.arrow_drop_down,
                                         color: grey2,
                                         size: 40.sp,
                                       ),
                                     ),
-                                    style:
-                                        const TextStyle(color: Colors.grey),
+                                    style: const TextStyle(color: Colors.grey),
                                     onChanged: (Country? value) {
                                       setState(() {
                                         dropDownValueCity = value;
-                                        SignCubit.get(context)
-                                            .getArea(
-                                                widget.countryId,
-                                                dropDownValueCity!.id!);
+                                        SignCubit.get(context).getArea(
+                                            widget.countryId,
+                                            dropDownValueCity!.id!);
                                       });
                                     },
                                     hint: Container(
@@ -421,8 +416,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                                 "Country",
                                             maxLines: 2,
                                             style: TextStyle(
-                                                overflow:
-                                                    TextOverflow.ellipsis,
+                                                overflow: TextOverflow.ellipsis,
                                                 color: Colors.black,
                                                 fontSize: 20.sp)),
                                       ),
@@ -437,13 +431,12 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                                selectedCountry.title?.en ??
-                                                    "",
+                                                selectedCountry.title?.en ?? "",
                                                 textAlign: TextAlign.center,
                                                 maxLines: 1,
                                                 style: TextStyle(
-                                                    overflow: TextOverflow
-                                                        .ellipsis,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                     color: Colors.black,
                                                     fontSize: 20.sp)),
                                             SizedBox(
@@ -496,8 +489,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                     child: Text(
                                       'Retry',
                                       style: TextStyle(
-                                          color: accentColor,
-                                          fontSize: 20.sp),
+                                          color: accentColor, fontSize: 20.sp),
                                     ),
                                   )
                                 ],
@@ -518,8 +510,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                   child: DropdownButton2(
                                     //      value: controller.selectedCountry?.value,
                                     dropdownDecoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.circular(14.r),
+                                      borderRadius: BorderRadius.circular(14.r),
                                       border: Border.all(
                                         width: 1,
                                         color: Colors.black,
@@ -528,16 +519,15 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                     isExpanded: true,
                                     iconSize: 40.sp,
                                     icon: Container(
-                                      margin: EdgeInsetsDirectional.only(
-                                          end: 18.r),
+                                      margin:
+                                          EdgeInsetsDirectional.only(end: 18.r),
                                       child: Icon(
                                         Icons.arrow_drop_down,
                                         color: grey2,
                                         size: 40.sp,
                                       ),
                                     ),
-                                    style:
-                                        const TextStyle(color: Colors.grey),
+                                    style: const TextStyle(color: Colors.grey),
                                     onChanged: (Country? value) {
                                       setState(() {
                                         dropDownValueArea = value;
@@ -553,8 +543,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                                 "Country",
                                             maxLines: 2,
                                             style: TextStyle(
-                                                overflow:
-                                                    TextOverflow.ellipsis,
+                                                overflow: TextOverflow.ellipsis,
                                                 color: Colors.black,
                                                 fontSize: 20.sp)),
                                       ),
@@ -569,13 +558,12 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                                selectedCountry.title?.en ??
-                                                    "",
+                                                selectedCountry.title?.en ?? "",
                                                 textAlign: TextAlign.center,
                                                 maxLines: 1,
                                                 style: TextStyle(
-                                                    overflow: TextOverflow
-                                                        .ellipsis,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                     color: Colors.black,
                                                     fontSize: 20.sp)),
                                             SizedBox(
@@ -627,7 +615,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                     ),
                     Text(
                       'Availabilities',
-                      style: TextStyle(fontSize: 18.sp,fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 18.sp, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -636,10 +625,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                 ),
                 SfDateRangePicker(
                   onSelectionChanged: _onSelectionChanged,
-                  selectionMode:
-                  DateRangePickerSelectionMode.multiple,
+                  selectionMode: DateRangePickerSelectionMode.multiple,
                 ),
-
                 SizedBox(
                   height: 40.h,
                 ),
@@ -655,19 +642,16 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                     ),
                     state is RoleLoading
                         ? Container(
-                            margin:
-                                EdgeInsetsDirectional.only(start: 30.r),
-                            child: const CircularProgressIndicator(
-                                color: black),
+                            margin: EdgeInsetsDirectional.only(start: 30.r),
+                            child:
+                                const CircularProgressIndicator(color: black),
                           )
                         : SignCubit.get(context).roles.isNotEmpty
                             ? Expanded(
-                                child: radioButtonTypeDriverLayout(
-                                    context),
+                                child: radioButtonTypeDriverLayout(context),
                               )
                             : Container(
-                                margin: EdgeInsetsDirectional.only(
-                                    start: 30.r),
+                                margin: EdgeInsetsDirectional.only(start: 30.r),
                                 child: IconButton(
                                     icon: Icon(
                                       Icons.cloud_upload,
@@ -686,8 +670,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                 Row(
                   children: [
                     Checkbox(
-                      materialTapTargetSize:
-                      MaterialTapTargetSize.shrinkWrap,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       focusColor: Theme.of(context).focusColor,
                       //   activeColor: Theme.of(context).colorScheme.secondary,
                       value: terms,
@@ -702,16 +685,15 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text("i confirm that i have read & agree to the",
-                            style:
-                            TextStyle(fontSize: 17.sp, color: black)),
+                            style: TextStyle(fontSize: 17.sp, color: black)),
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             InkWell(
                               onTap: () async {
                                 bool value =
-                                await navigateToWithRefreshPagePrevious(
-                                    context, const TermsScreen());
+                                    await navigateToWithRefreshPagePrevious(
+                                        context, const TermsScreen());
 
                                 setState(() {
                                   terms = value;
@@ -719,12 +701,11 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                               },
                               child: Text("Terms & condition ",
                                   style: TextStyle(
-                                      fontSize: 17.sp,
-                                      color: accentColor)),
+                                      fontSize: 17.sp, color: accentColor)),
                             ),
                             Text("and Privacy Policy",
-                                style: TextStyle(
-                                    fontSize: 17.sp, color: black)),
+                                style:
+                                    TextStyle(fontSize: 17.sp, color: black)),
                           ],
                         )
                       ],
@@ -737,41 +718,43 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                   child: defaultButton3(
                       press: () {
                         if (formKey.currentState!.validate() &&
-                        dropDownValueCity != null &&
-                        dropDownValueArea != null &&
-                        userImage.isNotEmpty &&
-                            _dateCount.isNotEmpty) {
+                            dropDownValueCity != null &&
+                            dropDownValueArea != null &&
+                            userImage.isNotEmpty &&
+                            addressController
+                                .text.isNotEmpty &&
+                            availabilities.isNotEmpty) {
                           if (terms) {
                             navigateTo(
                               context,
                               VerifyImageScreen(
-                                typeScreen: "register",
-                                fullName: fullNameController.text.toString(),
-                                email: emailController.text.toString(),
-                                phone: widget.phone,
-                                birthDate: birthDateController.text.toString(),
-                                countryId: widget.countryId,
-                                cityId: dropDownValueCity!.id!,
-                                areaId: dropDownValueArea!.id!,
-                                addressId: addressController.text.toString(),
-                                availabilities: _dateCount,
-                                firebaseToken: widget.firebaseToken,
-                                role: groupValueId,
-                                terms: terms,
-                                userImage: userImage,
-                              ),
+                                  typeScreen: "register",
+                                  fullName: fullNameController.text.toString(),
+                                  email: emailController.text.toString(),
+                                  phone: widget.phone,
+                                  birthDate:
+                                      birthDateController.text.toString(),
+                                  countryId: widget.countryId,
+                                  cityId: dropDownValueCity!.id!,
+                                  areaId: dropDownValueArea!.id!,
+                                  address: addressController.text.toString(),
+                                  availabilities: availabilities,
+                                  firebaseToken: widget.firebaseToken,
+                                  role: groupValueId,
+                                  terms: terms,
+                                  userImage: userImage,
+                                  whatsApp: whatsAppController.text.toString()),
                             );
                           } else {
                             showToastt(
-                                text:
-                                "check in Terms & condition first..",
+                                text: "check in Terms & condition first..",
                                 state: ToastStates.error,
                                 context: context);
                           }
-                        }else {
+                        } else {
                           showToastt(
                               text:
-                              'Be sure to fill personal information ,address and availability',
+                                  'Be sure to choose image and fill personal information ,address and availability',
                               state: ToastStates.error,
                               context: context);
                         }
@@ -866,23 +849,11 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
     /// [List<PickerDateRange] when the widget [SfDateRangeSelectionMode] set as
     /// multi range.
     setState(() {
-      if (args.value is PickerDateRange) {
-        _range = '${DateFormat('dd/MM/yyyy').format(args.value.startDate)} -'
-        // ignore: lines_longer_than_80_chars
-            ' ${DateFormat('dd/MM/yyyy').format(args.value.endDate ?? args.value.startDate)}';
-      } else if (args.value is DateTime) {
-        _selectedDate = args.value.toString();
-      } else if (args.value is List<DateTime>) {
-        _dateCount = args.value.toString();
-      } else {
-        _rangeCount = args.value.length.toString();
+      if (args.value is List<DateTime>) {
+        setState(() {
+          availabilities = args.value.map((e) => e.toString()).toList();
+        });
       }
-
-      print("_range***************$_range");
-      print("_selectedDate***************$_selectedDate");
-      print("_dateCount***************$_dateCount");
-      print("_rangeCount***************$_rangeCount");
     });
   }
-
 }

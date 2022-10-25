@@ -11,6 +11,8 @@ class Client {
     Country? country,
     String? name,
     Area? area,
+    String? phone,
+    String? whatsApp,
     City? city,
   }) {
     _image = image;
@@ -19,6 +21,8 @@ class Client {
     _name = name;
     _area = area;
     _city = city;
+    _phone = phone;
+    _whatsApp = whatsApp;
   }
 
   Client.fromJson(dynamic json) {
@@ -28,6 +32,8 @@ class Client {
             : Image.fromJson(json['image'])
         : Image(mimetype: "", src: "");
     _id = json['_id'];
+    _phone = json['phone'];
+    _whatsApp = json['whatsapp'];
     _country =
         json['country'] != null ? Country.fromJson(json['country']) : null;
     _name = json['name'];
@@ -41,6 +47,8 @@ class Client {
   String? _name;
   Area? _area;
   City? _city;
+  String? _phone;
+  String? _whatsApp;
 
   Image? get image => _image;
 
@@ -53,6 +61,10 @@ class Client {
   Area? get area => _area;
 
   City? get city => _city;
+
+  String? get phone => _phone;
+
+  String? get whatsApp => _whatsApp;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};

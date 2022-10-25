@@ -5,7 +5,7 @@ class Request {
     List<DataRequest>? data,
     int? totalCount,
     int? tableCount,
-    String? page,
+    int? page,
     int? limit,
   }) {
     _data = data;
@@ -31,7 +31,7 @@ class Request {
   List<DataRequest>? _data;
   int? _totalCount;
   int? _tableCount;
-  String? _page;
+  int? _page;
   int? _limit;
 
   List<DataRequest>? get data => _data;
@@ -40,7 +40,7 @@ class Request {
 
   int? get tableCount => _tableCount;
 
-  String? get page => _page;
+  int? get page => _page;
 
   int? get limit => _limit;
 

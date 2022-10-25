@@ -53,15 +53,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       };
       return await DioHelper.getData(url: 'country', query: body).then((value) {
         if (value.statusCode == 200) {
-          try {
             if (CountryData.fromJson(value.data).data != null) {
               return Right(CountryData.fromJson(value.data!).data!);
             } else {
               return const Left("Not Found Countries");
             }
-          } catch (error) {
-            return Left(handleError(error));
-          }
         } else {
           return Left(serverFailureMessage);
         }

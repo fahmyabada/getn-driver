@@ -24,7 +24,7 @@ class RequestDetailsRemoteDataSourceImpl
   Future<Either<String, DataRequest?>> getRequestDetails(String id) async {
     try {
       var body = {
-        "select-client": "name image",
+        "select-client": "name image phone whatsapp",
       };
 
       return await DioHelper.getData(

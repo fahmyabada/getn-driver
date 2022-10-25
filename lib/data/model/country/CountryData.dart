@@ -6,7 +6,7 @@ class CountryData {
     int? totalCount,
     int? tableCount,
     int? page,
-    String? limit,
+    int? limit,
   }) {
     _data = data;
     _totalCount = totalCount;
@@ -32,7 +32,7 @@ class CountryData {
   int? _totalCount;
   int? _tableCount;
   int? _page;
-  String? _limit;
+  int? _limit;
 
   List<Country>? get data => _data;
 
@@ -42,7 +42,7 @@ class CountryData {
 
   int? get page => _page;
 
-  String? get limit => _limit;
+  int? get limit => _limit;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};

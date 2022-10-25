@@ -136,7 +136,7 @@ class _InfoBranchScreenState extends State<InfoBranchScreen> {
                                       SizedBox(
                                         height: 5.h,
                                       ),
-                                      RatingBar.builder(
+                                     /* RatingBar.builder(
                                         minRating: _userRating,
                                         itemBuilder: (context, index) =>
                                             const Icon(
@@ -154,7 +154,7 @@ class _InfoBranchScreenState extends State<InfoBranchScreen> {
                                         unratedColor:
                                             Colors.amber.withAlpha(50),
                                         direction: Axis.horizontal,
-                                      ),
+                                      ),*/
                                     ],
                                   ),
                                 ),
@@ -262,7 +262,7 @@ class _InfoBranchScreenState extends State<InfoBranchScreen> {
                                                         SizedBox(
                                                           height: 5.h,
                                                         ),
-                                                        RatingBar.builder(
+                                                        /*RatingBar.builder(
                                                           minRating:
                                                               _userRating,
                                                           itemBuilder: (context,
@@ -286,7 +286,7 @@ class _InfoBranchScreenState extends State<InfoBranchScreen> {
                                                               .withAlpha(50),
                                                           direction:
                                                               Axis.horizontal,
-                                                        ),
+                                                        ),*/
                                                       ],
                                                     ),
                                                   ),

@@ -155,6 +155,41 @@ Widget defaultFormField(
       },
     );
 
+Widget defaultButton2(
+    {required VoidCallback press,
+      bool disablePress = true,
+      required String text,
+      required Color backColor,
+      int fontSize = 24,
+      int paddingVertical = 10,
+      int paddingHorizontal = 35,
+      int borderRadius = 20,
+      bool colorBorder = false,
+      required Color textColor}) =>
+    ElevatedButton(
+      onPressed: disablePress ? press : null,
+      style: TextButton.styleFrom(
+        backgroundColor: backColor,
+        foregroundColor: textColor,
+        padding: EdgeInsets.symmetric(
+            vertical: paddingVertical.r, horizontal: paddingHorizontal.r),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(borderRadius.r),
+          side: colorBorder
+              ? const BorderSide(color: grey2)
+              : const BorderSide(color: Colors.transparent),
+        ),
+        textStyle: TextStyle(
+            fontSize: fontSize.sp,
+            fontWeight: FontWeight.bold,
+            fontStyle: FontStyle.italic),
+      ),
+      child: Text(
+        text,
+      ),
+    );
+
+
 Widget defaultButton3(
         {required VoidCallback press,
         bool disablePress = true,
@@ -183,17 +218,18 @@ Widget defaultButton3(
       ),
     );
 
-Widget defaultButton2(
-        {required VoidCallback press,
-        bool disablePress = true,
-        required String text,
-        required Color backColor,
-        int fontSize = 24,
-        int paddingVertical = 10,
-        int paddingHorizontal = 35,
-        int borderRadius = 20,
-        bool colorBorder = false,
-        required Color textColor}) =>
+Widget defaultButtonWithIcon(
+    {required VoidCallback press,
+      bool disablePress = true,
+      required String text,
+      required Color backColor,
+      int fontSize = 24,
+      int paddingVertical = 10,
+      int paddingHorizontal = 35,
+      int borderRadius = 20,
+      bool colorBorder = false,
+      required IconData icon,
+      required Color textColor}) =>
     ElevatedButton(
       onPressed: disablePress ? press : null,
       style: TextButton.styleFrom(
@@ -212,8 +248,15 @@ Widget defaultButton2(
             fontWeight: FontWeight.bold,
             fontStyle: FontStyle.italic),
       ),
-      child: Text(
-        text,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon,color: white,size: 25.sp,),
+          SizedBox(width: 5.w,),
+          Text(
+            text,
+          ),
+        ],
       ),
     );
 

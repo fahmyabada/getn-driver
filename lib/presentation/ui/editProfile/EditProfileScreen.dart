@@ -33,6 +33,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   final nameController = TextEditingController();
   final emailController = TextEditingController();
+  final whatsAppController = TextEditingController();
   final birthDateController = TextEditingController();
   final addressController = TextEditingController();
 
@@ -42,6 +43,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   bool imageRemote = false;
   List<DateTime> availabilities = [];
   List<String> availabilitiesValues = [];
+
   Future selectImageSource(ImageSource imageSource) async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
@@ -68,8 +70,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => EditProfileCubit()
-        ..getProfileDetails(),
+      create: (context) => EditProfileCubit()..getProfileDetails(),
       child: BlocConsumer<EditProfileCubit, EditProfileState>(
         listener: (context, state) {
           if (state is EditProfileSuccessState) {
@@ -82,8 +83,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             if (state.data!.availabilities!.isNotEmpty) {
               setState(() {
                 for (var element in state.data!.availabilities!) {
-                 availabilities.add(DateTime.parse(element));
+                  availabilities.add(DateTime.parse(element));
                 }
+                availabilitiesValues = state.data!.availabilities!;
               });
             }
             if (state.data!.image!.src != null) {
@@ -94,30 +96,30 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             }
             if (state.data!.email != null) {
               setState(() {
-                emailController.text =  state.data!.email!;
+                emailController.text = state.data!.email!;
               });
             }
 
             if (state.data!.name != null) {
               setState(() {
-                nameController.text =  state.data!.name!;
+                nameController.text = state.data!.name!;
               });
             }
 
             if (state.data!.birthDate != null) {
               setState(() {
-                final DateFormat displayFormater = DateFormat('yyyy-MM-ddTHH:mm');
+                final DateFormat displayFormater =
+                    DateFormat('yyyy-MM-ddTHH:mm');
                 final DateFormat serverFormater = DateFormat('yyyy-MM-dd');
-                final DateTime displayDate = displayFormater.parse(state.data!.birthDate!);
+                final DateTime displayDate =
+                    displayFormater.parse(state.data!.birthDate!);
                 final String formatted = serverFormater.format(displayDate);
-                birthDateController.text =  formatted;
+                birthDateController.text = formatted;
               });
             }
-          }
-          else if (state is CountriesSuccessState) {
+          } else if (state is CountriesSuccessState) {
             EditProfileCubit.get(context).getCity(dropDownValueCountries!.id!);
-          }
-          else if (state is CitySuccessState) {
+          } else if (state is CitySuccessState) {
             if (state.data!.isNotEmpty) {
               setState(() {
                 dropDownValueCity = state.data?.first;
@@ -125,15 +127,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               EditProfileCubit.get(context)
                   .getArea(dropDownValueCountries!.id!, dropDownValueCity!.id!);
             }
-          }
-          else if (state is AreaSuccessState) {
+          } else if (state is AreaSuccessState) {
             if (state.data!.isNotEmpty) {
               dropDownValueArea = state.data?.first;
             }
-          }
-          else if (state is EditSuccessState) {
-            print('EditSuccessState*******');
-
+          } else if (state is EditSuccessState) {
             if (state.data.phone != null) {
               getIt<SharedPreferences>().setString('phone', state.data.phone!);
             }
@@ -141,9 +139,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               getIt<SharedPreferences>().setString('name', state.data.name!);
             }
             Navigator.pop(context);
-          }
-          else if (state is EditErrorState) {
-            print('EditErrorState*******');
+          } else if (state is EditErrorState) {
             showToastt(
                 text: state.message,
                 state: ToastStates.error,
@@ -312,7 +308,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     ),
                                     Text(
                                       'Personal Information',
-                                      style: TextStyle(fontSize: 18.sp,fontWeight: FontWeight.bold),
+                                      style: TextStyle(
+                                          fontSize: 18.sp,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ],
                                 ),
@@ -348,6 +346,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                         borderRadius: 50,
                                         validatorText: emailController.text,
                                         validatorMessage: "Enter Name Please..",
+                                        onEditingComplete: () {
+                                          FocusScope.of(context).nextFocus();
+                                        },
+                                      ),
+                                      SizedBox(
+                                        height: 16.h,
+                                      ),
+                                      defaultFormField(
+                                        controller: whatsAppController,
+                                        type: TextInputType.number,
+                                        label: "WhatsApp",
+                                        textSize: 20,
+                                        border: false,
+                                        borderRadius: 50,
+                                        validatorText: whatsAppController.text,
+                                        validatorMessage:
+                                            "Enter WhatsApp Please..",
                                         onEditingComplete: () {
                                           FocusScope.of(context).nextFocus();
                                         },
@@ -414,7 +429,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     ),
                                     Text(
                                       'Address',
-                                      style: TextStyle(fontSize: 18.sp,fontWeight: FontWeight.bold),
+                                      style: TextStyle(
+                                          fontSize: 18.sp,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ],
                                 ),
@@ -960,7 +977,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     ),
                                     Text(
                                       'Availabilities',
-                                      style: TextStyle(fontSize: 18.sp,fontWeight: FontWeight.bold),
+                                      style: TextStyle(
+                                          fontSize: 18.sp,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ],
                                 ),
@@ -973,7 +992,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       DateRangePickerSelectionMode.multiple,
                                   initialSelectedDates: availabilities,
                                 ),
-
                                 SizedBox(
                                   height: 40.h,
                                 ),
@@ -990,6 +1008,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                               dropDownValueCountries != null &&
                                               dropDownValueCity != null &&
                                               dropDownValueArea != null &&
+                                              addressController
+                                                  .text.isNotEmpty &&
                                               userImage.isNotEmpty &&
                                               availabilities.isNotEmpty) {
                                             FocusScopeNode currentFocus =
@@ -998,7 +1018,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                               currentFocus.focusedChild
                                                   ?.unfocus();
                                             }
-
 
                                             EditProfileCubit.get(context)
                                                 .editProfileDetails(
@@ -1013,11 +1032,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                     dropDownValueArea!.id!,
                                                     userImage,
                                                     availabilitiesValues,
-                                                    imageRemote);
+                                                    imageRemote,
+                                                    addressController.text
+                                                        .toString(),
+                                                    whatsAppController.text
+                                                        .toString());
                                           } else {
                                             showToastt(
                                                 text:
-                                                    'Be sure to fill personal information ,address and availability',
+                                                'Be sure to choose image and fill personal information ,address and availability',
                                                 state: ToastStates.error,
                                                 context: context);
                                           }
@@ -1048,19 +1071,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     /// [List<PickerDateRange] when the widget [SfDateRangeSelectionMode] set as
     /// multi range.
     setState(() {
-     if (args.value is List<DateTime>) {
-        setState((){
+      if (args.value is List<DateTime>) {
+        setState(() {
           availabilities = args.value;
-          availabilitiesValues = availabilities.map((e) => e.toString()).toList();
-          // availabilitiesValues = availabilities.map((e) => '"$e"').toList();
-          // availabilitiesValues = availabilities.map((e) => DateFormat('yyyy-MM-dd').format(e)).toList();
-
-          print('_imageUser1***************** =${availabilitiesValues.toString()}');
+          availabilitiesValues =
+              availabilities.map((e) => e.toString()).toList();
         });
-        print("availabilities11**********${availabilities.length}");
       }
-
-      print("availabilities***************${availabilities.toString()}");
     });
   }
 }

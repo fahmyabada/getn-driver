@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -234,20 +236,24 @@ class SignCubit extends Cubit<SignState> {
       String birthDate,
       String cityId,
       String areaId,
-      String addressId,
-      String availabilities,
-      String userImage) async {
+      String address,
+      List<String> availabilities,
+      String userImage,
+      String whatsApp) async {
     String verifyImageName = photo.split('/').last;
     String userImageName = userImage.split('/').last;
+    final body = jsonEncode(availabilities);
 
     var formData = FormData.fromMap({
       'phone': phone,
       'name': fullName,
       'email': email,
       'birthDate': birthDate,
+      'whatsapp': whatsApp,
       'country': countryId,
       'city': cityId,
       'area': areaId,
+      'address': address,
       'role': role,
       'fcmToken': getIt<SharedPreferences>().getString("fcmToken"),
       'image': await MultipartFile.fromFile(userImage,
@@ -255,6 +261,7 @@ class SignCubit extends Cubit<SignState> {
       'verifyImage': await MultipartFile.fromFile(photo,
           filename: verifyImageName, contentType: MediaType("image", "jpeg")),
       'acceptTermsAndConditions': terms,
+      'availabilities': body,
     });
     emit(RegisterLoading());
     registerUseCase.execute(formData, firebaseToken).then((value) {

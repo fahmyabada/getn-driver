@@ -2,17 +2,18 @@ import 'Data.dart';
 
 class CarCategory {
   CarCategory({
-      List<Data>? data, 
-      int? totalCount, 
-      int? tableCount, 
-      int? page, 
-      String? limit,}){
+    List<Data>? data,
+    int? totalCount,
+    int? tableCount,
+    int? page,
+    int? limit,
+  }) {
     _data = data;
     _totalCount = totalCount;
     _tableCount = tableCount;
     _page = page;
     _limit = limit;
-}
+  }
 
   CarCategory.fromJson(dynamic json) {
     if (json['data'] != null) {
@@ -24,19 +25,24 @@ class CarCategory {
     _totalCount = json['totalCount'];
     _tableCount = json['tableCount'];
     _page = json['page'];
-    _limit = json['limit'].toString();
+    _limit = json['limit'];
   }
+
   List<Data>? _data;
   int? _totalCount;
   int? _tableCount;
   int? _page;
-  String? _limit;
+  int? _limit;
 
   List<Data>? get data => _data;
+
   int? get totalCount => _totalCount;
+
   int? get tableCount => _tableCount;
+
   int? get page => _page;
-  String? get limit => _limit;
+
+  int? get limit => _limit;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -49,5 +55,4 @@ class CarCategory {
     map['limit'] = _limit;
     return map;
   }
-
 }
