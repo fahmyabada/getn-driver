@@ -53,7 +53,6 @@ class EditProfileCubit extends Cubit<EditProfileState> {
       Either<String, EditProfileModel?> data) {
     return data.fold((failure1) {
       failure = failure1;
-      print("EditProfileErrorState**********${failure1}");
       return EditProfileErrorState(failure1);
     }, (data) {
       profileDetails = data;

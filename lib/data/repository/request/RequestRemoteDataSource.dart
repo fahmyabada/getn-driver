@@ -24,11 +24,7 @@ class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
               token: getIt<SharedPreferences>().getString("token"))
           .then((value) {
         if (value.statusCode == 200) {
-          if (Request.fromJson(value.data).data!.isNotEmpty) {
-            return Right(Request.fromJson(value.data!));
-          } else {
-            return const Left("Not Found Data");
-          }
+          return Right(Request.fromJson(value.data!));
         } else {
           return Left(serverFailureMessage);
         }

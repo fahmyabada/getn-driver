@@ -52,7 +52,6 @@ class EditProfileModel {
     _frontDriveImage = frontDriveImage;
     _backDriveImage = backDriveImage;
     _ratings = ratings;
-    _wallet = wallet;
     _status = status;
     _acceptTermsAndConditions = acceptTermsAndConditions;
     _acceptPermissions = acceptPermissions;
@@ -92,7 +91,6 @@ class EditProfileModel {
     _frontDriveImage = json['frontDriveImage'] != null ? Image.fromJson(json['frontDriveImage']) : null;
     _backDriveImage = json['backDriveImage'] != null ? Image.fromJson(json['backDriveImage']) : null;
     _ratings = json['ratings'] != null ? Ratings.fromJson(json['ratings']) : null;
-    _wallet = json['wallet'];
     _status = json['status'];
     _acceptTermsAndConditions = json['acceptTermsAndConditions'];
     _acceptPermissions = json['acceptPermissions'];
@@ -130,7 +128,6 @@ class EditProfileModel {
   Image? _frontDriveImage;
   Image? _backDriveImage;
   Ratings? _ratings;
-  int? _wallet;
   bool? _status;
   bool? _acceptTermsAndConditions;
   bool? _acceptPermissions;
@@ -168,7 +165,6 @@ class EditProfileModel {
   Image? get frontDriveImage => _frontDriveImage;
   Image? get backDriveImage => _backDriveImage;
   Ratings? get ratings => _ratings;
-  int? get wallet => _wallet;
   bool? get status => _status;
   bool? get acceptTermsAndConditions => _acceptTermsAndConditions;
   bool? get acceptPermissions => _acceptPermissions;
@@ -220,7 +216,6 @@ class EditProfileModel {
     if (_ratings != null) {
       map['ratings'] = _ratings?.toJson();
     }
-    map['wallet'] = _wallet;
     map['status'] = _status;
     map['acceptTermsAndConditions'] = _acceptTermsAndConditions;
     map['acceptPermissions'] = _acceptPermissions;

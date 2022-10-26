@@ -57,9 +57,11 @@ class PolicyDetailsScreen extends StatelessWidget {
                           ],
                         ),
                       )
-                    : Html(
-                        data: PoliciesCubit.get(context).content,
-                      ),
+                    : SingleChildScrollView(
+                      child: Html(
+                          data: PoliciesCubit.get(context).content,
+                        ),
+                    ),
           );
         },
       ),

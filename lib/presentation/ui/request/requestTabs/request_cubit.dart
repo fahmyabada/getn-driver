@@ -226,7 +226,6 @@ class RequestCubit extends Cubit<RequestState> {
           loadingPending = false;
         }
       }
-
       return RequestPendingSuccessState(data.data);
     });
   }

@@ -243,7 +243,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                         validatorText: emailController.text,
                         validatorMessage: "Enter Email Please..",
                         onEditingComplete: () {
-                          FocusScope.of(context).unfocus();
+                          FocusScope.of(context).nextFocus();
                         },
                       ),
                       SizedBox(

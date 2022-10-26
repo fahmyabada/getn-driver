@@ -137,6 +137,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
           RequestCubit.get(context).getRequestPast(1);
           RequestCubit.get(context).typeRequest = "past";
           RequestCubit.get(context).tabController?.animateTo(2);
+          _currentIndex = 2;
         }
       } else if (state is RequestEditErrorState) {
         Navigator.pop(context);
@@ -1547,6 +1548,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                   context,
                                   RequestDetailsScreen(
                                     idRequest: past.id,
+                                    typeScreen: "past",
                                   ));
                               setState(() {
                                 RequestCubit.get(context).getRequestPast(1);

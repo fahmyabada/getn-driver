@@ -631,34 +631,55 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                                     dropDownValueColor != null &&
                                     formKey.currentState!.validate() &&
                                     frontCarLicenseImage.isNotEmpty &&
-                                    backCarLicenseImage.isNotEmpty &&
-                                    listGalleryValue.isNotEmpty) {
+                                    backCarLicenseImage.isNotEmpty ) {
                                   setState(() {
                                     carLoading = true;
                                   });
-                                  var formData = FormData.fromMap({
-                                    'carModel':
-                                        dropDownValueCarSubCategory?.id!,
-                                    'carModelYear': dropDownValueCarModel?.id!,
-                                    'carColor': dropDownValueColor?.id!,
-                                    'carNumber':
-                                        carNumberController.text.toString(),
-                                    'gallery': listGalleryValue,
-                                    'frontCarLicenseImage':
-                                        await MultipartFile.fromFile(
-                                            frontCarLicenseImage,
-                                            filename: frontCarLicenseImage,
-                                            contentType:
-                                                MediaType("image", "jpeg")),
-                                    'backCarLicenseImage':
-                                        await MultipartFile.fromFile(
-                                            backCarLicenseImage,
-                                            filename: backCarLicenseImage,
-                                            contentType:
-                                                MediaType("image", "jpeg")),
-                                  });
-                                  print(
-                                      "FormData****************${formData.toString()}");
+                                  var formData;
+                                  if(listGalleryValue.isNotEmpty){
+                                    formData = FormData.fromMap({
+                                      'carModel':
+                                      dropDownValueCarSubCategory?.id!,
+                                      'carModelYear': dropDownValueCarModel?.id!,
+                                      'carColor': dropDownValueColor?.id!,
+                                      'carNumber':
+                                      carNumberController.text.toString(),
+                                      'gallery': listGalleryValue,
+                                      'frontCarLicenseImage':
+                                      await MultipartFile.fromFile(
+                                          frontCarLicenseImage,
+                                          filename: frontCarLicenseImage,
+                                          contentType:
+                                          MediaType("image", "jpeg")),
+                                      'backCarLicenseImage':
+                                      await MultipartFile.fromFile(
+                                          backCarLicenseImage,
+                                          filename: backCarLicenseImage,
+                                          contentType:
+                                          MediaType("image", "jpeg")),
+                                    });
+                                  }else{
+                                    formData = FormData.fromMap({
+                                      'carModel':
+                                      dropDownValueCarSubCategory?.id!,
+                                      'carModelYear': dropDownValueCarModel?.id!,
+                                      'carColor': dropDownValueColor?.id!,
+                                      'carNumber':
+                                      carNumberController.text.toString(),
+                                      'frontCarLicenseImage':
+                                      await MultipartFile.fromFile(
+                                          frontCarLicenseImage,
+                                          filename: frontCarLicenseImage,
+                                          contentType:
+                                          MediaType("image", "jpeg")),
+                                      'backCarLicenseImage':
+                                      await MultipartFile.fromFile(
+                                          backCarLicenseImage,
+                                          filename: backCarLicenseImage,
+                                          contentType:
+                                          MediaType("image", "jpeg")),
+                                    });
+                                  }
                                   SignCubit.get(context).carCreate(formData);
                                 } else {
                                   showToastt(

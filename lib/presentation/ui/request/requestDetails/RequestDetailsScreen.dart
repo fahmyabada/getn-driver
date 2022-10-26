@@ -14,9 +14,10 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RequestDetailsScreen extends StatefulWidget {
-  const RequestDetailsScreen({Key? key, this.idRequest}) : super(key: key);
+  const RequestDetailsScreen({Key? key, this.idRequest, this.typeScreen}) : super(key: key);
 
   final String? idRequest;
+  final String? typeScreen;
 
   @override
   State<RequestDetailsScreen> createState() => _RequestDetailsScreenState();
@@ -200,158 +201,191 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Row(
-                              children: [
-                                ClipOval(
-                                  clipBehavior: Clip.antiAlias,
-                                  child: ImageTools.image(
-                                      fit: BoxFit.fill,
-                                      url: RequestDetailsCubit.get(context)
-                                          .requestDetails!
-                                          .client2!
-                                          .image!
-                                          .src,
-                                      height: 70.w,
-                                      width: 70.w),
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    margin:
-                                        EdgeInsets.symmetric(horizontal: 20.r),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          height: 5.h,
-                                        ),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                RequestDetailsCubit.get(context)
+                            widget.typeScreen != null && widget.typeScreen == "past"? Container()
+                            : Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          ClipOval(
+                                            clipBehavior: Clip.antiAlias,
+                                            child: ImageTools.image(
+                                                fit: BoxFit.fill,
+                                                url: RequestDetailsCubit.get(
+                                                        context)
                                                     .requestDetails!
                                                     .client2!
-                                                    .name!,
-                                                style: TextStyle(
-                                                    fontSize: 20.sp,
-                                                    color: black,
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                                    .image!
+                                                    .src,
+                                                height: 70.w,
+                                                width: 70.w),
+                                          ),
+                                          Expanded(
+                                            child: Container(
+                                              margin: EdgeInsets.symmetric(
+                                                  horizontal: 20.r),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  SizedBox(
+                                                    height: 5.h,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Text(
+                                                          RequestDetailsCubit
+                                                                  .get(context)
+                                                              .requestDetails!
+                                                              .client2!
+                                                              .name!,
+                                                          style: TextStyle(
+                                                              fontSize: 20.sp,
+                                                              color: black,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: 5.h,
+                                                  ),
+                                                  Text(
+                                                    '${RequestDetailsCubit.get(context).requestDetails!.client2!.country!.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.city?.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.area?.title!.en!}',
+                                                    style: TextStyle(
+                                                        fontSize: 18.sp,
+                                                        color: grey2),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 5.h,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Expanded(
+                                                        child:
+                                                            defaultButtonWithIcon(
+                                                                press: () {
+                                                                  if (RequestDetailsCubit.get(
+                                                                              context)
+                                                                          .requestDetails
+                                                                          ?.client2
+                                                                          ?.phone !=
+                                                                      null) {
+                                                                    print(
+                                                                        'phone*************** ${RequestDetailsCubit.get(context).requestDetails?.client2?.country?.code}${RequestDetailsCubit.get(context).requestDetails?.client2?.phone}');
+                                                                    makePhoneCall(
+                                                                        '${RequestDetailsCubit.get(context).requestDetails?.client2?.country?.code}${RequestDetailsCubit.get(context).requestDetails?.client2?.phone}');
+                                                                  } else {
+                                                                    showToastt(
+                                                                        text:
+                                                                            "this client not have phone...",
+                                                                        state: ToastStates
+                                                                            .error,
+                                                                        context:
+                                                                            context);
+                                                                  }
+                                                                },
+                                                                fontSize: 18,
+                                                                paddingVertical:
+                                                                    1,
+                                                                paddingHorizontal:
+                                                                    5,
+                                                                borderRadius:
+                                                                    10,
+                                                                text:
+                                                                    'Call Client',
+                                                                backColor:
+                                                                    greenColor,
+                                                                textColor:
+                                                                    white,
+                                                                icon: Icons
+                                                                    .phone),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 5.w,
+                                                      ),
+                                                      Expanded(
+                                                        child:
+                                                            defaultButtonWithIcon(
+                                                                press: () {
+                                                                  if (RequestDetailsCubit.get(
+                                                                              context)
+                                                                          .requestDetails
+                                                                          ?.client2
+                                                                          ?.whatsApp !=
+                                                                      null) {
+                                                                    openWhatsapp(
+                                                                        '${RequestDetailsCubit.get(context).requestDetails?.client2?.country?.code}${RequestDetailsCubit.get(context).requestDetails?.client2?.whatsApp}',
+                                                                        context);
+                                                                  } else {
+                                                                    openWhatsapp(
+                                                                        '${RequestDetailsCubit.get(context).requestDetails?.client2?.country?.code}${RequestDetailsCubit.get(context).requestDetails?.client2?.phone}',
+                                                                        context);
+                                                                  }
+                                                                },
+                                                                fontSize: 18,
+                                                                paddingVertical:
+                                                                    1,
+                                                                paddingHorizontal:
+                                                                    5,
+                                                                borderRadius:
+                                                                    10,
+                                                                text:
+                                                                    'WhatsApp',
+                                                                backColor:
+                                                                    greenColor,
+                                                                textColor:
+                                                                    white,
+                                                                icon: Icons
+                                                                    .whatsapp),
+                                                      ),
+                                                    ],
+                                                  )
+                                                  /* RatingBar.builder(
+                                              minRating: _userRating,
+                                              itemBuilder: (context, index) =>
+                                                  const Icon(
+                                                Icons.star,
+                                                color: Colors.amber,
+                                              ),
+                                              itemCount: 5,
+                                              itemSize: 20.w,
+                                              updateOnDrag: true,
+                                              onRatingUpdate: (rating) {
+                                                setState(() {
+                                                  _userRating = rating;
+                                                });
+                                              },
+                                              unratedColor:
+                                                  Colors.amber.withAlpha(50),
+                                              direction: Axis.horizontal,
+                                            ),*/
+                                                ],
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 5.h,
-                                        ),
-                                        Text(
-                                          '${RequestDetailsCubit.get(context).requestDetails!.client2!.country!.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.city?.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.area?.title!.en!}',
-                                          style: TextStyle(
-                                              fontSize: 18.sp, color: grey2),
-                                        ),
-                                        SizedBox(
-                                          height: 5.h,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Expanded(
-                                              child: defaultButtonWithIcon(
-                                                  press: () {
-                                                    if (RequestDetailsCubit.get(
-                                                                context)
-                                                            .requestDetails
-                                                            ?.client2
-                                                            ?.phone !=
-                                                        null) {
-                                                      print(
-                                                          'phone*************** ${RequestDetailsCubit.get(context).requestDetails?.client2?.country?.code}${RequestDetailsCubit.get(context).requestDetails?.client2?.phone}');
-                                                      makePhoneCall(
-                                                          '${RequestDetailsCubit.get(context).requestDetails?.client2?.country?.code}${RequestDetailsCubit.get(context).requestDetails?.client2?.phone}');
-                                                    } else {
-                                                      showToastt(
-                                                          text:
-                                                              "this client not have phone...",
-                                                          state:
-                                                              ToastStates.error,
-                                                          context: context);
-                                                    }
-                                                  },
-                                                  fontSize: 18,
-                                                  paddingVertical: 1,
-                                                  paddingHorizontal: 5,
-                                                  borderRadius: 10,
-                                                  text: 'Call Client',
-                                                  backColor: greenColor,
-                                                  textColor: white,
-                                                  icon: Icons.phone),
-                                            ),
-                                            SizedBox(
-                                              width: 5.w,
-                                            ),
-                                            Expanded(
-                                              child: defaultButtonWithIcon(
-                                                  press: () {
-                                                    if(RequestDetailsCubit.get(context).requestDetails?.client2?.whatsApp != null){
-                                                      openWhatsapp(
-                                                          '${RequestDetailsCubit.get(context).requestDetails?.client2?.country?.code}${RequestDetailsCubit.get(context).requestDetails?.client2?.whatsApp}',
-                                                          context);
-                                                    }else{
-                                                      openWhatsapp(
-                                                          '${RequestDetailsCubit.get(context).requestDetails?.client2?.country?.code}${RequestDetailsCubit.get(context).requestDetails?.client2?.phone}',
-                                                          context);
-                                                    }
-                                                  },
-                                                  fontSize: 18,
-                                                  paddingVertical: 1,
-                                                  paddingHorizontal: 5,
-                                                  borderRadius: 10,
-                                                  text: 'WhatsApp',
-                                                  backColor: greenColor,
-                                                  textColor: white,
-                                                  icon: Icons.whatsapp),
-                                            ),
-                                          ],
-                                        )
-                                        /* RatingBar.builder(
-                                          minRating: _userRating,
-                                          itemBuilder: (context, index) =>
-                                              const Icon(
-                                            Icons.star,
-                                            color: Colors.amber,
-                                          ),
-                                          itemCount: 5,
-                                          itemSize: 20.w,
-                                          updateOnDrag: true,
-                                          onRatingUpdate: (rating) {
-                                            setState(() {
-                                              _userRating = rating;
-                                            });
-                                          },
-                                          unratedColor:
-                                              Colors.amber.withAlpha(50),
-                                          direction: Axis.horizontal,
-                                        ),*/
-                                      ],
-                                    ),
+                                          )
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 15.h,
+                                      ),
+                                      // divider
+                                      Container(
+                                        width: 1.sw,
+                                        height: 1.h,
+                                        color: Colors.grey[400],
+                                      ),
+                                      SizedBox(
+                                        height: 15.h,
+                                      ),
+                                    ],
                                   ),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: 15.h,
-                            ),
-                            // divider
-                            Container(
-                              width: 1.sw,
-                              height: 1.h,
-                              color: Colors.grey[400],
-                            ),
-                            SizedBox(
-                              height: 15.h,
-                            ),
+
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
@@ -493,8 +527,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                               ? Expanded(
                                                   child: defaultButton2(
                                                     press: () {
-                                                      RequestDetailsCubit
-                                                              .get(context)
+                                                      RequestDetailsCubit.get(
+                                                              context)
                                                           .editRequest(
                                                               RequestDetailsCubit
                                                                       .get(
@@ -506,10 +540,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                               "");
                                                     },
                                                     disablePress: RequestDetailsCubit
-                                                                    .get(
-                                                                        context)
-                                                                .requestDetails
-                                                                ?.paymentStatus! ==
+                                                                        .get(
+                                                                            context)
+                                                                    .requestDetails
+                                                                    ?.paymentStatus! ==
                                                                 "paid" &&
                                                             RequestDetailsCubit.get(
                                                                         context)
@@ -517,7 +551,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                                     .status ==
                                                                 "pending"
                                                         ? true
-                                                        : false,
+                                                        : RequestDetailsCubit.get(
+                                                                        context)
+                                                                    .requestDetails
+                                                                    ?.paymentStatus! ==
+                                                                "paid"
+                                                            ? true
+                                                            : false,
                                                     fontSize: 20,
                                                     paddingVertical: 1,
                                                     paddingHorizontal: 10,
@@ -551,19 +591,24 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                               .get(context)
                                                           .requestDetails!
                                                           .from!
-                                                          .date!).difference(currentDate).inHours;
+                                                          .date!)
+                                                      .difference(currentDate)
+                                                      .inHours;
 
                                                   final dateTo = DateFormat(
-                                                      "yyyy-MM-ddTHH:mm")
+                                                          "yyyy-MM-ddTHH:mm")
                                                       .parse(RequestDetailsCubit
-                                                      .get(context)
-                                                      .requestDetails!
-                                                      .from!
-                                                      .date!).difference(DateFormat(
-                                                      "yyyy-MM-ddTHH:mm").parse(RequestDetailsCubit
-                                                      .get(context)
-                                                      .requestDetails!
-                                                      .createdAt!)).inHours;
+                                                              .get(context)
+                                                          .requestDetails!
+                                                          .from!
+                                                          .date!)
+                                                      .difference(DateFormat(
+                                                              "yyyy-MM-ddTHH:mm")
+                                                          .parse(RequestDetailsCubit
+                                                                  .get(context)
+                                                              .requestDetails!
+                                                              .createdAt!))
+                                                      .inHours;
                                                   // print("dateFrom********$dateFrom");
                                                   // print("dateTo********$dateTo");
                                                   // from.date subtract  current now   / 1000 / 60 / 60
@@ -571,11 +616,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                   // from.date  subtract created at    /1000 / 60 / 60
                                                   // if result grater than or equal      48
                                                   // this condition on all reject
-                                                  if (dateFrom <= 24 && dateTo >= 48) {
+                                                  if (dateFrom <= 24 &&
+                                                      dateTo >= 48) {
                                                     showDialog(
                                                       context: context,
-                                                      barrierDismissible:
-                                                          true,
+                                                      barrierDismissible: true,
                                                       // outside to dismiss
                                                       builder: (BuildContext
                                                           context) {
@@ -587,11 +632,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                               white,
                                                           btnOkColor:
                                                               accentColor,
-                                                          btnCancelColor:
-                                                              grey,
+                                                          btnCancelColor: grey,
                                                           id: RequestDetailsCubit
-                                                                  .get(
-                                                                      context)
+                                                                  .get(context)
                                                               .requestDetails!
                                                               .id,
                                                           titleColor:
@@ -600,12 +643,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                         );
                                                       },
                                                     );
-                                                  }
-                                                  else {
+                                                  } else {
                                                     showDialog(
                                                       context: context,
-                                                      barrierDismissible:
-                                                          true,
+                                                      barrierDismissible: true,
                                                       // outside to dismiss
                                                       builder: (BuildContext
                                                           context) {
@@ -618,11 +659,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                               white,
                                                           btnOkColor:
                                                               accentColor,
-                                                          btnCancelColor:
-                                                              grey,
+                                                          btnCancelColor: grey,
                                                           id: RequestDetailsCubit
-                                                                  .get(
-                                                                      context)
+                                                                  .get(context)
                                                               .requestDetails!
                                                               .id,
                                                           titleColor:
@@ -634,18 +673,24 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                   }
                                                 },
                                                 disablePress: RequestDetailsCubit
-                                                                .get(
+                                                                    .get(
+                                                                        context)
+                                                                .requestDetails
+                                                                ?.paymentStatus! ==
+                                                            "paid" &&
+                                                        RequestDetailsCubit.get(
                                                                     context)
-                                                            .requestDetails
-                                                            ?.paymentStatus! ==
-                                                        "paid" &&
-                                                    RequestDetailsCubit.get(
-                                                        context)
-                                                        .requestDetails!
-                                                        .status ==
-                                                        "pending"
+                                                                .requestDetails!
+                                                                .status ==
+                                                            "pending"
                                                     ? true
-                                                    : false,
+                                                    : RequestDetailsCubit.get(
+                                                                    context)
+                                                                .requestDetails
+                                                                ?.paymentStatus! ==
+                                                            "paid"
+                                                        ? true
+                                                        : false,
                                                 fontSize: 20,
                                                 paddingVertical: 1,
                                                 paddingHorizontal: 10,

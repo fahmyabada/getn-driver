@@ -46,7 +46,7 @@ String handleError(dynamic error) {
         break;
     }
   } else {
-    errorDescription = "Unexpected error occurred";
+    errorDescription = "Unexpected error occurred : $error";
   }
   print("handleError:: errorDescription >> $errorDescription");
   return errorDescription;

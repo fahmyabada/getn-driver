@@ -168,25 +168,29 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     )
                   : EditProfileCubit.get(context).failure.isNotEmpty
                       ? Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text(
-                                  'Something went wrong, please try again'),
-                              TextButton(
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor: accentColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16.r),
+                          child: Padding(
+                            padding:  EdgeInsets.all(18.r),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                    EditProfileCubit.get(context).failure,
+                                textAlign: TextAlign.center,),
+                                TextButton(
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: accentColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16.r),
+                                    ),
                                   ),
-                                ),
-                                onPressed: () {
-                                  EditProfileCubit.get(context)
-                                      .getProfileDetails();
-                                },
-                                child: const Text('Retry'),
-                              )
-                            ],
+                                  onPressed: () {
+                                    EditProfileCubit.get(context)
+                                        .getProfileDetails();
+                                  },
+                                  child: const Text('Retry'),
+                                )
+                              ],
+                            ),
                           ),
                         )
                       : SingleChildScrollView(

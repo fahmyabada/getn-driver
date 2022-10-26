@@ -41,11 +41,12 @@ class OtpScreen extends StatefulWidget {
 
 class _OtpScreenState extends State<OtpScreen> {
   String signature = "{{ app signature }}";
-  Duration duration = const Duration(seconds: 15);
+  Duration duration = const Duration(minutes: 1);
   Timer? timer;
   bool openResend = false;
   bool openNext = false;
   String? verificationId, authStatus = "", otp;
+  bool load = false;
 
   void subtractTime() {
     const subtractSeconds = 1;
@@ -107,15 +108,18 @@ class _OtpScreenState extends State<OtpScreen> {
                       getIt<SharedPreferences>().getString('firebaseToken')!,
                 ));
           }
+          load = false;
         }
       } else {
         if (kDebugMode) {
           print("Error");
         }
+        load = false;
         showToastt(
             text: "uncorrect code", state: ToastStates.error, context: context);
       }
     } catch (error) {
+      load = false;
       print("Exception*************${error}");
       if (widget.type == "login") {
         showToastt(
@@ -191,17 +195,20 @@ class _OtpScreenState extends State<OtpScreen> {
         setState(() {
           openResend = false;
           openNext = false;
-          duration = const Duration(seconds: 15);
+          duration = const Duration(minutes: 1);
         });
         startTimer();
-      } else if (state is SendOtpErrorState) {
+      }
+      else if (state is SendOtpErrorState) {
         if (kDebugMode) {
           print('OtpScreen*******SendOtpErrorState');
         }
 
         showToastt(
             text: state.message, state: ToastStates.error, context: context);
-      } else if (state is SignInSuccessState) {
+      }
+      else if (state is SignInSuccessState) {
+        load = false;
         if (kDebugMode) {
           print('OtpScreen*******SignInSuccessState');
         }
@@ -232,11 +239,13 @@ class _OtpScreenState extends State<OtpScreen> {
               .setString('typeSign', "signWithCarRegistration");
           navigateTo(context, const RequestTabsScreen());
         }
-      } else if (state is SignInErrorState) {
+      }
+      else if (state is SignInErrorState) {
         if (kDebugMode) {
           print('OtpScreen*******SignInErrorState');
         }
 
+        load = false;
         showToastt(
             text: state.message, state: ToastStates.error, context: context);
       }
@@ -353,8 +362,14 @@ class _OtpScreenState extends State<OtpScreen> {
                 Container(
                   margin:
                       EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
-                  child: defaultButton3(
+                  child: load?
+                  const Center(
+                      child: CircularProgressIndicator(
+                        color: black,
+                      )):
+                  defaultButton3(
                       press: () {
+                        load = true;
                         nextButton();
                       },
                       disablePress: openNext,

@@ -92,6 +92,7 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
         setState(() {
           verifyImageLoading = false;
         });
+        Navigator.pop(context);
         showToastt(
             text: state.message, state: ToastStates.error, context: context);
       }
