@@ -103,7 +103,12 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
               getIt<SharedPreferences>()
                   .setString('typeSign', "signWithCarRegistration");
 
-              navigateTo(context, const RequestTabsScreen());
+              showToastt(
+                  text: "login successfully",
+                  state: ToastStates.success,
+                  context: context);
+
+              navigateAndFinish(context, const RequestTabsScreen());
             }
           } else if (state is CarCreateErrorState) {
             setState(() {

@@ -227,17 +227,17 @@ class _OtpScreenState extends State<OtpScreen> {
         }
         if (state.data.frontNationalImage?.src == null) {
           getIt<SharedPreferences>().setString('typeSign', "sign");
-          navigateTo(context, const DriverInformationScreen());
+          navigateAndFinish(context, const DriverInformationScreen());
         } else if (state.data.hasCar != null && !state.data.hasCar!) {
           getIt<SharedPreferences>()
               .setString('typeSign', "signWithInformation");
-          navigateTo(context, const CarRegistrationScreen());
+          navigateAndFinish(context, const CarRegistrationScreen());
         } else if (state.data.hasCar != null &&
             state.data.hasCar! &&
             state.data.frontNationalImage?.src != null) {
           getIt<SharedPreferences>()
               .setString('typeSign', "signWithCarRegistration");
-          navigateTo(context, const RequestTabsScreen());
+          navigateAndFinish(context, const RequestTabsScreen());
         }
       }
       else if (state is SignInErrorState) {

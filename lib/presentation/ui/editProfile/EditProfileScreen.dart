@@ -106,8 +106,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               });
             }
 
-
-
             if (state.data!.birthDate != null) {
               setState(() {
                 final DateFormat displayFormater =

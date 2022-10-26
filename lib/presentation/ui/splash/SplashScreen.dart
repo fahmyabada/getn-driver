@@ -71,7 +71,7 @@ class _SplashScreenState extends State<SplashScreen> {
             print("getInitialMessage.listen********${message?.data}");
           }
           setState(() {
-            if (message?.data['type'] == "request") {
+            if (message?.data['type'] == "request" || message?.data['type'] == "payment") {
               idRequest = message?.data['typeId'];
             } else if (message?.data['type'] == "trip") {
               idRequest = message?.data['parentId'];
@@ -125,7 +125,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 LocalNotificationService.createAndDisplayNotification(
                     message, "outTripInRequest");
               }
-            } else if (message.data['type'] == "request") {
+            }
+            else if (message.data['type'] == "request" || message.data['type'] == "payment") {
               if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails' &&
                   RequestDetailsCubit.get(navigatorKey.currentContext)
@@ -257,7 +258,8 @@ class _SplashScreenState extends State<SplashScreen> {
                     "pushReplacement",
                     "requestDetails");
               }
-            } else if (message.data['type'] == "request") {
+            }
+            else if (message.data['type'] == "request" || message.data['type'] == "payment") {
               if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails' &&
                   RequestDetailsCubit.get(navigatorKey.currentContext)
@@ -320,10 +322,10 @@ class _SplashScreenState extends State<SplashScreen> {
                   navigateAndFinish(context, const RequestTabsScreen());
                 }
               } else {
-                navigateAndFinish(context, SignInScreen());
+                navigateAndFinish(context, OnBoardScreenView());
               }
             } else {
-              navigateAndFinish(context, SignInScreen());
+              navigateAndFinish(context, OnBoardScreenView());
             }
           }
         }, builder: (context, state) {
