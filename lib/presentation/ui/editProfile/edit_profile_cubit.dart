@@ -43,7 +43,7 @@ class EditProfileCubit extends Cubit<EditProfileState> {
   bool loadingEdit = false;
 
   void getProfileDetails() async {
-    emit(EditProfileLoading());
+    emit(GetProfileDetailsLoading());
     getProfileDetailsUseCase.execute().then((value) {
       emit(eitherLoadedOrErrorStateProfileDetails(value));
     });
@@ -53,11 +53,11 @@ class EditProfileCubit extends Cubit<EditProfileState> {
       Either<String, EditProfileModel?> data) {
     return data.fold((failure1) {
       failure = failure1;
-      return EditProfileErrorState(failure1);
+      return GetProfileDetailsErrorState(failure1);
     }, (data) {
       profileDetails = data;
 
-      return EditProfileSuccessState(data);
+      return GetProfileDetailsSuccessState(data);
     });
   }
 
@@ -144,7 +144,7 @@ class EditProfileCubit extends Cubit<EditProfileState> {
       String whatsApp,
       ) async {
     loadingEdit = true;
-    emit(EditLoading());
+    emit(EditProfileLoading());
     final body =jsonEncode(availabilities);
     String userImageName = userImage.split('/').last;
     FormData formData;
@@ -184,10 +184,10 @@ class EditProfileCubit extends Cubit<EditProfileState> {
       Either<String, SignModel> data) {
     return data.fold((failure1) {
       loadingEdit = false;
-      return EditErrorState(failure1);
+      return EditProfileErrorState(failure1);
     }, (data) {
       loadingEdit = false;
-      return EditSuccessState(data);
+      return EditProfileSuccessState(data);
     });
   }
 }

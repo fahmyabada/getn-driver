@@ -36,146 +36,149 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<SignCubit, SignState>(listener: (context, state) {
-      if (state is EditSuccessState) {
-        setState(() {
-          driverInfoLoading = false;
-        });
-        print('*******EditSuccessState');
-        getIt<SharedPreferences>().setString('typeSign', "signWithInformation");
-        navigateTo(context, const CarRegistrationScreen());
-      } else if (state is EditErrorState) {
-        print('*******EditErrorState');
-        setState(() {
-          driverInfoLoading = false;
-        });
-        showToastt(
-            text: state.message, state: ToastStates.error, context: context);
-      }
-    }, builder: (context, state) {
-      return Scaffold(
-        body: SafeArea(
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 20.r),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 30.h,
-                ),
-                Text(
-                  "Driver Information",
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                      fontSize: 25.sp,
-                      fontWeight: FontWeight.bold,
-                      color: primaryColor),
-                ),
-                SizedBox(
-                  height: 30.h,
-                ),
-                //front NationalId
-                InkWell(
-                  child: Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 20.r, vertical: 15.r),
-                      decoration: BoxDecoration(
-                        color: white,
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(20.r),
-                        border: Border.all(color: Colors.black),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Front NationalId',
-                            style:
-                                TextStyle(fontSize: 20.sp, color: primaryColor),
-                          ),
-                          frontNationalId
-                              ? Icon(
-                                  Icons.done,
-                                  color: greenColor,
-                                  size: 25.w,
-                                )
-                              : Text(
-                                  'Update',
-                                  style: TextStyle(
-                                      fontSize: 20.sp, color: greenColor),
-                                )
-                        ],
-                      )),
-                  onTap: () async{
-                    ImageVerify value = await navigateToWithRefreshPagePrevious(
-                      context,
-                      const VerifyImageScreen(
-                        typeScreen: "frontNationalId",
-                      ),
-                    ) as ImageVerify;
+    return BlocProvider(
+      create: (context) => SignCubit(),
+      child: BlocConsumer<SignCubit, SignState>(listener: (context, state) {
+        if (state is EditSuccessState) {
+          setState(() {
+            driverInfoLoading = false;
+          });
+          print('*******EditSuccessState');
+          getIt<SharedPreferences>().setString(
+              'typeSign', "signWithInformation");
+          navigateTo(context, const CarRegistrationScreen());
+        } else if (state is EditErrorState) {
+          print('*******EditErrorState');
+          setState(() {
+            driverInfoLoading = false;
+          });
+          showToastt(
+              text: state.message, state: ToastStates.error, context: context);
+        }
+      }, builder: (context, state) {
+        return Scaffold(
+          body: SafeArea(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 20.r),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 30.h,
+                  ),
+                  Text(
+                    "Driver Information",
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                        fontSize: 25.sp,
+                        fontWeight: FontWeight.bold,
+                        color: primaryColor),
+                  ),
+                  SizedBox(
+                    height: 30.h,
+                  ),
+                  //front NationalId
+                  InkWell(
+                    child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 20.r, vertical: 15.r),
+                        decoration: BoxDecoration(
+                          color: white,
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(20.r),
+                          border: Border.all(color: Colors.black),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Front NationalId',
+                              style:
+                              TextStyle(fontSize: 20.sp, color: primaryColor),
+                            ),
+                            frontNationalId
+                                ? Icon(
+                              Icons.done,
+                              color: greenColor,
+                              size: 25.w,
+                            )
+                                : Text(
+                              'Update',
+                              style: TextStyle(
+                                  fontSize: 20.sp, color: greenColor),
+                            )
+                          ],
+                        )),
+                    onTap: () async {
+                      ImageVerify value = await navigateToWithRefreshPagePrevious(
+                        context,
+                        const VerifyImageScreen(
+                          typeScreen: "frontNationalId",
+                        ),
+                      ) as ImageVerify;
 
-                    print("VerifyImageScreen******** ${value.toString()}");
-                    setState(() {
-                      if (value.type == "frontNationalId") {
-                        frontNationalIdString = value.imageValue!;
-                        frontNationalId = value.isSelected!;
-                      }
-                    });
-                  },
-                ),
-                SizedBox(
-                  height: 30.h,
-                ),
-                //back NationalId
-                InkWell(
-                  child: Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 20.r, vertical: 15.r),
-                      decoration: BoxDecoration(
-                        color: white,
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(20.r),
-                        border: Border.all(color: Colors.black),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'back NationalId',
-                            style:
-                                TextStyle(fontSize: 20.sp, color: primaryColor),
-                          ),
-                          backNationalId
-                              ? Icon(
-                                  Icons.done,
-                                  color: greenColor,
-                                  size: 25.w,
-                                )
-                              : Text(
-                                  'Update',
-                                  style: TextStyle(
-                                      fontSize: 20.sp, color: greenColor),
-                                )
-                        ],
-                      )),
-                  onTap: () async{
-                    ImageVerify value = await navigateToWithRefreshPagePrevious(
-                      context,
-                      const VerifyImageScreen(
-                        typeScreen: "backNationalId",
-                      ),
-                    ) as ImageVerify;
+                      print("VerifyImageScreen******** ${value.toString()}");
+                      setState(() {
+                        if (value.type == "frontNationalId") {
+                          frontNationalIdString = value.imageValue!;
+                          frontNationalId = value.isSelected!;
+                        }
+                      });
+                    },
+                  ),
+                  SizedBox(
+                    height: 30.h,
+                  ),
+                  //back NationalId
+                  InkWell(
+                    child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 20.r, vertical: 15.r),
+                        decoration: BoxDecoration(
+                          color: white,
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(20.r),
+                          border: Border.all(color: Colors.black),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'back NationalId',
+                              style:
+                              TextStyle(fontSize: 20.sp, color: primaryColor),
+                            ),
+                            backNationalId
+                                ? Icon(
+                              Icons.done,
+                              color: greenColor,
+                              size: 25.w,
+                            )
+                                : Text(
+                              'Update',
+                              style: TextStyle(
+                                  fontSize: 20.sp, color: greenColor),
+                            )
+                          ],
+                        )),
+                    onTap: () async {
+                      ImageVerify value = await navigateToWithRefreshPagePrevious(
+                        context,
+                        const VerifyImageScreen(
+                          typeScreen: "backNationalId",
+                        ),
+                      ) as ImageVerify;
 
-                    print("VerifyImageScreen******** ${value.toString()}");
-                    setState(() {
-                      if (value.type == "backNationalId") {
-                        backNationalIdString = value.imageValue!;
-                        backNationalId = value.isSelected!;
-                      }
-                    });
-                  },
-                ),
-                /*  SizedBox(
+                      print("VerifyImageScreen******** ${value.toString()}");
+                      setState(() {
+                        if (value.type == "backNationalId") {
+                          backNationalIdString = value.imageValue!;
+                          backNationalId = value.isSelected!;
+                        }
+                      });
+                    },
+                  ),
+                  /*  SizedBox(
                       height: 30.h,
                     ),
                     //front Passport
@@ -263,151 +266,152 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                         );
                       },
                     ),*/
-                SizedBox(
-                  height: 30.h,
-                ),
-                //front driver licence
-                InkWell(
-                  child: Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 20.r, vertical: 15.r),
-                      decoration: BoxDecoration(
-                        color: white,
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(20.r),
-                        border: Border.all(color: Colors.black),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Front Driver Licence',
-                            style:
-                                TextStyle(fontSize: 20.sp, color: primaryColor),
-                          ),
-                          frontDriverLicence
-                              ? Icon(
-                                  Icons.done,
-                                  color: greenColor,
-                                  size: 25.w,
-                                )
-                              : Text(
-                                  'Update',
-                                  style: TextStyle(
-                                      fontSize: 20.sp, color: greenColor),
-                                )
-                        ],
-                      )),
-                  onTap: () async{
-                    ImageVerify value = await navigateToWithRefreshPagePrevious(
-                      context,
-                      const VerifyImageScreen(
-                        typeScreen: "frontDriverLicence",
-                      ),
-                    ) as ImageVerify;
+                  SizedBox(
+                    height: 30.h,
+                  ),
+                  //front driver licence
+                  InkWell(
+                    child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 20.r, vertical: 15.r),
+                        decoration: BoxDecoration(
+                          color: white,
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(20.r),
+                          border: Border.all(color: Colors.black),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Front Driver Licence',
+                              style:
+                              TextStyle(fontSize: 20.sp, color: primaryColor),
+                            ),
+                            frontDriverLicence
+                                ? Icon(
+                              Icons.done,
+                              color: greenColor,
+                              size: 25.w,
+                            )
+                                : Text(
+                              'Update',
+                              style: TextStyle(
+                                  fontSize: 20.sp, color: greenColor),
+                            )
+                          ],
+                        )),
+                    onTap: () async {
+                      ImageVerify value = await navigateToWithRefreshPagePrevious(
+                        context,
+                        const VerifyImageScreen(
+                          typeScreen: "frontDriverLicence",
+                        ),
+                      ) as ImageVerify;
 
-                    print("VerifyImageScreen******** ${value.toString()}");
-                    setState(() {
-                      if (value.type == "frontDriverLicence") {
-                        frontDriverLicenceString = value.imageValue!;
-                        frontDriverLicence = value.isSelected!;
-                      }
-                    });
-                  },
-                ),
-                SizedBox(
-                  height: 30.h,
-                ),
-                //back driver licence
-                InkWell(
-                  child: Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 20.r, vertical: 15.r),
-                      decoration: BoxDecoration(
-                        color: white,
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(20.r),
-                        border: Border.all(color: Colors.black),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Back Driver Licence',
-                            style:
-                                TextStyle(fontSize: 20.sp, color: primaryColor),
-                          ),
-                          backDriverLicence
-                              ? Icon(
-                                  Icons.done,
-                                  color: greenColor,
-                                  size: 25.w,
-                                )
-                              : Text(
-                                  'Update',
-                                  style: TextStyle(
-                                      fontSize: 20.sp, color: greenColor),
-                                )
-                        ],
-                      )),
-                  onTap: () async{
-                    ImageVerify value = await navigateToWithRefreshPagePrevious(
-                      context,
-                      const VerifyImageScreen(
-                        typeScreen: "backDriverLicence",
-                      ),
-                    ) as ImageVerify;
-
-                    print("VerifyImageScreen******** ${value.toString()}");
-                    setState(() {
-                      if (value.type == "backDriverLicence") {
-                        backDriverLicenceString = value.imageValue!;
-                        backDriverLicence = value.isSelected!;
-                      }
-                    });
-                  },
-                ),
-
-                Container(
-                  margin:
-                      EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
-                  child: driverInfoLoading
-                      ? const Center(
-                    child: CircularProgressIndicator(
-                      color: black,
-                    ),
-                  )
-                      : defaultButton3(
-                      press: () {
-                        if (frontNationalIdString.isNotEmpty &&
-                            backNationalIdString.isNotEmpty &&
-                            frontDriverLicenceString.isNotEmpty &&
-                            backDriverLicenceString.isNotEmpty) {
-                          setState(() {
-                            driverInfoLoading = true;
-                          });
-                          SignCubit.get(context).editInformation(
-                              frontNationalIdString,
-                              backNationalIdString,
-                              frontDriverLicenceString,
-                              backDriverLicenceString);
-                        } else {
-                          showToastt(
-                              text: "please fill all data first...",
-                              state: ToastStates.error,
-                              context: context);
+                      print("VerifyImageScreen******** ${value.toString()}");
+                      setState(() {
+                        if (value.type == "frontDriverLicence") {
+                          frontDriverLicenceString = value.imageValue!;
+                          frontDriverLicence = value.isSelected!;
                         }
-                      },
-                      text: "Done",
-                      backColor: accentColor,
-                      textColor: white),
-                ),
-              ],
+                      });
+                    },
+                  ),
+                  SizedBox(
+                    height: 30.h,
+                  ),
+                  //back driver licence
+                  InkWell(
+                    child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 20.r, vertical: 15.r),
+                        decoration: BoxDecoration(
+                          color: white,
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(20.r),
+                          border: Border.all(color: Colors.black),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Back Driver Licence',
+                              style:
+                              TextStyle(fontSize: 20.sp, color: primaryColor),
+                            ),
+                            backDriverLicence
+                                ? Icon(
+                              Icons.done,
+                              color: greenColor,
+                              size: 25.w,
+                            )
+                                : Text(
+                              'Update',
+                              style: TextStyle(
+                                  fontSize: 20.sp, color: greenColor),
+                            )
+                          ],
+                        )),
+                    onTap: () async {
+                      ImageVerify value = await navigateToWithRefreshPagePrevious(
+                        context,
+                        const VerifyImageScreen(
+                          typeScreen: "backDriverLicence",
+                        ),
+                      ) as ImageVerify;
+
+                      print("VerifyImageScreen******** ${value.toString()}");
+                      setState(() {
+                        if (value.type == "backDriverLicence") {
+                          backDriverLicenceString = value.imageValue!;
+                          backDriverLicence = value.isSelected!;
+                        }
+                      });
+                    },
+                  ),
+
+                  Container(
+                    margin:
+                    EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
+                    child: driverInfoLoading
+                        ? const Center(
+                      child: CircularProgressIndicator(
+                        color: black,
+                      ),
+                    )
+                        : defaultButton3(
+                        press: () {
+                          if (frontNationalIdString.isNotEmpty &&
+                              backNationalIdString.isNotEmpty &&
+                              frontDriverLicenceString.isNotEmpty &&
+                              backDriverLicenceString.isNotEmpty) {
+                            setState(() {
+                              driverInfoLoading = true;
+                            });
+                            SignCubit.get(context).editInformation(
+                                frontNationalIdString,
+                                backNationalIdString,
+                                frontDriverLicenceString,
+                                backDriverLicenceString);
+                          } else {
+                            showToastt(
+                                text: "please fill all data first...",
+                                state: ToastStates.error,
+                                context: context);
+                          }
+                        },
+                        text: "Done",
+                        backColor: accentColor,
+                        textColor: white),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      }),
+    );
   }
 }
 

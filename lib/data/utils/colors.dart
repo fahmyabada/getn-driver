@@ -18,5 +18,6 @@ const white = Color(0xFFFFFFFF);
 const black = Colors.black;
 const grey = Color(0xFFF8F8F8);
 const grey2 = Color(0xFF777777);
+const grey3 = Color(0xFF778899);
 const rough = Color(0xFFfae9e9);
 const blueLight = Color(0xFFbbd6fd);

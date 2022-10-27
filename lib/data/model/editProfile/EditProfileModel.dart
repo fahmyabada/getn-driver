@@ -2,51 +2,51 @@ import 'package:getn_driver/data/model/country/Image.dart';
 import 'package:getn_driver/data/model/signModel/Country.dart';
 import 'package:getn_driver/data/model/signModel/Ratings.dart';
 
-import 'City.dart';
 import 'Area.dart';
+import 'City.dart';
 
 class EditProfileModel {
   EditProfileModel({
-      Image? image, 
-      dynamic verifyImage,
+    Image? image,
     Image? frontNationalImage,
     Image? backNationalImage,
     Image? frontDriveImage,
     Image? backDriveImage,
-      Ratings? ratings, 
-      int? wallet, 
-      int? holdWallet, 
-      bool? status, 
-      bool? acceptTermsAndConditions, 
-      bool? acceptPermissions, 
-      String? createdAt, 
-      String? updatedAt, 
-      String? birthDate, 
-      bool? individual, 
-      bool? available, 
-      bool? verified, 
-      int? ratingsCount, 
-      int? totalRatings, 
-      int? totalExpectedRatings, 
-      int? ratingsAverage, 
-      int? totalTrips, 
-      int? totalRequests, 
-      List<String>? availabilities, 
-      String? id, 
-      String? fcmToken, 
-      String? name, 
-      String? role, 
-      String? email, 
-      String? phone, 
-      Country? country, 
-      City? city, 
-      Area? area, 
-      String? address, 
-      String? brief, 
-      String? nationalId, 
-      int? v,}){
+    Ratings? ratings,
+    int? wallet,
+    int? holdWallet,
+    bool? status,
+    bool? acceptTermsAndConditions,
+    bool? acceptPermissions,
+    String? createdAt,
+    String? updatedAt,
+    String? birthDate,
+    String? whatsApp,
+    bool? individual,
+    bool? available,
+    bool? verified,
+    int? ratingsCount,
+    int? totalRatings,
+    int? totalExpectedRatings,
+    int? ratingsAverage,
+    int? totalTrips,
+    int? totalRequests,
+    List<String>? availabilities,
+    String? id,
+    String? fcmToken,
+    String? name,
+    String? role,
+    String? email,
+    String? phone,
+    Country? country,
+    City? city,
+    Area? area,
+    String? address,
+    String? brief,
+    String? nationalId,
+    int? v,
+  }) {
     _image = image;
-    _verifyImage = verifyImage;
     _frontNationalImage = frontNationalImage;
     _backNationalImage = backNationalImage;
     _frontDriveImage = frontDriveImage;
@@ -78,19 +78,28 @@ class EditProfileModel {
     _city = city;
     _area = area;
     _address = address;
+    _whatsApp = whatsApp;
     _brief = brief;
     _nationalId = nationalId;
     _v = v;
-}
+  }
 
   EditProfileModel.fromJson(dynamic json) {
     _image = json['image'] != null ? Image.fromJson(json['image']) : null;
-    _verifyImage = json['verifyImage'];
-    _frontNationalImage = json['frontNationalImage'] != null ? Image.fromJson(json['frontNationalImage']) : null;
-    _backNationalImage = json['backNationalImage'] != null ? Image.fromJson(json['backNationalImage']) : null;
-    _frontDriveImage = json['frontDriveImage'] != null ? Image.fromJson(json['frontDriveImage']) : null;
-    _backDriveImage = json['backDriveImage'] != null ? Image.fromJson(json['backDriveImage']) : null;
-    _ratings = json['ratings'] != null ? Ratings.fromJson(json['ratings']) : null;
+    _frontNationalImage = json['frontNationalImage'] != null
+        ? Image.fromJson(json['frontNationalImage'])
+        : null;
+    _backNationalImage = json['backNationalImage'] != null
+        ? Image.fromJson(json['backNationalImage'])
+        : null;
+    _frontDriveImage = json['frontDriveImage'] != null
+        ? Image.fromJson(json['frontDriveImage'])
+        : null;
+    _backDriveImage = json['backDriveImage'] != null
+        ? Image.fromJson(json['backDriveImage'])
+        : null;
+    _ratings =
+        json['ratings'] != null ? Ratings.fromJson(json['ratings']) : null;
     _status = json['status'];
     _acceptTermsAndConditions = json['acceptTermsAndConditions'];
     _acceptPermissions = json['acceptPermissions'];
@@ -106,23 +115,27 @@ class EditProfileModel {
     _ratingsAverage = json['ratingsAverage'];
     _totalTrips = json['totalTrips'];
     _totalRequests = json['totalRequests'];
-    _availabilities = json['availabilities'] != null ? json['availabilities'].cast<String>() : [];
+    _availabilities = json['availabilities'] != null
+        ? json['availabilities'].cast<String>()
+        : [];
     _id = json['_id'];
     _fcmToken = json['fcmToken'];
     _name = json['name'];
     _role = json['role'];
     _email = json['email'];
     _phone = json['phone'];
-    _country = json['country'] != null ? Country.fromJson(json['country']) : null;
+    _country =
+        json['country'] != null ? Country.fromJson(json['country']) : null;
     _city = json['city'] != null ? City.fromJson(json['city']) : null;
     _area = json['area'] != null ? Area.fromJson(json['area']) : null;
     _address = json['address'];
     _brief = json['brief'];
     _nationalId = json['nationalId'];
     _v = json['__v'];
+    _whatsApp = json['whatsapp'];
   }
+
   Image? _image;
-  dynamic _verifyImage;
   Image? _frontNationalImage;
   Image? _backNationalImage;
   Image? _frontDriveImage;
@@ -131,6 +144,7 @@ class EditProfileModel {
   bool? _status;
   bool? _acceptTermsAndConditions;
   bool? _acceptPermissions;
+  String? _whatsApp;
   String? _createdAt;
   String? _updatedAt;
   String? _birthDate;
@@ -159,48 +173,82 @@ class EditProfileModel {
   int? _v;
 
   Image? get image => _image;
-  dynamic get verifyImage => _verifyImage;
+
   Image? get frontNationalImage => _frontNationalImage;
+
   Image? get backNationalImage => _backNationalImage;
+
   Image? get frontDriveImage => _frontDriveImage;
+
   Image? get backDriveImage => _backDriveImage;
+
   Ratings? get ratings => _ratings;
+
   bool? get status => _status;
+
   bool? get acceptTermsAndConditions => _acceptTermsAndConditions;
+
   bool? get acceptPermissions => _acceptPermissions;
+
   String? get createdAt => _createdAt;
+
   String? get updatedAt => _updatedAt;
+
   String? get birthDate => _birthDate;
+
   bool? get individual => _individual;
+
   bool? get available => _available;
+
   bool? get verified => _verified;
+
   int? get ratingsCount => _ratingsCount;
+
   int? get totalRatings => _totalRatings;
+
   int? get totalExpectedRatings => _totalExpectedRatings;
+
   int? get ratingsAverage => _ratingsAverage;
+
   int? get totalTrips => _totalTrips;
+
   int? get totalRequests => _totalRequests;
+
   List<String>? get availabilities => _availabilities;
+
   String? get id => _id;
+
   String? get fcmToken => _fcmToken;
+
   String? get name => _name;
+
   String? get role => _role;
+
   String? get email => _email;
+
   String? get phone => _phone;
+
   Country? get country => _country;
+
   City? get city => _city;
+
   Area? get area => _area;
+
   String? get address => _address;
+
   String? get brief => _brief;
+
   String? get nationalId => _nationalId;
+
   int? get v => _v;
+
+  String? get whatsApp => _whatsApp;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     if (_image != null) {
       map['image'] = _image?.toJson();
     }
-    map['verifyImage'] = _verifyImage;
     if (_frontNationalImage != null) {
       map['frontNationalImage'] = _frontNationalImage?.toJson();
     }
@@ -253,5 +301,4 @@ class EditProfileModel {
     map['__v'] = _v;
     return map;
   }
-
 }

@@ -7,17 +7,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/main.dart';
+import 'package:getn_driver/main_cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/notificationService/local_notification_service.dart';
 import 'package:getn_driver/presentation/ui/auth/CarRegistrationScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/DriverInformationScreen.dart';
-import 'package:getn_driver/presentation/ui/auth/SignInScreen.dart';
 import 'package:getn_driver/presentation/ui/onBoarding/OnBoardScreenView.dart';
-import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/RequestTabsScreen.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
 import 'package:getn_driver/presentation/ui/splash/splash_screen_cubit.dart';
-import 'package:getn_driver/presentation/ui/trip/tripDetails/trip_details_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -71,7 +69,8 @@ class _SplashScreenState extends State<SplashScreen> {
             print("getInitialMessage.listen********${message?.data}");
           }
           setState(() {
-            if (message?.data['type'] == "request" || message?.data['type'] == "payment") {
+            if (message?.data['type'] == "request" ||
+                message?.data['type'] == "payment") {
               idRequest = message?.data['typeId'];
             } else if (message?.data['type'] == "trip") {
               idRequest = message?.data['parentId'];
@@ -94,9 +93,7 @@ class _SplashScreenState extends State<SplashScreen> {
             if (message.data['type'] == "trip") {
               if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'tripDetails' &&
-                  TripDetailsCubit.get(navigatorKey.currentContext)
-                          .tripDetails!
-                          .id ==
+                  getIt<SharedPreferences>().getString('tripDetailsId') ==
                       message.data['typeId']) {
                 // here if i get same trip id i will refresh page and show notification
                 // without enable clickable
@@ -106,9 +103,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     message, "inSameTrip");
               } else if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'tripDetails' &&
-                  TripDetailsCubit.get(navigatorKey.currentContext)
-                          .tripDetails!
-                          .id !=
+                  getIt<SharedPreferences>().getString('tripDetailsId') !=
                       message.data['typeId']) {
                 LocalNotificationService.createAndDisplayNotification(
                     message, "newTrip");
@@ -125,13 +120,11 @@ class _SplashScreenState extends State<SplashScreen> {
                 LocalNotificationService.createAndDisplayNotification(
                     message, "outTripInRequest");
               }
-            }
-            else if (message.data['type'] == "request" || message.data['type'] == "payment") {
+            } else if (message.data['type'] == "request" ||
+                message.data['type'] == "payment") {
               if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails' &&
-                  RequestDetailsCubit.get(navigatorKey.currentContext)
-                          .requestDetails!
-                          .id ==
+                  getIt<SharedPreferences>().getString('requestDetailsId') ==
                       message.data['typeId']) {
                 // here if i get same request id i will refresh page and show notification
                 // without enable clickable
@@ -141,9 +134,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     message, "inSameRequest");
               } else if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails' &&
-                  RequestDetailsCubit.get(navigatorKey.currentContext)
-                          .requestDetails!
-                          .id !=
+                  getIt<SharedPreferences>().getString('requestDetailsId') !=
                       message.data['typeId']) {
                 LocalNotificationService.createAndDisplayNotification(
                     message, "newRequest");
@@ -168,45 +159,16 @@ class _SplashScreenState extends State<SplashScreen> {
                     'request') {
               switch (message.data['page']) {
                 case "RequestCurrent":
-                  RequestCubit.get(navigatorKey.currentContext)
-                      .getRequestCurrent(1);
-                  RequestCubit.get(navigatorKey.currentContext).typeRequest =
-                      "current";
-                  RequestCubit.get(navigatorKey.currentContext)
-                      .tabController!
-                      .animateTo(0);
+                  MainCubit.get(navigatorKey.currentContext).tabController!.animateTo(0);
                   break;
                 case "RequestUpComing":
-                  RequestCubit.get(navigatorKey.currentContext).indexUpComing =
-                      1;
-                  RequestCubit.get(navigatorKey.currentContext)
-                      .getRequestUpComing(1);
-                  RequestCubit.get(navigatorKey.currentContext).typeRequest =
-                      "upComing";
-                  RequestCubit.get(navigatorKey.currentContext)
-                      .tabController!
-                      .animateTo(1);
+                  MainCubit.get(navigatorKey.currentContext).tabController!.animateTo(1);
                   break;
                 case "RequestPast":
-                  RequestCubit.get(navigatorKey.currentContext).indexPast = 1;
-                  RequestCubit.get(navigatorKey.currentContext)
-                      .getRequestPast(1);
-                  RequestCubit.get(navigatorKey.currentContext).typeRequest =
-                      "past";
-                  RequestCubit.get(navigatorKey.currentContext)
-                      .tabController!
-                      .animateTo(2);
+                  MainCubit.get(navigatorKey.currentContext).tabController!.animateTo(2);
                   break;
                 case "RequestPending":
-                  RequestCubit.get(navigatorKey.currentContext).indexPending =
-                      1;
-                  RequestCubit.get(navigatorKey.currentContext)
-                      .getRequestPending(1);
-                  RequestCubit.get(navigatorKey.currentContext).typeRequest =
-                      "pending";
-                  RequestCubit.get(navigatorKey.currentContext)
-                      .tabController!
-                      .animateTo(3);
+                  MainCubit.get(navigatorKey.currentContext).tabController!.animateTo(3);
                   break;
               }
             }
@@ -229,17 +191,13 @@ class _SplashScreenState extends State<SplashScreen> {
             if (message.data['type'] == "trip") {
               if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'tripDetails' &&
-                  TripDetailsCubit.get(navigatorKey.currentContext)
-                          .tripDetails!
-                          .id ==
+                  getIt<SharedPreferences>().getString('tripDetailsId') ==
                       message.data['typeId']) {
                 LocalNotificationService.goToNextScreen(
                     message.data['typeId'], "pushReplacement", "tripDetails");
               } else if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'tripDetails' &&
-                  TripDetailsCubit.get(navigatorKey.currentContext)
-                          .tripDetails!
-                          .id !=
+                  getIt<SharedPreferences>().getString('tripDetailsId') !=
                       message.data['typeId']) {
                 LocalNotificationService.goToNextScreen(
                     message.data['parentId'], "pop", "newTrip");
@@ -258,21 +216,17 @@ class _SplashScreenState extends State<SplashScreen> {
                     "pushReplacement",
                     "requestDetails");
               }
-            }
-            else if (message.data['type'] == "request" || message.data['type'] == "payment") {
+            } else if (message.data['type'] == "request" ||
+                message.data['type'] == "payment") {
               if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails' &&
-                  RequestDetailsCubit.get(navigatorKey.currentContext)
-                          .requestDetails!
-                          .id ==
+                  getIt<SharedPreferences>().getString('requestDetailsId') ==
                       message.data['typeId']) {
                 LocalNotificationService.goToNextScreen(message.data['typeId'],
                     "pushReplacement", "requestDetails");
               } else if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails' &&
-                  RequestDetailsCubit.get(navigatorKey.currentContext)
-                          .requestDetails!
-                          .id !=
+                  getIt<SharedPreferences>().getString('requestDetailsId') !=
                       message.data['typeId']) {
                 LocalNotificationService.goToNextScreen(message.data['typeId'],
                     "pushReplacement", "requestDetails");
@@ -319,7 +273,11 @@ class _SplashScreenState extends State<SplashScreen> {
                   LocalNotificationService.goToNextScreen(
                       idRequest, "pushAndRemoveUntil", "");
                 } else {
-                  navigateAndFinish(context, const RequestTabsScreen());
+                  navigateAndFinish(
+                      context,
+                      BlocProvider(
+                          create: (context) => RequestCubit(),
+                          child: const RequestTabsScreen()));
                 }
               } else {
                 navigateAndFinish(context, OnBoardScreenView());

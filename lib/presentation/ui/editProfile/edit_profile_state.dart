@@ -5,18 +5,18 @@ abstract class EditProfileState {}
 
 class EditProfileInitial extends EditProfileState {}
 
-class EditProfileLoading extends EditProfileState {}
+class GetProfileDetailsLoading extends EditProfileState {}
 
-class EditProfileErrorState extends EditProfileState {
+class GetProfileDetailsErrorState extends EditProfileState {
   final String message;
 
-  EditProfileErrorState(this.message);
+  GetProfileDetailsErrorState(this.message);
 }
 
-class EditProfileSuccessState extends EditProfileState {
+class GetProfileDetailsSuccessState extends EditProfileState {
   final EditProfileModel? data;
 
-  EditProfileSuccessState(this.data);
+  GetProfileDetailsSuccessState(this.data);
 }
 
 class CountriesLoading extends EditProfileState {}
@@ -61,16 +61,16 @@ class AreaSuccessState extends EditProfileState {
   AreaSuccessState(this.data);
 }
 
-class EditLoading extends EditProfileState {}
+class EditProfileLoading extends EditProfileState {}
 
-class EditErrorState extends EditProfileState {
+class EditProfileErrorState extends EditProfileState {
   final String message;
 
-  EditErrorState(this.message);
+  EditProfileErrorState(this.message);
 }
 
-class EditSuccessState extends EditProfileState {
+class EditProfileSuccessState extends EditProfileState {
   final SignModel data;
 
-  EditSuccessState(this.data);
+  EditProfileSuccessState(this.data);
 }

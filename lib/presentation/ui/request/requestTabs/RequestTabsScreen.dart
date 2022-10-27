@@ -2,11 +2,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/main_cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/auth/CarRegistrationScreen.dart';
@@ -31,11 +31,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
   late ScrollController _controllerPending;
   bool loadingUpComing = false;
   bool firstClickTabController = false;
-  double _userRating = 3.0;
   var formKeyRequest = GlobalKey<FormState>();
   var commentController = TextEditingController();
   String typeEditPending = "";
   int? indexPending;
+  String typeRequest = "current";
 
   @override
   void initState() {
@@ -47,47 +47,39 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
     _controllerPast = ScrollController();
     _controllerPending = ScrollController();
 
-    RequestCubit.get(context).tabController =
+    MainCubit.get(context).tabController =
         TabController(length: 4, vsync: this);
 
     if (widget.screenNotify != null &&
         widget.screenNotify == "RequestPending") {
       _currentIndex = 3;
-      RequestCubit.get(context).tabController!.index = 3;
+      MainCubit.get(context).tabController!.index = 2;
     }
 
     // first load
     RequestCubit.get(context).getRequestCurrent(1);
 
-    RequestCubit.get(context).tabController!.addListener(() {
+    MainCubit.get(context).tabController!.addListener(() {
       setState(() {
         // print("_currentIndex*********** ${RequestCubit.get(context).tabController!.index}");
 
-        _currentIndex = RequestCubit.get(context).tabController!.index;
+        _currentIndex = MainCubit.get(context).tabController!.index;
         // if(_tabController!.indexIsChanging) {
         if (_currentIndex == 0) {
           RequestCubit.get(context).getRequestCurrent(1);
-          RequestCubit.get(context).typeRequest = "current";
-          // getIt<SharedPreferences>()
-          //     .setString('typeScreen', "RequestCurrent");
+          typeRequest = "current";
         } else if (_currentIndex == 1) {
           RequestCubit.get(context).indexUpComing = 1;
           RequestCubit.get(context).getRequestUpComing(1);
-          RequestCubit.get(context).typeRequest = "upComing";
-          // getIt<SharedPreferences>()
-          //     .setString('typeScreen', "RequestUpComing");
+          typeRequest = "upComing";
         } else if (_currentIndex == 2) {
           RequestCubit.get(context).indexPast = 1;
           RequestCubit.get(context).getRequestPast(1);
-          RequestCubit.get(context).typeRequest = "past";
-          // getIt<SharedPreferences>()
-          //     .setString('typeScreen', "RequestPast");
+          typeRequest = "past";
         } else if (_currentIndex == 3) {
           RequestCubit.get(context).indexPending = 1;
           RequestCubit.get(context).getRequestPending(1);
-          RequestCubit.get(context).typeRequest = "pending";
-          // getIt<SharedPreferences>()
-          //     .setString('typeScreen', "RequestPending");
+          typeRequest = "pending";
         }
         // }
       });
@@ -133,10 +125,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
           RequestCubit.get(context).getRequestPending(1);
         } else if (typeEditPending == "reject") {
           Navigator.pop(context);
-          RequestCubit.get(context).indexPast = 1;
-          RequestCubit.get(context).getRequestPast(1);
-          RequestCubit.get(context).typeRequest = "past";
-          RequestCubit.get(context).tabController?.animateTo(2);
+          typeRequest = "past";
+          MainCubit.get(context).tabController!.animateTo(2);
           setState((){
             _currentIndex = 2;
           });
@@ -162,7 +152,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
           elevation: 1.0,
         ),
         body: TabBarView(
-          controller: RequestCubit.get(context).tabController,
+          controller: MainCubit.get(context).tabController,
           children: [
             state is RequestCurrentInitial
                 ? const Center(
@@ -170,7 +160,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                       color: black,
                     ),
                   )
-                : state is RequestCurrentErrorState
+                : RequestCubit.get(context).requestCurrent.isEmpty
                     ? Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -189,7 +179,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                     height: 15.h,
                                   ),
                                   Text(
-                                    state.message.toString(),
+                                    "Not Found Data",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: 20.sm,
@@ -628,7 +618,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                       color: black,
                     ),
                   )
-                : state is RequestUpComingErrorState
+                : RequestCubit.get(context).requestUpComing.isEmpty
                     ? Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -647,7 +637,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                     height: 15.h,
                                   ),
                                   Text(
-                                    state.message.toString(),
+                                    "Not Found Data",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: 20.sm,
@@ -700,8 +690,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           ..addListener(() async {
                             if (_controllerUpcoming.position.extentAfter == 0) {
                               if (RequestCubit.get(context).loadingUpComing &&
-                                  RequestCubit.get(context).typeRequest ==
-                                      "upComing") {
+                                  typeRequest == "upComing") {
                                 print("_controllerUpcoming*********** ");
                                 _loadMoreUpComing();
                               }
@@ -1097,7 +1086,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                     child: CircularProgressIndicator(
                     color: black,
                   ))
-                : state is RequestPastErrorState
+                : RequestCubit.get(context).requestPast.isEmpty
                     ? Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -1116,7 +1105,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                     height: 15.h,
                                   ),
                                   Text(
-                                    state.message.toString(),
+                                    "Not Found Data",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: 20.sm,
@@ -1171,8 +1160,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                               print(
                                   '_controllerPast00*******${RequestCubit.get(context).loadingPast}');
                               if (RequestCubit.get(context).loadingPast &&
-                                  RequestCubit.get(context).typeRequest ==
-                                      "past") {
+                                  typeRequest == "past") {
                                 _loadMorePast();
                               }
                             }
@@ -1564,7 +1552,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                     child: CircularProgressIndicator(
                     color: black,
                   ))
-                : state is RequestPendingErrorState
+                : RequestCubit.get(context).requestPending.isEmpty
                     ? Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -1583,7 +1571,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                     height: 15.h,
                                   ),
                                   Text(
-                                    state.message.toString(),
+                                    "Not Found Data",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: 20.sm,
@@ -1637,8 +1625,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                             if (_controllerPending.position.extentAfter == 0) {
 
                               if (RequestCubit.get(context).loadingPending &&
-                                  RequestCubit.get(context).typeRequest ==
-                                      "pending") {
+                                  typeRequest == "pending") {
                                 if (kDebugMode) {
                                   print(
                                       '_controllerPending00*******${RequestCubit.get(context).loadingPending}');
@@ -2072,17 +2059,20 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                     // outside to dismiss
                                                     builder:
                                                         (BuildContext context) {
-                                                      return CustomDialog(
-                                                        title:
-                                                            'Do you want to reject?',
-                                                        description:
-                                                            'If you want to be rejected, you must first enter the reason for rejection and press OK..',
-                                                        backgroundColor: white,
-                                                        btnOkColor: accentColor,
-                                                        btnCancelColor: grey,
-                                                        id: pending.id,
-                                                        titleColor: accentColor,
-                                                        descColor: black,
+                                                        return BlocProvider.value(
+                                                          value: RequestCubit(),
+                                                          child: CustomDialog(
+                                                          title:
+                                                              'Do you want to reject?',
+                                                          description:
+                                                              'If you want to be rejected, you must first enter the reason for rejection and press OK..',
+                                                          backgroundColor: white,
+                                                          btnOkColor: accentColor,
+                                                          btnCancelColor: grey,
+                                                          id: pending.id,
+                                                          titleColor: accentColor,
+                                                          descColor: black,
+                                                        ),
                                                       );
                                                     },
                                                   );
@@ -2106,7 +2096,9 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                   // outside to dismiss
                                                   builder:
                                                       (BuildContext context) {
-                                                    return CustomDialog(
+                                                    return BlocProvider.value(
+                                                      value: RequestCubit(),
+                                                      child: CustomDialog(
                                                       title:
                                                           'Do you want to reject?',
                                                       description:
@@ -2117,7 +2109,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                       id: pending.id,
                                                       titleColor: accentColor,
                                                       descColor: black,
-                                                    );
+                                                    ),
+);
                                                   },
                                                 );
                                               },
@@ -2155,7 +2148,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
           onTap: (index) {
             setState(() {
               _currentIndex = index;
-              RequestCubit.get(context).tabController!.animateTo(_currentIndex);
+              MainCubit.get(context).tabController!.animateTo(_currentIndex);
               // _tabController!.index = _currentIndex;
             });
           },

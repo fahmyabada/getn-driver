@@ -18,8 +18,6 @@ class RequestCubit extends Cubit<RequestState> {
 
   var getRequestUseCase = getIt<GetRequestUseCase>();
   var putRequestUseCase = getIt<PutRequestUseCase>();
-  String typeRequest = "current";
-  TabController? tabController;
 
   List<DataRequest> requestCurrent = [];
 

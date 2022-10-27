@@ -7,7 +7,7 @@ import 'VerifyImage.dart';
 class SignModel {
   SignModel({
     String? id,
-    dynamic image,
+    VerifyImage? image,
     VerifyImage? frontNationalImage,
     VerifyImage? backNationalImage,
     VerifyImage? verifyImage,
@@ -39,7 +39,9 @@ class SignModel {
 
   SignModel.fromJson(dynamic json) {
     _id = json['_id'];
-    _image = json['image'];
+    _image = json['image'] != null
+        ? VerifyImage.fromJson(json['image'])
+        : null;
     _frontNationalImage = json['frontNationalImage'] != null
         ? VerifyImage.fromJson(json['frontNationalImage'])
         : null;
@@ -64,7 +66,7 @@ class SignModel {
   }
 
   String? _id;
-  dynamic _image;
+  VerifyImage? _image;
   VerifyImage? _frontNationalImage;
   VerifyImage? _backNationalImage;
   VerifyImage? _verifyImage;
@@ -80,7 +82,7 @@ class SignModel {
 
   String? get id => _id;
 
-  dynamic get image => _image;
+  VerifyImage? get image => _image;
 
   VerifyImage? get frontNationalImage => _frontNationalImage;
 

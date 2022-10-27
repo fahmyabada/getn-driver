@@ -9,12 +9,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/api/Dio_Helper.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/firebase_options.dart';
-import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
+import 'package:getn_driver/main_cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
-import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
-import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
 import 'package:getn_driver/presentation/ui/splash/SplashScreen.dart';
-import 'package:getn_driver/presentation/ui/trip/tripDetails/trip_details_cubit.dart';
 
 void main() async {
 // for error connection with api
@@ -58,17 +55,8 @@ class MyApp extends StatelessWidget {
       builder: (BuildContext context, child) => MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => SignCubit(),
-          ),
-          BlocProvider(
-            create: (context) => RequestCubit(),
-          ),
-          BlocProvider(
-            create: (context) => RequestDetailsCubit(),
-          ),
-          BlocProvider(
-            create: (context) => TripDetailsCubit(),
-          ),
+            create: (context) => MainCubit(),
+          )
         ],
         child: MaterialApp(
           navigatorKey: navigatorKey,

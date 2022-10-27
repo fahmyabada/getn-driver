@@ -25,6 +25,7 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final formKey = GlobalKey<FormState>();
+  final formKeyAddress = GlobalKey<FormState>();
 
   dynamic _pickImageError;
   File? _imageUser;
@@ -73,7 +74,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       create: (context) => EditProfileCubit()..getProfileDetails(),
       child: BlocConsumer<EditProfileCubit, EditProfileState>(
         listener: (context, state) {
-          if (state is EditProfileSuccessState) {
+          if (state is GetProfileDetailsSuccessState) {
             if (state.data!.country!.id != null) {
               setState(() {
                 dropDownValueCountries = state.data!.country!;
@@ -106,6 +107,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               });
             }
 
+            if (state.data!.address != null) {
+              setState(() {
+                addressController.text = state.data!.address!;
+              });
+            }
+
+            if (state.data!.whatsApp != null) {
+              setState(() {
+                whatsAppController.text = state.data!.whatsApp!;
+              });
+            }
+
             if (state.data!.birthDate != null) {
               setState(() {
                 final DateFormat displayFormater =
@@ -127,19 +140,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               EditProfileCubit.get(context)
                   .getArea(dropDownValueCountries!.id!, dropDownValueCity!.id!);
             }
-          } else if (state is AreaSuccessState) {
+          }
+          else if (state is AreaSuccessState) {
             if (state.data!.isNotEmpty) {
               dropDownValueArea = state.data?.first;
             }
-          } else if (state is EditSuccessState) {
+          } else if (state is EditProfileSuccessState) {
             if (state.data.phone != null) {
               getIt<SharedPreferences>().setString('phone', state.data.phone!);
             }
             if (state.data.name != null) {
               getIt<SharedPreferences>().setString('name', state.data.name!);
             }
+            if (state.data.image!.src != null) {
+              getIt<SharedPreferences>().setString('userImage', state.data.image!.src!);
+            }
             Navigator.pop(context);
-          } else if (state is EditErrorState) {
+          }
+          else if (state is EditProfileErrorState) {
             showToastt(
                 text: state.message,
                 state: ToastStates.error,
@@ -158,7 +176,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 centerTitle: true,
               ),
-              body: state is EditProfileLoading
+              body: state is GetProfileDetailsLoading
                   ? const Center(
                       child: CircularProgressIndicator(
                         color: black,
@@ -952,18 +970,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 SizedBox(
                                   height: 16.h,
                                 ),
-                                defaultFormField(
-                                  controller: addressController,
-                                  type: TextInputType.text,
-                                  label: "Address",
-                                  textSize: 20,
-                                  border: false,
-                                  borderRadius: 50,
-                                  validatorText: addressController.text,
-                                  validatorMessage: "Enter Address Please..",
-                                  onEditingComplete: () {
-                                    FocusScope.of(context).unfocus();
-                                  },
+                                Form(
+                                  key: formKeyAddress,
+                                  child: defaultFormField(
+                                    controller: addressController,
+                                    type: TextInputType.text,
+                                    label: "Address",
+                                    textSize: 20,
+                                    border: false,
+                                    borderRadius: 50,
+                                    validatorText: addressController.text,
+                                    validatorMessage: "Enter Address Please..",
+                                    onEditingComplete: () {
+                                      FocusScope.of(context).unfocus();
+                                    },
+                                  ),
                                 ),
                                 SizedBox(
                                   height: 40.h,
@@ -1012,8 +1033,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                               dropDownValueCountries != null &&
                                               dropDownValueCity != null &&
                                               dropDownValueArea != null &&
-                                              addressController
-                                                  .text.isNotEmpty &&
+                                              formKeyAddress.currentState!.validate() &&
                                               userImage.isNotEmpty &&
                                               availabilities.isNotEmpty) {
                                             String whatsApp = "";
