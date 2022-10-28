@@ -34,6 +34,7 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
   String failureRequest = "";
   String failureTrip = "";
 
+
   void getRequestDetails(String id) async {
     emit(RequestDetailsInitial());
     loadingRequest = true;
@@ -114,19 +115,23 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
   }
 
   void editRequest(String id, String type, String comment) async {
-    emit(RequestDetailsEditInitial());
+    if (type == "reject") {
+      emit(RequestDetailsEditRejectInitial());
+    } else {
+      emit(RequestDetailsEditInitial());
+    }
 
     putRequestUseCase.execute(id, type, comment).then((value) {
-      emit(eitherLoadedOrErrorStateRequestEdit(value));
+      emit(eitherLoadedOrErrorStateRequestEdit(value, type));
     });
   }
 
   RequestDetailsState eitherLoadedOrErrorStateRequestEdit(
-      Either<String, DataRequest?> data) {
+      Either<String, DataRequest?> data, String type) {
     return data.fold((failure1) {
-      return RequestDetailsEditErrorState(failure1);
+      return RequestDetailsEditErrorState(failure1, type);
     }, (data) {
-      return RequestDetailsEditSuccessState(data);
+      return RequestDetailsEditSuccessState(data, type);
     });
   }
 

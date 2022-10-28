@@ -44,6 +44,7 @@ class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
       } else {
         formData = FormData.fromMap({"status": type, "comment": comment});
       }
+      print("putRequest*********${formData.fields.toString()}");
 
       return await DioHelper.putData(
               url: 'request/$id',
@@ -52,8 +53,10 @@ class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
           .then((value) {
         if (value.statusCode == 200) {
           if (DataRequest.fromJson(value.data).id!.isNotEmpty) {
+            print("putRequestRight*********${DataRequest.fromJson(value.data).id!}");
             return Right(DataRequest.fromJson(value.data!));
           } else {
+            print("putRequestLeft*********");
             return const Left("have error when response request");
           }
         } else {

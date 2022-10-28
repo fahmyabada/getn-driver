@@ -12,4 +12,8 @@ class MainCubit extends Cubit<MainState> {
 
   TabController? tabController;
 
+  bool refresh = false;
+
+  String typeRequest = "current";
+
 }

@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/main_cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/trip/tripDetails/trip_details_cubit.dart';
@@ -67,6 +68,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
   final LatLng destinationLatLng = const LatLng(30.149350, 31.738539);
   final LatLng initialLatLng = const LatLng(30.1541371, 31.7397189);
   final Completer<GoogleMapController> _controller = Completer();
+  var formKeyRequest = GlobalKey<FormState>();
+  var commentController = TextEditingController();
 
   _setMapPins(List<LatLng> markersLocation) {
     _markers.clear();
@@ -107,9 +110,15 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
       child: BlocConsumer<TripDetailsCubit, TripDetailsState>(
         listener: (context, state) {
           if (state is TripDetailsEditSuccessState) {
+            if(state.type == "reject"){
+              Navigator.pop(context);
+            }
             TripDetailsCubit.get(context).getTripDetails(widget.idTrip!);
           } else if (state is TripDetailsEditErrorState) {
-            Navigator.of(context).pop(widget.idRequest);
+            // if(state.type == "reject"){
+            //   Navigator.pop(context);
+            // }
+            // Navigator.of(context).pop(widget.idRequest);
             showToastt(
                 text: state.message,
                 state: ToastStates.error,
@@ -652,9 +661,6 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                               .status ==
                                                           "pending"
                                                       ? Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceEvenly,
                                                           children: [
                                                             state is! TripDetailsEditInitial
                                                                 ? Expanded(
@@ -675,44 +681,43 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                                   )
                                                                 : Expanded(
                                                                     child:
-                                                                        SizedBox(
+                                                                        Center(
+                                                                          child: SizedBox(
                                                                       width:
-                                                                          20.w,
+                                                                            40.w,
                                                                       child:
-                                                                          const CircularProgressIndicator(
-                                                                        color:
-                                                                            accentColor,
+                                                                            const CircularProgressIndicator(
+                                                                          color:
+                                                                              accentColor,
                                                                       ),
                                                                     ),
+                                                                        ),
                                                                   ),
+                                                            SizedBox(width: 15.w,),
                                                             Expanded(
                                                               child:
                                                                   defaultButton2(
                                                                       press:
                                                                           () {
-                                                                        showDialog(
-                                                                          context:
-                                                                              context,
-                                                                          barrierDismissible:
+                                                                            showDialog(
+                                                                              context: context,
+                                                                              barrierDismissible:
                                                                               true,
-                                                                          // outside to dismiss
-                                                                          builder:
-                                                                              (BuildContext context) {
-                                                                            return BlocProvider.value(
-                                                                              value: TripDetailsCubit(),
-                                                                              child: CustomDialog(
-                                                                              title: 'Do you want to reject?',
-                                                                              description: 'If you want to be rejected, you must first enter the reason for rejection and press OK..',
-                                                                              backgroundColor: white,
-                                                                              btnOkColor: accentColor,
-                                                                              btnCancelColor: grey,
-                                                                              id: TripDetailsCubit.get(context).tripDetails!.id,
-                                                                              titleColor: accentColor,
-                                                                              descColor: black,
-                                                                            ),
-);
-                                                                          },
-                                                                        );
+                                                                              // outside to dismiss
+                                                                              builder: (_) {
+                                                                                return CustomDialogTripDetails(id: TripDetailsCubit.get(context).tripDetails!.id!,
+                                                                                  title:
+                                                                                  'Do you want to reject?',
+                                                                                  description:
+                                                                                  'If you want to be rejected, you must first enter the reason for rejection and press OK..',);
+                                                                              },
+                                                                            ).then((value) {
+                                                                              print("showDialog************** ${MainCubit.get(context).refresh}");
+                                                                              if(MainCubit.get(context).refresh){
+                                                                                TripDetailsCubit.get(context).getTripDetails(widget.idTrip!);
+                                                                                MainCubit.get(context).refresh = false;
+                                                                              }
+                                                                            });
                                                                       },
                                                                       fontSize:
                                                                           20,

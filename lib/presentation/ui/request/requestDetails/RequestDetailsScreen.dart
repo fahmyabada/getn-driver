@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/main_cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
@@ -54,6 +55,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   int? indexStatus;
   late ScrollController _controllerLoadingTrips;
+  var formKeyRequest = GlobalKey<FormState>();
+  var commentController = TextEditingController();
 
   void _loadMoreTrips() {
     RequestDetailsCubit.get(context).loadingMoreTrips = false;
@@ -93,13 +96,17 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 .getRequestDetails(widget.idRequest!);
             RequestDetailsCubit.get(context)
                 .getTripsRequestDetails(1, widget.idRequest!);
-          } else if (state is RequestDetailsEditErrorState) {
-            // Navigator.pop(context);
+          }
+          else if (state is RequestDetailsEditErrorState) {
+            // if (state.type == "reject") {
+            //   Navigator.pop(context);
+            // }
             showToastt(
                 text: state.message,
                 state: ToastStates.error,
                 context: context);
-          } else if (state is CurrentLocationSuccessState) {
+          }
+          else if (state is CurrentLocationSuccessState) {
             print('CurrentLocationSuccessState********* ');
             String id = await navigateToWithRefreshPagePrevious(
               context,
@@ -125,7 +132,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 RequestDetailsCubit.get(context).getTripsRequestDetails(1, id);
               }
             });
-          } else if (state is CurrentLocationErrorState) {
+          }
+          else if (state is CurrentLocationErrorState) {
             if (kDebugMode) {
               print('CurrentLocationErrorState********* ${state.error}');
             }
@@ -135,16 +143,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 barrierDismissible: false,
                 // outside to dismiss
                 builder: (BuildContext context) {
-                  return BlocProvider.value(
-                    value: RequestDetailsCubit(),
-                    child: CustomDialog(
-                      title: "Location",
-                      description: 'Location permissions are denied',
-                      press: () {
-                        Navigator.pop(context);
-                      },
-                      type: "checkLocationDenied",
-                    ),
+                  return CustomDialogLocation(
+                    title: "Location",
+                    description: 'Location permissions are denied',
+                    type: "checkLocationDenied",
                   );
                 },
               );
@@ -154,17 +156,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 barrierDismissible: false,
                 // outside to dismiss
                 builder: (BuildContext mContext) {
-                  return BlocProvider.value(
-                    value: RequestDetailsCubit(),
-                    child: CustomDialog(
-                      title: "Location",
-                      description:
-                          'Location permissions are permanently denied\n You must enable the access location so that we can determine your location and save the visit\n choose setting and enable location then try back',
-                      press: () {
-                        Navigator.pop(context);
-                      },
-                      type: "checkLocationDeniedForever",
-                    ),
+                  return CustomDialogLocation(
+                    title: "Location",
+                    description:
+                        'Location permissions are permanently denied\n You must enable the access location so that we can determine your location and save the visit\n choose setting and enable location then try back',
+                    type: "checkLocationDeniedForever",
                   );
                 },
               );
@@ -551,17 +547,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                                 "");
                                                       },
                                                       disablePress: RequestDetailsCubit
-                                                                          .get(
-                                                                              context)
-                                                                      .requestDetails
-                                                                      ?.paymentStatus! ==
-                                                                  "paid" &&
-                                                              RequestDetailsCubit
-                                                                          .get(
-                                                                              context)
-                                                                      .requestDetails!
-                                                                      .status ==
-                                                                  "pending"
+                                                                      .get(
+                                                                          context)
+                                                                  .requestDetails!
+                                                                  .status ==
+                                                              "pending"
                                                           ? true
                                                           : RequestDetailsCubit.get(
                                                                           context)
@@ -581,11 +571,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                     ),
                                                   )
                                                 : Expanded(
-                                                    child: SizedBox(
-                                                      width: 20.w,
-                                                      child:
-                                                          const CircularProgressIndicator(
-                                                        color: accentColor,
+                                                    child: Center(
+                                                      child: SizedBox(
+                                                        width: 40.w,
+                                                        child:
+                                                            const CircularProgressIndicator(
+                                                          color: accentColor,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
@@ -638,84 +630,56 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                       showDialog(
                                                         context: context,
                                                         barrierDismissible:
-                                                            true,
+                                                        true,
                                                         // outside to dismiss
-                                                        builder: (BuildContext
-                                                            context) {
-                                                          return BlocProvider
-                                                              .value(
-                                                            value:
-                                                                RequestDetailsCubit(),
-                                                            child: CustomDialog(
-                                                              title: 'Warning',
-                                                              description:
-                                                                  'you will charged a cancelation fee..',
-                                                              backgroundColor:
-                                                                  white,
-                                                              btnOkColor:
-                                                                  accentColor,
-                                                              btnCancelColor:
-                                                                  grey,
-                                                              id: RequestDetailsCubit
-                                                                      .get(
-                                                                          context)
-                                                                  .requestDetails!
-                                                                  .id,
-                                                              titleColor:
-                                                                  accentColor,
-                                                              descColor: black,
-                                                            ),
-                                                          );
+                                                        builder: (_) {
+                                                          return CustomDialogRequestDetails(
+                                                            id: RequestDetailsCubit.get(context).requestDetails!.id!,
+                                                            title: 'Warning',
+                                                            description:
+                                                            'you will charged a cancelation fee..',);
                                                         },
-                                                      );
-                                                    } else {
+                                                      ).then((value) {
+                                                        print("showDialog************** ${MainCubit.get(context).refresh}");
+                                                        if(MainCubit.get(context).refresh){
+                                                          RequestDetailsCubit.get(context)
+                                                              .getRequestDetails(widget.idRequest!);
+                                                          RequestDetailsCubit.get(context)
+                                                              .getTripsRequestDetails(1, widget.idRequest!);
+                                                          MainCubit.get(context).refresh = false;
+                                                        }
+                                                      });
+                                                    }
+                                                    else {
                                                       showDialog(
                                                         context: context,
                                                         barrierDismissible:
                                                             true,
                                                         // outside to dismiss
-                                                        builder: (BuildContext
-                                                            context) {
-                                                          return BlocProvider
-                                                              .value(
-                                                            value:
-                                                                RequestDetailsCubit(),
-                                                            child: CustomDialog(
-                                                              title:
-                                                                  'Do you want to reject?',
-                                                              description:
-                                                                  'If you want to be rejected, you must first enter the reason for rejection and press OK..',
-                                                              backgroundColor:
-                                                                  white,
-                                                              btnOkColor:
-                                                                  accentColor,
-                                                              btnCancelColor:
-                                                                  grey,
-                                                              id: RequestDetailsCubit
-                                                                      .get(
-                                                                          context)
-                                                                  .requestDetails!
-                                                                  .id,
-                                                              titleColor:
-                                                                  accentColor,
-                                                              descColor: black,
-                                                            ),
-                                                          );
+                                                        builder: (_) {
+                                                          return CustomDialogRequestDetails(id: RequestDetailsCubit.get(context).requestDetails!.id!,
+                                                            title:
+                                                            'Do you want to reject?',
+                                                            description:
+                                                            'If you want to be rejected, you must first enter the reason for rejection and press OK..',);
                                                         },
-                                                      );
+                                                      ).then((value) {
+                                                        print("showDialog************** ${MainCubit.get(context).refresh}");
+                                                        if(MainCubit.get(context).refresh){
+                                                          RequestDetailsCubit.get(context)
+                                                              .getRequestDetails(widget.idRequest!);
+                                                          RequestDetailsCubit.get(context)
+                                                              .getTripsRequestDetails(1, widget.idRequest!);
+                                                          MainCubit.get(context).refresh = false;
+                                                        }
+                                                      });
                                                     }
                                                   },
                                                   disablePress: RequestDetailsCubit
-                                                                      .get(
-                                                                          context)
-                                                                  .requestDetails
-                                                                  ?.paymentStatus! ==
-                                                              "paid" &&
-                                                          RequestDetailsCubit.get(
-                                                                      context)
-                                                                  .requestDetails!
-                                                                  .status ==
-                                                              "pending"
+                                                                  .get(context)
+                                                              .requestDetails!
+                                                              .status ==
+                                                          "pending"
                                                       ? true
                                                       : RequestDetailsCubit.get(
                                                                       context)

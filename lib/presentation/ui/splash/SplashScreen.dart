@@ -120,7 +120,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 LocalNotificationService.createAndDisplayNotification(
                     message, "outTripInRequest");
               }
-            } else if (message.data['type'] == "request" ||
+            }
+            else if (message.data['type'] == "request" ||
                 message.data['type'] == "payment") {
               if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails' &&
@@ -155,20 +156,41 @@ class _SplashScreenState extends State<SplashScreen> {
 
             // for update request tabs
             if (message.data['type'] == 'request' &&
-                getIt<SharedPreferences>().getString('typeScreen') ==
-                    'request') {
+                (getIt<SharedPreferences>().getString('typeScreen') ==
+                    'request' || getIt<SharedPreferences>().getString('typeScreen') == "")) {
               switch (message.data['page']) {
                 case "RequestCurrent":
-                  MainCubit.get(navigatorKey.currentContext).tabController!.animateTo(0);
+                  if(MainCubit.get(navigatorKey.currentContext).typeRequest == "current"){
+                    MainCubit.get(navigatorKey.currentContext).tabController!.animateTo(1);
+                    MainCubit.get(navigatorKey.currentContext).tabController!.animateTo(0);
+                  }else{
+                    MainCubit.get(navigatorKey.currentContext).tabController!.animateTo(0);
+                  }
                   break;
                 case "RequestUpComing":
-                  MainCubit.get(navigatorKey.currentContext).tabController!.animateTo(1);
+                  if(MainCubit.get(navigatorKey.currentContext).typeRequest == "upComing"){
+                    MainCubit.get(navigatorKey.currentContext).tabController!.animateTo(0);
+                    MainCubit.get(navigatorKey.currentContext).tabController!.animateTo(1);
+                  }else{
+                    MainCubit.get(navigatorKey.currentContext).tabController!.animateTo(1);
+                  }
                   break;
                 case "RequestPast":
-                  MainCubit.get(navigatorKey.currentContext).tabController!.animateTo(2);
+                  if(MainCubit.get(navigatorKey.currentContext).typeRequest == "past"){
+                    MainCubit.get(navigatorKey.currentContext).tabController!.animateTo(1);
+                    MainCubit.get(navigatorKey.currentContext).tabController!.animateTo(2);
+                  }else{
+                    MainCubit.get(navigatorKey.currentContext).tabController!.animateTo(2);
+                  }
                   break;
                 case "RequestPending":
-                  MainCubit.get(navigatorKey.currentContext).tabController!.animateTo(3);
+                  // to listen change you should animate to another tab first time and return again
+                  if(MainCubit.get(navigatorKey.currentContext).typeRequest == "pending"){
+                    MainCubit.get(navigatorKey.currentContext).tabController!.animateTo(2);
+                    MainCubit.get(navigatorKey.currentContext).tabController!.animateTo(3);
+                  }else{
+                    MainCubit.get(navigatorKey.currentContext).tabController!.animateTo(3);
+                  }
                   break;
               }
             }

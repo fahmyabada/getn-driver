@@ -38,19 +38,23 @@ class TripDetailsCubit extends Cubit<TripDetailsState> {
   }
 
   void editTrip(String id, String type, String comment) async {
-    emit(TripDetailsEditInitial());
+    if(type == "reject"){
+      emit(TripDetailsEditRejectInitial());
+    }else{
+      emit(TripDetailsEditInitial());
+    }
 
     putTripDetailsUseCase.execute(id, type, comment).then((value) {
-      emit(eitherLoadedOrErrorStateTripEdit(value));
+      emit(eitherLoadedOrErrorStateTripEdit(value,type));
     });
   }
 
   TripDetailsState eitherLoadedOrErrorStateTripEdit(
-      Either<String, DataRequest?> data) {
+      Either<String, DataRequest?> data, String type) {
     return data.fold((failure1) {
-      return TripDetailsEditErrorState(failure1);
+      return TripDetailsEditErrorState(failure1,type);
     }, (data) {
-      return TripDetailsEditSuccessState(data);
+      return TripDetailsEditSuccessState(data,type);
     });
   }
 }

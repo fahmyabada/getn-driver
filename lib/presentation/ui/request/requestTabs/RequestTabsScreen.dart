@@ -31,11 +31,9 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
   late ScrollController _controllerPending;
   bool loadingUpComing = false;
   bool firstClickTabController = false;
-  var formKeyRequest = GlobalKey<FormState>();
-  var commentController = TextEditingController();
+
   String typeEditPending = "";
   int? indexPending;
-  String typeRequest = "current";
 
   @override
   void initState() {
@@ -67,19 +65,19 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
         // if(_tabController!.indexIsChanging) {
         if (_currentIndex == 0) {
           RequestCubit.get(context).getRequestCurrent(1);
-          typeRequest = "current";
+          MainCubit.get(context).typeRequest = "current";
         } else if (_currentIndex == 1) {
           RequestCubit.get(context).indexUpComing = 1;
           RequestCubit.get(context).getRequestUpComing(1);
-          typeRequest = "upComing";
+          MainCubit.get(context).typeRequest = "upComing";
         } else if (_currentIndex == 2) {
           RequestCubit.get(context).indexPast = 1;
           RequestCubit.get(context).getRequestPast(1);
-          typeRequest = "past";
+          MainCubit.get(context).typeRequest = "past";
         } else if (_currentIndex == 3) {
           RequestCubit.get(context).indexPending = 1;
           RequestCubit.get(context).getRequestPending(1);
-          typeRequest = "pending";
+          MainCubit.get(context).typeRequest = "pending";
         }
         // }
       });
@@ -120,16 +118,9 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
   Widget build(BuildContext context) {
     return BlocConsumer<RequestCubit, RequestState>(listener: (context, state) {
       if (state is RequestEditSuccessState) {
-        if (typeEditPending == "accept") {
+        if (state.data!.status! == "accept") {
           RequestCubit.get(context).indexPending = 1;
           RequestCubit.get(context).getRequestPending(1);
-        } else if (typeEditPending == "reject") {
-          Navigator.pop(context);
-          typeRequest = "past";
-          MainCubit.get(context).tabController!.animateTo(2);
-          setState((){
-            _currentIndex = 2;
-          });
         }
       } else if (state is RequestEditErrorState) {
         Navigator.pop(context);
@@ -690,7 +681,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           ..addListener(() async {
                             if (_controllerUpcoming.position.extentAfter == 0) {
                               if (RequestCubit.get(context).loadingUpComing &&
-                                  typeRequest == "upComing") {
+                                  MainCubit.get(context).typeRequest == "upComing") {
                                 print("_controllerUpcoming*********** ");
                                 _loadMoreUpComing();
                               }
@@ -1160,7 +1151,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                               print(
                                   '_controllerPast00*******${RequestCubit.get(context).loadingPast}');
                               if (RequestCubit.get(context).loadingPast &&
-                                  typeRequest == "past") {
+                                  MainCubit.get(context).typeRequest == "past") {
                                 _loadMorePast();
                               }
                             }
@@ -1625,7 +1616,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                             if (_controllerPending.position.extentAfter == 0) {
 
                               if (RequestCubit.get(context).loadingPending &&
-                                  typeRequest == "pending") {
+                                  MainCubit.get(context).typeRequest == "pending") {
                                 if (kDebugMode) {
                                   print(
                                       '_controllerPending00*******${RequestCubit.get(context).loadingPending}');
@@ -2012,8 +2003,6 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                   ? state is! RequestEditInitial
                                                       ? defaultButton2(
                                                           press: () {
-                                                            typeEditPending =
-                                                                "accept";
                                                             RequestCubit.get(
                                                                     context)
                                                                 .editRequest(
@@ -2035,8 +2024,6 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                         )
                                                   : defaultButton2(
                                                       press: () {
-                                                        typeEditPending =
-                                                            "accept";
                                                         RequestCubit.get(
                                                                 context)
                                                             .editRequest(
@@ -2052,16 +2039,15 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                       textColor: white),
                                               defaultButton2(
                                                 press: () {
-                                                  typeEditPending = "reject";
                                                   showDialog(
                                                     context: context,
                                                     barrierDismissible: true,
                                                     // outside to dismiss
                                                     builder:
                                                         (BuildContext context) {
-                                                        return BlocProvider.value(
-                                                          value: RequestCubit(),
-                                                          child: CustomDialog(
+                                                        return BlocProvider(
+                                                          create: (context) => RequestCubit(),
+                                                          child: CustomDialogRequestTabs(
                                                           title:
                                                               'Do you want to reject?',
                                                           description:
@@ -2089,16 +2075,15 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                           children: [
                                             defaultButton2(
                                               press: () {
-                                                typeEditPending = "reject";
                                                 showDialog(
                                                   context: context,
                                                   barrierDismissible: true,
                                                   // outside to dismiss
                                                   builder:
                                                       (BuildContext context) {
-                                                    return BlocProvider.value(
-                                                      value: RequestCubit(),
-                                                      child: CustomDialog(
+                                                    return BlocProvider(
+                                                      create: (context) => RequestCubit(),
+                                                      child: CustomDialogRequestTabs(
                                                       title:
                                                           'Do you want to reject?',
                                                       description:

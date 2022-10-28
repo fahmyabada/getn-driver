@@ -21,14 +21,18 @@ class TripDetailsSuccessState extends TripDetailsInitial {
 
 class TripDetailsEditInitial extends TripDetailsInitial {}
 
+class TripDetailsEditRejectInitial extends TripDetailsInitial {}
+
 class TripDetailsEditErrorState extends TripDetailsInitial {
   final String message;
+  final String? type;
 
-  TripDetailsEditErrorState(this.message);
+  TripDetailsEditErrorState(this.message, this.type);
 }
 
 class TripDetailsEditSuccessState extends TripDetailsInitial {
   final DataRequest? data;
+  final String? type;
 
-  TripDetailsEditSuccessState(this.data);
+  TripDetailsEditSuccessState(this.data, this.type);
 }

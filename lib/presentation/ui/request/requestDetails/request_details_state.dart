@@ -33,16 +33,22 @@ class TripsSuccessState extends RequestDetailsState {
 
 class RequestDetailsEditInitial extends RequestDetailsState {}
 
+class RequestDetailsEditRejectInitial extends RequestDetailsState {}
+
+class RequestDetailsEditRefresh extends RequestDetailsState {}
+
 class RequestDetailsEditErrorState extends RequestDetailsState {
   final String message;
+  final String? type;
 
-  RequestDetailsEditErrorState(this.message);
+  RequestDetailsEditErrorState(this.message, this.type);
 }
 
 class RequestDetailsEditSuccessState extends RequestDetailsState {
   final DataRequest? data;
+  final String? type;
 
-  RequestDetailsEditSuccessState(this.data);
+  RequestDetailsEditSuccessState(this.data, this.type);
 }
 
 class CurrentLocationLoading extends RequestDetailsState {}
