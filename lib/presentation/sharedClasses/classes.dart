@@ -8,6 +8,8 @@ import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/main_cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/ui/auth/SignInScreen.dart';
+import 'package:getn_driver/presentation/ui/notifications/NotificationScreen.dart';
+import 'package:getn_driver/presentation/ui/notifications/notification_cubit.dart';
 import 'package:getn_driver/presentation/ui/policies/PoliciesScreen.dart';
 import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
@@ -672,7 +674,11 @@ class DrawerMenu extends StatelessWidget {
               ),
             ),
             leading: const Icon(Icons.notifications, color: grey2),
-            onTap: () {},
+            onTap: () {
+              navigateTo(context, BlocProvider(
+                  create: (context) => NotificationCubit(),
+                  child: const NotificationScreen()));
+            },
           ),
           ListTile(
             title: Text(

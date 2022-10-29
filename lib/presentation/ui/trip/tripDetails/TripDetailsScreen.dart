@@ -110,11 +110,20 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
       child: BlocConsumer<TripDetailsCubit, TripDetailsState>(
         listener: (context, state) {
           if (state is TripDetailsEditSuccessState) {
-            if(state.type == "reject"){
+            if (state.type == "reject") {
               Navigator.pop(context);
             }
             TripDetailsCubit.get(context).getTripDetails(widget.idTrip!);
           } else if (state is TripDetailsEditErrorState) {
+            // if(state.type == "reject"){
+            //   Navigator.pop(context);
+            // }
+            // Navigator.of(context).pop(widget.idRequest);
+            showToastt(
+                text: state.message,
+                state: ToastStates.error,
+                context: context);
+          } else if (state is TripDetailsErrorState) {
             // if(state.type == "reject"){
             //   Navigator.pop(context);
             // }
@@ -193,335 +202,249 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                     color: black,
                                   )),
                                 )
-                              : Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        ClipOval(
-                                          clipBehavior: Clip.antiAlias,
-                                          child: ImageTools.image(
-                                              fit: BoxFit.fill,
-                                              url: TripDetailsCubit.get(context)
-                                                  .tripDetails!
-                                                  .client2!
-                                                  .image!
-                                                  .src,
-                                              height: 50.w,
-                                              width: 50.w),
+                              : state is TripDetailsErrorState
+                                  ? Center(
+                                      child: Padding(
+                                        padding: EdgeInsets.all(18.r),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              state.message,
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            TextButton(
+                                              style: ElevatedButton.styleFrom(
+                                                foregroundColor: accentColor,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          16.r),
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                TripDetailsCubit.get(context)
+                                                    .getTripDetails(
+                                                        widget.idTrip!);
+                                              },
+                                              child: const Text('Retry'),
+                                            )
+                                          ],
                                         ),
-                                        Expanded(
-                                          child: Container(
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 20.r),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: Text(
-                                                        TripDetailsCubit.get(
-                                                                context)
-                                                            .tripDetails!
-                                                            .client2!
-                                                            .name!,
-                                                        style: TextStyle(
-                                                            fontSize: 15.sp,
-                                                            color: black,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                        maxLines: 1,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  height: 5.h,
-                                                ),
-                                                Text(
-                                                  TripDetailsCubit.get(context)
+                                      ),
+                                    )
+                                  : Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            ClipOval(
+                                              clipBehavior: Clip.antiAlias,
+                                              child: ImageTools.image(
+                                                  fit: BoxFit.fill,
+                                                  url: TripDetailsCubit.get(
+                                                          context)
                                                       .tripDetails!
                                                       .client2!
-                                                      .name!,
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                      fontSize: 14.sp,
-                                                      color: grey2),
-                                                ),
-                                                SizedBox(
-                                                  height: 5.h,
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Expanded(
-                                                      child:
-                                                          defaultButtonWithIcon(
-                                                              press: () {
-                                                                if (TripDetailsCubit.get(
-                                                                            context)
-                                                                        .tripDetails
-                                                                        ?.client2
-                                                                        ?.phone !=
-                                                                    null) {
-                                                                  makePhoneCall(
-                                                                      '${TripDetailsCubit.get(context).tripDetails?.client2?.country?.code}${TripDetailsCubit.get(context).tripDetails?.client2?.phone}');
-                                                                } else {
-                                                                  showToastt(
-                                                                      text:
-                                                                          "this client not have phone...",
-                                                                      state: ToastStates
-                                                                          .error,
-                                                                      context:
-                                                                          context);
-                                                                }
-                                                              },
-                                                              fontSize: 18,
-                                                              paddingVertical:
-                                                                  1,
-                                                              paddingHorizontal:
-                                                                  5,
-                                                              borderRadius: 10,
-                                                              text:
-                                                                  'Call Client',
-                                                              backColor:
-                                                                  greenColor,
-                                                              textColor: white,
-                                                              icon:
-                                                                  Icons.phone),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 5.w,
-                                                    ),
-                                                    Expanded(
-                                                      child:
-                                                          defaultButtonWithIcon(
-                                                              press: () {
-                                                                if (TripDetailsCubit.get(
-                                                                            context)
-                                                                        .tripDetails
-                                                                        ?.client2
-                                                                        ?.whatsApp !=
-                                                                    null) {
-                                                                  openWhatsapp(
-                                                                      '${TripDetailsCubit.get(context).tripDetails?.client2?.country?.code}${TripDetailsCubit.get(context).tripDetails?.client2?.whatsApp}',
-                                                                      context);
-                                                                } else {
-                                                                  openWhatsapp(
-                                                                      '${TripDetailsCubit.get(context).tripDetails?.client2?.country?.code}${TripDetailsCubit.get(context).tripDetails?.client2?.phone}',
-                                                                      context);
-                                                                }
-                                                              },
-                                                              fontSize: 18,
-                                                              paddingVertical:
-                                                                  1,
-                                                              paddingHorizontal:
-                                                                  5,
-                                                              borderRadius: 10,
-                                                              text: 'WhatsApp',
-                                                              backColor:
-                                                                  greenColor,
-                                                              textColor: white,
-                                                              icon: Icons
-                                                                  .whatsapp),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
+                                                      .image!
+                                                      .src,
+                                                  height: 50.w,
+                                                  width: 50.w),
                                             ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 10.h,
-                                    ),
-                                    // divider
-                                    Container(
-                                      width: 1.sw,
-                                      height: 1.h,
-                                      color: Colors.grey[400],
-                                    ),
-                                    SizedBox(
-                                      height: 10.h,
-                                    ),
-                                    Container(
-                                      color: white,
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Icon(
-                                                Icons.location_on,
-                                                color: greenColor,
-                                                size: 20.w,
-                                              ),
-                                              SizedBox(
-                                                width: 10.w,
-                                              ),
-                                              Expanded(
-                                                flex: 3,
-                                                child: Padding(
-                                                  padding: EdgeInsetsDirectional
-                                                      .only(end: 10.r),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        'Picked Point',
-                                                        style: TextStyle(
-                                                            color: black,
-                                                            fontSize: 14.sp,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      SizedBox(height: 5.h),
-                                                      Text(
-                                                        TripDetailsCubit.get(
-                                                                context)
-                                                            .tripDetails!
-                                                            .from!
-                                                            .placeTitle!,
-                                                        style: TextStyle(
-                                                            color: grey2,
-                                                            fontSize: 13.sp),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                flex: 2,
+                                            Expanded(
+                                              child: Container(
+                                                margin: EdgeInsets.symmetric(
+                                                    horizontal: 20.r),
                                                 child: Column(
                                                   crossAxisAlignment:
-                                                      CrossAxisAlignment.end,
+                                                      CrossAxisAlignment.start,
                                                   children: [
-                                                    Text(
-                                                      // '12:00 am',
-                                                      DateFormat.jm().format(
-                                                          DateTime.parse(
-                                                              TripDetailsCubit
-                                                                      .get(
-                                                                          context)
-                                                                  .tripDetails!
-                                                                  .startDate!)),
-                                                      style: TextStyle(
-                                                        color: grey2,
-                                                        fontSize: 14.sp,
-                                                      ),
+                                                    Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: Text(
+                                                            TripDetailsCubit
+                                                                    .get(
+                                                                        context)
+                                                                .tripDetails!
+                                                                .client2!
+                                                                .name!,
+                                                            style: TextStyle(
+                                                                fontSize: 15.sp,
+                                                                color: black,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                            maxLines: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height: 5.h,
                                                     ),
                                                     Text(
-                                                      // '12/2/20200',
-                                                      DateFormat.yMEd().format(
-                                                          DateTime.parse(
-                                                              TripDetailsCubit
-                                                                      .get(
-                                                                          context)
-                                                                  .tripDetails!
-                                                                  .startDate!)),
+                                                      TripDetailsCubit.get(
+                                                              context)
+                                                          .tripDetails!
+                                                          .client2!
+                                                          .name!,
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                       style: TextStyle(
-                                                          color: grey2,
-                                                          fontSize: 13.sp),
+                                                          fontSize: 14.sp,
+                                                          color: grey2),
                                                     ),
+                                                    SizedBox(
+                                                      height: 5.h,
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Expanded(
+                                                          child:
+                                                              defaultButtonWithIcon(
+                                                                  press: () {
+                                                                    if (TripDetailsCubit.get(context)
+                                                                            .tripDetails
+                                                                            ?.client2
+                                                                            ?.phone !=
+                                                                        null) {
+                                                                      makePhoneCall(
+                                                                          '${TripDetailsCubit.get(context).tripDetails?.client2?.country?.code}${TripDetailsCubit.get(context).tripDetails?.client2?.phone}');
+                                                                    } else {
+                                                                      showToastt(
+                                                                          text:
+                                                                              "this client not have phone...",
+                                                                          state: ToastStates
+                                                                              .error,
+                                                                          context:
+                                                                              context);
+                                                                    }
+                                                                  },
+                                                                  fontSize: 18,
+                                                                  paddingVertical:
+                                                                      1,
+                                                                  paddingHorizontal:
+                                                                      5,
+                                                                  borderRadius:
+                                                                      10,
+                                                                  text:
+                                                                      'Call Client',
+                                                                  backColor:
+                                                                      greenColor,
+                                                                  textColor:
+                                                                      white,
+                                                                  icon: Icons
+                                                                      .phone),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 5.w,
+                                                        ),
+                                                        Expanded(
+                                                          child:
+                                                              defaultButtonWithIcon(
+                                                                  press: () {
+                                                                    if (TripDetailsCubit.get(context)
+                                                                            .tripDetails
+                                                                            ?.client2
+                                                                            ?.whatsApp !=
+                                                                        null) {
+                                                                      openWhatsapp(
+                                                                          '${TripDetailsCubit.get(context).tripDetails?.client2?.country?.code}${TripDetailsCubit.get(context).tripDetails?.client2?.whatsApp}',
+                                                                          context);
+                                                                    } else {
+                                                                      openWhatsapp(
+                                                                          '${TripDetailsCubit.get(context).tripDetails?.client2?.country?.code}${TripDetailsCubit.get(context).tripDetails?.client2?.phone}',
+                                                                          context);
+                                                                    }
+                                                                  },
+                                                                  fontSize: 18,
+                                                                  paddingVertical:
+                                                                      1,
+                                                                  paddingHorizontal:
+                                                                      5,
+                                                                  borderRadius:
+                                                                      10,
+                                                                  text:
+                                                                      'WhatsApp',
+                                                                  backColor:
+                                                                      greenColor,
+                                                                  textColor:
+                                                                      white,
+                                                                  icon: Icons
+                                                                      .whatsapp),
+                                                        ),
+                                                      ],
+                                                    )
                                                   ],
                                                 ),
                                               ),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            height: 10.h,
-                                          ),
-                                          Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            )
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 10.h,
+                                        ),
+                                        // divider
+                                        Container(
+                                          width: 1.sw,
+                                          height: 1.h,
+                                          color: Colors.grey[400],
+                                        ),
+                                        SizedBox(
+                                          height: 10.h,
+                                        ),
+                                        Container(
+                                          color: white,
+                                          child: Column(
                                             children: [
-                                              Icon(
-                                                Icons.location_on,
-                                                color: redColor,
-                                                size: 20.w,
-                                              ),
-                                              SizedBox(
-                                                width: 10.w,
-                                              ),
-                                              Expanded(
-                                                flex: 3,
-                                                child: Padding(
-                                                  padding: EdgeInsetsDirectional
-                                                      .only(end: 10.r),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        'Picked Point',
-                                                        style: TextStyle(
-                                                            color: black,
-                                                            fontSize: 14.sp,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      SizedBox(height: 5.h),
-                                                      Text(
-                                                        TripDetailsCubit.get(
-                                                                context)
-                                                            .tripDetails!
-                                                            .to!
-                                                            .placeTitle!,
-                                                        style: TextStyle(
-                                                            color: grey2,
-                                                            fontSize: 13.sp),
-                                                      ),
-                                                    ],
+                                              Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Icon(
+                                                    Icons.location_on,
+                                                    color: greenColor,
+                                                    size: 20.w,
                                                   ),
-                                                ),
-                                              ),
-                                              TripDetailsCubit.get(context)
-                                                      .tripDetails!
-                                                      .endDate!
-                                                      .isNotEmpty
-                                                  ? Expanded(
-                                                      flex: 2,
+                                                  SizedBox(
+                                                    width: 10.w,
+                                                  ),
+                                                  Expanded(
+                                                    flex: 3,
+                                                    child: Padding(
+                                                      padding:
+                                                          EdgeInsetsDirectional
+                                                              .only(end: 10.r),
                                                       child: Column(
                                                         crossAxisAlignment:
                                                             CrossAxisAlignment
-                                                                .end,
+                                                                .start,
                                                         children: [
                                                           Text(
-                                                            // '12:00 am',
-                                                            DateFormat.jm().format(DateTime.parse(
-                                                                TripDetailsCubit
-                                                                        .get(
-                                                                            context)
-                                                                    .tripDetails!
-                                                                    .endDate!)),
+                                                            'Picked Point',
                                                             style: TextStyle(
-                                                              color: grey2,
-                                                              fontSize: 14.sp,
-                                                            ),
+                                                                color: black,
+                                                                fontSize: 14.sp,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
                                                           ),
+                                                          SizedBox(height: 5.h),
                                                           Text(
-                                                            // '12/2/20200',
-                                                            DateFormat.yMEd().format(DateTime.parse(
-                                                                TripDetailsCubit
-                                                                        .get(
-                                                                            context)
-                                                                    .tripDetails!
-                                                                    .endDate!)),
+                                                            TripDetailsCubit
+                                                                    .get(
+                                                                        context)
+                                                                .tripDetails!
+                                                                .from!
+                                                                .placeTitle!,
                                                             style: TextStyle(
                                                                 color: grey2,
                                                                 fontSize:
@@ -529,275 +452,407 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                           ),
                                                         ],
                                                       ),
-                                                    )
-                                                  : Container(),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            height: 10.h,
-                                          ),
-                                          Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Expanded(
-                                                child: Card(
-                                                  color: yellowLightColor,
-                                                  child: Padding(
-                                                    padding:
-                                                        EdgeInsets.all(10.r),
-                                                    child: Column(children: [
-                                                      Text(
-                                                        'Distance',
-                                                        style: TextStyle(
-                                                            color: grey2,
-                                                            fontSize: 13.sp),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 5.r,
-                                                      ),
-                                                      Text(
-                                                        // '20',
-                                                        TripDetailsCubit.get(
-                                                                context)
-                                                            .tripDetails!
-                                                            .consumptionKM!
-                                                            .toStringAsFixed(2),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: TextStyle(
-                                                            color: black,
-                                                            fontSize: 13.sp,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ]),
+                                                    ),
                                                   ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Card(
-                                                  color: rough,
-                                                  child: Padding(
-                                                    padding:
-                                                        EdgeInsets.all(10.r),
-                                                    child: Column(children: [
-                                                      Text(
-                                                        'Points',
-                                                        style: TextStyle(
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .end,
+                                                      children: [
+                                                        Text(
+                                                          // '12:00 am',
+                                                          DateFormat.jm().format(
+                                                              DateTime.parse(TripDetailsCubit
+                                                                      .get(
+                                                                          context)
+                                                                  .tripDetails!
+                                                                  .startDate!)),
+                                                          style: TextStyle(
                                                             color: grey2,
-                                                            fontSize: 13.sp),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 5.r,
-                                                      ),
-                                                      Text(
-                                                        // '20',
-                                                        TripDetailsCubit.get(
-                                                                context)
-                                                            .tripDetails!
-                                                            .consumptionPoints!
-                                                            .toStringAsFixed(2),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: TextStyle(
-                                                            color: black,
-                                                            fontSize: 13.sp,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ]),
+                                                            fontSize: 14.sp,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          // '12/2/20200',
+                                                          DateFormat.yMEd().format(
+                                                              DateTime.parse(TripDetailsCubit
+                                                                      .get(
+                                                                          context)
+                                                                  .tripDetails!
+                                                                  .startDate!)),
+                                                          style: TextStyle(
+                                                              color: grey2,
+                                                              fontSize: 13.sp),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
+                                                ],
                                               ),
-                                              Expanded(
-                                                child: Card(
-                                                  color: greenLightColor,
-                                                  child: Padding(
-                                                    padding:
-                                                        EdgeInsets.all(10.r),
-                                                    child: Column(children: [
-                                                      Text(
-                                                        '1 Km Points',
-                                                        style: TextStyle(
-                                                            color: grey2,
-                                                            fontSize: 13.sp),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 5.r,
-                                                      ),
-                                                      Text(
-                                                        // '20',
-                                                        TripDetailsCubit.get(
-                                                                context)
-                                                            .tripDetails!
-                                                            .oneKMPoints
-                                                            .toString(),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: TextStyle(
-                                                            color: black,
-                                                            fontSize: 13.sp,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ]),
+                                              SizedBox(
+                                                height: 10.h,
+                                              ),
+                                              Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Icon(
+                                                    Icons.location_on,
+                                                    color: redColor,
+                                                    size: 20.w,
                                                   ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            height: 5.h,
-                                          ),
-                                          SizedBox(
-                                              height: 50.h,
-                                              child:
+                                                  SizedBox(
+                                                    width: 10.w,
+                                                  ),
+                                                  Expanded(
+                                                    flex: 3,
+                                                    child: Padding(
+                                                      padding:
+                                                          EdgeInsetsDirectional
+                                                              .only(end: 10.r),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            'Picked Point',
+                                                            style: TextStyle(
+                                                                color: black,
+                                                                fontSize: 14.sp,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                          SizedBox(height: 5.h),
+                                                          Text(
+                                                            TripDetailsCubit
+                                                                    .get(
+                                                                        context)
+                                                                .tripDetails!
+                                                                .to!
+                                                                .placeTitle!,
+                                                            style: TextStyle(
+                                                                color: grey2,
+                                                                fontSize:
+                                                                    13.sp),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
                                                   TripDetailsCubit.get(context)
-                                                              .tripDetails!
-                                                              .status ==
-                                                          "pending"
-                                                      ? Row(
-                                                          children: [
-                                                            state is! TripDetailsEditInitial
-                                                                ? Expanded(
-                                                                    child: defaultButton2(
-                                                                        press: () {
-                                                                          TripDetailsCubit.get(context).editTrip(
-                                                                              TripDetailsCubit.get(context).tripDetails!.id!,
-                                                                              btnStatus['${TripDetailsCubit.get(context).tripDetails!.status}']![0],
-                                                                              "");
-                                                                        },
-                                                                        fontSize: 20,
-                                                                        paddingVertical: 1,
-                                                                        paddingHorizontal: 10,
-                                                                        borderRadius: 10,
-                                                                        text: btnStatus2['${TripDetailsCubit.get(context).tripDetails!.status}']![0],
-                                                                        backColor: greenColor,
-                                                                        textColor: white),
-                                                                  )
-                                                                : Expanded(
-                                                                    child:
-                                                                        Center(
-                                                                          child: SizedBox(
-                                                                      width:
-                                                                            40.w,
-                                                                      child:
-                                                                            const CircularProgressIndicator(
-                                                                          color:
-                                                                              accentColor,
-                                                                      ),
-                                                                    ),
-                                                                        ),
-                                                                  ),
-                                                            SizedBox(width: 15.w,),
-                                                            Expanded(
-                                                              child:
-                                                                  defaultButton2(
-                                                                      press:
-                                                                          () {
-                                                                            showDialog(
-                                                                              context: context,
-                                                                              barrierDismissible:
-                                                                              true,
-                                                                              // outside to dismiss
-                                                                              builder: (_) {
-                                                                                return CustomDialogTripDetails(id: TripDetailsCubit.get(context).tripDetails!.id!,
-                                                                                  title:
-                                                                                  'Do you want to reject?',
-                                                                                  description:
-                                                                                  'If you want to be rejected, you must first enter the reason for rejection and press OK..',);
-                                                                              },
-                                                                            ).then((value) {
-                                                                              print("showDialog************** ${MainCubit.get(context).refresh}");
-                                                                              if(MainCubit.get(context).refresh){
-                                                                                TripDetailsCubit.get(context).getTripDetails(widget.idTrip!);
-                                                                                MainCubit.get(context).refresh = false;
-                                                                              }
-                                                                            });
-                                                                      },
-                                                                      fontSize:
-                                                                          20,
-                                                                      paddingVertical:
-                                                                          1,
-                                                                      paddingHorizontal:
-                                                                          10,
-                                                                      borderRadius:
-                                                                          10,
-                                                                      text: btnStatus2[
-                                                                              '${TripDetailsCubit.get(context).tripDetails!.status}']![
-                                                                          1],
-                                                                      backColor:
-                                                                          greenColor,
-                                                                      textColor:
-                                                                          white),
-                                                            ),
-                                                          ],
-                                                        )
-                                                      : Center(
-                                                          child: state
-                                                                  is! TripDetailsEditInitial
-                                                              ? TripDetailsCubit.get(
-                                                                                  context)
-                                                                              .tripDetails!
-                                                                              .status !=
-                                                                          null &&
-                                                                      btnStatus[
-                                                                              '${TripDetailsCubit.get(context).tripDetails!.status}']!
-                                                                          .isNotEmpty
-                                                                  ? defaultButton2(
-                                                                      press:
-                                                                          () {
-                                                                        TripDetailsCubit.get(context).editTrip(
-                                                                            TripDetailsCubit.get(context).tripDetails!.id!,
-                                                                            btnStatus['${TripDetailsCubit.get(context).tripDetails!.status}']![0],
-                                                                            "");
-                                                                      },
-                                                                      fontSize:
-                                                                          22,
-                                                                      paddingVertical:
-                                                                          1,
-                                                                      paddingHorizontal:
-                                                                          50,
-                                                                      borderRadius:
-                                                                          10,
-                                                                      text:
-                                                                          btnStatus2['${TripDetailsCubit.get(context).tripDetails!.status}']![
-                                                                              0],
-                                                                      backColor: btnStatus2['${TripDetailsCubit.get(context).tripDetails!.status}']![0] == "End" ||
-                                                                              btnStatus2['${TripDetailsCubit.get(context).tripDetails!.status}']![0] ==
-                                                                                  "Cancel"
-                                                                          ? redColor
-                                                                          : greenColor,
-                                                                      textColor:
-                                                                          white)
-                                                                  : Container()
-                                                              : const CircularProgressIndicator(
-                                                                  color:
-                                                                      accentColor,
+                                                          .tripDetails!
+                                                          .endDate!
+                                                          .isNotEmpty
+                                                      ? Expanded(
+                                                          flex: 2,
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .end,
+                                                            children: [
+                                                              Text(
+                                                                // '12:00 am',
+                                                                DateFormat.jm().format(DateTime.parse(TripDetailsCubit
+                                                                        .get(
+                                                                            context)
+                                                                    .tripDetails!
+                                                                    .endDate!)),
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: grey2,
+                                                                  fontSize:
+                                                                      14.sp,
                                                                 ),
-                                                        )),
+                                                              ),
+                                                              Text(
+                                                                // '12/2/20200',
+                                                                DateFormat.yMEd().format(DateTime.parse(TripDetailsCubit
+                                                                        .get(
+                                                                            context)
+                                                                    .tripDetails!
+                                                                    .endDate!)),
+                                                                style: TextStyle(
+                                                                    color:
+                                                                        grey2,
+                                                                    fontSize:
+                                                                        13.sp),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )
+                                                      : Container(),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 10.h,
+                                              ),
+                                              Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Expanded(
+                                                    child: Card(
+                                                      color: yellowLightColor,
+                                                      child: Padding(
+                                                        padding: EdgeInsets.all(
+                                                            10.r),
+                                                        child:
+                                                            Column(children: [
+                                                          Text(
+                                                            'Distance',
+                                                            style: TextStyle(
+                                                                color: grey2,
+                                                                fontSize:
+                                                                    13.sp),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 5.r,
+                                                          ),
+                                                          Text(
+                                                            // '20',
+                                                            TripDetailsCubit
+                                                                    .get(
+                                                                        context)
+                                                                .tripDetails!
+                                                                .consumptionKM!
+                                                                .toStringAsFixed(
+                                                                    2),
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: TextStyle(
+                                                                color: black,
+                                                                fontSize: 13.sp,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ]),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Card(
+                                                      color: rough,
+                                                      child: Padding(
+                                                        padding: EdgeInsets.all(
+                                                            10.r),
+                                                        child:
+                                                            Column(children: [
+                                                          Text(
+                                                            'Points',
+                                                            style: TextStyle(
+                                                                color: grey2,
+                                                                fontSize:
+                                                                    13.sp),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 5.r,
+                                                          ),
+                                                          Text(
+                                                            // '20',
+                                                            TripDetailsCubit
+                                                                    .get(
+                                                                        context)
+                                                                .tripDetails!
+                                                                .consumptionPoints!
+                                                                .toStringAsFixed(
+                                                                    2),
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: TextStyle(
+                                                                color: black,
+                                                                fontSize: 13.sp,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ]),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Card(
+                                                      color: greenLightColor,
+                                                      child: Padding(
+                                                        padding: EdgeInsets.all(
+                                                            10.r),
+                                                        child:
+                                                            Column(children: [
+                                                          Text(
+                                                            '1 Km Points',
+                                                            style: TextStyle(
+                                                                color: grey2,
+                                                                fontSize:
+                                                                    13.sp),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 5.r,
+                                                          ),
+                                                          Text(
+                                                            // '20',
+                                                            TripDetailsCubit
+                                                                    .get(
+                                                                        context)
+                                                                .tripDetails!
+                                                                .oneKMPoints
+                                                                .toString(),
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: TextStyle(
+                                                                color: black,
+                                                                fontSize: 13.sp,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ]),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 5.h,
+                                              ),
+                                              SizedBox(
+                                                  height: 50.h,
+                                                  child:
+                                                      TripDetailsCubit.get(
+                                                                      context)
+                                                                  .tripDetails!
+                                                                  .status ==
+                                                              "pending"
+                                                          ? Row(
+                                                              children: [
+                                                                state is! TripDetailsEditInitial
+                                                                    ? Expanded(
+                                                                        child: defaultButton2(
+                                                                            press: () {
+                                                                              TripDetailsCubit.get(context).editTrip(TripDetailsCubit.get(context).tripDetails!.id!, btnStatus['${TripDetailsCubit.get(context).tripDetails!.status}']![0], "");
+                                                                            },
+                                                                            fontSize: 20,
+                                                                            paddingVertical: 1,
+                                                                            paddingHorizontal: 10,
+                                                                            borderRadius: 10,
+                                                                            text: btnStatus2['${TripDetailsCubit.get(context).tripDetails!.status}']![0],
+                                                                            backColor: greenColor,
+                                                                            textColor: white),
+                                                                      )
+                                                                    : Expanded(
+                                                                        child:
+                                                                            Center(
+                                                                          child:
+                                                                              SizedBox(
+                                                                            width:
+                                                                                40.w,
+                                                                            child:
+                                                                                const CircularProgressIndicator(
+                                                                              color: accentColor,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                SizedBox(
+                                                                  width: 15.w,
+                                                                ),
+                                                                Expanded(
+                                                                  child: defaultButton2(
+                                                                      press: () {
+                                                                        showDialog(
+                                                                          context:
+                                                                              context,
+                                                                          barrierDismissible:
+                                                                              true,
+                                                                          // outside to dismiss
+                                                                          builder:
+                                                                              (_) {
+                                                                            return CustomDialogTripDetails(
+                                                                              id: TripDetailsCubit.get(context).tripDetails!.id!,
+                                                                              title: 'Do you want to reject?',
+                                                                              description: 'If you want to be rejected, you must first enter the reason for rejection and press OK..',
+                                                                            );
+                                                                          },
+                                                                        ).then(
+                                                                            (value) {
+                                                                          print(
+                                                                              "showDialog************** ${MainCubit.get(context).refresh}");
+                                                                          if (MainCubit.get(context)
+                                                                              .refresh) {
+                                                                            TripDetailsCubit.get(context).getTripDetails(widget.idTrip!);
+                                                                            MainCubit.get(context).refresh =
+                                                                                false;
+                                                                          }
+                                                                        });
+                                                                      },
+                                                                      fontSize: 20,
+                                                                      paddingVertical: 1,
+                                                                      paddingHorizontal: 10,
+                                                                      borderRadius: 10,
+                                                                      text: btnStatus2['${TripDetailsCubit.get(context).tripDetails!.status}']![1],
+                                                                      backColor: greenColor,
+                                                                      textColor: white),
+                                                                ),
+                                                              ],
+                                                            )
+                                                          : Center(
+                                                              child: state
+                                                                      is! TripDetailsEditInitial
+                                                                  ? TripDetailsCubit.get(context).tripDetails!.status != null &&
+                                                                          btnStatus['${TripDetailsCubit.get(context).tripDetails!.status}']!
+                                                                              .isNotEmpty
+                                                                      ? defaultButton2(
+                                                                          press:
+                                                                              () {
+                                                                            TripDetailsCubit.get(context).editTrip(
+                                                                                TripDetailsCubit.get(context).tripDetails!.id!,
+                                                                                btnStatus['${TripDetailsCubit.get(context).tripDetails!.status}']![0],
+                                                                                "");
+                                                                          },
+                                                                          fontSize:
+                                                                              22,
+                                                                          paddingVertical:
+                                                                              1,
+                                                                          paddingHorizontal:
+                                                                              50,
+                                                                          borderRadius:
+                                                                              10,
+                                                                          text: btnStatus2['${TripDetailsCubit.get(context).tripDetails!.status}']![
+                                                                              0],
+                                                                          backColor: btnStatus2['${TripDetailsCubit.get(context).tripDetails!.status}']![0] == "End" || btnStatus2['${TripDetailsCubit.get(context).tripDetails!.status}']![0] == "Cancel"
+                                                                              ? redColor
+                                                                              : greenColor,
+                                                                          textColor:
+                                                                              white)
+                                                                      : Container()
+                                                                  : const CircularProgressIndicator(
+                                                                      color:
+                                                                          accentColor,
+                                                                    ),
+                                                            )),
 
-                                          // SizedBox(
-                                          //   height: 10.h,
-                                          // ),
-                                          // defaultButton3(
-                                          //     press: () {},
-                                          //     text: "Complete",
-                                          //     backColor: accentColor,
-                                          //     textColor: white),
-                                          SizedBox(
-                                            height: 20.h,
+                                              // SizedBox(
+                                              //   height: 10.h,
+                                              // ),
+                                              // defaultButton3(
+                                              //     press: () {},
+                                              //     text: "Complete",
+                                              //     backColor: accentColor,
+                                              //     textColor: white),
+                                              SizedBox(
+                                                height: 20.h,
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
                         ),
+                        state is TripDetailsErrorState ?
+                        Container():
                         Positioned(
                           left: 1,
                           right: 1,

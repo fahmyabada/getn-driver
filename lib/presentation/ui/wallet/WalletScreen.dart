@@ -13,6 +13,7 @@ class WalletScreen extends StatefulWidget {
 
 class _WalletScreenState extends State<WalletScreen> {
   late ScrollController _controllerWallet;
+  bool loadingWallet = false;
 
   @override
   void initState() {
@@ -58,16 +59,23 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   void _loadMoreWallet() {
-    WalletCubit.get(context).loadingWallet = false;
-
-
     WalletCubit.get(context).getWallet(WalletCubit.get(context).indexWallet);
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<WalletCubit, WalletState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if(state is WalletSuccessState){
+          setState(() {
+            loadingWallet = false;
+          });
+        }else if(state is WalletErrorState){
+          setState(() {
+            loadingWallet = false;
+          });
+        }
+      },
       builder: (context, state) {
         return Scaffold(
             appBar: AppBar(
@@ -84,11 +92,12 @@ class _WalletScreenState extends State<WalletScreen> {
             body: SingleChildScrollView(
               controller: _controllerWallet
                 ..addListener(() async {
-                  if (_controllerWallet.position.extentAfter == 0) {
-                    if (WalletCubit.get(context).loadingWallet) {
+                  if (_controllerWallet.position.extentAfter == 0 && !loadingWallet) {
+                    setState(() {
                       print("_controllerWallet*********** ");
-                      _loadMoreWallet();
-                    }
+                      loadingWallet = true;
+                    });
+                    _loadMoreWallet();
                   }
                 }),
               child: Padding(
@@ -196,49 +205,97 @@ class _WalletScreenState extends State<WalletScreen> {
                       ),
                       contentPadding: const EdgeInsets.all(0),
                     ),
-                    WalletCubit.get(context).wallet.isNotEmpty
-                        ? ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: WalletCubit.get(context).wallet.length,
-                            itemBuilder: (context, index) {
-                              var item = WalletCubit.get(context).wallet[index];
-                              return ListTile(
-                                title: Text(
-                                  item.id!,
-                                  style: TextStyle(
-                                    color: primaryColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 24.sp,
+                    state is WalletErrorState
+                        ? Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(18.r),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    state.message,
+                                    textAlign: TextAlign.center,
                                   ),
-                                ),
-                                subtitle: Text(item.comment ?? ''),
-                                trailing: Text(
-                                  item.amount!.toStringAsFixed(2),
-                                  style: TextStyle(
-                                    color: primaryColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.sp,
-                                  ),
-                                ),
-                                contentPadding: const EdgeInsets.all(0),
-                              );
-                            })
-                        : Column(
-                          children: [
-                            SizedBox(
-                              height: 40.h,
-                            ),
-                            const Center(
-                                child: CircularProgressIndicator(
-                                  color: black,
-                                ),
+                                  TextButton(
+                                    style: ElevatedButton.styleFrom(
+                                      foregroundColor: accentColor,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(16.r),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      WalletCubit.get(context).getWallet(
+                                          WalletCubit.get(context).indexWallet);
+                                    },
+                                    child: const Text('Retry'),
+                                  )
+                                ],
                               ),
-                          ],
-                        ),
+                            ),
+                          )
+                        : WalletCubit.get(context).wallet.isNotEmpty
+                            ? Column(
+                                children: [
+                                  ListView.builder(
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.vertical,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: WalletCubit.get(context)
+                                          .wallet
+                                          .length,
+                                      itemBuilder: (context, index) {
+                                        var item = WalletCubit.get(context)
+                                            .wallet[index];
+                                        return ListTile(
+                                          title: Text(
+                                            item.id!,
+                                            style: TextStyle(
+                                              color: primaryColor,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 24.sp,
+                                            ),
+                                          ),
+                                          subtitle: Text(item.comment ?? ''),
+                                          trailing: Text(
+                                            item.amount!.toStringAsFixed(2),
+                                            style: TextStyle(
+                                              color: primaryColor,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20.sp,
+                                            ),
+                                          ),
+                                          contentPadding:
+                                              const EdgeInsets.all(0),
+                                        );
+                                      }),
+                                  SizedBox(
+                                    height: 20.h,
+                                  ),
+                                  loadingWallet
+                                      ? const Center(
+                                          child: CircularProgressIndicator(
+                                            color: black,
+                                          ),
+                                        )
+                                      : Container(),
+                                ],
+                              )
+                            : Column(
+                                children: [
+                                  SizedBox(
+                                    height: 20.h,
+                                  ),
+                                  const Center(
+                                    child: CircularProgressIndicator(
+                                      color: black,
+                                    ),
+                                  ),
+                                ],
+                              ),
                     SizedBox(
-                      height: 40.h,
+                      height: 20.h,
                     ),
                   ],
                 ),

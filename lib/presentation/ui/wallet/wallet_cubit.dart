@@ -19,7 +19,6 @@ class WalletCubit extends Cubit<WalletState> {
 
   List<Data> wallet = [];
   int indexWallet = 1;
-  bool loadingWallet = false;
   String walletValue = "";
   String walletHold = "";
 
@@ -46,7 +45,6 @@ class WalletCubit extends Cubit<WalletState> {
         wallet.clear();
         wallet.addAll(data.data!);
         indexWallet = indexWallet + 1;
-        loadingWallet = true;
       }
       walletValue = data.wallet!.toStringAsFixed(1);
       walletHold = data.holdWallet.toString();
@@ -60,14 +58,9 @@ class WalletCubit extends Cubit<WalletState> {
     return data.fold((failure1) {
       return WalletErrorState(failure1);
     }, (data) {
-      if (data!.data!.isNotEmpty) {
-        if (data.totalCount! >= wallet.length) {
-          loadingWallet = true;
-          wallet.addAll(data.data!);
-          indexWallet = indexWallet + 1;
-        } else {
-          loadingWallet = false;
-        }
+      if (data!.totalCount! >= wallet.length) {
+        wallet.addAll(data.data!);
+        indexWallet = indexWallet + 1;
       }
 
       return WalletSuccessState(data);
