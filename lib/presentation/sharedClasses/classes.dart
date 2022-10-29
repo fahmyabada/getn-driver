@@ -13,6 +13,8 @@ import 'package:getn_driver/presentation/ui/request/requestDetails/request_detai
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
 import 'package:getn_driver/presentation/ui/setting/SettingScreen.dart';
 import 'package:getn_driver/presentation/ui/trip/tripDetails/trip_details_cubit.dart';
+import 'package:getn_driver/presentation/ui/wallet/WalletScreen.dart';
+import 'package:getn_driver/presentation/ui/wallet/wallet_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomDialogRequestTabs extends StatelessWidget {
@@ -655,7 +657,11 @@ class DrawerMenu extends StatelessWidget {
               Icons.account_balance_wallet,
               color: grey2,
             ),
-            onTap: () {},
+            onTap: () {
+              navigateTo(context, BlocProvider(
+                  create: (context) => WalletCubit(),
+                  child: const WalletScreen()));
+            },
           ),
           ListTile(
             title: Text(
