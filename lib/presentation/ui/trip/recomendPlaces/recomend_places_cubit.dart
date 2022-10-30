@@ -54,7 +54,7 @@ class RecomendPlacesCubit extends Cubit<RecomendPlacesState> {
       return GetPlacesErrorState(failure1);
     }, (data) {
       if (data!.data!.isNotEmpty) {
-        if (data.totalCount! >= places.length) {
+        if (data.totalCount! > places.length) {
           loadingPlaces = true;
           places.addAll(data.data!);
           indexPlaces = indexPlaces + 1;

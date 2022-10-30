@@ -102,7 +102,7 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
     return data.fold((failure1) {
       return TripsErrorState(failure1);
     }, (data) {
-      if (data!.totalCount! >= trips.length) {
+      if (data!.totalCount! > trips.length) {
         trips.addAll(data.data!);
         indexTrips = indexTrips + 1;
       }

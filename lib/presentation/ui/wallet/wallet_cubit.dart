@@ -25,8 +25,7 @@ class WalletCubit extends Cubit<WalletState> {
   int indexWallet = 1;
   String walletValue = "";
   String walletHold = "";
-  bool loadingWallet = false;
-  bool loadingRequests = false;
+  String? walletFailure;
 
   void getWallet(int index) async {
     if (index > 1) {
@@ -34,10 +33,8 @@ class WalletCubit extends Cubit<WalletState> {
         emit(eitherLoadedOrErrorStateWallet2(value));
       });
     } else {
-      loadingWallet = true;
       emit(WalletLoading());
       getWalletUseCase.execute(index).then((value) {
-        loadingWallet = false;
         emit(eitherLoadedOrErrorStateWallet(value));
       });
     }
@@ -46,6 +43,7 @@ class WalletCubit extends Cubit<WalletState> {
   WalletState eitherLoadedOrErrorStateWallet(
       Either<String, WalletModel?> data) {
     return data.fold((failure1) {
+      walletFailure = failure1;
       return WalletErrorState(failure1);
     }, (data) {
       wallet.clear();
@@ -63,7 +61,7 @@ class WalletCubit extends Cubit<WalletState> {
     return data.fold((failure1) {
       return WalletErrorState(failure1);
     }, (data) {
-      if (data!.totalCount! >= wallet.length) {
+      if (data!.totalCount! > wallet.length) {
         wallet.addAll(data.data!);
         indexWallet = indexWallet + 1;
       }
@@ -78,10 +76,8 @@ class WalletCubit extends Cubit<WalletState> {
         emit(eitherLoadedOrErrorStateRequests2(value));
       });
     } else {
-      loadingRequests = true;
       emit(RequestsLoading());
       getRequestsWalletUseCase.execute(index).then((value) {
-        loadingRequests = false;
         emit(eitherLoadedOrErrorStateRequests(value));
       });
     }
@@ -105,7 +101,7 @@ class WalletCubit extends Cubit<WalletState> {
     return data.fold((failure1) {
       return RequestsErrorState(failure1);
     }, (data) {
-      if (data!.totalCount! >= requests.length) {
+      if (data!.totalCount! > requests.length) {
         requests.addAll(data.data!);
         indexRequests = indexRequests + 1;
       }

@@ -58,7 +58,7 @@ class InfoBranchCubit extends Cubit<InfoBranchState> {
       return GetBranchesErrorState(failure1);
     }, (data) {
       if (data!.data!.isNotEmpty) {
-        if (data.totalCount! >= branches.length) {
+        if (data.totalCount! > branches.length) {
           loadingBranches = true;
           branches.addAll(data.data!);
           indexBranches = indexBranches + 1;

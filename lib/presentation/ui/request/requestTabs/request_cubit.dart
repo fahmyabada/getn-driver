@@ -100,7 +100,7 @@ class RequestCubit extends Cubit<RequestState> {
     return data.fold((failure1) {
       return RequestUpComingErrorState(failure1);
     }, (data) {
-      if (data!.totalCount! >= requestUpComing.length) {
+      if (data!.totalCount! > requestUpComing.length) {
         requestUpComing.addAll(data.data!);
         indexUpComing = indexUpComing + 1;
       }
@@ -196,7 +196,7 @@ class RequestCubit extends Cubit<RequestState> {
     return data.fold((failure1) {
       return RequestPendingErrorState(failure1);
     }, (data) {
-      if (data!.totalCount! >= requestPending.length) {
+      if (data!.totalCount! > requestPending.length) {
         requestPending.addAll(data.data!);
         indexPending = indexPending + 1;
       }

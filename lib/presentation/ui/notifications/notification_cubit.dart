@@ -50,7 +50,7 @@ class NotificationCubit extends Cubit<NotificationState> {
     return data.fold((failure1) {
       return NotificationErrorState(failure1);
     }, (data) {
-      if (data!.totalCount! >= notification.length) {
+      if (data!.totalCount! > notification.length) {
         notification.addAll(data.data!);
         indexNotification = indexNotification + 1;
       }

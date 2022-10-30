@@ -29,10 +29,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   void dispose() {
     super.dispose();
-    _controllerNotification.removeListener(_loadMoreWallet);
+    _controllerNotification.removeListener(_loadMoreNotification);
   }
 
-  void _loadMoreWallet() {
+  void _loadMoreNotification() {
     NotificationCubit.get(context)
         .getNotification(NotificationCubit.get(context).indexNotification);
   }
@@ -66,14 +66,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
           ),
           body: SingleChildScrollView(
             controller: _controllerNotification
-              ..addListener(() async {
+              ..addListener(() {
                 if (_controllerNotification.position.extentAfter == 0 &&
                     !loadingNotification) {
                   setState(() {
                     print("_controllerNotification*********** ");
                     loadingNotification = true;
                   });
-                  _loadMoreWallet();
+                  _loadMoreNotification();
                 }
               }),
             child: Padding(
