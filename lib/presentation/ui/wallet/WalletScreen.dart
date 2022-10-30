@@ -16,6 +16,7 @@ class _WalletScreenState extends State<WalletScreen> {
   late ScrollController _controllerWallet;
   late ScrollController _controllerRequests;
   bool loadingWallet = false;
+  bool loadingRequests = false;
   int _currentIndex = 0;
 
   @override
@@ -272,6 +273,201 @@ class _WalletScreenState extends State<WalletScreen> {
                     ),
                     contentPadding: const EdgeInsets.all(0),
                   ),
+                  _currentIndex == 0
+                      ? WalletCubit.get(context).loadingWallet
+                          ? loading()
+                          : state is WalletSuccessState
+                              ? WalletCubit.get(context).wallet.isNotEmpty
+                                  ? ListView.builder(
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.vertical,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: WalletCubit.get(context)
+                                          .wallet
+                                          .length,
+                                      itemBuilder: (context, index) {
+                                        var item = WalletCubit.get(context)
+                                            .wallet[index];
+                                        return Column(
+                                          children: [
+                                            ListTile(
+                                              title: Text(
+                                                item.id!,
+                                                style: TextStyle(
+                                                  color: primaryColor,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 22.sp,
+                                                ),
+                                              ),
+                                              subtitle:
+                                                  Text(item.comment ?? ''),
+                                              trailing: Text(
+                                                item.amount!.toStringAsFixed(2),
+                                                style: TextStyle(
+                                                  color: primaryColor,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20.sp,
+                                                ),
+                                              ),
+                                              contentPadding:
+                                                  const EdgeInsets.all(0),
+                                            ),
+                                            index ==
+                                                        WalletCubit.get(context)
+                                                                .wallet
+                                                                .length -
+                                                            1 &&
+                                                    loadingWallet
+                                                ? Column(
+                                                    children: [
+                                                      SizedBox(
+                                                        height: 10.h,
+                                                      ),
+                                                      loading(),
+                                                      SizedBox(
+                                                        height: 10.h,
+                                                      ),
+                                                    ],
+                                                  )
+                                                : Container(),
+                                          ],
+                                        );
+                                      })
+                                  : Center(
+                                      child: Padding(
+                                        padding: EdgeInsets.all(18.r),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Text(
+                                              "Not Found Data",
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            TextButton(
+                                              style: ElevatedButton.styleFrom(
+                                                foregroundColor: accentColor,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          16.r),
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                WalletCubit.get(context)
+                                                    .getWallet(1);
+                                              },
+                                              child: const Text('Retry'),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                              : state is WalletErrorState
+                                  ? errorMessage2(
+                                      message: state.message,
+                                      press: () {
+                                        WalletCubit.get(context).getWallet(1);
+                                      })
+                                  : Container()
+                      : Container(),
+                  _currentIndex == 1
+                      ? WalletCubit.get(context).loadingRequests
+                          ? loading()
+                          : state is RequestsSuccessState
+                              ? WalletCubit.get(context).requests.isNotEmpty
+                                  ? ListView.builder(
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.vertical,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: WalletCubit.get(context)
+                                          .requests
+                                          .length,
+                                      itemBuilder: (context, index) {
+                                        var item = WalletCubit.get(context)
+                                            .requests[index];
+                                        return Column(
+                                          children: [
+                                            ListTile(
+                                              title: Text(
+                                                item.status!,
+                                                style: TextStyle(
+                                                  color: primaryColor,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 22.sp,
+                                                ),
+                                              ),
+                                              subtitle: Text(item.id ?? ''),
+                                              trailing: Text(
+                                                item.amount!.toStringAsFixed(2),
+                                                style: TextStyle(
+                                                  color: primaryColor,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20.sp,
+                                                ),
+                                              ),
+                                              contentPadding:
+                                                  const EdgeInsets.all(0),
+                                            ),
+                                            index ==
+                                                        WalletCubit.get(context)
+                                                                .requests
+                                                                .length -
+                                                            1 &&
+                                                    loadingRequests
+                                                ? Column(
+                                                    children: [
+                                                      SizedBox(
+                                                        height: 10.h,
+                                                      ),
+                                                      loading(),
+                                                      SizedBox(
+                                                        height: 10.h,
+                                                      ),
+                                                    ],
+                                                  )
+                                                : Container(),
+                                          ],
+                                        );
+                                      })
+                                  : Center(
+                                      child: Padding(
+                                        padding: EdgeInsets.all(18.r),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Text(
+                                              "Not Found Data",
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            TextButton(
+                                              style: ElevatedButton.styleFrom(
+                                                foregroundColor: accentColor,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          16.r),
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                WalletCubit.get(context)
+                                                    .getRequests(1);
+                                              },
+                                              child: const Text('Retry'),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                              : state is WalletErrorState
+                                  ? errorMessage2(
+                                      message: state.message,
+                                      press: () {
+                                        WalletCubit.get(context).getWallet(1);
+                                      })
+                                  : Container()
+                      : Container(),
                 ],
               ),
             ),
@@ -295,244 +491,6 @@ class _WalletScreenState extends State<WalletScreen> {
                   icon: Icon(Icons.settings), label: "Requests"),
             ],
           ),
-        );
-      },
-    );
-  }
-}
-
-class Wallet extends StatefulWidget {
-  const Wallet({Key? key}) : super(key: key);
-
-  @override
-  State<Wallet> createState() => _WalletState();
-}
-
-class _WalletState extends State<Wallet> {
-  bool loadingWallet = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocConsumer<WalletCubit, WalletState>(
-      listener: (context, state) {
-        if (state is WalletSuccessState) {
-          setState(() {
-            loadingWallet = false;
-          });
-        } else if (state is WalletErrorState) {
-          setState(() {
-            loadingWallet = false;
-          });
-        }
-      },
-      builder: (context, state) {
-        return Container(
-          child: WalletCubit.get(context).loadingWallet
-              ? loading()
-              : state is WalletSuccessState
-                  ? WalletCubit.get(context).wallet.isNotEmpty
-                      ? ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: WalletCubit.get(context).wallet.length,
-                          itemBuilder: (context, index) {
-                            var item = WalletCubit.get(context).wallet[index];
-                            return Column(
-                              children: [
-                                ListTile(
-                                  title: Text(
-                                    item.id!,
-                                    style: TextStyle(
-                                      color: primaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 22.sp,
-                                    ),
-                                  ),
-                                  subtitle: Text(item.comment ?? ''),
-                                  trailing: Text(
-                                    item.amount!.toStringAsFixed(2),
-                                    style: TextStyle(
-                                      color: primaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20.sp,
-                                    ),
-                                  ),
-                                  contentPadding: const EdgeInsets.all(0),
-                                ),
-                                index ==
-                                            WalletCubit.get(context)
-                                                    .wallet
-                                                    .length -
-                                                1 &&
-                                        loadingWallet
-                                    ? Column(
-                                        children: [
-                                          SizedBox(
-                                            height: 10.h,
-                                          ),
-                                          loading(),
-                                          SizedBox(
-                                            height: 10.h,
-                                          ),
-                                        ],
-                                      )
-                                    : Container(),
-                              ],
-                            );
-                          })
-                      : Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(18.r),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Text(
-                                  "Not Found Data",
-                                  textAlign: TextAlign.center,
-                                ),
-                                TextButton(
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: accentColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16.r),
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    WalletCubit.get(context).getWallet(1);
-                                  },
-                                  child: const Text('Retry'),
-                                )
-                              ],
-                            ),
-                          ),
-                        )
-                  : state is WalletErrorState
-                      ? errorMessage2(
-                          message: state.message,
-                          press: () {
-                            WalletCubit.get(context).getWallet(1);
-                          })
-                      : Container(),
-        );
-      },
-    );
-  }
-}
-
-class Request extends StatefulWidget {
-  const Request({Key? key}) : super(key: key);
-
-  @override
-  State<Request> createState() => _RequestState();
-}
-
-class _RequestState extends State<Request> {
-  bool loadingRequests = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocConsumer<WalletCubit, WalletState>(
-      listener: (context, state) {
-        if (state is RequestsSuccessState) {
-          setState(() {
-            loadingRequests = false;
-          });
-        } else if (state is RequestsErrorState) {
-          setState(() {
-            loadingRequests = false;
-          });
-        }
-      },
-      builder: (context, state) {
-        return Container(
-          child: WalletCubit.get(context).loadingRequests
-              ? loading()
-              : state is RequestsSuccessState
-                  ? WalletCubit.get(context).requests.isNotEmpty
-                      ? ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: WalletCubit.get(context).requests.length,
-                          itemBuilder: (context, index) {
-                            var item = WalletCubit.get(context).requests[index];
-                            return Column(
-                              children: [
-                                ListTile(
-                                  title: Text(
-                                    item.status!,
-                                    style: TextStyle(
-                                      color: primaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 22.sp,
-                                    ),
-                                  ),
-                                  subtitle: Text(item.id ?? ''),
-                                  trailing: Text(
-                                    item.amount!.toStringAsFixed(2),
-                                    style: TextStyle(
-                                      color: primaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20.sp,
-                                    ),
-                                  ),
-                                  contentPadding: const EdgeInsets.all(0),
-                                ),
-                                index ==
-                                            WalletCubit.get(context)
-                                                    .requests
-                                                    .length -
-                                                1 &&
-                                        loadingRequests
-                                    ? Column(
-                                        children: [
-                                          SizedBox(
-                                            height: 10.h,
-                                          ),
-                                          loading(),
-                                          SizedBox(
-                                            height: 10.h,
-                                          ),
-                                        ],
-                                      )
-                                    : Container(),
-                              ],
-                            );
-                          })
-                      : Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(18.r),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Text(
-                                  "Not Found Data",
-                                  textAlign: TextAlign.center,
-                                ),
-                                TextButton(
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: accentColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16.r),
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    WalletCubit.get(context).getRequests(1);
-                                  },
-                                  child: const Text('Retry'),
-                                )
-                              ],
-                            ),
-                          ),
-                        )
-                  : state is WalletErrorState
-                      ? errorMessage2(
-                          message: state.message,
-                          press: () {
-                            WalletCubit.get(context).getWallet(1);
-                          })
-                      : Container(),
         );
       },
     );
