@@ -18,11 +18,11 @@ void navigateTo(context, widget) => Navigator.push(
 
 Future<dynamic> navigateToWithRefreshPagePrevious(context, widget) async {
   return await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => widget,
-        ),
-      );
+    context,
+    MaterialPageRoute(
+      builder: (context) => widget,
+    ),
+  );
 }
 
 Future<void> makePhoneCall(String phoneNumber) async {
@@ -33,8 +33,7 @@ Future<void> makePhoneCall(String phoneNumber) async {
   await launchUrl(launchUri);
 }
 
-
-Future<void> openWhatsapp(String whatsapp,BuildContext context) async {
+Future<void> openWhatsapp(String whatsapp, BuildContext context) async {
   var androidUrl = "whatsapp://send?phone=$whatsapp";
   var iosUrl = "https://wa.me/$whatsapp";
 
@@ -185,16 +184,16 @@ Widget defaultFormField(
     );
 
 Widget defaultButton2(
-    {required VoidCallback press,
-      bool disablePress = true,
-      required String text,
-      required Color backColor,
-      int fontSize = 24,
-      int paddingVertical = 10,
-      int paddingHorizontal = 35,
-      int borderRadius = 20,
-      bool colorBorder = false,
-      required Color textColor}) =>
+        {required VoidCallback press,
+        bool disablePress = true,
+        required String text,
+        required Color backColor,
+        int fontSize = 24,
+        int paddingVertical = 10,
+        int paddingHorizontal = 35,
+        int borderRadius = 20,
+        bool colorBorder = false,
+        required Color textColor}) =>
     ElevatedButton(
       onPressed: disablePress ? press : null,
       style: TextButton.styleFrom(
@@ -217,7 +216,6 @@ Widget defaultButton2(
         text,
       ),
     );
-
 
 Widget defaultButton3(
         {required VoidCallback press,
@@ -248,17 +246,17 @@ Widget defaultButton3(
     );
 
 Widget defaultButtonWithIcon(
-    {required VoidCallback press,
-      bool disablePress = true,
-      required String text,
-      required Color backColor,
-      int fontSize = 24,
-      int paddingVertical = 10,
-      int paddingHorizontal = 35,
-      int borderRadius = 20,
-      bool colorBorder = false,
-      required IconData icon,
-      required Color textColor}) =>
+        {required VoidCallback press,
+        bool disablePress = true,
+        required String text,
+        required Color backColor,
+        int fontSize = 24,
+        int paddingVertical = 10,
+        int paddingHorizontal = 35,
+        int borderRadius = 20,
+        bool colorBorder = false,
+        required IconData icon,
+        required Color textColor}) =>
     ElevatedButton(
       onPressed: disablePress ? press : null,
       style: TextButton.styleFrom(
@@ -280,14 +278,121 @@ Widget defaultButtonWithIcon(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon,color: white,size: 25.sp,),
-          SizedBox(width: 5.w,),
+          Icon(
+            icon,
+            color: white,
+            size: 25.sp,
+          ),
+          SizedBox(
+            width: 5.w,
+          ),
           Text(
             text,
           ),
         ],
       ),
     );
+
+Widget loading() {
+  return const Center(
+    child: CircularProgressIndicator(
+      color: black,
+    ),
+  );
+}
+
+Widget errorMessage({
+  required String message,
+  required VoidCallback press,
+}) {
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(vertical: 20.r),
+          margin: EdgeInsets.symmetric(horizontal: 37.r),
+          decoration: BoxDecoration(
+            color: blueLight,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(25.r),
+          ),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 15.h,
+              ),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 20.sm, color: white, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: 35.h,
+              ),
+              InkWell(
+                onTap: press,
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: white,
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 15.r, vertical: 10.r),
+                      child: Text(
+                        "Refresh",
+                        style: TextStyle(color: accentColor, fontSize: 20.sm),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 15.h,
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget errorMessage2({
+  required String message,
+  required VoidCallback press,
+}) {
+  return Center(
+    child: Padding(
+      padding: EdgeInsets.all(18.r),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            message,
+            textAlign: TextAlign.center,
+          ),
+          TextButton(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: accentColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+            ),
+            onPressed: press,
+            child: const Text('Retry'),
+          )
+        ],
+      ),
+    ),
+  );
+}
 
 void showToastt({
   required String text,

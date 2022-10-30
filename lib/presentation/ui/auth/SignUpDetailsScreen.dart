@@ -346,42 +346,14 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                     height: 16.h,
                   ),
                   SignCubit.get(context).loadingCity
-                      ? const CircularProgressIndicator(color: black)
+                      ? loading()
                       : SignCubit.get(context).failureCity.isNotEmpty
-                          ? Center(
-                              child: Container(
-                                width: 1.sw,
-                                padding: EdgeInsets.all(10.r),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10.r),
-                                  border: Border.all(
-                                    width: 1,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      'error occurred when get Cites',
-                                      style: TextStyle(fontSize: 20.sp),
-                                    ),
-                                    MaterialButton(
-                                      onPressed: () {
-                                        SignCubit.get(context)
-                                            .getCity(widget.countryId);
-                                      },
-                                      child: Text(
-                                        'Retry',
-                                        style: TextStyle(
-                                            color: accentColor,
-                                            fontSize: 20.sp),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )
+                          ? errorMessage2(
+                              message: 'error occurred when get Cites',
+                              press: () {
+                                SignCubit.get(context)
+                                    .getCity(widget.countryId);
+                              })
                           : SignCubit.get(context).city.isNotEmpty
                               ? Container(
                                   width: 1.sw,
@@ -480,43 +452,14 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                     height: 16.h,
                   ),
                   SignCubit.get(context).loadingArea
-                      ? const CircularProgressIndicator(color: black)
+                      ? loading()
                       : SignCubit.get(context).failureArea.isNotEmpty
-                          ? Center(
-                              child: Container(
-                                width: 1.sw,
-                                padding: EdgeInsets.all(10.r),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10.r),
-                                  border: Border.all(
-                                    width: 1,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      'error occurred when get Area',
-                                      style: TextStyle(fontSize: 20.sp),
-                                    ),
-                                    MaterialButton(
-                                      onPressed: () {
-                                        SignCubit.get(context).getArea(
-                                            widget.countryId,
-                                            dropDownValueCity!.id!);
-                                      },
-                                      child: Text(
-                                        'Retry',
-                                        style: TextStyle(
-                                            color: accentColor,
-                                            fontSize: 20.sp),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )
+                          ? errorMessage2(
+                              message: 'error occurred when get Area',
+                              press: () {
+                                SignCubit.get(context).getArea(
+                                    widget.countryId, dropDownValueCity!.id!);
+                              })
                           : SignCubit.get(context).area.isNotEmpty
                               ? Container(
                                   width: 1.sw,
@@ -671,8 +614,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                       state is RoleLoading
                           ? Container(
                               margin: EdgeInsetsDirectional.only(start: 30.r),
-                              child:
-                                  const CircularProgressIndicator(color: black),
+                              child: loading(),
                             )
                           : SignCubit.get(context).roles.isNotEmpty
                               ? Expanded(

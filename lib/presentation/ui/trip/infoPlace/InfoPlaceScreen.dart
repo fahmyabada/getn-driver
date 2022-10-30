@@ -41,11 +41,7 @@ class _InfoPlaceScreenState extends State<InfoPlaceScreen> {
               elevation: 1.0,
             ),
             body: state is GetInfoInitial
-                ? const Center(
-                    child: CircularProgressIndicator(
-                      color: black,
-                    ),
-                  )
+                ? loading()
                 : SingleChildScrollView(
                     child: Padding(
                       padding: EdgeInsets.symmetric(

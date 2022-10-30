@@ -53,13 +53,27 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     'cancel': []
   };
 
+  var btnStatus3 = {
+    'pending': 'Pending',
+    'accept': 'Accept',
+    'on_my_way': 'On My Way',
+    'arrive': 'Arrive',
+    'coming': 'Coming',
+    'start': 'Start',
+    'end': 'End',
+    'mid_pause': 'Mid Pause',
+    'reject': 'Reject',
+    'cancel': 'Cancel',
+    'need_confirm': 'Need Confirm'
+  };
+
   int? indexStatus;
   late ScrollController _controllerLoadingTrips;
   var formKeyRequest = GlobalKey<FormState>();
   var commentController = TextEditingController();
+  bool loadingMoreTrips = false;
 
   void _loadMoreTrips() {
-    RequestDetailsCubit.get(context).loadingMoreTrips = false;
     RequestDetailsCubit.get(context).getTripsRequestDetails(
         RequestDetailsCubit.get(context).indexTrips, widget.idRequest!);
   }
@@ -75,7 +89,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _controllerLoadingTrips.removeListener(_loadMoreTrips);
 
@@ -121,7 +134,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     .setString('typeScreen', "requestDetails");
                 RequestDetailsCubit.get(context).indexTrips = 1;
                 RequestDetailsCubit.get(context).trips = [];
-                RequestDetailsCubit.get(context).loadingMoreTrips = false;
+                loadingMoreTrips = false;
                 RequestDetailsCubit.get(context).loadingTrips = false;
                 RequestDetailsCubit.get(context).loadingRequest = false;
                 RequestDetailsCubit.get(context).failureRequest = "";
@@ -162,11 +175,18 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 },
               );
             }
+          } else if (state is TripsSuccessState) {
+            setState(() {
+              loadingMoreTrips = false;
+            });
+          } else if (state is TripsErrorState) {
+            setState(() {
+              loadingMoreTrips = false;
+            });
           }
         },
         builder: (context, state) {
           final currentDate = DateTime.now();
-
           return Scaffold(
             appBar: AppBar(
               title: Text(
@@ -177,41 +197,17 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               elevation: 1.0,
             ),
             body: RequestDetailsCubit.get(context).loadingRequest
-                ? const Center(
-                    child: CircularProgressIndicator(
-                    color: black,
-                  ))
+                ? loading()
                 : RequestDetailsCubit.get(context).failureRequest.isNotEmpty
-                    ? Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(18.r),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                RequestDetailsCubit.get(context).failureRequest,
-                                textAlign: TextAlign.center,
-                              ),
-                              TextButton(
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor: accentColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16.r),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  RequestDetailsCubit.get(context)
-                                      .getRequestDetails(widget.idRequest!);
-                                  RequestDetailsCubit.get(context)
-                                      .getTripsRequestDetails(
-                                          1, widget.idRequest!);
-                                },
-                                child: const Text('Retry'),
-                              )
-                            ],
-                          ),
-                        ),
-                      )
+                    ? errorMessage2(
+                        message:
+                            RequestDetailsCubit.get(context).failureRequest,
+                        press: () {
+                          RequestDetailsCubit.get(context)
+                              .getRequestDetails(widget.idRequest!);
+                          RequestDetailsCubit.get(context)
+                              .getTripsRequestDetails(1, widget.idRequest!);
+                        })
                     : RequestDetailsCubit.get(context).requestDetails!.id !=
                             null
                         ? Container(
@@ -222,12 +218,15 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               controller: _controllerLoadingTrips
                                 ..addListener(() async {
                                   if (_controllerLoadingTrips
-                                          .position.extentAfter ==
-                                      0) {
-                                    if (RequestDetailsCubit.get(context)
-                                        .loadingMoreTrips) {
-                                      _loadMoreTrips();
-                                    }
+                                              .position.extentAfter ==
+                                          0 &&
+                                      !loadingMoreTrips) {
+                                    setState(() {
+                                      print(
+                                          "_controllerLoadingTrips*********** ");
+                                      loadingMoreTrips = true;
+                                    });
+                                    _loadMoreTrips();
                                   }
                                 }),
                               child: Column(
@@ -435,9 +434,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                 width: 5.w,
                                               ),
                                               Text(
-                                                RequestDetailsCubit.get(context)
-                                                    .requestDetails!
-                                                    .status!,
+                                                btnStatus3[
+                                                        RequestDetailsCubit.get(
+                                                                context)
+                                                            .requestDetails!
+                                                            .status!]
+                                                    .toString(),
                                                 style: TextStyle(
                                                     color: grey2,
                                                     fontSize: 14.sp),
@@ -457,9 +459,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                 width: 5.w,
                                               ),
                                               Text(
-                                                RequestDetailsCubit.get(context)
-                                                    .requestDetails!
-                                                    .paymentStatus!,
+                                                btnStatus3[
+                                                        RequestDetailsCubit.get(
+                                                                context)
+                                                            .requestDetails!
+                                                            .paymentStatus!]
+                                                    .toString(),
                                                 style: TextStyle(
                                                     color: grey2,
                                                     fontSize: 14.sp),
@@ -586,7 +591,15 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                                           .requestDetails
                                                                           ?.paymentStatus! ==
                                                                       "paid"
-                                                                  ? true
+                                                                  ? btnStatus2['${RequestDetailsCubit.get(context).requestDetails!.status}']![
+                                                                              0] ==
+                                                                          "start"
+                                                                      ? DateFormat("yyyy-MM-ddTHH:mm")
+                                                                              .parse(RequestDetailsCubit.get(context).requestDetails!.from!.date!)
+                                                                              .isAfter(currentDate)
+                                                                          ? true
+                                                                          : false
+                                                                      : true
                                                                   : false,
                                                           fontSize: 20,
                                                           paddingVertical: 1,
@@ -602,11 +615,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                         child: Center(
                                                           child: SizedBox(
                                                             width: 40.w,
-                                                            child:
-                                                                const CircularProgressIndicator(
-                                                              color:
-                                                                  accentColor,
-                                                            ),
+                                                            child: loading(),
                                                           ),
                                                         ),
                                                       ),
@@ -662,16 +671,17 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                             // outside to dismiss
                                                             builder: (_) {
                                                               return CustomDialogRequestDetails(
-                                                                id: RequestDetailsCubit
-                                                                        .get(
-                                                                            context)
-                                                                    .requestDetails!
-                                                                    .id!,
-                                                                title:
-                                                                    'Warning',
-                                                                description:
-                                                                    'you will charged a cancelation fee..',
-                                                              );
+                                                                  id: RequestDetailsCubit
+                                                                          .get(
+                                                                              context)
+                                                                      .requestDetails!
+                                                                      .id!,
+                                                                  title:
+                                                                      'Warning',
+                                                                  description:
+                                                                      'you will charged a cancelation fee..',
+                                                                  type: btnStatus[
+                                                                      '${RequestDetailsCubit.get(context).requestDetails!.status}']![1]);
                                                             },
                                                           ).then((value) {
                                                             print(
@@ -706,16 +716,17 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                             // outside to dismiss
                                                             builder: (_) {
                                                               return CustomDialogRequestDetails(
-                                                                id: RequestDetailsCubit
-                                                                        .get(
-                                                                            context)
-                                                                    .requestDetails!
-                                                                    .id!,
-                                                                title:
-                                                                    'Do you want to reject?',
-                                                                description:
-                                                                    'If you want to be rejected, you must first enter the reason for rejection and press OK..',
-                                                              );
+                                                                  id: RequestDetailsCubit
+                                                                          .get(
+                                                                              context)
+                                                                      .requestDetails!
+                                                                      .id!,
+                                                                  title:
+                                                                      'Do you want to reject?',
+                                                                  description:
+                                                                      'If you want to be rejected, you must first enter the reason for rejection and press OK..',
+                                                                  type: btnStatus[
+                                                                      '${RequestDetailsCubit.get(context).requestDetails!.status}']![1]);
                                                             },
                                                           ).then((value) {
                                                             print(
@@ -776,18 +787,21 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                         )
                                       : Container(),
 
-                                  RequestDetailsCubit.get(context)
-                                              .requestDetails
-                                              ?.paymentStatus! ==
-                                          "paid"
+                                  widget.typeScreen != null &&
+                                          widget.typeScreen == "past"
                                       ? Container()
-                                      : Text(
-                                          'the client you should paid first',
-                                          style: TextStyle(
-                                              color: accentColor,
-                                              fontSize: 15.sp,
-                                              fontWeight: FontWeight.bold),
-                                        ),
+                                      : RequestDetailsCubit.get(context)
+                                                  .requestDetails
+                                                  ?.paymentStatus! ==
+                                              "paid"
+                                          ? Container()
+                                          : Text(
+                                              'the client you should paid first',
+                                              style: TextStyle(
+                                                  color: accentColor,
+                                                  fontSize: 15.sp,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                   SizedBox(
                                     height: 15.h,
                                   ),
@@ -797,7 +811,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     height: 1.h,
                                     color: Colors.grey[400],
                                   ),
-                                  SizedBox(
+                                  // add trip
+                                  /*  SizedBox(
                                     height: 15.h,
                                   ),
                                   RequestDetailsCubit.get(context)
@@ -836,60 +851,24 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                               },
                                               textColor: white,
                                               backColor: accentColor)
-                                      : Container(),
+                                      : Container(),*/
                                   SizedBox(
                                     height: 15.h,
                                   ),
                                   RequestDetailsCubit.get(context).loadingTrips
-                                      ? const Center(
-                                          child: CircularProgressIndicator(
-                                          color: black,
-                                        ))
+                                      ? loading()
                                       : RequestDetailsCubit.get(context)
                                               .failureTrip
                                               .isNotEmpty
-                                          ? Center(
-                                              child: Padding(
-                                                padding: EdgeInsets.all(18.r),
-                                                child: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    Text(
-                                                      RequestDetailsCubit.get(
-                                                              context)
-                                                          .failureTrip,
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                    ),
-                                                    TextButton(
-                                                      style: ElevatedButton
-                                                          .styleFrom(
-                                                        foregroundColor:
-                                                            accentColor,
-                                                        shape:
-                                                            RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      16.r),
-                                                        ),
-                                                      ),
-                                                      onPressed: () {
-                                                        RequestDetailsCubit.get(
-                                                                context)
-                                                            .getTripsRequestDetails(
-                                                                1,
-                                                                widget
-                                                                    .idRequest!);
-                                                      },
-                                                      child:
-                                                          const Text('Retry'),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            )
+                                          ? errorMessage2(
+                                              message: RequestDetailsCubit.get(
+                                                      context)
+                                                  .failureTrip,
+                                              press: () {
+                                                RequestDetailsCubit.get(context)
+                                                    .getTripsRequestDetails(
+                                                        1, widget.idRequest!);
+                                              })
                                           : RequestDetailsCubit.get(context)
                                                   .trips
                                                   .isNotEmpty
@@ -907,351 +886,362 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                         RequestDetailsCubit.get(
                                                                 context)
                                                             .trips[i];
-                                                    return InkWell(
-                                                      child: Container(
-                                                        margin: EdgeInsets
-                                                            .symmetric(
-                                                                vertical: 10.r),
-                                                        child: Card(
-                                                          elevation: 5.r,
-                                                          clipBehavior:
-                                                              Clip.antiAlias,
+                                                    return Column(
+                                                      children: [
+                                                        InkWell(
                                                           child: Container(
-                                                            color: white,
-                                                            padding: EdgeInsets
+                                                            margin: EdgeInsets
                                                                 .symmetric(
                                                                     vertical:
-                                                                        10.r,
-                                                                    horizontal:
-                                                                        15.r),
-                                                            child: Column(
-                                                              children: [
-                                                                Row(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
+                                                                        10.r),
+                                                            child: Card(
+                                                              elevation: 5.r,
+                                                              clipBehavior: Clip
+                                                                  .antiAlias,
+                                                              child: Container(
+                                                                color: white,
+                                                                padding: EdgeInsets
+                                                                    .symmetric(
+                                                                        vertical: 10
+                                                                            .r,
+                                                                        horizontal:
+                                                                            15.r),
+                                                                child: Column(
                                                                   children: [
-                                                                    Icon(
-                                                                      Icons
-                                                                          .location_on,
-                                                                      color:
-                                                                          greenColor,
-                                                                      size:
-                                                                          20.w,
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width:
-                                                                          10.w,
-                                                                    ),
-                                                                    Expanded(
-                                                                      flex: 3,
-                                                                      child:
-                                                                          Padding(
-                                                                        padding:
-                                                                            EdgeInsetsDirectional.only(end: 10.r),
-                                                                        child:
-                                                                            Column(
-                                                                          crossAxisAlignment:
-                                                                              CrossAxisAlignment.start,
-                                                                          children: [
-                                                                            Text(
-                                                                              'Picked Point',
-                                                                              style: TextStyle(color: black, fontSize: 15.sp, fontWeight: FontWeight.bold),
-                                                                            ),
-                                                                            SizedBox(height: 10.h),
-                                                                            Text(
-                                                                              trip.from!.placeTitle!,
-                                                                              style: TextStyle(color: grey2, fontSize: 14.sp),
-                                                                            ),
-                                                                          ],
+                                                                    Row(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Icon(
+                                                                          Icons
+                                                                              .location_on,
+                                                                          color:
+                                                                              greenColor,
+                                                                          size:
+                                                                              20.w,
                                                                         ),
-                                                                      ),
-                                                                    ),
-                                                                    Expanded(
-                                                                      flex: 2,
-                                                                      child:
-                                                                          Column(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.end,
-                                                                        children: [
-                                                                          Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.end,
-                                                                            children: [
-                                                                              Text(
-                                                                                'Status :',
-                                                                                style: TextStyle(
-                                                                                  color: black,
-                                                                                  fontSize: 15.sp,
+                                                                        SizedBox(
+                                                                          width:
+                                                                              10.w,
+                                                                        ),
+                                                                        Expanded(
+                                                                          flex:
+                                                                              3,
+                                                                          child:
+                                                                              Padding(
+                                                                            padding:
+                                                                                EdgeInsetsDirectional.only(end: 10.r),
+                                                                            child:
+                                                                                Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                Text(
+                                                                                  'Picked Point',
+                                                                                  style: TextStyle(color: black, fontSize: 15.sp, fontWeight: FontWeight.bold),
                                                                                 ),
+                                                                                SizedBox(height: 10.h),
+                                                                                Text(
+                                                                                  trip.from!.placeTitle!,
+                                                                                  style: TextStyle(color: grey2, fontSize: 14.sp),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        Expanded(
+                                                                          flex:
+                                                                              2,
+                                                                          child:
+                                                                              Column(
+                                                                            crossAxisAlignment:
+                                                                                CrossAxisAlignment.end,
+                                                                            children: [
+                                                                              Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                                                children: [
+                                                                                  Text(
+                                                                                    'Status :',
+                                                                                    style: TextStyle(
+                                                                                      color: black,
+                                                                                      fontSize: 15.sp,
+                                                                                    ),
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    width: 5.w,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    trip.status!,
+                                                                                    style: TextStyle(color: grey2, fontSize: 14.sp),
+                                                                                  ),
+                                                                                ],
                                                                               ),
                                                                               SizedBox(
-                                                                                width: 5.w,
+                                                                                height: 15.h,
                                                                               ),
                                                                               Text(
-                                                                                trip.status!,
-                                                                                style: TextStyle(color: grey2, fontSize: 14.sp),
+                                                                                DateFormat.jm().format(DateTime.parse(trip.startDate!)),
+                                                                                style: TextStyle(
+                                                                                  color: grey2,
+                                                                                  fontSize: 14.sp,
+                                                                                ),
+                                                                              ),
+                                                                              Text(
+                                                                                DateFormat.yMEd().format(DateTime.parse(trip.startDate!)),
+                                                                                style: TextStyle(color: grey2, fontSize: 13.sp),
                                                                               ),
                                                                             ],
                                                                           ),
-                                                                          SizedBox(
-                                                                            height:
-                                                                                15.h,
-                                                                          ),
-                                                                          Text(
-                                                                            DateFormat.jm().format(DateTime.parse(trip.startDate!)),
-                                                                            style:
-                                                                                TextStyle(
-                                                                              color: grey2,
-                                                                              fontSize: 14.sp,
-                                                                            ),
-                                                                          ),
-                                                                          Text(
-                                                                            DateFormat.yMEd().format(DateTime.parse(trip.startDate!)),
-                                                                            style:
-                                                                                TextStyle(color: grey2, fontSize: 13.sp),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 15.h,
-                                                                ),
-                                                                Row(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    Icon(
-                                                                      Icons
-                                                                          .location_on,
-                                                                      color:
-                                                                          redColor,
-                                                                      size:
-                                                                          20.w,
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                     SizedBox(
-                                                                      width:
-                                                                          10.w,
+                                                                      height:
+                                                                          15.h,
                                                                     ),
-                                                                    Expanded(
-                                                                      flex: 3,
-                                                                      child:
-                                                                          Padding(
-                                                                        padding:
-                                                                            EdgeInsetsDirectional.only(end: 10.r),
-                                                                        child:
-                                                                            Column(
-                                                                          crossAxisAlignment:
-                                                                              CrossAxisAlignment.start,
-                                                                          children: [
-                                                                            Text(
-                                                                              'Picked Point',
-                                                                              style: TextStyle(color: black, fontSize: 15.sp, fontWeight: FontWeight.bold),
-                                                                            ),
-                                                                            SizedBox(height: 5.h),
-                                                                            Text(
-                                                                              trip.to!.placeTitle!,
-                                                                              style: TextStyle(color: grey2, fontSize: 14.sp),
-                                                                            ),
-                                                                          ],
+                                                                    Row(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Icon(
+                                                                          Icons
+                                                                              .location_on,
+                                                                          color:
+                                                                              redColor,
+                                                                          size:
+                                                                              20.w,
                                                                         ),
-                                                                      ),
-                                                                    ),
-                                                                    Expanded(
-                                                                      flex: 2,
-                                                                      child:
-                                                                          Column(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.end,
-                                                                        children: [
-                                                                          Text(
-                                                                            '12:00 am',
-                                                                            // DateFormat.jm().format(DateTime.parse(
-                                                                            //     trip.to!.date!)),
-                                                                            style:
-                                                                                TextStyle(
-                                                                              color: grey2,
-                                                                              fontSize: 14.sp,
+                                                                        SizedBox(
+                                                                          width:
+                                                                              10.w,
+                                                                        ),
+                                                                        Expanded(
+                                                                          flex:
+                                                                              3,
+                                                                          child:
+                                                                              Padding(
+                                                                            padding:
+                                                                                EdgeInsetsDirectional.only(end: 10.r),
+                                                                            child:
+                                                                                Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                Text(
+                                                                                  'Picked Point',
+                                                                                  style: TextStyle(color: black, fontSize: 15.sp, fontWeight: FontWeight.bold),
+                                                                                ),
+                                                                                SizedBox(height: 5.h),
+                                                                                Text(
+                                                                                  trip.to!.placeTitle!,
+                                                                                  style: TextStyle(color: grey2, fontSize: 14.sp),
+                                                                                ),
+                                                                              ],
                                                                             ),
                                                                           ),
-                                                                          Text(
-                                                                            '12/2/20200',
-                                                                            // DateFormat.yMEd().format(
-                                                                            //     DateTime.parse(
-                                                                            //         trip.to!.date!)),
-                                                                            style:
-                                                                                TextStyle(color: grey2, fontSize: 13.sp),
+                                                                        ),
+                                                                        Expanded(
+                                                                          flex:
+                                                                              2,
+                                                                          child:
+                                                                              Column(
+                                                                            crossAxisAlignment:
+                                                                                CrossAxisAlignment.end,
+                                                                            children: [
+                                                                              Text(
+                                                                                '12:00 am',
+                                                                                // DateFormat.jm().format(DateTime.parse(
+                                                                                //     trip.to!.date!)),
+                                                                                style: TextStyle(
+                                                                                  color: grey2,
+                                                                                  fontSize: 14.sp,
+                                                                                ),
+                                                                              ),
+                                                                              Text(
+                                                                                '12/2/20200',
+                                                                                // DateFormat.yMEd().format(
+                                                                                //     DateTime.parse(
+                                                                                //         trip.to!.date!)),
+                                                                                style: TextStyle(color: grey2, fontSize: 13.sp),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    SizedBox(
+                                                                      height:
+                                                                          15.h,
+                                                                    ),
+                                                                    IntrinsicHeight(
+                                                                      child:
+                                                                          Row(
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.center,
+                                                                        children: [
+                                                                          Expanded(
+                                                                            child:
+                                                                                Card(
+                                                                              color: yellowLightColor,
+                                                                              child: Padding(
+                                                                                padding: EdgeInsets.all(10.r),
+                                                                                child: Column(children: [
+                                                                                  Text(
+                                                                                    'Distance',
+                                                                                    style: TextStyle(color: grey2, fontSize: 14.sp),
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    height: 5.r,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    trip.consumptionKM!.toStringAsFixed(2),
+                                                                                    textAlign: TextAlign.center,
+                                                                                    style: TextStyle(color: black, fontSize: 14.sp, fontWeight: FontWeight.bold),
+                                                                                  ),
+                                                                                ]),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          Expanded(
+                                                                            child:
+                                                                                Card(
+                                                                              color: rough,
+                                                                              child: Padding(
+                                                                                padding: EdgeInsets.all(10.r),
+                                                                                child: Column(children: [
+                                                                                  Text(
+                                                                                    'Points',
+                                                                                    style: TextStyle(color: grey2, fontSize: 14.sp),
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    height: 5.r,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    trip.consumptionPoints!.toStringAsFixed(2),
+                                                                                    textAlign: TextAlign.center,
+                                                                                    style: TextStyle(color: black, fontSize: 14.sp, fontWeight: FontWeight.bold),
+                                                                                  ),
+                                                                                ]),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          Expanded(
+                                                                            child:
+                                                                                Card(
+                                                                              color: greenLightColor,
+                                                                              child: Padding(
+                                                                                padding: EdgeInsets.all(10.r),
+                                                                                child: Column(children: [
+                                                                                  Text(
+                                                                                    '1 Km Points',
+                                                                                    style: TextStyle(color: grey2, fontSize: 14.sp),
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    height: 5.r,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    trip.oneKMPoints.toString(),
+                                                                                    textAlign: TextAlign.center,
+                                                                                    style: TextStyle(color: black, fontSize: 14.sp, fontWeight: FontWeight.bold),
+                                                                                  ),
+                                                                                ]),
+                                                                              ),
+                                                                            ),
                                                                           ),
                                                                         ],
                                                                       ),
                                                                     ),
                                                                   ],
                                                                 ),
-                                                                SizedBox(
-                                                                  height: 15.h,
-                                                                ),
-                                                                IntrinsicHeight(
-                                                                  child: Row(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Expanded(
-                                                                        child:
-                                                                            Card(
-                                                                          color:
-                                                                              yellowLightColor,
-                                                                          child:
-                                                                              Padding(
-                                                                            padding:
-                                                                                EdgeInsets.all(10.r),
-                                                                            child:
-                                                                                Column(children: [
-                                                                              Text(
-                                                                                'Distance',
-                                                                                style: TextStyle(color: grey2, fontSize: 14.sp),
-                                                                              ),
-                                                                              SizedBox(
-                                                                                height: 5.r,
-                                                                              ),
-                                                                              Text(
-                                                                                trip.consumptionKM!.toStringAsFixed(2),
-                                                                                textAlign: TextAlign.center,
-                                                                                style: TextStyle(color: black, fontSize: 14.sp, fontWeight: FontWeight.bold),
-                                                                              ),
-                                                                            ]),
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      Expanded(
-                                                                        child:
-                                                                            Card(
-                                                                          color:
-                                                                              rough,
-                                                                          child:
-                                                                              Padding(
-                                                                            padding:
-                                                                                EdgeInsets.all(10.r),
-                                                                            child:
-                                                                                Column(children: [
-                                                                              Text(
-                                                                                'Points',
-                                                                                style: TextStyle(color: grey2, fontSize: 14.sp),
-                                                                              ),
-                                                                              SizedBox(
-                                                                                height: 5.r,
-                                                                              ),
-                                                                              Text(
-                                                                                trip.consumptionPoints!.toStringAsFixed(2),
-                                                                                textAlign: TextAlign.center,
-                                                                                style: TextStyle(color: black, fontSize: 14.sp, fontWeight: FontWeight.bold),
-                                                                              ),
-                                                                            ]),
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      Expanded(
-                                                                        child:
-                                                                            Card(
-                                                                          color:
-                                                                              greenLightColor,
-                                                                          child:
-                                                                              Padding(
-                                                                            padding:
-                                                                                EdgeInsets.all(10.r),
-                                                                            child:
-                                                                                Column(children: [
-                                                                              Text(
-                                                                                '1 Km Points',
-                                                                                style: TextStyle(color: grey2, fontSize: 14.sp),
-                                                                              ),
-                                                                              SizedBox(
-                                                                                height: 5.r,
-                                                                              ),
-                                                                              Text(
-                                                                                trip.oneKMPoints.toString(),
-                                                                                textAlign: TextAlign.center,
-                                                                                style: TextStyle(color: black, fontSize: 14.sp, fontWeight: FontWeight.bold),
-                                                                              ),
-                                                                            ]),
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ],
+                                                              ),
                                                             ),
                                                           ),
-                                                        ),
-                                                      ),
-                                                      onTap: () async {
-                                                        print(
-                                                            "typeId44************ ${widget.idRequest!}");
-                                                        String id =
-                                                            await navigateToWithRefreshPagePrevious(
-                                                                context,
-                                                                TripDetailsScreen(
-                                                                  idTrip: RequestDetailsCubit
-                                                                          .get(
+                                                          onTap: () async {
+                                                            print(
+                                                                "typeId44************ ${widget.idRequest!}");
+                                                            String id =
+                                                                await navigateToWithRefreshPagePrevious(
+                                                                    context,
+                                                                    TripDetailsScreen(
+                                                                      idTrip: RequestDetailsCubit.get(
                                                                               context)
-                                                                      .trips[i]
-                                                                      .id,
-                                                                  idRequest: widget
-                                                                      .idRequest!,
-                                                                ));
-                                                        setState(() {
-                                                          print(
-                                                              "typeId33************ ${id}");
-                                                          if (id.isNotEmpty) {
-                                                            getIt<SharedPreferences>()
-                                                                .setString(
-                                                                    'typeScreen',
-                                                                    "requestDetails");
-                                                            RequestDetailsCubit
-                                                                    .get(
-                                                                        context)
-                                                                .indexTrips = 1;
-                                                            RequestDetailsCubit
-                                                                    .get(
-                                                                        context)
-                                                                .trips = [];
-                                                            RequestDetailsCubit
-                                                                    .get(
-                                                                        context)
-                                                                .loadingMoreTrips = false;
-                                                            RequestDetailsCubit
-                                                                    .get(
-                                                                        context)
-                                                                .loadingTrips = false;
-                                                            RequestDetailsCubit
-                                                                    .get(
-                                                                        context)
-                                                                .loadingRequest = false;
-                                                            RequestDetailsCubit
-                                                                    .get(
-                                                                        context)
-                                                                .failureRequest = "";
-                                                            RequestDetailsCubit
-                                                                    .get(
-                                                                        context)
-                                                                .failureTrip = "";
-                                                            RequestDetailsCubit
-                                                                    .get(
-                                                                        context)
-                                                                .getRequestDetails(
-                                                                    id);
-                                                            RequestDetailsCubit
-                                                                    .get(
-                                                                        context)
-                                                                .getTripsRequestDetails(
-                                                                    1, id);
-                                                          }
-                                                        });
-                                                      },
+                                                                          .trips[
+                                                                              i]
+                                                                          .id,
+                                                                      idRequest:
+                                                                          widget
+                                                                              .idRequest!,
+                                                                    ));
+                                                            setState(() {
+                                                              print(
+                                                                  "typeId33************ ${id}");
+                                                              if (id
+                                                                  .isNotEmpty) {
+                                                                getIt<SharedPreferences>()
+                                                                    .setString(
+                                                                        'typeScreen',
+                                                                        "requestDetails");
+                                                                RequestDetailsCubit
+                                                                        .get(
+                                                                            context)
+                                                                    .indexTrips = 1;
+                                                                RequestDetailsCubit
+                                                                        .get(
+                                                                            context)
+                                                                    .trips = [];
+                                                                loadingMoreTrips =
+                                                                    false;
+                                                                RequestDetailsCubit
+                                                                        .get(
+                                                                            context)
+                                                                    .loadingTrips = false;
+                                                                RequestDetailsCubit
+                                                                        .get(
+                                                                            context)
+                                                                    .loadingRequest = false;
+                                                                RequestDetailsCubit
+                                                                        .get(
+                                                                            context)
+                                                                    .failureRequest = "";
+                                                                RequestDetailsCubit
+                                                                        .get(
+                                                                            context)
+                                                                    .failureTrip = "";
+                                                                RequestDetailsCubit
+                                                                        .get(
+                                                                            context)
+                                                                    .getRequestDetails(
+                                                                        id);
+                                                                RequestDetailsCubit
+                                                                        .get(
+                                                                            context)
+                                                                    .getTripsRequestDetails(
+                                                                        1, id);
+                                                              }
+                                                            });
+                                                          },
+                                                        ),
+                                                        i ==
+                                                                    RequestDetailsCubit.get(context)
+                                                                            .trips
+                                                                            .length -
+                                                                        1 &&
+                                                                loadingMoreTrips
+                                                            ? Column(
+                                                                children: [
+                                                                  SizedBox(
+                                                                    height:
+                                                                        10.h,
+                                                                  ),
+                                                                  loading(),
+                                                                  SizedBox(
+                                                                    height:
+                                                                        10.h,
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            : Container(),
+                                                      ],
                                                     );
                                                   },
                                                 )

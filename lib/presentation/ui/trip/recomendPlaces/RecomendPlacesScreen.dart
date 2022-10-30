@@ -46,11 +46,7 @@ class _RecomendPlacesScreenState extends State<RecomendPlacesScreen> {
               elevation: 1.0,
             ),
             body: state is GetPlacesInitial
-                ? const Center(
-                    child: CircularProgressIndicator(
-                      color: black,
-                    ),
-                  )
+                ? loading()
                 : ListView.builder(
                     controller: _scrollController
                       ..addListener(() async {

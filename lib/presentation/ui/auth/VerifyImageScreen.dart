@@ -211,11 +211,7 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
                     margin:
                         EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
                     child: verifyImageLoading
-                        ? const Center(
-                            child: CircularProgressIndicator(
-                              color: black,
-                            ),
-                          )
+                        ? loading()
                         : defaultButton3(
                             press: () {
                               if (_imageFileList != null) {

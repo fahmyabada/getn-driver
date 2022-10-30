@@ -383,10 +383,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     margin:
                     EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
                     child: load ?
-                    const Center(
-                        child: CircularProgressIndicator(
-                          color: black,
-                        )) :
+                    loading() :
                     defaultButton3(
                         press: () {
                           load = true;

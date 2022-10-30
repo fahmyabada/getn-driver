@@ -97,7 +97,7 @@ class OnBoardScreenView extends StatelessWidget {
                             ),
                           ),
                         )
-                      : GestureDetector(
+                      : InkWell(
                           child: Align(
                             alignment: Alignment.center,
                             child: Container(

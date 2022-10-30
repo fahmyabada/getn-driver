@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
+import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/ui/wallet/wallet_cubit.dart';
 
 class WalletScreen extends StatefulWidget {
@@ -13,19 +14,24 @@ class WalletScreen extends StatefulWidget {
 
 class _WalletScreenState extends State<WalletScreen> {
   late ScrollController _controllerWallet;
+  late ScrollController _controllerRequests;
   bool loadingWallet = false;
+  int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
+    _controllerRequests = ScrollController();
     _controllerWallet = ScrollController();
     WalletCubit.get(context).getWallet(1);
+    WalletCubit.get(context).getRequests(1);
   }
 
   @override
   void dispose() {
     super.dispose();
     _controllerWallet.removeListener(_loadMoreWallet);
+    _controllerRequests.removeListener(_loadMoreRequests);
   }
 
   Row buildBalanceRow({required String title, required String balance}) {
@@ -62,245 +68,472 @@ class _WalletScreenState extends State<WalletScreen> {
     WalletCubit.get(context).getWallet(WalletCubit.get(context).indexWallet);
   }
 
+  void _loadMoreRequests() {
+    WalletCubit.get(context).getRequests(WalletCubit.get(context).indexWallet);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<WalletCubit, WalletState>(
       listener: (context, state) {
-        if(state is WalletSuccessState){
+        if (state is WalletSuccessState) {
           setState(() {
             loadingWallet = false;
           });
-        }else if(state is WalletErrorState){
+        } else if (state is WalletErrorState) {
+          setState(() {
+            loadingWallet = false;
+          });
+        } else if (state is RequestsSuccessState) {
+          setState(() {
+            loadingRequests = false;
+          });
+        } else if (state is RequestsErrorState) {
+          setState(() {
+            loadingRequests = false;
+          });
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              'My Wallet',
+              style: TextStyle(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.bold,
+                color: primaryColor,
+              ),
+            ),
+            centerTitle: true,
+          ),
+          body: SingleChildScrollView(
+            controller: _controllerWallet
+              ..addListener(() async {
+                if (_controllerWallet.position.extentAfter == 0 &&
+                    !loadingWallet) {
+                  setState(() {
+                    print("_controllerWallet*********** ");
+                    loadingWallet = true;
+                  });
+                  _loadMoreWallet();
+                } else if (_controllerRequests.position.extentAfter == 0 &&
+                    !loadingRequests) {
+                  setState(() {
+                    print("_controllerRequests*********** ");
+                    loadingRequests = true;
+                  });
+                  _loadMoreRequests();
+                }
+              }),
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: 15.r,
+                horizontal: 15.r,
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.r),
+                      border: Border.all(
+                        color: Colors.grey[300]!,
+                      ),
+                    ),
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.wallet,
+                            color: primaryColor,
+                            size: 80.sp,
+                          ),
+                          Text(
+                            'Balance',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 26.sp,
+                            ),
+                          ),
+                          WalletCubit.get(context).loadingWallet
+                              ? loading()
+                              : state is WalletSuccessState
+                                  ? WalletCubit.get(context).wallet.isNotEmpty
+                                      ? Column(
+                                          children: [
+                                            SizedBox(
+                                              height: 16.h,
+                                            ),
+                                            SizedBox(
+                                              width: 280.w,
+                                              child: buildBalanceRow(
+                                                title: 'Wallet',
+                                                balance: WalletCubit.get(
+                                                            context)
+                                                        .walletValue
+                                                        .isNotEmpty
+                                                    ? WalletCubit.get(context)
+                                                        .walletValue
+                                                    : "0.0",
+                                              ),
+                                            ),
+                                            Divider(
+                                              endIndent: 1.sw / 8,
+                                              indent: 1.sw / 8,
+                                            ),
+                                            SizedBox(
+                                              width: 280.w,
+                                              child: buildBalanceRow(
+                                                title: 'Hold',
+                                                balance: WalletCubit.get(
+                                                            context)
+                                                        .walletHold
+                                                        .isNotEmpty
+                                                    ? WalletCubit.get(context)
+                                                        .walletHold
+                                                    : "0.0",
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : Center(
+                                          child: Padding(
+                                            padding: EdgeInsets.all(18.r),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                const Text(
+                                                  "Not Found Data",
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                                TextButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    foregroundColor:
+                                                        accentColor,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              16.r),
+                                                    ),
+                                                  ),
+                                                  onPressed: () {
+                                                    WalletCubit.get(context)
+                                                        .getWallet(
+                                                            WalletCubit.get(
+                                                                    context)
+                                                                .indexWallet);
+                                                  },
+                                                  child: const Text('Retry'),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                  : state is WalletErrorState
+                                      ? errorMessage2(
+                                          message: state.message,
+                                          press: () {
+                                            WalletCubit.get(context)
+                                                .getWallet(1);
+                                          })
+                                      : Container(),
+                          SizedBox(
+                            height: 16.h,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.r),
+                            child: defaultButton3(
+                              backColor: primaryColor,
+                              textColor: white,
+                              press: () {
+                                // Get.toNamed(Routes.ADD_NEW_CARD);
+                              },
+                              text: 'Request Transaction',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 8.h,
+                  ),
+                  const Divider(),
+                  ListTile(
+                    title: Text(
+                      'Last Transactions',
+                      style: TextStyle(
+                        color: primaryColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24.sp,
+                      ),
+                    ),
+                    contentPadding: const EdgeInsets.all(0),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: _currentIndex,
+            onTap: (index) {
+              setState(() {
+                _currentIndex = index;
+                print("getRequests*********** ${_currentIndex}");
+              });
+            },
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: primaryColor,
+            selectedItemColor: accentColor,
+            unselectedItemColor: grey,
+            items: const [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.upcoming), label: "Wallet"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.settings), label: "Requests"),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class Wallet extends StatefulWidget {
+  const Wallet({Key? key}) : super(key: key);
+
+  @override
+  State<Wallet> createState() => _WalletState();
+}
+
+class _WalletState extends State<Wallet> {
+  bool loadingWallet = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<WalletCubit, WalletState>(
+      listener: (context, state) {
+        if (state is WalletSuccessState) {
+          setState(() {
+            loadingWallet = false;
+          });
+        } else if (state is WalletErrorState) {
           setState(() {
             loadingWallet = false;
           });
         }
       },
       builder: (context, state) {
-        return Scaffold(
-            appBar: AppBar(
-              title: Text(
-                'My Wallet',
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.bold,
-                  color: primaryColor,
-                ),
-              ),
-              centerTitle: true,
-            ),
-            body: SingleChildScrollView(
-              controller: _controllerWallet
-                ..addListener(() async {
-                  if (_controllerWallet.position.extentAfter == 0 && !loadingWallet) {
-                    setState(() {
-                      print("_controllerWallet*********** ");
-                      loadingWallet = true;
-                    });
-                    _loadMoreWallet();
-                  }
-                }),
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: 10.r,
-                  horizontal: 16.r,
-                ),
-                child: Column(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.r),
-                        border: Border.all(
-                          color: Colors.grey[300]!,
-                        ),
-                      ),
-                      child: Center(
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.wallet,
-                              color: primaryColor,
-                              size: 80.sp,
-                            ),
-                            Text(
-                              'Balance',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 26.sp,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 16.h,
-                            ),
-                            SizedBox(
-                              width: 280.w,
-                              child: buildBalanceRow(
-                                title: 'Wallet',
-                                balance: WalletCubit.get(context)
-                                        .walletValue
-                                        .isNotEmpty
-                                    ? WalletCubit.get(context).walletValue
-                                    : "0.0",
-                              ),
-                            ),
-                            Divider(
-                              endIndent: 1.sw / 8,
-                              indent: 1.sw / 8,
-                            ),
-                            SizedBox(
-                              width: 280.w,
-                              child: buildBalanceRow(
-                                title: 'Hold',
-                                balance:
-                                    WalletCubit.get(context).walletHold.isNotEmpty
-                                        ? WalletCubit.get(context).walletHold
-                                        : "0.0",
-                              ),
-                            ),
-                            SizedBox(
-                              height: 16.h,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(8.r),
-                              child: SizedBox(
-                                  width: 1.sw,
-                                  child: SizedBox(
-                                    height: 50.h,
-                                    child: OutlinedButton(
-                                      style: OutlinedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(16.r),
-                                        ),
-                                        backgroundColor: primaryColor,
-                                      ),
-                                      onPressed: () {
-                                        // Get.toNamed(Routes.ADD_NEW_CARD);
-                                      },
-                                      child: Text(
-                                        'Charge Balance',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 22.sp),
-                                      ),
-                                    ),
-                                  )),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                     SizedBox(
-                      height: 8.h,
-                    ),
-                    const Divider(),
-                     ListTile(
-                      title: Text(
-                        'Last Transactions',
-                        style: TextStyle(
-                          color: primaryColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24.sp,
-                        ),
-                      ),
-                      contentPadding: const EdgeInsets.all(0),
-                    ),
-                    state is WalletErrorState
-                        ? Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(18.r),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    state.message,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  TextButton(
-                                    style: ElevatedButton.styleFrom(
-                                      foregroundColor: accentColor,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(16.r),
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      WalletCubit.get(context).getWallet(
-                                          WalletCubit.get(context).indexWallet);
-                                    },
-                                    child: const Text('Retry'),
-                                  )
-                                ],
-                              ),
-                            ),
-                          )
-                        : WalletCubit.get(context).wallet.isNotEmpty
-                            ? Column(
-                                children: [
-                                  ListView.builder(
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.vertical,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      itemCount: WalletCubit.get(context)
-                                          .wallet
-                                          .length,
-                                      itemBuilder: (context, index) {
-                                        var item = WalletCubit.get(context)
-                                            .wallet[index];
-                                        return ListTile(
-                                          title: Text(
-                                            item.id!,
-                                            style: TextStyle(
-                                              color: primaryColor,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 24.sp,
-                                            ),
-                                          ),
-                                          subtitle: Text(item.comment ?? ''),
-                                          trailing: Text(
-                                            item.amount!.toStringAsFixed(2),
-                                            style: TextStyle(
-                                              color: primaryColor,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20.sp,
-                                            ),
-                                          ),
-                                          contentPadding:
-                                              const EdgeInsets.all(0),
-                                        );
-                                      }),
-                                  SizedBox(
-                                    height: 20.h,
-                                  ),
-                                  loadingWallet
-                                      ? const Center(
-                                          child: CircularProgressIndicator(
-                                            color: black,
-                                          ),
-                                        )
-                                      : Container(),
-                                ],
-                              )
-                            : Column(
-                                children: [
-                                  SizedBox(
-                                    height: 20.h,
-                                  ),
-                                  const Center(
-                                    child: CircularProgressIndicator(
-                                      color: black,
+        return Container(
+          child: WalletCubit.get(context).loadingWallet
+              ? loading()
+              : state is WalletSuccessState
+                  ? WalletCubit.get(context).wallet.isNotEmpty
+                      ? ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: WalletCubit.get(context).wallet.length,
+                          itemBuilder: (context, index) {
+                            var item = WalletCubit.get(context).wallet[index];
+                            return Column(
+                              children: [
+                                ListTile(
+                                  title: Text(
+                                    item.id!,
+                                    style: TextStyle(
+                                      color: primaryColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 22.sp,
                                     ),
                                   ),
-                                ],
-                              ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                  ],
-                ),
-              ),
-            ));
+                                  subtitle: Text(item.comment ?? ''),
+                                  trailing: Text(
+                                    item.amount!.toStringAsFixed(2),
+                                    style: TextStyle(
+                                      color: primaryColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.sp,
+                                    ),
+                                  ),
+                                  contentPadding: const EdgeInsets.all(0),
+                                ),
+                                index ==
+                                            WalletCubit.get(context)
+                                                    .wallet
+                                                    .length -
+                                                1 &&
+                                        loadingWallet
+                                    ? Column(
+                                        children: [
+                                          SizedBox(
+                                            height: 10.h,
+                                          ),
+                                          loading(),
+                                          SizedBox(
+                                            height: 10.h,
+                                          ),
+                                        ],
+                                      )
+                                    : Container(),
+                              ],
+                            );
+                          })
+                      : Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(18.r),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Text(
+                                  "Not Found Data",
+                                  textAlign: TextAlign.center,
+                                ),
+                                TextButton(
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: accentColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16.r),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    WalletCubit.get(context).getWallet(1);
+                                  },
+                                  child: const Text('Retry'),
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                  : state is WalletErrorState
+                      ? errorMessage2(
+                          message: state.message,
+                          press: () {
+                            WalletCubit.get(context).getWallet(1);
+                          })
+                      : Container(),
+        );
+      },
+    );
+  }
+}
+
+class Request extends StatefulWidget {
+  const Request({Key? key}) : super(key: key);
+
+  @override
+  State<Request> createState() => _RequestState();
+}
+
+class _RequestState extends State<Request> {
+  bool loadingRequests = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<WalletCubit, WalletState>(
+      listener: (context, state) {
+        if (state is RequestsSuccessState) {
+          setState(() {
+            loadingRequests = false;
+          });
+        } else if (state is RequestsErrorState) {
+          setState(() {
+            loadingRequests = false;
+          });
+        }
+      },
+      builder: (context, state) {
+        return Container(
+          child: WalletCubit.get(context).loadingRequests
+              ? loading()
+              : state is RequestsSuccessState
+                  ? WalletCubit.get(context).requests.isNotEmpty
+                      ? ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: WalletCubit.get(context).requests.length,
+                          itemBuilder: (context, index) {
+                            var item = WalletCubit.get(context).requests[index];
+                            return Column(
+                              children: [
+                                ListTile(
+                                  title: Text(
+                                    item.status!,
+                                    style: TextStyle(
+                                      color: primaryColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 22.sp,
+                                    ),
+                                  ),
+                                  subtitle: Text(item.id ?? ''),
+                                  trailing: Text(
+                                    item.amount!.toStringAsFixed(2),
+                                    style: TextStyle(
+                                      color: primaryColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.sp,
+                                    ),
+                                  ),
+                                  contentPadding: const EdgeInsets.all(0),
+                                ),
+                                index ==
+                                            WalletCubit.get(context)
+                                                    .requests
+                                                    .length -
+                                                1 &&
+                                        loadingRequests
+                                    ? Column(
+                                        children: [
+                                          SizedBox(
+                                            height: 10.h,
+                                          ),
+                                          loading(),
+                                          SizedBox(
+                                            height: 10.h,
+                                          ),
+                                        ],
+                                      )
+                                    : Container(),
+                              ],
+                            );
+                          })
+                      : Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(18.r),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Text(
+                                  "Not Found Data",
+                                  textAlign: TextAlign.center,
+                                ),
+                                TextButton(
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: accentColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16.r),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    WalletCubit.get(context).getRequests(1);
+                                  },
+                                  child: const Text('Retry'),
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                  : state is WalletErrorState
+                      ? errorMessage2(
+                          message: state.message,
+                          press: () {
+                            WalletCubit.get(context).getWallet(1);
+                          })
+                      : Container(),
+        );
       },
     );
   }

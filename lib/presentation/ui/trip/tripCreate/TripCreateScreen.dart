@@ -274,10 +274,7 @@ class _TripCreateScreenState extends State<TripCreateScreen> {
                               height: 15.h,
                             ),
                             state is CreateTripInitial
-                                ? const Center(
-                                    child: CircularProgressIndicator(
-                                    color: black,
-                                  ))
+                                ? loading()
                                 : defaultButton3(
                                     text: 'Request',
                                     press: () {

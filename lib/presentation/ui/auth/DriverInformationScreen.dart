@@ -375,11 +375,7 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                     margin:
                     EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
                     child: driverInfoLoading
-                        ? const Center(
-                      child: CircularProgressIndicator(
-                        color: black,
-                      ),
-                    )
+                        ? loading()
                         : defaultButton3(
                         press: () {
                           if (frontNationalIdString.isNotEmpty &&

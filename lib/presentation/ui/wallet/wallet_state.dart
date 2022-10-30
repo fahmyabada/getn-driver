@@ -18,3 +18,17 @@ class WalletSuccessState extends WalletState {
 
   WalletSuccessState(this.data);
 }
+
+class RequestsLoading extends WalletState {}
+
+class RequestsErrorState extends WalletState {
+  final String message;
+
+  RequestsErrorState(this.message);
+}
+
+class RequestsSuccessState extends WalletState {
+  final WalletModel? data;
+
+  RequestsSuccessState(this.data);
+}

@@ -28,12 +28,10 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
   DataRequest? requestDetails;
   List<Data> trips = [];
   int indexTrips = 1;
-  bool loadingMoreTrips = false;
   bool loadingTrips = false;
   bool loadingRequest = false;
   String failureRequest = "";
   String failureTrip = "";
-
 
   void getRequestDetails(String id) async {
     emit(RequestDetailsInitial());
@@ -60,15 +58,19 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
   }
 
   void getTripsRequestDetails(int index, String id) async {
-    var body = {"request": id, "page": index};
+    var body = {
+      "request": id,
+      "page": index,
+      "sort": "startDate:-1",
+    };
     print("getTripsRequestDetails*********** $body");
     if (index > 1) {
       getTripsRequestDetailsUseCase.execute(body).then((value) {
         emit(eitherLoadedOrErrorStateTripsRequestDetails2(value));
       });
     } else {
-      emit(TripsInitial());
       loadingTrips = true;
+      emit(TripsInitial());
       getTripsRequestDetailsUseCase.execute(body).then((value) {
         emit(eitherLoadedOrErrorStateTripsRequestDetails(value));
       });
@@ -80,17 +82,16 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
     return data.fold((failure1) {
       failureTrip = failure1;
       loadingTrips = false;
-      trips.clear();
+      // trips.clear();
       print("TripsErrorState*********** $failure1");
       return TripsErrorState(failure1);
     }, (data) {
-      if (data!.data!.isNotEmpty) {
-        print("TripsSuccessState*********** ${data.data!}");
-        trips.clear();
-        trips.addAll(data.data!);
-        indexTrips = indexTrips + 1;
-        loadingMoreTrips = true;
+      if (kDebugMode) {
+        print("TripsSuccessState*********** ${data!.data!}");
       }
+      trips.clear();
+      trips.addAll(data!.data!);
+      indexTrips = indexTrips + 1;
       loadingTrips = false;
       return TripsSuccessState(data);
     });
@@ -101,21 +102,16 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
     return data.fold((failure1) {
       return TripsErrorState(failure1);
     }, (data) {
-      if (data!.data!.isNotEmpty) {
-        if (data.totalCount! >= trips.length) {
-          loadingMoreTrips = true;
-          trips.addAll(data.data!);
-          indexTrips = indexTrips + 1;
-        } else {
-          loadingMoreTrips = false;
-        }
+      if (data!.totalCount! >= trips.length) {
+        trips.addAll(data.data!);
+        indexTrips = indexTrips + 1;
       }
       return TripsSuccessState(data);
     });
   }
 
   void editRequest(String id, String type, String comment) async {
-    if (type == "reject") {
+    if (type == "reject" || type == "mid_pause") {
       emit(RequestDetailsEditRejectInitial());
     } else {
       emit(RequestDetailsEditInitial());

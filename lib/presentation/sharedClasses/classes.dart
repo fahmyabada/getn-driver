@@ -139,11 +139,7 @@ class CustomDialogRequestTabs extends StatelessWidget {
                               'Ok',
                               style: TextStyle(color: white, fontSize: 15.sp),
                             ))
-                        : Center(
-                            child: CircularProgressIndicator(
-                              color: btnOkColor,
-                            ),
-                          ),
+                        : loading(),
                     SizedBox(
                       width: 30.w,
                     ),
@@ -299,7 +295,7 @@ class CustomDialogLocation extends StatelessWidget {
 }
 
 class CustomDialogRequestDetails extends StatelessWidget {
-  final String? title, description, id;
+  final String? title, description, id, type;
 
   var commentController = TextEditingController();
   var formKeyRequest = GlobalKey<FormState>();
@@ -309,6 +305,7 @@ class CustomDialogRequestDetails extends StatelessWidget {
     this.title,
     this.description,
     this.id,
+    this.type,
   }) : super(key: key);
 
   @override
@@ -401,7 +398,7 @@ class CustomDialogRequestDetails extends StatelessWidget {
                                 if (formKeyRequest.currentState!.validate()) {
                                   RequestDetailsCubit.get(context).editRequest(
                                       id!,
-                                      "reject",
+                                      type!,
                                       commentController.text.toString());
                                 }
                               },
@@ -409,11 +406,7 @@ class CustomDialogRequestDetails extends StatelessWidget {
                                 'Ok',
                                 style: TextStyle(color: white, fontSize: 15.sp),
                               ))
-                          : const Center(
-                              child: CircularProgressIndicator(
-                                color: accentColor,
-                              ),
-                            ),
+                          : loading(),
                       SizedBox(
                         width: 30.w,
                       ),
@@ -534,28 +527,26 @@ class CustomDialogTripDetails extends StatelessWidget {
                     children: [
                       state is! TripDetailsEditRejectInitial
                           ? MaterialButton(
-                          height: 30.h,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.r)),
-                          color: accentColor,
-                          minWidth: 80.w,
-                          onPressed: () {
-                            if (formKeyRequest.currentState!.validate()) {
-                              TripDetailsCubit.get(context).editTrip(
-                                  TripDetailsCubit.get(context).tripDetails!.id!,
-                                  "reject",
-                                  commentController.text.toString());
-                            }
-                          },
-                          child: Text(
-                            'Ok',
-                            style: TextStyle(color: white, fontSize: 15.sp),
-                          ))
-                          : const Center(
-                        child: CircularProgressIndicator(
-                          color: accentColor,
-                        ),
-                      ),
+                              height: 30.h,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.r)),
+                              color: accentColor,
+                              minWidth: 80.w,
+                              onPressed: () {
+                                if (formKeyRequest.currentState!.validate()) {
+                                  TripDetailsCubit.get(context).editTrip(
+                                      TripDetailsCubit.get(context)
+                                          .tripDetails!
+                                          .id!,
+                                      "reject",
+                                      commentController.text.toString());
+                                }
+                              },
+                              child: Text(
+                                'Ok',
+                                style: TextStyle(color: white, fontSize: 15.sp),
+                              ))
+                          : loading(),
                       SizedBox(
                         width: 30.w,
                       ),
@@ -660,9 +651,11 @@ class DrawerMenu extends StatelessWidget {
               color: grey2,
             ),
             onTap: () {
-              navigateTo(context, BlocProvider(
-                  create: (context) => WalletCubit(),
-                  child: const WalletScreen()));
+              navigateTo(
+                  context,
+                  BlocProvider(
+                      create: (context) => WalletCubit(),
+                      child: const WalletScreen()));
             },
           ),
           ListTile(
@@ -675,9 +668,11 @@ class DrawerMenu extends StatelessWidget {
             ),
             leading: const Icon(Icons.notifications, color: grey2),
             onTap: () {
-              navigateTo(context, BlocProvider(
-                  create: (context) => NotificationCubit(),
-                  child: const NotificationScreen()));
+              navigateTo(
+                  context,
+                  BlocProvider(
+                      create: (context) => NotificationCubit(),
+                      child: const NotificationScreen()));
             },
           ),
           ListTile(

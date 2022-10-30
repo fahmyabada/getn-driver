@@ -149,7 +149,7 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                       ),
                       // carModel
                       SignCubit.get(context).carSubCategoryLoading
-                          ? const CircularProgressIndicator(color: black)
+                          ? loading()
                           : Container(
                               width: 1.sw,
                               decoration: BoxDecoration(
@@ -240,7 +240,7 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                       ),
                       // carModel
                       SignCubit.get(context).carModelLoading
-                          ? const CircularProgressIndicator(color: black)
+                          ? loading()
                           : Container(
                               width: 1.sw,
                               decoration: BoxDecoration(
@@ -330,7 +330,7 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                       ),
                       // carColor
                       SignCubit.get(context).colorsLoading
-                          ? const CircularProgressIndicator(color: black)
+                          ? loading()
                           : Container(
                               width: 1.sw,
                               decoration: BoxDecoration(
@@ -613,11 +613,7 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                         height: 60.h,
                       ),
                       carLoading
-                          ? const Center(
-                              child: CircularProgressIndicator(
-                                color: black,
-                              ),
-                            )
+                          ? loading()
                           : defaultButton3(
                               press: () async {
                                 print(

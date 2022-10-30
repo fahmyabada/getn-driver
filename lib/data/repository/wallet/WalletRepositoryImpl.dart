@@ -25,4 +25,19 @@ class WalletRepositoryImpl extends WalletRepository {
       return Left(networkFailureMessage);
     }
   }
+
+  @override
+  Future<Either<String, WalletModel?>> getRequests(int index) async {
+    if (await networkInfo.isConnected) {
+      return await walletRemoteDataSource.getRequests(index).then((value) {
+        return value.fold((failure) {
+          return Left(failure.toString());
+        }, (data) {
+          return Right(data);
+        });
+      });
+    } else {
+      return Left(networkFailureMessage);
+    }
+  }
 }

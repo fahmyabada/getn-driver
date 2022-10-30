@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class WalletRemoteDataSource {
   Future<Either<String, WalletModel?>> getWallet(int index);
+  Future<Either<String, WalletModel?>> getRequests(int index);
 }
 
 class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
@@ -20,6 +21,28 @@ class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
         url: 'walletTransactions',
         query: body,
         token: getIt<SharedPreferences>().getString("token")
+      ).then((value) {
+        if (value.statusCode == 200) {
+          return Right(WalletModel.fromJson(value.data!));
+        } else {
+          return Left(serverFailureMessage);
+        }
+      });
+    }  catch (error) {
+      return Left(handleError(error));
+    }
+  }
+
+  @override
+  Future<Either<String, WalletModel?>> getRequests(int index) async{
+    try {
+      var body = {
+        "page": index,
+      };
+      return await DioHelper.getData(
+          url: 'requestTransactions',
+          query: body,
+          token: getIt<SharedPreferences>().getString("token")
       ).then((value) {
         if (value.statusCode == 200) {
           return Right(WalletModel.fromJson(value.data!));

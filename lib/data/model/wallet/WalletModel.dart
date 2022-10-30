@@ -48,6 +48,12 @@ class WalletModel {
   int? get page => _page;
   int? get limit => _limit;
 
+
+  @override
+  String toString() {
+    return 'WalletModel{_data: $_data, _totalCount: $_totalCount, _tableCount: $_tableCount, _wallet: $_wallet, _holdWallet: $_holdWallet, _page: $_page, _limit: $_limit}';
+  }
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     if (_data != null) {

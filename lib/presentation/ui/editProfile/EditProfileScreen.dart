@@ -140,8 +140,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               EditProfileCubit.get(context)
                   .getArea(dropDownValueCountries!.id!, dropDownValueCity!.id!);
             }
-          }
-          else if (state is AreaSuccessState) {
+          } else if (state is AreaSuccessState) {
             if (state.data!.isNotEmpty) {
               dropDownValueArea = state.data?.first;
             }
@@ -153,11 +152,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               getIt<SharedPreferences>().setString('name', state.data.name!);
             }
             if (state.data.image!.src != null) {
-              getIt<SharedPreferences>().setString('userImage', state.data.image!.src!);
+              getIt<SharedPreferences>()
+                  .setString('userImage', state.data.image!.src!);
             }
             Navigator.pop(context);
-          }
-          else if (state is EditProfileErrorState) {
+          } else if (state is EditProfileErrorState) {
             showToastt(
                 text: state.message,
                 state: ToastStates.error,
@@ -177,38 +176,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 centerTitle: true,
               ),
               body: state is GetProfileDetailsLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(
-                        color: black,
-                      ),
-                    )
+                  ? loading()
                   : EditProfileCubit.get(context).failure.isNotEmpty
-                      ? Center(
-                          child: Padding(
-                            padding:  EdgeInsets.all(18.r),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                    EditProfileCubit.get(context).failure,
-                                textAlign: TextAlign.center,),
-                                TextButton(
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: accentColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16.r),
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    EditProfileCubit.get(context)
-                                        .getProfileDetails();
-                                  },
-                                  child: const Text('Retry'),
-                                )
-                              ],
-                            ),
-                          ),
-                        )
+                      ? errorMessage2(
+                          message: EditProfileCubit.get(context).failure,
+                          press: () {
+                            EditProfileCubit.get(context).getProfileDetails();
+                          })
                       : SingleChildScrollView(
                           child: Padding(
                             padding: EdgeInsets.symmetric(
@@ -461,48 +435,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   height: 25.h,
                                 ),
                                 EditProfileCubit.get(context).loadingCountry
-                                    ? const CircularProgressIndicator(
-                                        color: black)
+                                    ? loading()
                                     : EditProfileCubit.get(context)
                                             .failureCountry
                                             .isNotEmpty
-                                        ? Center(
-                                            child: Container(
-                                              width: 1.sw,
-                                              padding: EdgeInsets.all(10.r),
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.r),
-                                                border: Border.all(
-                                                  width: 1,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text(
-                                                    'error occurred when get countries',
-                                                    style: TextStyle(
-                                                        fontSize: 20.sp),
-                                                  ),
-                                                  MaterialButton(
-                                                    onPressed: () {
-                                                      EditProfileCubit.get(
-                                                              context)
-                                                          .getCountries();
-                                                    },
-                                                    child: Text(
-                                                      'Retry',
-                                                      style: TextStyle(
-                                                          color: accentColor,
-                                                          fontSize: 20.sp),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          )
+                                        ? errorMessage2(
+                                            message:
+                                                'error occurred when get countries',
+                                            press: () {
+                                              EditProfileCubit.get(context)
+                                                  .getCountries();
+                                            })
                                         : EditProfileCubit.get(context)
                                                 .countries
                                                 .isNotEmpty
@@ -630,50 +573,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   height: 16.h,
                                 ),
                                 EditProfileCubit.get(context).loadingCity
-                                    ? const CircularProgressIndicator(
-                                        color: black)
+                                    ? loading()
                                     : EditProfileCubit.get(context)
                                             .failureCity
                                             .isNotEmpty
-                                        ? Center(
-                                            child: Container(
-                                              width: 1.sw,
-                                              padding: EdgeInsets.all(10.r),
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.r),
-                                                border: Border.all(
-                                                  width: 1,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text(
-                                                    'error occurred when get Cites',
-                                                    style: TextStyle(
-                                                        fontSize: 20.sp),
-                                                  ),
-                                                  MaterialButton(
-                                                    onPressed: () {
-                                                      EditProfileCubit.get(
-                                                              context)
-                                                          .getCity(
-                                                              dropDownValueCountries!
-                                                                  .id!);
-                                                    },
-                                                    child: Text(
-                                                      'Retry',
-                                                      style: TextStyle(
-                                                          color: accentColor,
-                                                          fontSize: 20.sp),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          )
+                                        ? errorMessage2(
+                                            message:
+                                                'error occurred when get Cites',
+                                            press: () {
+                                              EditProfileCubit.get(context)
+                                                  .getCity(
+                                                      dropDownValueCountries!
+                                                          .id!);
+                                            })
                                         : EditProfileCubit.get(context)
                                                 .city
                                                 .isNotEmpty
@@ -803,52 +715,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   height: 16.h,
                                 ),
                                 EditProfileCubit.get(context).loadingArea
-                                    ? const CircularProgressIndicator(
-                                        color: black)
+                                    ? loading()
                                     : EditProfileCubit.get(context)
                                             .failureArea
                                             .isNotEmpty
-                                        ? Center(
-                                            child: Container(
-                                              width: 1.sw,
-                                              padding: EdgeInsets.all(10.r),
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.r),
-                                                border: Border.all(
-                                                  width: 1,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text(
-                                                    'error occurred when get Area',
-                                                    style: TextStyle(
-                                                        fontSize: 20.sp),
-                                                  ),
-                                                  MaterialButton(
-                                                    onPressed: () {
-                                                      EditProfileCubit.get(
-                                                              context)
-                                                          .getArea(
-                                                              dropDownValueCountries!
-                                                                  .id!,
-                                                              dropDownValueCity!
-                                                                  .id!);
-                                                    },
-                                                    child: Text(
-                                                      'Retry',
-                                                      style: TextStyle(
-                                                          color: accentColor,
-                                                          fontSize: 20.sp),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          )
+                                        ? errorMessage2(
+                                            message:
+                                                'error occurred when get Area',
+                                            press: () {
+                                              EditProfileCubit.get(context)
+                                                  .getArea(
+                                                      dropDownValueCountries!
+                                                          .id!,
+                                                      dropDownValueCity!.id!);
+                                            })
                                         : EditProfileCubit.get(context)
                                                 .area
                                                 .isNotEmpty
@@ -1021,11 +901,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   height: 40.h,
                                 ),
                                 EditProfileCubit.get(context).loadingEdit
-                                    ? const Center(
-                                        child: CircularProgressIndicator(
-                                          color: black,
-                                        ),
-                                      )
+                                    ? loading()
                                     : defaultButton3(
                                         press: () {
                                           if (formKey.currentState!
@@ -1033,7 +909,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                               dropDownValueCountries != null &&
                                               dropDownValueCity != null &&
                                               dropDownValueArea != null &&
-                                              formKeyAddress.currentState!.validate() &&
+                                              formKeyAddress.currentState!
+                                                  .validate() &&
                                               userImage.isNotEmpty &&
                                               availabilities.isNotEmpty) {
                                             String whatsApp = "";
@@ -1128,8 +1005,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       if (args.value is List<DateTime>) {
         setState(() {
           availabilities = args.value;
-          availabilitiesValues =
-              availabilities.map((e) => e.toString()).toList();
+          availabilitiesValues = availabilities
+              .map((e) => DateFormat('yyyy-MM-dd').format(e).toString())
+              .toList();
         });
       }
     });

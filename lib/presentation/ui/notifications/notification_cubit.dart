@@ -35,14 +35,11 @@ class NotificationCubit extends Cubit<NotificationState> {
   NotificationState eitherLoadedOrErrorStateNotification(
       Either<String, NotificationModel?> data) {
     return data.fold((failure1) {
-      notification.clear();
       return NotificationErrorState(failure1);
     }, (data) {
-      if (data!.data!.isNotEmpty) {
         notification.clear();
-        notification.addAll(data.data!);
+        notification.addAll(data!.data!);
         indexNotification = indexNotification + 1;
-      }
 
       return NotificationSuccessState(data);
     });

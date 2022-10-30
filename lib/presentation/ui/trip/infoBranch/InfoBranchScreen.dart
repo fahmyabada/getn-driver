@@ -46,11 +46,7 @@ class _InfoBranchScreenState extends State<InfoBranchScreen> {
               elevation: 1.0,
             ),
             body: state is GetInfoPlaceInitial
-                ? const Center(
-                    child: CircularProgressIndicator(
-                      color: black,
-                    ),
-                  )
+                ? loading()
                 : SingleChildScrollView(
               controller: _scrollController
                 ..addListener(() async {
@@ -181,11 +177,7 @@ class _InfoBranchScreenState extends State<InfoBranchScreen> {
                             height: 25.h,
                           ),
                           state is GetBranchesInitial
-                              ? const Center(
-                                  child: CircularProgressIndicator(
-                                    color: black,
-                                  ),
-                                )
+                              ? loading()
                               : ListView.builder(
                                   physics: NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,

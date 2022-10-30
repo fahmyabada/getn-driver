@@ -175,7 +175,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 child: Row(
                   children: [
                     state is CountriesLoading
-                        ? const CircularProgressIndicator(color: black)
+                        ? loading()
                         : SignCubit.get(context).countries.isNotEmpty
                             ? Expanded(
                                 flex: 2,
@@ -301,11 +301,7 @@ class _SignInScreenState extends State<SignInScreen> {
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
                 child: signInLoading
-                    ? const Center(
-                        child: CircularProgressIndicator(
-                          color: black,
-                        ),
-                      )
+                    ? loading()
                     : defaultButton3(
                         press: () {
                           if (dropDownValueCountry != null) {

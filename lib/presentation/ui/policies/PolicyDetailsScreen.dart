@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
+import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/ui/policies/policies_cubit.dart';
 
 class PolicyDetailsScreen extends StatelessWidget {
@@ -31,32 +32,13 @@ class PolicyDetailsScreen extends StatelessWidget {
               centerTitle: true,
             ),
             body: state is PoliciesLoading
-                ? const Center(
-                    child: CircularProgressIndicator(
-                    color: black,
-                  ))
+                ? loading()
                 : state is PoliciesErrorState
-                    ? Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Text(
-                                'Something went wrong, please try again'),
-                            TextButton(
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: accentColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16.r),
-                                ),
-                              ),
-                              onPressed: () {
-                                PoliciesCubit.get(context).getPolicies(title);
-                              },
-                              child: const Text('Retry'),
-                            )
-                          ],
-                        ),
-                      )
+                    ? errorMessage2(
+              message: 'Something went wrong, please try again',
+              press: () {
+                PoliciesCubit.get(context).getPolicies(title);
+              })
                     : SingleChildScrollView(
                       child: Html(
                           data: PoliciesCubit.get(context).content,

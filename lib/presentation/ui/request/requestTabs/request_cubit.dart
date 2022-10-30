@@ -23,24 +23,28 @@ class RequestCubit extends Cubit<RequestState> {
 
   List<DataRequest> requestUpComing = [];
   int indexUpComing = 1;
-  bool loadingUpComing = false;
 
   List<DataRequest> requestPast = [];
   int indexPast = 1;
-  bool loadingPast = false;
 
   List<DataRequest> requestPending = [];
   int indexPending = 1;
+
+  bool loadingCurrent = false;
+  bool loadingPast = false;
+  bool loadingUpComing = false;
   bool loadingPending = false;
 
   void getRequestCurrent(int index) async {
+    loadingCurrent = true;
     emit(RequestCurrentInitial());
     var body = {
-      "status": ["arrive", "coming", "start","on_my_way"],
+      "status": ["arrive", "coming", "start", "on_my_way"],
       "page": index,
       "select-client": 'name image'
     };
     getRequestUseCase.execute(body).then((value) {
+      loadingCurrent = false;
       emit(eitherLoadedOrErrorStateRequestCurrent(value));
     });
   }
@@ -48,13 +52,10 @@ class RequestCubit extends Cubit<RequestState> {
   RequestState eitherLoadedOrErrorStateRequestCurrent(
       Either<String, Request?> data) {
     return data.fold((failure1) {
-      requestCurrent.clear();
       return RequestCurrentErrorState(failure1);
     }, (data) {
-      if (data!.data!.isNotEmpty) {
-        requestCurrent.clear();
-        requestCurrent = data.data!;
-      }
+      requestCurrent.clear();
+      requestCurrent = data!.data!;
       return RequestCurrentSuccessState(data.data);
     });
   }
@@ -73,8 +74,10 @@ class RequestCubit extends Cubit<RequestState> {
       });
     } else {
       // print("indexlll*********** ");
+      loadingUpComing = true;
       emit(RequestUpComingInitial());
       getRequestUseCase.execute(body).then((value) {
+        loadingUpComing = false;
         emit(eitherLoadedOrErrorStateRequestUpComing(value));
       });
     }
@@ -83,16 +86,11 @@ class RequestCubit extends Cubit<RequestState> {
   RequestState eitherLoadedOrErrorStateRequestUpComing(
       Either<String, Request?> data) {
     return data.fold((failure1) {
-      requestUpComing.clear();
       return RequestUpComingErrorState(failure1);
     }, (data) {
-      if (data!.data!.isNotEmpty) {
-        requestUpComing.clear();
-        requestUpComing.addAll(data.data!);
-        indexUpComing = indexUpComing + 1;
-        loadingUpComing = true;
-      }
-
+      requestUpComing.clear();
+      requestUpComing.addAll(data!.data!);
+      indexUpComing = indexUpComing + 1;
       return RequestUpComingSuccessState(data.data);
     });
   }
@@ -102,16 +100,10 @@ class RequestCubit extends Cubit<RequestState> {
     return data.fold((failure1) {
       return RequestUpComingErrorState(failure1);
     }, (data) {
-      if (data!.data!.isNotEmpty) {
-        if (data.totalCount! >= requestUpComing.length) {
-          loadingUpComing = true;
-          requestUpComing.addAll(data.data!);
-          indexUpComing = indexUpComing + 1;
-        } else {
-          loadingUpComing = false;
-        }
+      if (data!.totalCount! >= requestUpComing.length) {
+        requestUpComing.addAll(data.data!);
+        indexUpComing = indexUpComing + 1;
       }
-
       return RequestUpComingSuccessState(data.data);
     });
   }
@@ -123,13 +115,16 @@ class RequestCubit extends Cubit<RequestState> {
       "sort": 'from.date:-1',
       "select-client": 'name image'
     };
+    print("getRequestPast************* $index");
     if (index > 1) {
       getRequestUseCase.execute(body).then((value) {
         emit(eitherLoadedOrErrorStateRequestPast2(value));
       });
     } else {
+      loadingPast = true;
       emit(RequestPastInitial());
       getRequestUseCase.execute(body).then((value) {
+        loadingPast = false;
         emit(eitherLoadedOrErrorStateRequestPast(value));
       });
     }
@@ -138,18 +133,13 @@ class RequestCubit extends Cubit<RequestState> {
   RequestState eitherLoadedOrErrorStateRequestPast(
       Either<String, Request?> data) {
     return data.fold((failure1) {
-      requestPast.clear();
       return RequestPastErrorState(failure1);
     }, (data) {
-      if (data!.data!.isNotEmpty) {
-        requestPast.clear();
-        requestPast.addAll(data.data!);
-        // requestPast
-        //     .sort((a, b) => a.referenceId! > b.referenceId! ? 1 : -1);
-        indexPast = indexPast + 1;
-        loadingPast = true;
-      }
-
+      requestPast.clear();
+      requestPast.addAll(data!.data!);
+      // requestPast
+      //     .sort((a, b) => a.referenceId! > b.referenceId! ? 1 : -1);
+      indexPast = indexPast + 1;
       return RequestPastSuccessState(data.data);
     });
   }
@@ -159,35 +149,31 @@ class RequestCubit extends Cubit<RequestState> {
     return data.fold((failure1) {
       return RequestPastErrorState(failure1);
     }, (data) {
-      if (data!.data!.isNotEmpty) {
-        if (data.totalCount! >= requestPast.length) {
-          loadingPast = true;
-          requestPast.addAll(data.data!);
-          indexPast = indexPast + 1;
-        } else {
-          loadingPast = false;
-        }
+      if (data!.totalCount! > requestPast.length) {
+        requestPast.addAll(data.data!);
+        indexPast = indexPast + 1;
       }
-
       return RequestPastSuccessState(data.data);
     });
   }
 
   void getRequestPending(int index) async {
     var body = {
-      "status": ["pending","accept"],
+      "status": ["pending", "accept"],
       "page": index,
       "sort": 'createdAt:-1',
       "select-client": 'name image',
-      "paymentStatus": ["pending","need_confirm","failed"],
+      "paymentStatus": ["pending", "need_confirm", "failed"],
     };
     if (index > 1) {
       getRequestUseCase.execute(body).then((value) {
         emit(eitherLoadedOrErrorStateRequestPending2(value));
       });
     } else {
+      loadingPending = true;
       emit(RequestPendingInitial());
       getRequestUseCase.execute(body).then((value) {
+        loadingPending = false;
         emit(eitherLoadedOrErrorStateRequestPending(value));
       });
     }
@@ -196,16 +182,11 @@ class RequestCubit extends Cubit<RequestState> {
   RequestState eitherLoadedOrErrorStateRequestPending(
       Either<String, Request?> data) {
     return data.fold((failure1) {
-      requestPending.clear();
       return RequestPendingErrorState(failure1);
     }, (data) {
-      if (data!.data!.isNotEmpty) {
-        requestPending.clear();
-        requestPending.addAll(data.data!);
-        indexPending = indexPending + 1;
-        loadingPending = true;
-      }
-
+      requestPending.clear();
+      requestPending.addAll(data!.data!);
+      indexPending = indexPending + 1;
       return RequestPendingSuccessState(data.data);
     });
   }
@@ -215,14 +196,9 @@ class RequestCubit extends Cubit<RequestState> {
     return data.fold((failure1) {
       return RequestPendingErrorState(failure1);
     }, (data) {
-      if (data!.data!.isNotEmpty) {
-        if (data.totalCount! >= requestPending.length) {
-          loadingPending = true;
-          requestPending.addAll(data.data!);
-          indexPending = indexPending + 1;
-        } else {
-          loadingPending = false;
-        }
+      if (data!.totalCount! >= requestPending.length) {
+        requestPending.addAll(data.data!);
+        indexPending = indexPending + 1;
       }
       return RequestPendingSuccessState(data.data);
     });

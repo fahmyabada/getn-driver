@@ -72,3 +72,4 @@ class RequestEditSuccessState extends RequestState {
 
   RequestEditSuccessState(this.data);
 }
+

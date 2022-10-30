@@ -49,11 +49,7 @@ class _BranchesPlacesScreenState extends State<BranchesPlacesScreen> {
               elevation: 1.0,
             ),
             body: state is GetBranchesInitial
-                ? const Center(
-                    child: CircularProgressIndicator(
-                      color: black,
-                    ),
-                  )
+                ? loading()
                 : ListView.builder(
                     controller: _scrollController
                       ..addListener(() async {

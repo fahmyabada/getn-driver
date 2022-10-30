@@ -74,6 +74,7 @@ import 'package:getn_driver/domain/usecase/tripCreate/GetPlaceDetailsUseCase.dar
 import 'package:getn_driver/domain/usecase/tripCreate/GetSearchLocationUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripDetails/GetTripDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripDetails/PutTripDetailsUseCase.dart';
+import 'package:getn_driver/domain/usecase/wallet/GetRequestsWalletUseCase.dart';
 import 'package:getn_driver/domain/usecase/wallet/GetWalletUseCase.dart';
 import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -123,6 +124,7 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => EditProfileUserUseCase(getIt()));
   getIt.registerLazySingleton(() => GetWalletUseCase(getIt()));
   getIt.registerLazySingleton(() => GetNotificationUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetRequestsWalletUseCase(getIt()));
 
   // Repository
   getIt.registerLazySingleton<AuthRepository>(
