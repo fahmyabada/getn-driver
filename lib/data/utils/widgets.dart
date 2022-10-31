@@ -25,6 +25,35 @@ Future<dynamic> navigateToWithRefreshPagePrevious(context, widget) async {
   );
 }
 
+Future<void> launchInMap(
+    String sLat, String sLon, String dLat, String dLon) async {
+  String mapOptions = [
+    'saddr= $sLat,$sLon',
+    'daddr= $dLat,$dLon',
+    'dir_action=navigate'
+  ].join('&');
+
+  final googleUrl = 'https://www.google.com/maps?$mapOptions';
+  final appleUrl =
+      'https://maps.apple.com/?saddr=$sLat,$sLon&daddr=$dLat,$dLon&directionsmode=driving';
+
+  if (Platform.isAndroid) {
+    final Uri urlParse = Uri.parse(googleUrl);
+    if (!await launchUrl(
+      urlParse,
+    )) {
+      throw 'Could not launch $googleUrl';
+    }
+  } else if (Platform.isIOS) {
+    final Uri urlParse = Uri.parse(appleUrl);
+    if (!await launchUrl(
+      urlParse,
+    )) {
+      throw 'Could not launch $appleUrl';
+    }
+  }
+}
+
 Future<void> makePhoneCall(String phoneNumber) async {
   final Uri launchUri = Uri(
     scheme: 'tel',

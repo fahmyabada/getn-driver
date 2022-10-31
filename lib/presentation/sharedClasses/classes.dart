@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -193,105 +191,96 @@ class CustomDialogLocation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<RequestDetailsCubit, RequestDetailsState>(
-      listener: (context, state) {},
-      builder: (context, state) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r),
-          ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          child: Container(
-            padding: EdgeInsets.only(
-                top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
-            margin: EdgeInsets.only(top: 50.r),
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(10.r),
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      child: Container(
+        padding:
+            EdgeInsets.only(top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+        margin: EdgeInsets.only(top: 50.r),
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(10.r),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            SizedBox(
+              height: 10.r,
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                SizedBox(
-                  height: 10.r,
-                ),
-                Text(
-                  title!,
-                  style: TextStyle(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w700,
-                      color: titleColor),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(
-                  height: 16.r,
-                ),
-                Text(
-                  description!,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16.sp, color: descColor),
-                ),
-                SizedBox(
-                  height: 24.h,
-                ),
-                type == "checkLocationDenied"
-                    ? MaterialButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.r)),
-                        color: btnOkColor,
-                        onPressed: () => Navigator.pop(context),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 8.r, horizontal: 8.r),
-                          child: Text(
-                            "ok",
-                            style: TextStyle(color: white, fontSize: 15.sp),
+            Text(
+              title!,
+              style: TextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w700,
+                  color: titleColor),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: 16.r,
+            ),
+            Text(
+              description!,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16.sp, color: descColor),
+            ),
+            SizedBox(
+              height: 24.h,
+            ),
+            type == "checkLocationDenied"
+                ? MaterialButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.r)),
+                    color: btnOkColor,
+                    onPressed: () => Navigator.pop(context),
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 8.r, horizontal: 8.r),
+                      child: Text(
+                        "ok",
+                        style: TextStyle(color: white, fontSize: 15.sp),
+                      ),
+                    ))
+                : type == "checkLocationDeniedForever"
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          MaterialButton(
+                              height: 30.h,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.r)),
+                              color: btnOkColor,
+                              minWidth: 80.w,
+                              onPressed: () => Navigator.pop(context),
+                              child: Text(
+                                "ok",
+                                style: TextStyle(color: white, fontSize: 15.sp),
+                              )),
+                          SizedBox(
+                            width: 30.w,
                           ),
-                        ))
-                    : type == "checkLocationDeniedForever"
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              MaterialButton(
-                                  height: 30.h,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(10.r)),
-                                  color: btnOkColor,
-                                  minWidth: 80.w,
-                                  onPressed: () => Navigator.pop(context),
-                                  child: Text(
-                                    "ok",
-                                    style: TextStyle(
-                                        color: white, fontSize: 15.sp),
-                                  )),
-                              SizedBox(
-                                width: 30.w,
-                              ),
-                              MaterialButton(
-                                  height: 30.h,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(10.r)),
-                                  color: btnCancelColor,
-                                  onPressed: () =>
-                                      AppSettings.openLocationSettings(),
-                                  minWidth: 80.w,
-                                  child: Text(
-                                    "Setting",
-                                    style: TextStyle(
-                                        color: black, fontSize: 15.sp),
-                                  )),
-                            ],
-                          )
-                        : Container()
-              ],
-            ),
-          ),
-        );
-      },
+                          MaterialButton(
+                              height: 30.h,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.r)),
+                              color: btnCancelColor,
+                              onPressed: () =>
+                                  AppSettings.openLocationSettings(),
+                              minWidth: 80.w,
+                              child: Text(
+                                "Setting",
+                                style: TextStyle(color: black, fontSize: 15.sp),
+                              )),
+                        ],
+                      )
+                    : Container()
+          ],
+        ),
+      ),
     );
   }
 }
@@ -724,20 +713,5 @@ class DrawerMenu extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class Debounce {
-  final int milliseconds;
-  VoidCallback? action;
-  Timer? _timer;
-
-  Debounce({required this.milliseconds});
-
-  run(VoidCallback action) {
-    if (null != _timer) {
-      _timer!.cancel();
-    }
-    _timer = Timer(Duration(milliseconds: milliseconds), action);
   }
 }

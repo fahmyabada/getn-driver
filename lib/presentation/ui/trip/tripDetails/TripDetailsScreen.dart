@@ -230,45 +230,107 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                             .start,
                                                     children: [
                                                       Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
                                                         children: [
                                                           Expanded(
-                                                            child: Text(
-                                                              TripDetailsCubit
-                                                                      .get(
-                                                                          context)
-                                                                  .tripDetails!
-                                                                  .client2!
-                                                                  .name!,
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      15.sp,
-                                                                  color: black,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                              maxLines: 1,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                  TripDetailsCubit
+                                                                          .get(
+                                                                              context)
+                                                                      .tripDetails!
+                                                                      .client2!
+                                                                      .name!,
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          15.sp,
+                                                                      color:
+                                                                          black,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                  maxLines: 1,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 5.h,
+                                                                ),
+                                                                Text(
+                                                                  '${TripDetailsCubit.get(context).tripDetails!.client2!.country!.title!.en!}, ${TripDetailsCubit.get(context).tripDetails!.client2!.city?.title!.en!}, ${TripDetailsCubit.get(context).tripDetails!.client2!.area?.title!.en!}',
+                                                                  maxLines: 1,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          14.sp,
+                                                                      color:
+                                                                          grey2),
+                                                                ),
+                                                              ],
                                                             ),
                                                           ),
+                                                          TripDetailsCubit.get(
+                                                                              context)
+                                                                          .tripDetails!
+                                                                          .status ==
+                                                                      "pending" &&
+                                                                  TripDetailsCubit.get(
+                                                                              context)
+                                                                          .tripDetails!
+                                                                          .status ==
+                                                                      "end" &&
+                                                                  TripDetailsCubit.get(
+                                                                              context)
+                                                                          .tripDetails!
+                                                                          .status ==
+                                                                      "mid_pause" &&
+                                                                  TripDetailsCubit.get(
+                                                                              context)
+                                                                          .tripDetails!
+                                                                          .status ==
+                                                                      "reject" &&
+                                                                  TripDetailsCubit.get(
+                                                                              context)
+                                                                          .tripDetails!
+                                                                          .status ==
+                                                                      "cancel"
+                                                              ? Container()
+                                                              : IconButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    launchInMap(
+                                                                        TripDetailsCubit.get(context)
+                                                                            .tripDetails!
+                                                                            .from!
+                                                                            .placeLatitude!,
+                                                                        TripDetailsCubit.get(context)
+                                                                            .tripDetails!
+                                                                            .from!
+                                                                            .placeLongitude!,
+                                                                        TripDetailsCubit.get(context)
+                                                                            .tripDetails!
+                                                                            .to!
+                                                                            .placeLatitude!,
+                                                                        TripDetailsCubit.get(context)
+                                                                            .tripDetails!
+                                                                            .to!
+                                                                            .placeLongitude!);
+                                                                  },
+                                                                  icon: Icon(
+                                                                    Icons
+                                                                        .wrong_location_sharp,
+                                                                    size: 25.w,
+                                                                  ))
                                                         ],
-                                                      ),
-                                                      SizedBox(
-                                                        height: 5.h,
-                                                      ),
-                                                      Text(
-                                                        TripDetailsCubit.get(
-                                                                context)
-                                                            .tripDetails!
-                                                            .client2!
-                                                            .name!,
-                                                        maxLines: 1,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: TextStyle(
-                                                            fontSize: 14.sp,
-                                                            color: grey2),
                                                       ),
                                                       SizedBox(
                                                         height: 5.h,

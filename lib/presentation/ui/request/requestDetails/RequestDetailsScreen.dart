@@ -9,7 +9,6 @@ import 'package:getn_driver/main_cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
-import 'package:getn_driver/presentation/ui/trip/tripCreate/TripCreateScreen.dart';
 import 'package:getn_driver/presentation/ui/trip/tripDetails/TripDetailsScreen.dart';
 import 'package:intl/intl.dart';
 import 'package:scroll_edge_listener/scroll_edge_listener.dart';
@@ -73,6 +72,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   var formKeyRequest = GlobalKey<FormState>();
   var commentController = TextEditingController();
   bool loadingMoreTrips = false;
+  String sLat = "", sLon = "";
 
   void _loadMoreTrips() {
     RequestDetailsCubit.get(context).getTripsRequestDetails(
@@ -100,9 +100,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => RequestDetailsCubit()
-        ..getRequestDetails(widget.idRequest!)
-        ..getTripsRequestDetails(1, widget.idRequest!),
+      create: (context) => RequestDetailsCubit()..getCurrentLocation(),
       child: BlocConsumer<RequestDetailsCubit, RequestDetailsState>(
         listener: (context, state) async {
           if (state is RequestDetailsEditSuccessState) {
@@ -120,7 +118,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 context: context);
           } else if (state is CurrentLocationSuccessState) {
             print('CurrentLocationSuccessState********* ');
-            String id = await navigateToWithRefreshPagePrevious(
+            // this belong add trip
+            /*String id = await navigateToWithRefreshPagePrevious(
               context,
               TripCreateScreen(
                 requestId: widget.idRequest!,
@@ -143,7 +142,15 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 RequestDetailsCubit.get(context).getRequestDetails(id);
                 RequestDetailsCubit.get(context).getTripsRequestDetails(1, id);
               }
-            });
+            });*/
+
+            sLat = state.position.latitude.toString();
+            sLon = state.position.longitude.toString();
+
+            RequestDetailsCubit.get(context)
+                .getRequestDetails(widget.idRequest!);
+            RequestDetailsCubit.get(context)
+                .getTripsRequestDetails(1, widget.idRequest!);
           } else if (state is CurrentLocationErrorState) {
             if (kDebugMode) {
               print('CurrentLocationErrorState********* ${state.error}');
@@ -158,9 +165,14 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     title: "Location",
                     description: 'Location permissions are denied',
                     type: "checkLocationDenied",
+                    backgroundColor: white,
+                    btnOkColor: accentColor,
+                    btnCancelColor: grey,
+                    titleColor: accentColor,
+                    descColor: black,
                   );
                 },
-              );
+              ).then((value) => Navigator.pop(context));
             } else if (state.error == "deniedForever") {
               showDialog(
                 context: context,
@@ -172,9 +184,14 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     description:
                         'Location permissions are permanently denied\n You must enable the access location so that we can determine your location and save the visit\n choose setting and enable location then try back',
                     type: "checkLocationDeniedForever",
+                    backgroundColor: white,
+                    btnOkColor: accentColor,
+                    btnCancelColor: grey,
+                    titleColor: accentColor,
+                    descColor: black,
                   );
                 },
-              );
+              ).then((value) => Navigator.pop(context));
             }
           } else if (state is TripsSuccessState) {
             setState(() {
@@ -261,33 +278,103 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                       height: 5.h,
                                                     ),
                                                     Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
                                                       children: [
                                                         Expanded(
-                                                          child: Text(
-                                                            RequestDetailsCubit
-                                                                    .get(
-                                                                        context)
-                                                                .requestDetails!
-                                                                .client2!
-                                                                .name!,
-                                                            style: TextStyle(
-                                                                fontSize: 20.sp,
-                                                                color: black,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                RequestDetailsCubit
+                                                                        .get(
+                                                                            context)
+                                                                    .requestDetails!
+                                                                    .client2!
+                                                                    .name!,
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        20.sp,
+                                                                    color:
+                                                                        black,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 5.h,
+                                                              ),
+                                                              Text(
+                                                                '${RequestDetailsCubit.get(context).requestDetails!.client2!.country!.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.city?.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.area?.title!.en!}',
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        18.sp,
+                                                                    color:
+                                                                        grey2),
+                                                              ),
+                                                            ],
                                                           ),
                                                         ),
+                                                        widget.typeScreen !=
+                                                                    null &&
+                                                                widget.typeScreen ==
+                                                                    "past" &&
+                                                                RequestDetailsCubit.get(
+                                                                            context)
+                                                                        .requestDetails!
+                                                                        .status ==
+                                                                    "pending" &&
+                                                                RequestDetailsCubit.get(
+                                                                            context)
+                                                                        .requestDetails!
+                                                                        .status ==
+                                                                    "end" &&
+                                                                RequestDetailsCubit.get(
+                                                                            context)
+                                                                        .requestDetails!
+                                                                        .status ==
+                                                                    "mid_pause" &&
+                                                                RequestDetailsCubit.get(
+                                                                            context)
+                                                                        .requestDetails!
+                                                                        .status ==
+                                                                    "reject" &&
+                                                                RequestDetailsCubit.get(
+                                                                            context)
+                                                                        .requestDetails!
+                                                                        .status ==
+                                                                    "cancel" &&
+                                                                RequestDetailsCubit.get(
+                                                                            context)
+                                                                        .requestDetails!
+                                                                        .paymentStatus ==
+                                                                    "paid"
+                                                            ? Container()
+                                                            : IconButton(
+                                                                onPressed: () {
+                                                                  launchInMap(
+                                                                      sLat,
+                                                                      sLon,
+                                                                      RequestDetailsCubit.get(
+                                                                              context)
+                                                                          .requestDetails!
+                                                                          .from!
+                                                                          .placeLatitude!,
+                                                                      RequestDetailsCubit.get(
+                                                                              context)
+                                                                          .requestDetails!
+                                                                          .from!
+                                                                          .placeLongitude!);
+                                                                },
+                                                                icon: Icon(
+                                                                  Icons
+                                                                      .wrong_location_sharp,
+                                                                  size: 25.w,
+                                                                ))
                                                       ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 5.h,
-                                                    ),
-                                                    Text(
-                                                      '${RequestDetailsCubit.get(context).requestDetails!.client2!.country!.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.city?.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.area?.title!.en!}',
-                                                      style: TextStyle(
-                                                          fontSize: 18.sp,
-                                                          color: grey2),
                                                     ),
                                                     SizedBox(
                                                       height: 5.h,
@@ -1053,6 +1140,25 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                                           ),
                                                                         ],
                                                                       ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            15.h,
+                                                                      ),
+                                                                      IconButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            launchInMap(
+                                                                                trip.from!.placeLatitude!.toString(),
+                                                                                trip.from!.placeLongitude!.toString(),
+                                                                                trip.to!.placeLatitude!.toString(),
+                                                                                trip.to!.placeLongitude!.toString());
+                                                                          },
+                                                                          icon:
+                                                                              Icon(
+                                                                            Icons.wrong_location_sharp,
+                                                                            size:
+                                                                                45.w,
+                                                                          )),
                                                                       SizedBox(
                                                                         height:
                                                                             15.h,

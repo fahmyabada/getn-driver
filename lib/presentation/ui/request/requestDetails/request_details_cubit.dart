@@ -132,6 +132,7 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
   }
 
   void getCurrentLocation() async {
+    loadingRequest = true;
     emit(CurrentLocationLoading());
     final data = await getCurrentLocationUseCase.execute();
     emit(eitherLoadedOrErrorStateCurrentLocation(data));
