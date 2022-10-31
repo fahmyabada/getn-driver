@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
-import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/wallet/wallet_cubit.dart';
 import 'package:scroll_edge_listener/scroll_edge_listener.dart';
 
@@ -15,24 +14,15 @@ class WalletScreen extends StatefulWidget {
 }
 
 class _WalletScreenState extends State<WalletScreen> {
-  late ScrollController _controllerWallet;
   bool loadingWallet = false;
   bool loadingRequests = false;
   int _currentIndex = 0;
   String typeScreen = "wallet";
-  final _debounce = Debounce(milliseconds: 5500);
 
   @override
   void initState() {
     super.initState();
-    _controllerWallet = ScrollController();
     WalletCubit.get(context).getWallet(1);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controllerWallet.removeListener(_loadMoreWallet);
   }
 
   Row buildBalanceRow({required String title, required String balance}) {
@@ -70,7 +60,6 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   void _loadMoreRequests() {
-    print("_controllerRequests0*********** $loadingRequests");
     WalletCubit.get(context).getRequests(WalletCubit.get(context).indexRequests);
   }
 
@@ -87,12 +76,9 @@ class _WalletScreenState extends State<WalletScreen> {
             loadingWallet = false;
           });
         } else if (state is RequestsSuccessState) {
-          _debounce.run(() {
-            setState(() {
-              loadingRequests = false;
-            });
+          setState(() {
+            loadingRequests = false;
           });
-
         } else if (state is RequestsErrorState) {
           setState(() {
             loadingRequests = false;
@@ -119,13 +105,13 @@ class _WalletScreenState extends State<WalletScreen> {
             // debounce: const Duration(milliseconds: 500),
             // dispatch: true,
             listener: () {
-              if (typeScreen == "wallet" && !loadingWallet) {
+              if (typeScreen == "wallet") {
                 setState(() {
                   print("_controllerWallet*********** ");
                   loadingWallet = true;
                 });
                 _loadMoreWallet();
-              } else if (typeScreen == "requests" && !loadingRequests){
+              } else if (typeScreen == "requests"){
                 print("_controllerRequests*********** $loadingRequests");
                 setState(() {
                   loadingRequests = true;
@@ -134,24 +120,6 @@ class _WalletScreenState extends State<WalletScreen> {
               }
             },
             child: SingleChildScrollView(
-              // controller: _controllerWallet
-              //   ..addListener(() {
-              //     if (_controllerWallet.position.extentAfter == 0) {
-              //       if (typeScreen == "wallet" && !loadingWallet) {
-              //         setState(() {
-              //           print("_controllerWallet*********** ");
-              //           loadingWallet = true;
-              //         });
-              //         _loadMoreWallet();
-              //       } else if (typeScreen == "requests" && !loadingRequests){
-              //         print("_controllerRequests*********** $loadingRequests");
-              //         setState(() {
-              //           loadingRequests = true;
-              //         });
-              //         _loadMoreRequests();
-              //       }
-              //     }
-              //   }),
               child: Padding(
                 padding: EdgeInsets.symmetric(
                   vertical: 15.r,
@@ -428,7 +396,6 @@ class _WalletScreenState extends State<WalletScreen> {
                   WalletCubit.get(context).getRequests(1);
                   typeScreen = "requests";
                 }
-                print("getRequests*********** ${_currentIndex}");
               });
             },
             type: BottomNavigationBarType.fixed,

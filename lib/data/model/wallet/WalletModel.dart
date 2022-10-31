@@ -27,7 +27,7 @@ class WalletModel {
     }
     _totalCount = json['totalCount'];
     _tableCount = json['tableCount'];
-    _wallet = json['wallet'];
+    _wallet = json['wallet'] is int ? double.parse(json['wallet'].toString()) : json['wallet'];
     _holdWallet = json['holdWallet'];
     _page = json['page'];
     _limit = json['limit'];
