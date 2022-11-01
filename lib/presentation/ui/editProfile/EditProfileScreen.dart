@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
+import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/editProfile/edit_profile_cubit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -45,28 +47,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   List<DateTime> availabilities = [];
   List<String> availabilitiesValues = [];
 
-  Future selectImageSource(ImageSource imageSource) async {
-    try {
-      final XFile? pickedFile = await _picker.pickImage(
-        source: imageSource,
-        maxWidth: 200.w,
-        maxHeight: 200.h,
-      );
-
-      setState(() {
-        _imageUser = File(pickedFile!.path);
-        userImage = _imageUser!.path.toString();
-        imageRemote = false;
-        if (kDebugMode) {
-          print('_imageUser***************** =${_imageUser!.path}');
-        }
-      });
-    } catch (e) {
-      setState(() {
-        _pickImageError = e;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +172,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 Center(
                                   child: InkWell(
                                     onTap: () async {
-                                      selectImageSource(ImageSource.camera);
+                                      _showImageSourceActionSheet(context);
                                     },
                                     borderRadius: BorderRadius.circular(20.r),
                                     child: _imageUser == null
@@ -909,8 +889,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                               dropDownValueCountries != null &&
                                               dropDownValueCity != null &&
                                               dropDownValueArea != null &&
-                                              formKeyAddress.currentState!
-                                                  .validate() &&
                                               userImage.isNotEmpty &&
                                               availabilities.isNotEmpty) {
                                             String whatsApp = "";
@@ -986,6 +964,107 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         },
       ),
     );
+  }
+
+  void _showImageSourceActionSheet(BuildContext context) {
+    if (Platform.isIOS) {
+      showCupertinoModalPopup(
+        context: context,
+        builder: (context) => CupertinoActionSheet(
+          actions: [
+            CupertinoActionSheetAction(
+              child: const Text('Camera'),
+              onPressed: () {
+                Navigator.pop(context);
+                selectImageSource(ImageSource.camera);
+              },
+            ),
+            CupertinoActionSheetAction(
+              child: const Text('Gallery'),
+              onPressed: () {
+                Navigator.pop(context);
+                selectImageSource(ImageSource.gallery);
+              },
+            )
+          ],
+        ),
+      );
+    } else {
+      showModalBottomSheet(
+        context: context,
+        builder: (context) => Wrap(children: [
+          ListTile(
+            leading: const Icon(Icons.camera_alt),
+            title: const Text('Camera'),
+            tileColor: white,
+            onTap: () {
+              Navigator.pop(context);
+              selectImageSource(ImageSource.camera);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.photo_album),
+            title: const Text('Gallery'),
+            tileColor: white,
+            onTap: () {
+              Navigator.pop(context);
+              selectImageSource(ImageSource.gallery);
+            },
+          ),
+        ]),
+      );
+    }
+  }
+
+  Future selectImageSource(ImageSource imageSource) async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(source: imageSource);
+      if (pickedFile == null) {
+        print('_imageUserEditProfile***************** =$pickedFile');
+        return;
+      }
+      setState(() {
+        _imageUser = File(pickedFile.path);
+        userImage = _imageUser!.path.toString();
+        imageRemote = false;
+        if (kDebugMode) {
+          print('_imageUser***************** =${_imageUser!.path}');
+        }
+      });
+    } catch (e) {
+      setState(() {
+        _pickImageError = e;
+        if (kDebugMode) {
+          print('imageErrorEditProfile***************** =$_pickImageError');
+        }
+        if(e.toString() == "PlatformException(camera_access_denied, The user did not allow camera access., null, null)"){
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            // outside to dismiss
+            builder: (BuildContext context) {
+              return CustomDialogImage(
+                title: "Take Image",
+                description:
+                'Camera permissions denied\n You must enable the access camera to take photo \n you can choose setting and enable camera then try back',
+                type: "checkImageDeniedForever",
+                backgroundColor: white,
+                btnOkColor: accentColor,
+                btnCancelColor: grey,
+                titleColor: accentColor,
+                descColor: black,
+              );
+            },
+          );
+        }else{
+          showToastt(
+              text: e.toString(),
+              state: ToastStates.error,
+              context: context);
+        }
+
+      });
+    }
   }
 
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {

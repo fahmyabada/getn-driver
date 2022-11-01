@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:getn_driver/data/model/carCategory/Data.dart' as category;
 import 'package:getn_driver/data/model/carRegisteration/CarRegisterationModel.dart';
+import 'package:getn_driver/data/model/editProfile/EditProfileModel.dart';
 import 'package:getn_driver/data/model/role/DataRole.dart';
 import 'package:getn_driver/data/model/sendOtp/SendOtpData.dart';
 import 'package:getn_driver/data/model/signModel/Country.dart';
@@ -34,5 +35,6 @@ abstract class AuthRepository {
   Future<Either<String, SignModel>> register(
       FormData data, String firebaseToken);
 
-  Future<Either<String, SignModel>> editInformationUser(FormData data);
+  Future<Either<String, EditProfileModel>> editInformationUser(FormData data);
+
 }

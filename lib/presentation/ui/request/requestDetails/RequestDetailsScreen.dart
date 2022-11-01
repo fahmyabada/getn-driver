@@ -321,32 +321,32 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                         widget.typeScreen !=
                                                                     null &&
                                                                 widget.typeScreen ==
-                                                                    "past" &&
+                                                                    "past" ||
                                                                 RequestDetailsCubit.get(
                                                                             context)
                                                                         .requestDetails!
                                                                         .status ==
-                                                                    "pending" &&
+                                                                    "pending" ||
                                                                 RequestDetailsCubit.get(
                                                                             context)
                                                                         .requestDetails!
                                                                         .status ==
-                                                                    "end" &&
+                                                                    "end" ||
                                                                 RequestDetailsCubit.get(
                                                                             context)
                                                                         .requestDetails!
                                                                         .status ==
-                                                                    "mid_pause" &&
+                                                                    "mid_pause" ||
                                                                 RequestDetailsCubit.get(
                                                                             context)
                                                                         .requestDetails!
                                                                         .status ==
-                                                                    "reject" &&
+                                                                    "reject" ||
                                                                 RequestDetailsCubit.get(
                                                                             context)
                                                                         .requestDetails!
                                                                         .status ==
-                                                                    "cancel" &&
+                                                                    "cancel" ||
                                                                 RequestDetailsCubit.get(
                                                                             context)
                                                                         .requestDetails!
@@ -381,7 +381,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                     ),
                                                     widget.typeScreen != null &&
                                                             widget.typeScreen ==
-                                                                "past"
+                                                                "past" || RequestDetailsCubit.get(context).requestDetails!.status == "pending"
                                                         ? Container()
                                                         : Row(
                                                             mainAxisAlignment:
@@ -873,7 +873,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                 "paid"
                                             ? Container()
                                             : Text(
-                                                'the client you should paid first',
+                                                'client don\'t paid yet',
                                                 style: TextStyle(
                                                     color: accentColor,
                                                     fontSize: 15.sp,
@@ -1144,6 +1144,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                                         height:
                                                                             15.h,
                                                                       ),
+
                                                                       IconButton(
                                                                           onPressed:
                                                                               () {

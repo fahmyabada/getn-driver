@@ -5,6 +5,7 @@ import 'package:getn_driver/data/model/carCategory/CarCategory.dart';
 import 'package:getn_driver/data/model/carCategory/Data.dart' as category;
 import 'package:getn_driver/data/model/carRegisteration/CarRegisterationModel.dart';
 import 'package:getn_driver/data/model/country/CountryData.dart';
+import 'package:getn_driver/data/model/editProfile/EditProfileModel.dart';
 import 'package:getn_driver/data/model/role/DataRole.dart';
 import 'package:getn_driver/data/model/role/Role.dart';
 import 'package:getn_driver/data/model/sendOtp/SendOtpData.dart';
@@ -41,7 +42,8 @@ abstract class AuthRemoteDataSource {
   Future<Either<String, SignModel>> register(
       FormData data, String firebaseToken);
 
-  Future<Either<String, SignModel>> editInformationUserUseCase(FormData data);
+  Future<Either<String, EditProfileModel>> editInformationUser(FormData data);
+
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -240,7 +242,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<Either<String, SignModel>> editInformationUserUseCase(
+  Future<Either<String, EditProfileModel>> editInformationUser(
       FormData data) async {
     try {
       return await DioHelper.putData2(
@@ -249,10 +251,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
               token: getIt<SharedPreferences>().getString("token"))
           .then((value) {
         if (value.statusCode == 200) {
-          if (SignModel.fromJson(value.data).id != null) {
-            return Right(SignModel.fromJson(value.data));
+          if (EditProfileModel.fromJson(value.data).id != null) {
+            print('token fcm=****************** ${EditProfileModel.fromJson(value.data).fcmToken}');
+            return Right(EditProfileModel.fromJson(value.data));
           } else {
-            return Left(SignModel.fromJson(value.data).message!.toString());
+            return Left(EditProfileModel.fromJson(value.data).message!.toString());
           }
         } else {
           return Left(serverFailureMessage);

@@ -2,6 +2,7 @@ import 'package:getn_driver/data/model/country/Image.dart';
 import 'package:getn_driver/data/model/signModel/Country.dart';
 import 'package:getn_driver/data/model/signModel/Ratings.dart';
 
+import '../sendOtp/Message.dart';
 import 'Area.dart';
 import 'City.dart';
 
@@ -44,6 +45,7 @@ class EditProfileModel {
     String? address,
     String? brief,
     String? nationalId,
+    Message? message,
     int? v,
   }) {
     _image = image;
@@ -82,6 +84,7 @@ class EditProfileModel {
     _brief = brief;
     _nationalId = nationalId;
     _v = v;
+    _message = message;
   }
 
   EditProfileModel.fromJson(dynamic json) {
@@ -133,6 +136,8 @@ class EditProfileModel {
     _nationalId = json['nationalId'];
     _v = json['__v'];
     _whatsApp = json['whatsapp'];
+    _message =
+    json['message'] != null ? Message.fromJson(json['message']) : null;
   }
 
   Image? _image;
@@ -171,6 +176,7 @@ class EditProfileModel {
   String? _brief;
   String? _nationalId;
   int? _v;
+  Message? _message;
 
   Image? get image => _image;
 
@@ -243,6 +249,8 @@ class EditProfileModel {
   int? get v => _v;
 
   String? get whatsApp => _whatsApp;
+
+  Message? get message => _message;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/presentation/ui/wallet/RequestTransactionScreen.dart';
 import 'package:getn_driver/presentation/ui/wallet/wallet_cubit.dart';
 import 'package:scroll_edge_listener/scroll_edge_listener.dart';
 
@@ -60,7 +61,8 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   void _loadMoreRequests() {
-    WalletCubit.get(context).getRequests(WalletCubit.get(context).indexRequests);
+    WalletCubit.get(context)
+        .getRequests(WalletCubit.get(context).indexRequests);
   }
 
   @override
@@ -111,7 +113,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   loadingWallet = true;
                 });
                 _loadMoreWallet();
-              } else if (typeScreen == "requests"){
+              } else if (typeScreen == "requests") {
                 print("_controllerRequests*********** $loadingRequests");
                 setState(() {
                   loadingRequests = true;
@@ -148,6 +150,9 @@ class _WalletScreenState extends State<WalletScreen> {
                                 fontWeight: FontWeight.bold,
                                 fontSize: 26.sp,
                               ),
+                            ),
+                            SizedBox(
+                              height: 14.h,
                             ),
                             state is WalletLoading && typeScreen == "wallet"
                                 ? loading()
@@ -202,8 +207,19 @@ class _WalletScreenState extends State<WalletScreen> {
                               child: defaultButton3(
                                 backColor: primaryColor,
                                 textColor: white,
-                                press: () {
-                                  // Get.toNamed(Routes.ADD_NEW_CARD);
+                                press: () async {
+                                  await navigateToWithRefreshPagePrevious(
+                                          context,
+                                          const RequestTransactionScreen())
+                                      .then((value) {
+                                    setState(() {
+                                      loadingWallet = false;
+                                      loadingRequests = false;
+                                      _currentIndex = 0;
+                                      typeScreen = "wallet";
+                                      WalletCubit.get(context).getWallet(1);
+                                    });
+                                  });
                                 },
                                 text: 'Request Transaction',
                               ),
@@ -247,7 +263,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                             children: [
                                               ListTile(
                                                 title: Text(
-                                                  item.id!,
+                                                  item.type!,
                                                   style: TextStyle(
                                                     color: primaryColor,
                                                     fontWeight: FontWeight.bold,
@@ -257,7 +273,8 @@ class _WalletScreenState extends State<WalletScreen> {
                                                 subtitle:
                                                     Text(item.comment ?? ''),
                                                 trailing: Text(
-                                                  item.amount!.toStringAsFixed(2),
+                                                  item.amount!
+                                                      .toStringAsFixed(2),
                                                   style: TextStyle(
                                                     color: primaryColor,
                                                     fontWeight: FontWeight.bold,
@@ -268,7 +285,8 @@ class _WalletScreenState extends State<WalletScreen> {
                                                     const EdgeInsets.all(0),
                                               ),
                                               index ==
-                                                          WalletCubit.get(context)
+                                                          WalletCubit.get(
+                                                                      context)
                                                                   .wallet
                                                                   .length -
                                                               1 &&
@@ -304,7 +322,9 @@ class _WalletScreenState extends State<WalletScreen> {
                             ? state is RequestsLoading
                                 ? loading()
                                 : state is RequestsSuccessState
-                                    ? WalletCubit.get(context).requests.isNotEmpty
+                                    ? WalletCubit.get(context)
+                                            .requests
+                                            .isNotEmpty
                                         ? ListView.builder(
                                             shrinkWrap: true,
                                             scrollDirection: Axis.vertical,
@@ -314,8 +334,9 @@ class _WalletScreenState extends State<WalletScreen> {
                                                 .requests
                                                 .length,
                                             itemBuilder: (context, index) {
-                                              var item = WalletCubit.get(context)
-                                                  .requests[index];
+                                              var item =
+                                                  WalletCubit.get(context)
+                                                      .requests[index];
                                               return Column(
                                                 children: [
                                                   ListTile(
@@ -328,7 +349,8 @@ class _WalletScreenState extends State<WalletScreen> {
                                                         fontSize: 22.sp,
                                                       ),
                                                     ),
-                                                    subtitle: Text(item.id ?? ''),
+                                                    subtitle:
+                                                        Text(item.id ?? ''),
                                                     trailing: Text(
                                                       item.amount!
                                                           .toStringAsFixed(2),

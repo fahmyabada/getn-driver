@@ -82,7 +82,7 @@ class EditProfileRepositoryImpl extends EditProfileRepository {
   }
 
   @override
-  Future<Either<String, SignModel>> editProfileDetails(FormData data) async {
+  Future<Either<String, EditProfileModel>> editProfileDetails(FormData data) async {
     if (await networkInfo.isConnected) {
       return await editProfileRemoteDataSource
           .editProfileDetails(data)

@@ -39,6 +39,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
   void initState() {
     super.initState();
 
+    RequestCubit.get(context).editFcmToken();
     getIt<SharedPreferences>().setString('typeScreen', "request");
 
     MainCubit.get(context).tabController =
@@ -135,14 +136,9 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
     }, builder: (context, state) {
       return Scaffold(
         appBar: AppBar(
-          title: InkWell(
-            onTap: () {
-              navigateTo(context, const CarRegistrationScreen());
-            },
-            child: Text(
-              'Requests',
-              style: TextStyle(color: primaryColor, fontSize: 20.sp),
-            ),
+          title: Text(
+            'Requests',
+            style: TextStyle(color: primaryColor, fontSize: 20.sp),
           ),
           centerTitle: true,
           elevation: 1.0,

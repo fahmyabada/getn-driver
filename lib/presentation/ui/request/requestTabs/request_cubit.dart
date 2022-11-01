@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:getn_driver/data/model/request/DataRequest.dart';
 import 'package:getn_driver/data/model/request/Request.dart';
+import 'package:getn_driver/domain/usecase/request/GetProfileUseCase.dart';
 import 'package:getn_driver/domain/usecase/request/GetRequestUseCase.dart';
 import 'package:getn_driver/domain/usecase/request/PutRequestUseCase.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
@@ -18,6 +19,7 @@ class RequestCubit extends Cubit<RequestState> {
 
   var getRequestUseCase = getIt<GetRequestUseCase>();
   var putRequestUseCase = getIt<PutRequestUseCase>();
+  var getProfileUseCase = getIt<GetProfileUseCase>();
 
   List<DataRequest> requestCurrent = [];
 
@@ -34,6 +36,10 @@ class RequestCubit extends Cubit<RequestState> {
   bool loadingPast = false;
   bool loadingUpComing = false;
   bool loadingPending = false;
+
+  Future<void> editFcmToken() async {
+    getProfileUseCase.execute();
+  }
 
   void getRequestCurrent(int index) async {
     loadingCurrent = true;

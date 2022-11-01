@@ -10,6 +10,7 @@ import 'package:getn_driver/data/model/carCategory/Data.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
+import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/RequestTabsScreen.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
@@ -46,26 +47,26 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
       // print('idToken***************** =$idToken');
 
       final XFile? pickedFile = await _picker.pickImage(
-        source: imageSource,
-        maxWidth: 200.w,
-        maxHeight: 200.h,
-      );
-
+        source: imageSource);
+      if (pickedFile == null) {
+        print('_imageUserCarRegisteration***************** =$pickedFile');
+        return;
+      }
       setState(() async {
         if (type == "carFront") {
-          _imageFrontCar = File(pickedFile!.path);
+          _imageFrontCar = File(pickedFile.path);
           frontCarLicenseImage = _imageFrontCar!.path.toString();
           if (kDebugMode) {
             print('_imageFrontCar***************** =${_imageFrontCar!.path}');
           }
         } else if (type == "carBack") {
-          _imageBackCar = File(pickedFile!.path);
+          _imageBackCar = File(pickedFile.path);
           backCarLicenseImage = _imageBackCar!.path.toString();
           if (kDebugMode) {
             print('_imageBackCar***************** =${_imageBackCar!.path}');
           }
         } else if (type == "galley") {
-          listGallery.insert(listGallery.length - 1, File(pickedFile!.path));
+          listGallery.insert(listGallery.length - 1, File(pickedFile.path));
           final data = await MultipartFile.fromFile(
               File(pickedFile.path).path.toString(),
               filename: File(pickedFile.path).path.toString(),
@@ -80,6 +81,34 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
     } catch (e) {
       setState(() {
         _pickImageError = e;
+        if (kDebugMode) {
+          print('imageErrorCarRegisteration***************** =$_pickImageError');
+        }
+        if(e.toString() == "PlatformException(camera_access_denied, The user did not allow camera access., null, null)"){
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            // outside to dismiss
+            builder: (BuildContext context) {
+              return CustomDialogImage(
+                title: "Take Image",
+                description:
+                'Camera permissions denied\n You must enable the access camera to take photo \n you can choose setting and enable camera then try back',
+                type: "checkImageDeniedForever",
+                backgroundColor: white,
+                btnOkColor: accentColor,
+                btnCancelColor: grey,
+                titleColor: accentColor,
+                descColor: black,
+              );
+            },
+          );
+        }else{
+          showToastt(
+              text: e.toString(),
+              state: ToastStates.error,
+              context: context);
+        }
       });
     }
   }

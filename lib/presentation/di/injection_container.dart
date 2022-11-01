@@ -63,6 +63,7 @@ import 'package:getn_driver/domain/usecase/infoPlace/InfoPlaceUseCase.dart';
 import 'package:getn_driver/domain/usecase/notifications/GetNotificationUseCase.dart';
 import 'package:getn_driver/domain/usecase/policies/GetPoliciesUseCase.dart';
 import 'package:getn_driver/domain/usecase/recomendPlaces/GetRecomendPlacesUseCase.dart';
+import 'package:getn_driver/domain/usecase/request/GetProfileUseCase.dart';
 import 'package:getn_driver/domain/usecase/request/GetRequestUseCase.dart';
 import 'package:getn_driver/domain/usecase/request/PutRequestUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetCurrentLocationUseCase.dart';
@@ -74,6 +75,8 @@ import 'package:getn_driver/domain/usecase/tripCreate/GetPlaceDetailsUseCase.dar
 import 'package:getn_driver/domain/usecase/tripCreate/GetSearchLocationUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripDetails/GetTripDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripDetails/PutTripDetailsUseCase.dart';
+import 'package:getn_driver/domain/usecase/wallet/CreateRequestsTransactionUseCase.dart';
+import 'package:getn_driver/domain/usecase/wallet/GetCountriesWalletUseCase.dart';
 import 'package:getn_driver/domain/usecase/wallet/GetRequestsWalletUseCase.dart';
 import 'package:getn_driver/domain/usecase/wallet/GetWalletUseCase.dart';
 import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
@@ -125,6 +128,9 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => GetWalletUseCase(getIt()));
   getIt.registerLazySingleton(() => GetNotificationUseCase(getIt()));
   getIt.registerLazySingleton(() => GetRequestsWalletUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetCountriesWalletUseCase(getIt()));
+  getIt.registerLazySingleton(() => CreateRequestsTransactionUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetProfileUseCase(getIt()));
 
   // Repository
   getIt.registerLazySingleton<AuthRepository>(

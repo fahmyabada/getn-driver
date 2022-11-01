@@ -70,7 +70,7 @@ class EditProfileErrorState extends EditProfileState {
 }
 
 class EditProfileSuccessState extends EditProfileState {
-  final SignModel data;
+  final EditProfileModel data;
 
   EditProfileSuccessState(this.data);
 }

@@ -48,8 +48,19 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>LSApplicationQueriesSchemes</key>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>getn driver requests access to the location, used to determine and get your location on map</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>getn driver requests access to the location, used to determine and get your location on map</string>
+    <key>UIApplicationSupportsIndirectInputEvents</key>
+    <true/>
+    <key>NSCameraUsageDescription</key>
+    <string>getn driver requests access to the camera, used if you want to update your photo profile </string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>getn driver requests access to the image store, used if you want to update your photo profile</string>
     <array>
-       <string>tel</string>
-    </array>
+      <string>tel</string>
+      <string>comgooglemaps</string>
+     </array>
 </dict>
 </plist>

@@ -285,6 +285,125 @@ class CustomDialogLocation extends StatelessWidget {
   }
 }
 
+class CustomDialogImage extends StatelessWidget {
+  final String? title, description, id, type;
+  final Color? backgroundColor,
+      titleColor,
+      descColor,
+      btnOkColor,
+      btnCancelColor;
+
+  var commentController = TextEditingController();
+  var formKeyRequest = GlobalKey<FormState>();
+
+  CustomDialogImage({
+    Key? key,
+    required this.title,
+    required this.description,
+    this.backgroundColor,
+    this.titleColor,
+    this.descColor,
+    this.btnOkColor,
+    this.btnCancelColor,
+    this.id,
+    this.type,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      child: Container(
+        padding:
+            EdgeInsets.only(top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+        margin: EdgeInsets.only(top: 50.r),
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(10.r),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            SizedBox(
+              height: 10.r,
+            ),
+            Text(
+              title!,
+              style: TextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w700,
+                  color: titleColor),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: 16.r,
+            ),
+            Text(
+              description!,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16.sp, color: descColor),
+            ),
+            SizedBox(
+              height: 24.h,
+            ),
+            type == "checkImageDenied"
+                ? MaterialButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.r)),
+                    color: btnOkColor,
+                    onPressed: () => Navigator.pop(context),
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 8.r, horizontal: 8.r),
+                      child: Text(
+                        "ok",
+                        style: TextStyle(color: white, fontSize: 15.sp),
+                      ),
+                    ))
+                : type == "checkImageDeniedForever"
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          MaterialButton(
+                              height: 30.h,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.r)),
+                              color: btnOkColor,
+                              minWidth: 80.w,
+                              onPressed: () => Navigator.pop(context),
+                              child: Text(
+                                "ok",
+                                style: TextStyle(color: white, fontSize: 15.sp),
+                              )),
+                          SizedBox(
+                            width: 30.w,
+                          ),
+                          MaterialButton(
+                              height: 30.h,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.r)),
+                              color: btnCancelColor,
+                              onPressed: () => AppSettings.openAppSettings(),
+                              minWidth: 80.w,
+                              child: Text(
+                                "Setting",
+                                style: TextStyle(color: black, fontSize: 15.sp),
+                              )),
+                        ],
+                      )
+                    : Container()
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class CustomDialogRequestDetails extends StatelessWidget {
   final String? title, description, id, type;
 
@@ -598,7 +717,9 @@ class DrawerMenu extends StatelessWidget {
                         children: [
                           Text(
                             getIt<SharedPreferences>().getString("name") ?? "",
+                            maxLines: 1,
                             style: TextStyle(
+                                overflow: TextOverflow.ellipsis,
                                 color: white,
                                 fontSize: 20.sp,
                                 fontWeight: FontWeight.bold),

@@ -63,6 +63,12 @@ class Data {
 
   String? get comment => _comment;
 
+
+  @override
+  String toString() {
+    return 'Data{_user: $_user, _type: $_type, _status: $_status, _amount: $_amount, _createdAt: $_createdAt, _id: $_id, _driver: $_driver, _request: $_request, _comment: $_comment}';
+  }
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['user'] = _user;

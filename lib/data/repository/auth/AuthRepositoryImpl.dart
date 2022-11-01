@@ -3,6 +3,7 @@ import 'package:dio/src/form_data.dart';
 import 'package:getn_driver/data/api/network_info.dart';
 import 'package:getn_driver/data/model/carCategory/Data.dart' as category;
 import 'package:getn_driver/data/model/carRegisteration/CarRegisterationModel.dart';
+import 'package:getn_driver/data/model/editProfile/EditProfileModel.dart';
 import 'package:getn_driver/data/model/role/DataRole.dart';
 import 'package:getn_driver/data/model/sendOtp/SendOtpData.dart';
 import 'package:getn_driver/data/model/signModel/Country.dart';
@@ -144,10 +145,11 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
-  Future<Either<String, SignModel>> register(FormData data,String firebaseToken) async {
+  Future<Either<String, SignModel>> register(
+      FormData data, String firebaseToken) async {
     if (await networkInfo.isConnected) {
       return await authRemoteDataSource
-          .register(data,firebaseToken)
+          .register(data, firebaseToken)
           .then((value) {
         return value.fold((failure) {
           return Left(failure.toString());
@@ -178,11 +180,12 @@ class AuthRepositoryImpl extends AuthRepository {
     }
   }
 
+
   @override
-  Future<Either<String, SignModel>> editInformationUser(FormData data) async {
+  Future<Either<String, EditProfileModel>> editInformationUser(FormData data) async {
     if (await networkInfo.isConnected) {
       return await authRemoteDataSource
-          .editInformationUserUseCase(data)
+          .editInformationUser(data)
           .then((value) {
         return value.fold((failure) {
           return Left(failure.toString());

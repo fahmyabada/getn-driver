@@ -1,7 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:getn_driver/data/model/signModel/Country.dart';
 import 'package:getn_driver/data/model/wallet/WalletModel.dart';
+import 'package:getn_driver/domain/usecase/wallet/CreateRequestsTransactionUseCase.dart';
+import 'package:getn_driver/domain/usecase/wallet/GetCountriesWalletUseCase.dart';
 import 'package:getn_driver/domain/usecase/wallet/GetRequestsWalletUseCase.dart';
 import 'package:getn_driver/domain/usecase/wallet/GetWalletUseCase.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
@@ -18,7 +21,10 @@ class WalletCubit extends Cubit<WalletState> {
 
   var getWalletUseCase = getIt<GetWalletUseCase>();
   var getRequestsWalletUseCase = getIt<GetRequestsWalletUseCase>();
+  var getCountriesWalletUseCase = getIt<GetCountriesWalletUseCase>();
+  var createRequestsTransactionUseCase = getIt<CreateRequestsTransactionUseCase>();
 
+  List<Country> countries = [];
   List<Data> wallet = [];
   List<Data> requests = [];
   int indexRequests = 1;
@@ -107,6 +113,40 @@ class WalletCubit extends Cubit<WalletState> {
       }
 
       return RequestsSuccessState(data);
+    });
+  }
+
+  void getCountries() async {
+    emit(CountriesLoading());
+    getCountriesWalletUseCase.execute().then((value) {
+      emit(eitherLoadedOrErrorStateCountries(value));
+    });
+  }
+
+  WalletState eitherLoadedOrErrorStateCountries(
+      Either<String, List<Country>?> data) {
+    return data.fold((failure1) {
+      countries.clear();
+      return CountriesErrorState(failure1);
+    }, (data) {
+      countries = data!;
+      return CountriesSuccessState(data);
+    });
+  }
+
+  void createRequestTransaction(String body) async {
+    emit(CreateRequestLoading());
+    createRequestsTransactionUseCase.execute(body).then((value) {
+      emit(eitherLoadedOrErrorStateRequestTransaction(value));
+    });
+  }
+
+  WalletState eitherLoadedOrErrorStateRequestTransaction(
+      Either<String, Data?> data) {
+    return data.fold((failure1) {
+      return CreateRequestErrorState(failure1);
+    }, (data) {
+      return CreateRequestSuccessState(data!);
     });
   }
 }

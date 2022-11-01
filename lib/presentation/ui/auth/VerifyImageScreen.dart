@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
+import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/auth/DriverInformationScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
 import 'package:image_picker/image_picker.dart';
@@ -85,6 +86,7 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
           if (state.data.image?.src != null) {
             getIt<SharedPreferences>().setString('userImage', state.data.image!.src!);
           }
+          getIt<SharedPreferences>().setString('countryId', widget.countryId!);
 
           navigateAndFinish(context, const DriverInformationScreen());
         } else if (state is RegisterErrorState) {
@@ -330,15 +332,14 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
 
   Future selectImageSource(ImageSource imageSource) async {
     try {
-      final XFile? pickedFile = await _picker.pickImage(
-        source: imageSource,
-        maxWidth: 200.w,
-        maxHeight: 200.h,
-      );
-
+      final XFile? pickedFile = await _picker.pickImage(source: imageSource);
+      if (pickedFile == null) {
+        print('_imageUserVerifyImage***************** =$pickedFile');
+        return;
+      }
       setState(() {
         // for hide image if exist first time
-        _imageFileList = File(pickedFile!.path);
+        _imageFileList = File(pickedFile.path);
         if (kDebugMode) {
           print('_imageFileList***************** =${_imageFileList!.path}}');
         }
@@ -346,6 +347,35 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
     } catch (e) {
       setState(() {
         _pickImageError = e;
+        if (kDebugMode) {
+          print('imageErrorVerifyImage***************** =$_pickImageError');
+        }
+        if(e.toString() == "PlatformException(camera_access_denied, The user did not allow camera access., null, null)"){
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            // outside to dismiss
+            builder: (BuildContext context) {
+              return CustomDialogImage(
+                title: "Take Image",
+                description:
+                'Camera permissions denied\n You must enable the access camera to take photo \n you can choose setting and enable camera then try back',
+                type: "checkImageDeniedForever",
+                backgroundColor: white,
+                btnOkColor: accentColor,
+                btnCancelColor: grey,
+                titleColor: accentColor,
+                descColor: black,
+              );
+            },
+          );
+        }
+        else{
+          showToastt(
+              text: e.toString(),
+              state: ToastStates.error,
+              context: context);
+        }
       });
     }
   }

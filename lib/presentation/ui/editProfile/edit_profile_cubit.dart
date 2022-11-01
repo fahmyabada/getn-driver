@@ -6,7 +6,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:getn_driver/data/model/editProfile/EditProfileModel.dart';
 import 'package:getn_driver/data/model/signModel/Country.dart';
-import 'package:getn_driver/data/model/signModel/SignModel.dart';
 import 'package:getn_driver/domain/usecase/editProfile/EditProfileUserUseCase.dart';
 import 'package:getn_driver/domain/usecase/editProfile/GetAreaEditProfileUseCase.dart';
 import 'package:getn_driver/domain/usecase/editProfile/GetCitiesEditProfileUseCase.dart';
@@ -181,7 +180,7 @@ class EditProfileCubit extends Cubit<EditProfileState> {
   }
 
   EditProfileState eitherLoadedOrErrorStateEditInformation(
-      Either<String, SignModel> data) {
+      Either<String, EditProfileModel> data) {
     return data.fold((failure1) {
       loadingEdit = false;
       return EditProfileErrorState(failure1);

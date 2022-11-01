@@ -237,6 +237,8 @@ class _OtpScreenState extends State<OtpScreen> {
           if (state.data.image!.src != null) {
             getIt<SharedPreferences>().setString('userImage', state.data.image!.src!);
           }
+          getIt<SharedPreferences>().setString('countryId', widget.countryId);
+
           if (state.data.frontNationalImage?.src == null) {
             getIt<SharedPreferences>().setString('typeSign', "sign");
             navigateAndFinish(context, const DriverInformationScreen());

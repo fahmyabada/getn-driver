@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:getn_driver/data/api/Dio_Helper.dart';
+import 'package:getn_driver/data/model/editProfile/EditProfileModel.dart';
 import 'package:getn_driver/data/model/request/DataRequest.dart';
 import 'package:getn_driver/data/model/request/Request.dart';
 import 'package:getn_driver/data/utils/constant.dart';
@@ -12,6 +13,10 @@ abstract class RequestRemoteDataSource {
 
   Future<Either<String, DataRequest?>> putRequest(
       String id, String type, String comment);
+
+  Future<Either<String, EditProfileModel?>> getProfile();
+
+  Future<Either<String, EditProfileModel>> editInformationUser(FormData data);
 }
 
 class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
@@ -67,4 +72,48 @@ class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
       return Left(handleError(error));
     }
   }
+
+  @override
+  Future<Either<String, EditProfileModel?>> getProfile() async {
+    try {
+      return await DioHelper.getData(
+          url: 'driver/auth/profile',
+          token: getIt<SharedPreferences>().getString("token"))
+          .then((value) {
+        if (value.statusCode == 200) {
+          return Right(EditProfileModel.fromJson(value.data!));
+        } else {
+          return Left(serverFailureMessage);
+        }
+      });
+    } catch (error) {
+      return Left(handleError(error));
+    }
+  }
+
+  @override
+  Future<Either<String, EditProfileModel>> editInformationUser(
+      FormData data) async {
+    try {
+      return await DioHelper.putData2(
+          url: 'driver/auth/edit-profile',
+          data: data,
+          token: getIt<SharedPreferences>().getString("token"))
+          .then((value) {
+        if (value.statusCode == 200) {
+          if (EditProfileModel.fromJson(value.data).id != null) {
+            // print('token fcm=editInformationUser****************** ${EditProfileModel.fromJson(value.data).fcmToken}');
+            return Right(EditProfileModel.fromJson(value.data));
+          } else {
+            return Left(EditProfileModel.fromJson(value.data).message!.toString());
+          }
+        } else {
+          return Left(serverFailureMessage);
+        }
+      });
+    } catch (error) {
+      return Left(handleError(error));
+    }
+  }
+
 }

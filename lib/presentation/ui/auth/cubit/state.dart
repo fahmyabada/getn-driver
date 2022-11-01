@@ -184,7 +184,7 @@ class EditErrorState extends SignState {
 }
 
 class EditSuccessState extends SignState {
-  final SignModel data;
+  final EditProfileModel data;
 
   EditSuccessState(this.data);
 }

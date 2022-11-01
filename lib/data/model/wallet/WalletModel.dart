@@ -2,13 +2,14 @@ import 'Data.dart';
 
 class WalletModel {
   WalletModel({
-      List<Data>? data, 
-      int? totalCount, 
-      int? tableCount, 
-      double? wallet, 
-      int? holdWallet, 
-      int? page, 
-      int? limit,}){
+    List<Data>? data,
+    int? totalCount,
+    int? tableCount,
+    double? wallet,
+    double? holdWallet,
+    int? page,
+    int? limit,
+  }) {
     _data = data;
     _totalCount = totalCount;
     _tableCount = tableCount;
@@ -16,7 +17,7 @@ class WalletModel {
     _holdWallet = holdWallet;
     _page = page;
     _limit = limit;
-}
+  }
 
   WalletModel.fromJson(dynamic json) {
     if (json['data'] != null) {
@@ -27,27 +28,37 @@ class WalletModel {
     }
     _totalCount = json['totalCount'];
     _tableCount = json['tableCount'];
-    _wallet = json['wallet'] is int ? double.parse(json['wallet'].toString()) : json['wallet'];
-    _holdWallet = json['holdWallet'];
+    _wallet = json['wallet'] is int
+        ? double.parse(json['wallet'].toString())
+        : json['wallet'];
+    _holdWallet = json['holdWallet'] is int
+        ? double.parse(json['holdWallet'].toString())
+        : json['holdWallet'];
     _page = json['page'];
     _limit = json['limit'];
   }
+
   List<Data>? _data;
   int? _totalCount;
   int? _tableCount;
   double? _wallet;
-  int? _holdWallet;
+  double? _holdWallet;
   int? _page;
   int? _limit;
 
   List<Data>? get data => _data;
-  int? get totalCount => _totalCount;
-  int? get tableCount => _tableCount;
-  double? get wallet => _wallet;
-  int? get holdWallet => _holdWallet;
-  int? get page => _page;
-  int? get limit => _limit;
 
+  int? get totalCount => _totalCount;
+
+  int? get tableCount => _tableCount;
+
+  double? get wallet => _wallet;
+
+  double? get holdWallet => _holdWallet;
+
+  int? get page => _page;
+
+  int? get limit => _limit;
 
   @override
   String toString() {
@@ -67,5 +78,4 @@ class WalletModel {
     map['limit'] = _limit;
     return map;
   }
-
 }

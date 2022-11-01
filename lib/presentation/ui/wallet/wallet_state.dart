@@ -32,3 +32,31 @@ class RequestsSuccessState extends WalletState {
 
   RequestsSuccessState(this.data);
 }
+
+class CountriesLoading extends WalletState {}
+
+class CountriesErrorState extends WalletState {
+  final String message;
+
+  CountriesErrorState(this.message);
+}
+
+class CountriesSuccessState extends WalletState {
+  final List<Country>? data;
+
+  CountriesSuccessState(this.data);
+}
+
+class CreateRequestLoading extends WalletState {}
+
+class CreateRequestErrorState extends WalletState {
+  final String message;
+
+  CreateRequestErrorState(this.message);
+}
+
+class CreateRequestSuccessState extends WalletState {
+  final Data data;
+
+  CreateRequestSuccessState(this.data);
+}
