@@ -7,7 +7,6 @@ class Ratings {
     int? driveAverage,
     int? carAverage,
     int? guideAverage,
-    double? attitudeAverage,
   }) {
     _drive = drive;
     _car = car;
@@ -16,7 +15,6 @@ class Ratings {
     _driveAverage = driveAverage;
     _carAverage = carAverage;
     _guideAverage = guideAverage;
-    _attitudeAverage = attitudeAverage;
   }
 
   Ratings.fromJson(dynamic json) {
@@ -27,7 +25,6 @@ class Ratings {
     _driveAverage = json['driveAverage'];
     _carAverage = json['carAverage'];
     _guideAverage = json['guideAverage'];
-    _attitudeAverage = json['attitudeAverage'] == 0 ? 0.0 : json['attitudeAverage'];
   }
 
   int? _drive;
@@ -37,7 +34,6 @@ class Ratings {
   int? _driveAverage;
   int? _carAverage;
   int? _guideAverage;
-  double? _attitudeAverage;
 
   int? get drive => _drive;
 
@@ -53,7 +49,6 @@ class Ratings {
 
   int? get guideAverage => _guideAverage;
 
-  double? get attitudeAverage => _attitudeAverage;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -64,7 +59,6 @@ class Ratings {
     map['driveAverage'] = _driveAverage;
     map['carAverage'] = _carAverage;
     map['guideAverage'] = _guideAverage;
-    map['attitudeAverage'] = _attitudeAverage;
     return map;
   }
 }

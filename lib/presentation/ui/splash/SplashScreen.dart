@@ -117,10 +117,13 @@ class _SplashScreenState extends State<SplashScreen> {
                       'tripDetails' &&
                   getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails') {
+                LocalNotificationService.goToNextScreen(
+                    message.data['parentId'], "pushReplacement", "requestDetails");
                 LocalNotificationService.createAndDisplayNotification(
                     message, "outTripInRequest");
               }
-            } else if (message.data['type'] == "request" ||
+            }
+            else if (message.data['type'] == "request" ||
                 message.data['type'] == "payment") {
               if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails' &&
@@ -128,10 +131,19 @@ class _SplashScreenState extends State<SplashScreen> {
                       message.data['typeId']) {
                 // here if i get same request id i will refresh page and show notification
                 // without enable clickable
-                LocalNotificationService.goToNextScreen(message.data['typeId'],
-                    "pushReplacement", "requestDetails");
-                LocalNotificationService.createAndDisplayNotification(
-                    message, "inSameRequest");
+                if(message.data['title_en'] == "Cancel Request"){
+                  LocalNotificationService.goToNextScreen(message.data['typeId'],
+                      "pushReplacement", "past");
+                  LocalNotificationService.createAndDisplayNotification(
+                      message, "inSameRequest");
+                }else{
+                  LocalNotificationService.goToNextScreen(message.data['typeId'],
+                      "pushReplacement", "requestDetails");
+                  LocalNotificationService.createAndDisplayNotification(
+                      message, "inSameRequest");
+                }
+
+
               } else if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails' &&
                   getIt<SharedPreferences>().getString('requestDetailsId') !=
@@ -153,12 +165,18 @@ class _SplashScreenState extends State<SplashScreen> {
               }
             }
 
+
+            // this comment for update tabs anyway because i may return request tabs after
+            // i in request details that open from notification
+
+
+            // if (message.data['type'] == 'request' &&
+            //     (getIt<SharedPreferences>().getString('typeScreen') ==
+            //             'request' ||
+            //         getIt<SharedPreferences>().getString('typeScreen') == "")) {
+
             // for update request tabs
-            if (message.data['type'] == 'request' &&
-                (getIt<SharedPreferences>().getString('typeScreen') ==
-                        'request' ||
-                    getIt<SharedPreferences>().getString('typeScreen') == "")) {
-              switch (message.data['page']) {
+            switch (message.data['page']) {
                 case "RequestCurrent":
                   if (MainCubit.get(navigatorKey.currentContext).typeRequest ==
                       "current") {
@@ -221,7 +239,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   }
                   break;
               }
-            }
+            // }
           }
         },
       );

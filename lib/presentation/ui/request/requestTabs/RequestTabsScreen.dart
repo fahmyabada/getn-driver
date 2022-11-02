@@ -2212,6 +2212,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
             setState(() {
               _currentIndex = index;
               MainCubit.get(context).tabController!.index = index;
+              // MainCubit.get(context).tabController!.animateTo(index);
             });
           },
           type: BottomNavigationBarType.fixed,

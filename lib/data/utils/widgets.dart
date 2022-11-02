@@ -74,7 +74,7 @@ Future<void> openWhatsapp(String whatsapp, BuildContext context) async {
     }
   } on Exception {
     showToastt(
-        text: "whatsapp no installed",
+        text: "whatsapp no installed, please installed..",
         state: ToastStates.error,
         context: context);
   }

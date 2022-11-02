@@ -224,6 +224,17 @@ class LocalNotificationService {
                 )),
           ),
         );
+      } else if (typeScreen == "past") {
+        navigatorKey.currentState!.pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => BlocProvider(
+                create: (context) => RequestCubit(),
+                child: RequestDetailsScreen(
+                  idRequest: id,
+                  typeScreen: "past",
+                )),
+          ),
+        );
       }
     }
   }
@@ -233,6 +244,7 @@ class LocalNotificationService {
     try {
       String? payloadValue;
 
+      // const id = 1;
       final id = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
       const DarwinNotificationDetails iosNotificationDetails =
