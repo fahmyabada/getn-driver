@@ -69,13 +69,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   };
 
   int? indexStatus;
-  late ScrollController _controllerLoadingTrips;
   var formKeyRequest = GlobalKey<FormState>();
   var commentController = TextEditingController();
   bool loadingMoreTrips = false;
   String sLat = "", sLon = "";
 
-  void _loadMoreTrips() {
+  void _loadMoreTrips(BuildContext context) {
     RequestDetailsCubit.get(context).getTripsRequestDetails(
         RequestDetailsCubit.get(context).indexTrips, widget.idRequest!);
   }
@@ -84,7 +83,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   void initState() {
     super.initState();
 
-    _controllerLoadingTrips = ScrollController();
     getIt<SharedPreferences>().setString('typeScreen', "requestDetails");
     getIt<SharedPreferences>().setString('requestDetailsId', widget.idRequest!);
   }
@@ -92,7 +90,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   @override
   void dispose() {
     super.dispose();
-    _controllerLoadingTrips.removeListener(_loadMoreTrips);
 
     getIt<SharedPreferences>().setString('requestDetailsId', "");
     getIt<SharedPreferences>().setString('typeScreen', "");
@@ -104,19 +101,27 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       create: (context) => RequestDetailsCubit()..getCurrentLocation(),
       child: BlocConsumer<RequestDetailsCubit, RequestDetailsState>(
         listener: (context, state) async {
-          if (state is RequestDetailsEditSuccessState) {
-            RequestDetailsCubit.get(context)
-                .getRequestDetails(widget.idRequest!);
+          if (state is RequestDetailsSuccessState) {
             RequestDetailsCubit.get(context)
                 .getTripsRequestDetails(1, widget.idRequest!);
+          } else if (state is RequestDetailsEditSuccessState) {
+            RequestDetailsCubit.get(context)
+                .getRequestDetails(widget.idRequest!);
           } else if (state is RequestDetailsEditErrorState) {
             // if (state.type == "reject") {
             //   Navigator.pop(context);
             // }
-            showToastt(
-                text: state.message,
-                state: ToastStates.error,
-                context: context);
+            if (state.message == "{status:  you can't start request now}") {
+              showToastt(
+                  text: 'The journey hasn\'t started yet',
+                  state: ToastStates.error,
+                  context: context);
+            } else {
+              showToastt(
+                  text: state.message,
+                  state: ToastStates.error,
+                  context: context);
+            }
           } else if (state is CurrentLocationSuccessState) {
             print('CurrentLocationSuccessState********* ');
             // this belong add trip
@@ -150,8 +155,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
             RequestDetailsCubit.get(context)
                 .getRequestDetails(widget.idRequest!);
-            RequestDetailsCubit.get(context)
-                .getTripsRequestDetails(1, widget.idRequest!);
           } else if (state is CurrentLocationErrorState) {
             if (kDebugMode) {
               print('CurrentLocationErrorState********* ${state.error}');
@@ -239,10 +242,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               // dispatch: true,
                               listener: () {
                                 setState(() {
-                                  print("_controllerLoadingTrips*********** ");
+                                  print(
+                                      "_controllerLoadingTrips*********** ${RequestDetailsCubit.get(context).indexTrips}");
                                   loadingMoreTrips = true;
                                 });
-                                _loadMoreTrips();
+                                _loadMoreTrips(context);
                               },
                               child: SingleChildScrollView(
                                 scrollDirection: Axis.vertical,
@@ -339,7 +343,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     SizedBox(
                                       height: 15.h,
                                     ),
-                                    trips(context),
+                                    trips(context, state),
                                   ],
                                 ),
                               ),
@@ -681,13 +685,46 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       ? Expanded(
                           child: defaultButton2(
                             press: () {
-                              RequestDetailsCubit.get(context).editRequest(
-                                  RequestDetailsCubit.get(context)
-                                      .requestDetails!
-                                      .id!,
-                                  btnStatus[
-                                      '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
-                                  "");
+                              if (btnStatus2[
+                                          '${RequestDetailsCubit.get(context).requestDetails!.status}']![
+                                      0] ==
+                                  "End") {
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  // outside to dismiss
+                                  builder: (_) {
+                                    return CustomDialogEndRequestDetails(
+                                      id: RequestDetailsCubit.get(context)
+                                          .requestDetails!
+                                          .id!,
+                                      title: 'Requests',
+                                      description:
+                                          'are you sure to end Request..',
+                                      status: btnStatus[
+                                          '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
+                                      type: "end",
+                                    );
+                                  },
+                                ).then((value) {
+                                  print(
+                                      "showDialog************** ${MainCubit.get(context).refresh}");
+                                  if (MainCubit.get(context).refresh) {
+                                    RequestDetailsCubit.get(context)
+                                        .getRequestDetails(widget.idRequest!);
+                                    MainCubit.get(context).refresh = false;
+                                  }
+                                });
+                                ;
+                              } else {
+                                RequestDetailsCubit.get(context).editRequest(
+                                    RequestDetailsCubit.get(context)
+                                        .requestDetails!
+                                        .id!,
+                                    btnStatus[
+                                        '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
+                                    "");
+                              }
                             },
                             disablePress: RequestDetailsCubit.get(context)
                                         .requestDetails!
@@ -768,7 +805,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               barrierDismissible: true,
                               // outside to dismiss
                               builder: (_) {
-                                return CustomDialogRequestDetails(
+                                return CustomDialogRejectRequestDetails(
                                     id: RequestDetailsCubit.get(context)
                                         .requestDetails!
                                         .id!,
@@ -784,9 +821,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               if (MainCubit.get(context).refresh) {
                                 RequestDetailsCubit.get(context)
                                     .getRequestDetails(widget.idRequest!);
-                                RequestDetailsCubit.get(context)
-                                    .getTripsRequestDetails(
-                                        1, widget.idRequest!);
                                 MainCubit.get(context).refresh = false;
                               }
                             });
@@ -796,7 +830,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               barrierDismissible: true,
                               // outside to dismiss
                               builder: (_) {
-                                return CustomDialogRequestDetails(
+                                return CustomDialogRejectRequestDetails(
                                     id: RequestDetailsCubit.get(context)
                                         .requestDetails!
                                         .id!,
@@ -812,9 +846,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               if (MainCubit.get(context).refresh) {
                                 RequestDetailsCubit.get(context)
                                     .getRequestDetails(widget.idRequest!);
-                                RequestDetailsCubit.get(context)
-                                    .getTripsRequestDetails(
-                                        1, widget.idRequest!);
                                 MainCubit.get(context).refresh = false;
                               }
                             });
@@ -850,17 +881,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         : Container();
   }
 
-  Widget trips(BuildContext context) {
+  Widget trips(BuildContext context, RequestDetailsState state) {
     return RequestDetailsCubit.get(context).loadingTrips
         ? loading()
-        : RequestDetailsCubit.get(context).failureTrip.isNotEmpty
-            ? errorMessage2(
-                message: RequestDetailsCubit.get(context).failureTrip,
-                press: () {
-                  RequestDetailsCubit.get(context)
-                      .getTripsRequestDetails(1, widget.idRequest!);
-                })
-            : RequestDetailsCubit.get(context).trips.isNotEmpty
+        : state is TripsSuccessState
+            ? RequestDetailsCubit.get(context).trips.isNotEmpty
                 ? ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
@@ -943,7 +968,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                       width: 5.w,
                                                     ),
                                                     Text(
-                                                      btnStatus3[trip.status!].toString(),
+                                                      btnStatus3[trip.status!]
+                                                          .toString(),
                                                       style: TextStyle(
                                                           color: grey2,
                                                           fontSize: 14.sp),
@@ -1026,23 +1052,25 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                   CrossAxisAlignment.end,
                                               children: [
                                                 Text(
-                                                  trip.endDate != null
-                                                      ? DateFormat.jm().format(
-                                                          DateTime.parse(
-                                                              trip.endDate!))
-                                                      : "",
+                                                  // trip.endDate != null
+                                                  //     ? DateFormat.jm().format(
+                                                  //         DateTime.parse(
+                                                  //             trip.endDate!))
+                                                  //     :
+                                                  "",
                                                   style: TextStyle(
                                                     color: grey2,
                                                     fontSize: 14.sp,
                                                   ),
                                                 ),
                                                 Text(
-                                                  trip.endDate != null
-                                                      ? DateFormat.yMEd()
-                                                          .format(DateTime
-                                                              .parse(trip
-                                                                  .endDate!))
-                                                      : "",
+                                                  // trip.endDate != null
+                                                  //     ? DateFormat.yMEd()
+                                                  //         .format(DateTime
+                                                  //             .parse(trip
+                                                  //                 .endDate!))
+                                                  //     :
+                                                  "",
                                                   style: TextStyle(
                                                       color: grey2,
                                                       fontSize: 13.sp),
@@ -1199,8 +1227,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                   RequestDetailsCubit.get(context).trips = [];
                                   loadingMoreTrips = false;
                                   RequestDetailsCubit.get(context)
-                                      .loadingTrips = false;
-                                  RequestDetailsCubit.get(context)
                                       .loadingRequest = false;
                                   RequestDetailsCubit.get(context)
                                       .failureRequest = "";
@@ -1208,8 +1234,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       "";
                                   RequestDetailsCubit.get(context)
                                       .getRequestDetails(id);
-                                  RequestDetailsCubit.get(context)
-                                      .getTripsRequestDetails(1, id);
                                 }
                               });
                             },
@@ -1236,14 +1260,25 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       );
                     },
                   )
-                : Center(
-                    child: Text(
-                      RequestDetailsCubit.get(context).failureTrip,
-                      style: TextStyle(
-                          fontSize: 20.sp,
-                          color: blueColor,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  );
+                : errorMessage2(
+                    message: 'Not Found Data',
+                    press: () {
+                      RequestDetailsCubit.get(context).indexTrips = 1;
+                      RequestDetailsCubit.get(context)
+                          .getTripsRequestDetails(1, widget.idRequest!);
+                    })
+            : state is TripsErrorState
+                ? RequestDetailsCubit.get(context).failureTrip.isNotEmpty
+                    ? errorMessage2(
+                        message: RequestDetailsCubit.get(context).failureTrip,
+                        press: () {
+                          print(
+                              "getTripsRequestDetails**********${widget.idRequest!}");
+                          RequestDetailsCubit.get(context).indexTrips = 1;
+                          RequestDetailsCubit.get(context)
+                              .getTripsRequestDetails(1, widget.idRequest!);
+                        })
+                    : Container()
+                : Container();
   }
 }

@@ -15,8 +15,8 @@ class WalletScreen extends StatefulWidget {
 }
 
 class _WalletScreenState extends State<WalletScreen> {
-  bool loadingWallet = false;
-  bool loadingRequests = false;
+  bool loadingMoreWallet = false;
+  bool loadingMoreRequests = false;
   int _currentIndex = 0;
   String typeScreen = "wallet";
 
@@ -71,19 +71,19 @@ class _WalletScreenState extends State<WalletScreen> {
       listener: (context, state) {
         if (state is WalletSuccessState) {
           setState(() {
-            loadingWallet = false;
+            loadingMoreWallet = false;
           });
         } else if (state is WalletErrorState) {
           setState(() {
-            loadingWallet = false;
+            loadingMoreWallet = false;
           });
         } else if (state is RequestsSuccessState) {
           setState(() {
-            loadingRequests = false;
+            loadingMoreRequests = false;
           });
         } else if (state is RequestsErrorState) {
           setState(() {
-            loadingRequests = false;
+            loadingMoreRequests = false;
           });
         }
       },
@@ -110,13 +110,13 @@ class _WalletScreenState extends State<WalletScreen> {
               if (typeScreen == "wallet") {
                 setState(() {
                   print("_controllerWallet*********** ");
-                  loadingWallet = true;
+                  loadingMoreWallet = true;
                 });
                 _loadMoreWallet();
               } else if (typeScreen == "requests") {
-                print("_controllerRequests*********** $loadingRequests");
+                print("_controllerRequests*********** $loadingMoreRequests");
                 setState(() {
-                  loadingRequests = true;
+                  loadingMoreRequests = true;
                 });
                 _loadMoreRequests();
               }
@@ -154,7 +154,7 @@ class _WalletScreenState extends State<WalletScreen> {
                             SizedBox(
                               height: 14.h,
                             ),
-                            state is WalletLoading && typeScreen == "wallet"
+                          WalletCubit.get(context).loadingWallet
                                 ? loading()
                                 : WalletCubit.get(context).wallet.isNotEmpty
                                     ? Column(
@@ -197,6 +197,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                                 .walletFailure ??
                                             'Not Found Data',
                                         press: () {
+                                          WalletCubit.get(context).indexWallet = 1;
                                           WalletCubit.get(context).getWallet(1);
                                         }),
                             SizedBox(
@@ -213,8 +214,8 @@ class _WalletScreenState extends State<WalletScreen> {
                                           const RequestTransactionScreen())
                                       .then((value) {
                                     setState(() {
-                                      loadingWallet = false;
-                                      loadingRequests = false;
+                                      loadingMoreWallet = false;
+                                      loadingMoreRequests = false;
                                       _currentIndex = 0;
                                       typeScreen = "wallet";
                                       WalletCubit.get(context).getWallet(1);
@@ -290,7 +291,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                                                   .wallet
                                                                   .length -
                                                               1 &&
-                                                      loadingWallet
+                                                      loadingMoreWallet
                                                   ? Column(
                                                       children: [
                                                         SizedBox(
@@ -370,7 +371,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                                                       .requests
                                                                       .length -
                                                                   1 &&
-                                                          loadingRequests
+                                                          loadingMoreRequests
                                                       ? Column(
                                                           children: [
                                                             SizedBox(
@@ -412,9 +413,11 @@ class _WalletScreenState extends State<WalletScreen> {
               setState(() {
                 _currentIndex = index;
                 if (index == 0) {
+                  WalletCubit.get(context).indexWallet = 1;
                   WalletCubit.get(context).getWallet(1);
                   typeScreen = "wallet";
                 } else {
+                  WalletCubit.get(context).indexRequests = 1;
                   WalletCubit.get(context).getRequests(1);
                   typeScreen = "requests";
                 }

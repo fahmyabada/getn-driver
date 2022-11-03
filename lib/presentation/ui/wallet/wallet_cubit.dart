@@ -32,6 +32,7 @@ class WalletCubit extends Cubit<WalletState> {
   String walletValue = "";
   String walletHold = "";
   String? walletFailure;
+  bool loadingWallet = false;
 
   void getWallet(int index) async {
     if (index > 1) {
@@ -39,6 +40,7 @@ class WalletCubit extends Cubit<WalletState> {
         emit(eitherLoadedOrErrorStateWallet2(value));
       });
     } else {
+      loadingWallet = true;
       emit(WalletLoading());
       getWalletUseCase.execute(index).then((value) {
         emit(eitherLoadedOrErrorStateWallet(value));
@@ -57,6 +59,7 @@ class WalletCubit extends Cubit<WalletState> {
       indexWallet = indexWallet + 1;
       walletValue = data.wallet!.toStringAsFixed(1);
       walletHold = data.holdWallet.toString();
+      loadingWallet = false;
 
       return WalletSuccessState(data);
     });

@@ -97,33 +97,43 @@ class _SplashScreenState extends State<SplashScreen> {
                       message.data['typeId']) {
                 // here if i get same trip id i will refresh page and show notification
                 // without enable clickable
-                LocalNotificationService.goToNextScreen(
-                    message.data['typeId'], "pushReplacement", "tripDetails");
+                if (message.data['current_status'] == "cancel") {
+                  LocalNotificationService.goToNextScreen(
+                      message.data['parentId'], "pop", "tripDetails");
+                } else {
+                  LocalNotificationService.goToNextScreen(
+                      message.data['typeId'], "pushReplacement", "tripDetails");
+                }
                 LocalNotificationService.createAndDisplayNotification(
                     message, "inSameTrip");
+                print("in tripDetails and tripDetailsId equal typeId");
               } else if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'tripDetails' &&
                   getIt<SharedPreferences>().getString('tripDetailsId') !=
                       message.data['typeId']) {
                 LocalNotificationService.createAndDisplayNotification(
                     message, "newTrip");
+                print("in tripDetails and tripDetailsId not equal typeId");
               } else if (getIt<SharedPreferences>().getString('typeScreen') !=
                       'tripDetails' &&
                   getIt<SharedPreferences>().getString('typeScreen') !=
                       'requestDetails') {
                 LocalNotificationService.createAndDisplayNotification(
                     message, "outTrip");
+                print("not tripDetails and not requestDetails");
               } else if (getIt<SharedPreferences>().getString('typeScreen') !=
                       'tripDetails' &&
                   getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails') {
+                print("not tripDetails and in requestDetails");
                 LocalNotificationService.goToNextScreen(
-                    message.data['parentId'], "pushReplacement", "requestDetails");
+                    message.data['parentId'],
+                    "pushReplacement",
+                    "requestDetails");
                 LocalNotificationService.createAndDisplayNotification(
                     message, "outTripInRequest");
               }
-            }
-            else if (message.data['type'] == "request" ||
+            } else if (message.data['type'] == "request" ||
                 message.data['type'] == "payment") {
               if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails' &&
@@ -131,19 +141,19 @@ class _SplashScreenState extends State<SplashScreen> {
                       message.data['typeId']) {
                 // here if i get same request id i will refresh page and show notification
                 // without enable clickable
-                if(message.data['title_en'] == "Cancel Request"){
-                  LocalNotificationService.goToNextScreen(message.data['typeId'],
-                      "pushReplacement", "past");
+                if (message.data['title_en'] == "Cancel Request") {
+                  LocalNotificationService.goToNextScreen(
+                      message.data['typeId'], "pushReplacement", "past");
                   LocalNotificationService.createAndDisplayNotification(
                       message, "inSameRequest");
-                }else{
-                  LocalNotificationService.goToNextScreen(message.data['typeId'],
-                      "pushReplacement", "requestDetails");
+                } else {
+                  LocalNotificationService.goToNextScreen(
+                      message.data['typeId'],
+                      "pushReplacement",
+                      "requestDetails");
                   LocalNotificationService.createAndDisplayNotification(
                       message, "inSameRequest");
                 }
-
-
               } else if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails' &&
                   getIt<SharedPreferences>().getString('requestDetailsId') !=
@@ -165,10 +175,8 @@ class _SplashScreenState extends State<SplashScreen> {
               }
             }
 
-
             // this comment for update tabs anyway because i may return request tabs after
             // i in request details that open from notification
-
 
             // if (message.data['type'] == 'request' &&
             //     (getIt<SharedPreferences>().getString('typeScreen') ==
@@ -177,68 +185,84 @@ class _SplashScreenState extends State<SplashScreen> {
 
             // for update request tabs
             switch (message.data['page']) {
-                case "RequestCurrent":
-                  if (MainCubit.get(navigatorKey.currentContext).typeRequest ==
-                      "current") {
-                    MainCubit.get(navigatorKey.currentContext)
-                        .tabController!
-                        .index = 0;
-                    MainCubit.get(navigatorKey.currentContext)
-                        .tabController!
-                        .notifyListeners();
-                  } else {
-                    MainCubit.get(navigatorKey.currentContext)
-                        .tabController!
-                        .index = 0;
-                  }
-                  break;
-                case "RequestUpComing":
-                  if (MainCubit.get(navigatorKey.currentContext).typeRequest ==
-                      "upComing") {
-                    MainCubit.get(navigatorKey.currentContext)
-                        .tabController!
-                        .index = 1;
-                    MainCubit.get(navigatorKey.currentContext)
-                        .tabController!
-                        .notifyListeners();
-                  } else {
-                    MainCubit.get(navigatorKey.currentContext)
-                        .tabController!
-                        .index = 1;
-                  }
-                  break;
-                case "RequestPast":
-                  if (MainCubit.get(navigatorKey.currentContext).typeRequest ==
-                      "past") {
-                    MainCubit.get(navigatorKey.currentContext)
-                        .tabController!
-                        .index = 2;
-                    MainCubit.get(navigatorKey.currentContext)
-                        .tabController!
-                        .notifyListeners();
-                  } else {
-                    MainCubit.get(navigatorKey.currentContext)
-                        .tabController!
-                        .index = 2;
-                  }
-                  break;
-                case "RequestPending":
-                  // to listen change you should animate to another tab first time and return again
-                  if (MainCubit.get(navigatorKey.currentContext).typeRequest ==
-                      "pending") {
-                    MainCubit.get(navigatorKey.currentContext)
-                        .tabController!
-                        .index = 3;
-                    MainCubit.get(navigatorKey.currentContext)
-                        .tabController!
-                        .notifyListeners();
-                  } else {
-                    MainCubit.get(navigatorKey.currentContext)
-                        .tabController!
-                        .index = 3;
-                  }
-                  break;
-              }
+              case "RequestCurrent":
+                if (MainCubit.get(navigatorKey.currentContext).typeRequest ==
+                    "current") {
+                  MainCubit.get(navigatorKey.currentContext)
+                      .tabControllerChanged = false;
+                  MainCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .index = 0;
+                  MainCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .notifyListeners();
+                } else {
+                  MainCubit.get(navigatorKey.currentContext)
+                      .tabControllerChanged = true;
+                  MainCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .animateTo(0);
+                }
+                break;
+              case "RequestUpComing":
+                if (MainCubit.get(navigatorKey.currentContext).typeRequest ==
+                    "upComing") {
+                  MainCubit.get(navigatorKey.currentContext)
+                      .tabControllerChanged = false;
+                  MainCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .index = 1;
+                  MainCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .notifyListeners();
+                } else {
+                  MainCubit.get(navigatorKey.currentContext)
+                      .tabControllerChanged = true;
+                  MainCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .animateTo(1);
+                }
+                break;
+              case "RequestPast":
+                if (MainCubit.get(navigatorKey.currentContext).typeRequest ==
+                    "past") {
+                  MainCubit.get(navigatorKey.currentContext)
+                      .tabControllerChanged = false;
+                  MainCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .index = 2;
+                  MainCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .notifyListeners();
+                } else {
+                  MainCubit.get(navigatorKey.currentContext)
+                      .tabControllerChanged = true;
+                  MainCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .animateTo(2);
+                }
+                break;
+              case "RequestPending":
+                // to listen change you should animate to another tab first time and return again
+                if (MainCubit.get(navigatorKey.currentContext).typeRequest ==
+                    "pending") {
+                  MainCubit.get(navigatorKey.currentContext)
+                      .tabControllerChanged = false;
+                  MainCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .index = 3;
+                  MainCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .notifyListeners();
+                } else {
+                  MainCubit.get(navigatorKey.currentContext)
+                      .tabControllerChanged = true;
+                  MainCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .animateTo(3);
+                }
+                break;
+            }
             // }
           }
         },

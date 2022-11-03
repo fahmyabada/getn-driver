@@ -75,6 +75,10 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
               load = false;
             });
             Navigator.pop(context);
+            showToastt(
+                text: "success transaction",
+                state: ToastStates.success,
+                context: context);
           } else if (state is CreateRequestErrorState) {
             setState(() {
               load = false;

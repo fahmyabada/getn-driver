@@ -7,6 +7,8 @@ class WalletInitial extends WalletState {}
 
 class WalletLoading extends WalletState {}
 
+class WalletLoadingMore extends WalletState {}
+
 class WalletErrorState extends WalletState {
   final String message;
 
@@ -20,6 +22,8 @@ class WalletSuccessState extends WalletState {
 }
 
 class RequestsLoading extends WalletState {}
+
+class RequestsLoadingMore extends WalletState {}
 
 class RequestsErrorState extends WalletState {
   final String message;

@@ -91,7 +91,7 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
       }
       trips.clear();
       trips.addAll(data!.data!);
-      indexTrips = indexTrips + 1;
+      indexTrips = 2;
       loadingTrips = false;
       return TripsSuccessState(data);
     });

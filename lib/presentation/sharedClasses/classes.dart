@@ -404,13 +404,13 @@ class CustomDialogImage extends StatelessWidget {
   }
 }
 
-class CustomDialogRequestDetails extends StatelessWidget {
+class CustomDialogRejectRequestDetails extends StatelessWidget {
   final String? title, description, id, type;
 
   var commentController = TextEditingController();
   var formKeyRequest = GlobalKey<FormState>();
 
-  CustomDialogRequestDetails({
+  CustomDialogRejectRequestDetails({
     Key? key,
     this.title,
     this.description,
@@ -543,13 +543,126 @@ class CustomDialogRequestDetails extends StatelessWidget {
   }
 }
 
-class CustomDialogTripDetails extends StatelessWidget {
+class CustomDialogEndRequestDetails extends StatelessWidget {
+  final String? title, description, id, type, status;
+
+  const CustomDialogEndRequestDetails({
+    Key? key,
+    this.title,
+    this.description,
+    this.id,
+    this.type, this.status,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => RequestDetailsCubit(),
+      child: BlocConsumer<RequestDetailsCubit, RequestDetailsState>(
+        listener: (context, state) {
+          if (state is RequestDetailsEditSuccessState) {
+            Navigator.pop(context);
+            MainCubit.get(context).refresh = true;
+          } else if (state is RequestDetailsEditErrorState) {
+            showToastt(
+                text: state.message,
+                state: ToastStates.error,
+                context: context);
+          }
+        },
+        builder: (context, state) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            child: Container(
+              padding: EdgeInsets.only(
+                  top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+              margin: EdgeInsets.only(top: 50.r),
+              decoration: BoxDecoration(
+                color: white,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                    height: 10.r,
+                  ),
+                  Text(
+                    title!,
+                    style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w700,
+                        color: accentColor),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: 16.r,
+                  ),
+                  Text(
+                    description!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16.sp, color: black),
+                  ),
+                  SizedBox(
+                    height: 44.h,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      state is! RequestDetailsEditInitial
+                          ? MaterialButton(
+                              height: 30.h,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.r)),
+                              color: accentColor,
+                              minWidth: 80.w,
+                              onPressed: () {
+                                RequestDetailsCubit.get(context)
+                                    .editRequest(id!, type!, "");
+                              },
+                              child: Text(
+                                'Ok',
+                                style: TextStyle(color: white, fontSize: 15.sp),
+                              ))
+                          : loading(),
+                      SizedBox(
+                        width: 30.w,
+                      ),
+                      MaterialButton(
+                          height: 30.h,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r)),
+                          color: grey,
+                          onPressed: () => Navigator.pop(context),
+                          minWidth: 80.w,
+                          child: Text(
+                            'Cancel',
+                            style: TextStyle(color: black, fontSize: 15.sp),
+                          )),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class CustomDialogRejectTripDetails extends StatelessWidget {
   final String? title, description, id;
 
   var commentController = TextEditingController();
   var formKeyRequest = GlobalKey<FormState>();
 
-  CustomDialogTripDetails({
+  CustomDialogRejectTripDetails({
     Key? key,
     this.title,
     this.description,
@@ -645,12 +758,125 @@ class CustomDialogTripDetails extends StatelessWidget {
                               onPressed: () {
                                 if (formKeyRequest.currentState!.validate()) {
                                   TripDetailsCubit.get(context).editTrip(
-                                      TripDetailsCubit.get(context)
-                                          .tripDetails!
-                                          .id!,
+                                      id!,
                                       "reject",
                                       commentController.text.toString());
                                 }
+                              },
+                              child: Text(
+                                'Ok',
+                                style: TextStyle(color: white, fontSize: 15.sp),
+                              ))
+                          : loading(),
+                      SizedBox(
+                        width: 30.w,
+                      ),
+                      MaterialButton(
+                          height: 30.h,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r)),
+                          color: grey,
+                          onPressed: () => Navigator.pop(context),
+                          minWidth: 80.w,
+                          child: Text(
+                            'Cancel',
+                            style: TextStyle(color: black, fontSize: 15.sp),
+                          )),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class CustomDialogEndTripDetails extends StatelessWidget {
+  final String? title, description, id, type, status;
+
+  const CustomDialogEndTripDetails({
+    Key? key,
+    this.title,
+    this.description,
+    this.id,
+    this.type,
+    this.status,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => TripDetailsCubit(),
+      child: BlocConsumer<TripDetailsCubit, TripDetailsState>(
+        listener: (context, state) {
+          if (state is TripDetailsEditSuccessState) {
+            Navigator.pop(context);
+          } else if (state is TripDetailsEditErrorState) {
+            showToastt(
+                text: state.message,
+                state: ToastStates.error,
+                context: context);
+          }
+        },
+        builder: (context, state) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            child: Container(
+              padding: EdgeInsets.only(
+                  top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+              margin: EdgeInsets.only(top: 50.r),
+              decoration: BoxDecoration(
+                color: white,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                    height: 10.r,
+                  ),
+                  Text(
+                    title!,
+                    style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w700,
+                        color: accentColor),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: 16.r,
+                  ),
+                  Text(
+                    description!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16.sp, color: black),
+                  ),
+                  SizedBox(
+                    height: 44.h,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      state is! TripDetailsEditInitial
+                          ? MaterialButton(
+                              height: 30.h,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.r)),
+                              color: accentColor,
+                              minWidth: 80.w,
+                              onPressed: () {
+                                TripDetailsCubit.get(context).editTrip(
+                                    id!,
+                                    status!,
+                                    type!);
                               },
                               child: Text(
                                 'Ok',
@@ -693,48 +919,43 @@ class DrawerMenu extends StatelessWidget {
         children: <Widget>[
           DrawerHeader(
             decoration: const BoxDecoration(color: blueColor),
-            child: SizedBox(
-              height: 200.h,
-              child: Padding(
-                  padding: EdgeInsets.only(
-                    top: 30.r,
-                  ),
-                  child: Row(
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 40.r,
+                  backgroundColor: grey3,
+                  backgroundImage: NetworkImage(getIt<SharedPreferences>()
+                          .getString('userImage') ??
+                      "https://www.pphfoundation.ca/wp-content/uploads/2018/05/default-avatar.png"), // for Network image
+                ),
+                SizedBox(
+                  width: 15.w,
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CircleAvatar(
-                        radius: 40.r,
-                        backgroundColor: grey3,
-                        backgroundImage: NetworkImage(getIt<SharedPreferences>()
-                                .getString('userImage') ??
-                            "https://www.pphfoundation.ca/wp-content/uploads/2018/05/default-avatar.png"), // for Network image
+                      Text(
+                        getIt<SharedPreferences>().getString("name") ?? "",
+                        maxLines: 1,
+                        style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            color: white,
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(
-                        width: 15.w,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            getIt<SharedPreferences>().getString("name") ?? "",
-                            maxLines: 1,
-                            style: TextStyle(
-                                overflow: TextOverflow.ellipsis,
-                                color: white,
-                                fontSize: 20.sp,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            "+20${getIt<SharedPreferences>().getString("phone")}",
-                            style: TextStyle(
-                              color: white,
-                              fontSize: 20.sp,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        "+20${getIt<SharedPreferences>().getString("phone")}",
+                        style: TextStyle(
+                          color: white,
+                          fontSize: 20.sp,
+                        ),
                       ),
                     ],
-                  )),
+                  ),
+                ),
+              ],
             ),
           ),
           ListTile(

@@ -9,7 +9,6 @@ import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/main_cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
-import 'package:getn_driver/presentation/ui/auth/CarRegistrationScreen.dart';
 import 'package:getn_driver/presentation/ui/request/requestDetails/RequestDetailsScreen.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
 import 'package:intl/intl.dart';
@@ -31,9 +30,23 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
   bool loadingMorePast = false;
   bool loadingMoreUpComing = false;
   bool loadingMorePending = false;
-
   String typeEditPending = "";
   int? indexPending;
+
+  var btnStatus3 = {
+    'pending': 'Pending',
+    'accept': 'Accept',
+    'on_my_way': 'On My Way',
+    'arrive': 'Arrive',
+    'coming': 'Coming',
+    'start': 'Start',
+    'end': 'End',
+    'mid_pause': 'Mid Pause',
+    'reject': 'Reject',
+    'cancel': 'Cancel',
+    'need_confirm': 'Need Confirm',
+    'paid': 'Paid'
+  };
 
   @override
   void initState() {
@@ -59,24 +72,44 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
         print("_currentIndex*********** ");
 
         _currentIndex = MainCubit.get(context).tabController!.index;
-        // if (MainCubit.get(context).tabController!.indexIsChanging) {
-        if (_currentIndex == 0) {
-          RequestCubit.get(context).getRequestCurrent(1);
-          MainCubit.get(context).typeRequest = "current";
-        } else if (_currentIndex == 1) {
-          RequestCubit.get(context).indexUpComing = 1;
-          RequestCubit.get(context).getRequestUpComing(1);
-          MainCubit.get(context).typeRequest = "upComing";
-        } else if (_currentIndex == 2) {
-          RequestCubit.get(context).indexPast = 1;
-          RequestCubit.get(context).getRequestPast(1);
-          MainCubit.get(context).typeRequest = "past";
-        } else if (_currentIndex == 3) {
-          RequestCubit.get(context).indexPending = 1;
-          RequestCubit.get(context).getRequestPending(1);
-          MainCubit.get(context).typeRequest = "pending";
+        if (MainCubit.get(context).tabController!.indexIsChanging && MainCubit.get(context).tabControllerChanged) {
+          print("_currentIndex***********0 ");
+          if (_currentIndex == 0) {
+            RequestCubit.get(context).getRequestCurrent(1);
+            MainCubit.get(context).typeRequest = "current";
+          } else if (_currentIndex == 1) {
+            RequestCubit.get(context).indexUpComing = 1;
+            RequestCubit.get(context).getRequestUpComing(1);
+            MainCubit.get(context).typeRequest = "upComing";
+          } else if (_currentIndex == 2) {
+            RequestCubit.get(context).indexPast = 1;
+            RequestCubit.get(context).getRequestPast(1);
+            MainCubit.get(context).typeRequest = "past";
+          } else if (_currentIndex == 3) {
+            RequestCubit.get(context).indexPending = 1;
+            RequestCubit.get(context).getRequestPending(1);
+            MainCubit.get(context).typeRequest = "pending";
+          }
+        }else if (!MainCubit.get(context).tabController!.indexIsChanging && !MainCubit.get(context).tabControllerChanged){
+          print("_currentIndex***********1 ");
+          if (_currentIndex == 0) {
+            RequestCubit.get(context).getRequestCurrent(1);
+            MainCubit.get(context).typeRequest = "current";
+          } else if (_currentIndex == 1) {
+            RequestCubit.get(context).indexUpComing = 1;
+            RequestCubit.get(context).getRequestUpComing(1);
+            MainCubit.get(context).typeRequest = "upComing";
+          } else if (_currentIndex == 2) {
+            RequestCubit.get(context).indexPast = 1;
+            RequestCubit.get(context).getRequestPast(1);
+            MainCubit.get(context).typeRequest = "past";
+          } else if (_currentIndex == 3) {
+            RequestCubit.get(context).indexPending = 1;
+            RequestCubit.get(context).getRequestPending(1);
+            MainCubit.get(context).typeRequest = "pending";
+          }
         }
-        // }
+        // else if (MainCubit.get(context).tabController!.index )
       });
     });
   }
@@ -101,11 +134,18 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
     return BlocConsumer<RequestCubit, RequestState>(listener: (context, state) {
       if (state is RequestEditSuccessState) {
         if (state.data!.status! == "accept") {
-          RequestCubit.get(context).indexPending = 1;
-          RequestCubit.get(context).getRequestPending(1);
+          MainCubit.get(context).tabControllerChanged = false;
+          MainCubit.get(context).tabController!.index = 3;
+          MainCubit.get(context)
+              .tabController!
+              .notifyListeners();
         }
       } else if (state is RequestEditErrorState) {
-        Navigator.pop(context);
+        MainCubit.get(context).tabControllerChanged = false;
+        MainCubit.get(context).tabController!.index = 3;
+        MainCubit.get(context)
+            .tabController!
+            .notifyListeners();
         showToastt(
             text: state.message, state: ToastStates.error, context: context);
       } else if (state is RequestPastSuccessState) {
@@ -268,6 +308,40 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                           ),
                                           SizedBox(
                                             height: 15.h,
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 8.r),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    'refId: ${current.referenceId}',
+                                                    textAlign: TextAlign.start,
+                                                    style: TextStyle(
+                                                      color: black,
+                                                      fontSize: 18.sp,
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 10.w,
+                                                ),
+                                                Expanded(
+                                                  child: Text(
+                                                    'status: ${btnStatus3[current.status]}',
+                                                    textAlign: TextAlign.end,
+                                                    style: TextStyle(
+                                                      color: black,
+                                                      fontSize: 18.sp,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 10.h,
                                           ),
                                           Row(
                                             crossAxisAlignment:
@@ -722,6 +796,42 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                 ),
                                                 SizedBox(
                                                   height: 15.h,
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 8.r),
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Text(
+                                                          'refId: ${upComing.referenceId}',
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                          style: TextStyle(
+                                                            color: black,
+                                                            fontSize: 18.sp,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 10.w,
+                                                      ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          'status: ${btnStatus3[upComing.status]}',
+                                                          textAlign:
+                                                              TextAlign.end,
+                                                          style: TextStyle(
+                                                            color: black,
+                                                            fontSize: 18.sp,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 10.h,
                                                 ),
                                                 Row(
                                                   crossAxisAlignment:
@@ -1218,6 +1328,42 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                 SizedBox(
                                                   height: 15.h,
                                                 ),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 8.r),
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Text(
+                                                          'refId: ${past.referenceId}',
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                          style: TextStyle(
+                                                            color: black,
+                                                            fontSize: 18.sp,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 10.w,
+                                                      ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          'status: ${btnStatus3[past.status]}',
+                                                          textAlign:
+                                                              TextAlign.end,
+                                                          style: TextStyle(
+                                                            color: black,
+                                                            fontSize: 18.sp,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 10.h,
+                                                ),
                                                 Row(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
@@ -1247,7 +1393,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                           ),
                                                           SizedBox(height: 5.h),
                                                           Text(
-                                                            past.id!,
+                                                            past.from!
+                                                                .placeTitle!,
                                                             // past.from!.placeTitle!,
                                                             style: TextStyle(
                                                                 color: grey2,
@@ -2210,9 +2357,19 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
           currentIndex: _currentIndex,
           onTap: (index) {
             setState(() {
-              _currentIndex = index;
-              MainCubit.get(context).tabController!.index = index;
-              // MainCubit.get(context).tabController!.animateTo(index);
+              // _currentIndex = index;
+              if(MainCubit.get(context).tabController!.index != index){
+                MainCubit.get(context).tabControllerChanged = true;
+                MainCubit.get(context).tabController!.animateTo(index);
+              }else{
+                MainCubit.get(context).tabControllerChanged = false;
+                MainCubit.get(context).tabController!.index = index;
+                MainCubit.get(context)
+                    .tabController!
+                    .notifyListeners();
+              }
+
+              // print("_currentIndexxxxx2*********** ${MainCubit.get(context).tabController!.previousIndex}");
             });
           },
           type: BottomNavigationBarType.fixed,

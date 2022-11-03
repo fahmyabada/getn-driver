@@ -15,6 +15,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
   Future<Either<String, NotificationModel?>> getNotification(int index) async{
     try {
       var body = {
+        "sort": "createdAt:-1",
         "page": index,
         "app": "driver-app",
       };

@@ -6,6 +6,7 @@ import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/ui/notifications/notification_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestDetails/RequestDetailsScreen.dart';
 import 'package:getn_driver/presentation/ui/trip/tripDetails/TripDetailsScreen.dart';
+import 'package:getn_driver/presentation/ui/wallet/WalletScreen.dart';
 import 'package:intl/intl.dart';
 import 'package:scroll_edge_listener/scroll_edge_listener.dart';
 
@@ -155,7 +156,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           ],
                                         ),
                                         onTap: () {
-                                          if (notification.type == "request") {
+                                          if (notification.type == "request" || notification.type == "payment") {
                                             navigateTo(
                                                 context,
                                                 RequestDetailsScreen(
@@ -168,6 +169,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                 TripDetailsScreen(
                                                   idTrip: notification.id,
                                                 ));
+                                          }else if (notification.type ==
+                                              "walletTransaction" || notification.type ==
+                                              "requestTransaction" ) {
+                                            navigateTo(
+                                                context,
+                                                const WalletScreen());
                                           }
                                         },
                                       ),

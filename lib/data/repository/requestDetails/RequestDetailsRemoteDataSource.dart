@@ -57,11 +57,7 @@ class RequestDetailsRemoteDataSourceImpl
               token: getIt<SharedPreferences>().getString("token"))
           .then((value) {
         if (value.statusCode == 200) {
-          if (Trips.fromJson(value.data).data!.isNotEmpty) {
-            return Right(Trips.fromJson(value.data!));
-          } else {
-            return const Left("Not Found Trip");
-          }
+          return Right(Trips.fromJson(value.data!));
         } else {
           return Left(serverFailureMessage);
         }
