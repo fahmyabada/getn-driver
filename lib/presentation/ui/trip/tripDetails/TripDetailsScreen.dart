@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:getn_driver/data/utils/MapUtils.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
@@ -62,30 +63,77 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
   };
 
   int? indexStatus;
-
-  // custom marker
-  final Set<Marker> _markers = <Marker>{};
-  final LatLng destinationLatLng = const LatLng(30.149350, 31.738539);
-  final LatLng initialLatLng = const LatLng(30.1541371, 31.7397189);
-  final Completer<GoogleMapController> _controller = Completer();
+  bool btnStatusFound = false;
   var formKeyRequest = GlobalKey<FormState>();
   var commentController = TextEditingController();
 
-  _setMapPins(List<LatLng> markersLocation) {
+  // custom marker
+  final Completer<GoogleMapController> _controller = Completer();
+   final Set<Marker> _markers = <Marker>{};
+  late BitmapDescriptor customIcon;
+  final LatLng initialLatLng = const LatLng(30.0551913, 31.2258522);
+
+  _setMapPins(LatLng initialLatLng, LatLng destinationLatLng) {
     _markers.clear();
     setState(() {
-      // for (var markerLocation in markersLocation) {
-      //   _markers.add(Marker(
-      //     markerId: MarkerId(markerLocation.toString()),
-      //     position: markerLocation,
-      //     icon: customIcon,
-      //   ));
-      // }
+      _markers.add(Marker(
+        markerId: MarkerId(initialLatLng.toString()),
+        position: initialLatLng,
+        icon: customIcon,
+      ));
+
       _markers.add(Marker(
         markerId: MarkerId(destinationLatLng.toString()),
         position: destinationLatLng,
       ));
     });
+  }
+
+  //Adding route to the map
+  final Set<Polyline> _polyline = {};
+  List<LatLng> polylineCoordinates = [];
+
+  _addPolyLines(BuildContext context, String sLat, String sLon, String dLat,
+      String dLon) {
+    final lat = (double.parse(sLat) + double.parse(dLat)) / 2;
+    final lng = (double.parse(sLon) + double.parse(dLon)) / 2;
+
+    _moveCamera(13.0, lat, lng);
+
+    _setMapPins(LatLng(double.parse(sLat), double.parse(sLon)),
+        LatLng(double.parse(dLat), double.parse(dLon)));
+    _setPolyLine(context, LatLng(double.parse(sLat), double.parse(sLon)),
+        LatLng(double.parse(dLat), double.parse(dLon)));
+  }
+
+  _moveCamera(double? zoom, double lat, double lng) async {
+    final CameraPosition myPosition = CameraPosition(
+      target: LatLng(lat, lng),
+      zoom: zoom ?? 14.4746,
+    );
+    final GoogleMapController controller = await _controller.future;
+    controller.moveCamera(CameraUpdate.newCameraPosition(myPosition));
+  }
+
+  _setPolyLine(BuildContext context, LatLng initialLatLng,
+      LatLng destinationLatLng) async {
+    final result = await TripDetailsCubit()
+        .getRouteCoordinates(initialLatLng, destinationLatLng);
+    if (result.success) {
+      final route = result.data["routes"][0]["overview_polyline"]["points"];
+      setState(() {
+        _polyline.add(Polyline(
+            polylineId: const PolylineId("tripRoute"),
+            //pass any string here
+            width: 3,
+            geodesic: true,
+            points: MapUtils.convertToLatLng(MapUtils.decodePoly(route)),
+            color: Theme.of(context).primaryColor));
+      });
+    } else {
+      showToastt(
+          text: result.message, state: ToastStates.error, context: context);
+    }
   }
 
   @override
@@ -97,6 +145,13 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
 
   @override
   void initState() {
+    BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(size: Size(50, 50)),
+        'assets/marker_car.png')
+        .then((icon) {
+      customIcon = icon;
+    });
+
     super.initState();
 
     getIt<SharedPreferences>().setString('typeScreen', "tripDetails");
@@ -114,7 +169,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
               Navigator.pop(context);
             }
             TripDetailsCubit.get(context).getTripDetails(widget.idTrip!);
-          } else if (state is TripDetailsEditErrorState) {
+          }
+          else if (state is TripDetailsEditErrorState) {
             // if(state.type == "reject"){
             //   Navigator.pop(context);
             // }
@@ -123,6 +179,22 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                 text: state.message,
                 state: ToastStates.error,
                 context: context);
+          }
+          else if (state is TripDetailsSuccessState) {
+            setState(() {
+              if (btnStatus[state.data!.status!]!.isNotEmpty) {
+                btnStatusFound = true;
+              } else {
+                btnStatusFound = false;
+              }
+            });
+
+            _addPolyLines(
+                context,
+                state.data!.from!.placeLatitude!,
+                state.data!.from!.placeLongitude!,
+                state.data!.to!.placeLatitude!,
+                state.data!.to!.placeLongitude!);
           }
         },
         builder: (context, state) {
@@ -153,7 +225,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
               body: Stack(
                 children: [
                   Container(
-                    margin: EdgeInsets.only(bottom: 460.h),
+                    margin: EdgeInsets.only(bottom: btnStatusFound? 440.h: 400.h),
                     child: GoogleMap(
                       mapType: MapType.normal,
                       rotateGesturesEnabled: true,
@@ -166,11 +238,12 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                       zoomControlsEnabled: true,
                       mapToolbarEnabled: false,
                       markers: _markers,
+                      polylines: _polyline,
                       initialCameraPosition:
                           CameraPosition(target: initialLatLng, zoom: 13),
                       onMapCreated: (GoogleMapController controller) {
                         _controller.complete(controller);
-                        _setMapPins([const LatLng(30.1541371, 31.7397189)]);
+                        // _setMapPins(LatLng(30.1541371,31.7397189),LatLng(31.1872173,29.897572));
                       },
                     ),
                   ),
@@ -386,7 +459,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                     TripDetailsCubit.get(context)
                                         .tripDetails!
                                         .to!
-                                        .placeLongitude!);
+                                        .placeLongitude!,
+                                    context);
                               },
                               icon: Icon(
                                 Icons.wrong_location_sharp,
@@ -708,9 +782,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                       child: defaultButton2(
                           press: () {
                             TripDetailsCubit.get(context).editTrip(
-                                TripDetailsCubit.get(context)
-                                    .tripDetails!
-                                    .id!,
+                                TripDetailsCubit.get(context).tripDetails!.id!,
                                 btnStatus[
                                     '${TripDetailsCubit.get(context).tripDetails!.status}']![0],
                                 "");
@@ -744,9 +816,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                         // outside to dismiss
                         builder: (_) {
                           return CustomDialogRejectTripDetails(
-                            id: TripDetailsCubit.get(context)
-                                .tripDetails!
-                                .id!,
+                            id: TripDetailsCubit.get(context).tripDetails!.id!,
                             title: 'Do you want to reject?',
                             description:
                                 'If you want to be rejected, you must first enter the reason for rejection and press OK..',
@@ -776,8 +846,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
         : Center(
             child: state is TripDetailsEditInitial
                 ? loading()
-                : TripDetailsCubit.get(context).tripDetails!.status !=
-                            null &&
+                : TripDetailsCubit.get(context).tripDetails!.status != null &&
                         btnStatus[
                                 '${TripDetailsCubit.get(context).tripDetails!.status}']!
                             .isEmpty
@@ -798,10 +867,9 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                       .tripDetails!
                                       .id!,
                                   title: 'Trip',
-                                  description:
-                                  'are you sure to end trip..',
+                                  description: 'are you sure to end trip..',
                                   status: btnStatus[
-                                  '${TripDetailsCubit.get(context).tripDetails!.status}']![0],
+                                      '${TripDetailsCubit.get(context).tripDetails!.status}']![0],
                                   type: "end",
                                 );
                               },
@@ -810,9 +878,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                             });
                           } else {
                             TripDetailsCubit.get(context).editTrip(
-                                TripDetailsCubit.get(context)
-                                    .tripDetails!
-                                    .id!,
+                                TripDetailsCubit.get(context).tripDetails!.id!,
                                 btnStatus[
                                     '${TripDetailsCubit.get(context).tripDetails!.status}']![0],
                                 "");

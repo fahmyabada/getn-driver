@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -30,6 +31,11 @@ void main() async {
   await init();
 
   await DioHelper.init();
+
+  // runApp(DevicePreview(
+  //   enabled: true,
+  //   builder: (context) => MyApp(),
+  // ));
 
   runApp(const MyApp());
 }

@@ -17,7 +17,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
   sdk: '>=2.18.0 <3.0.0'
@@ -55,7 +55,7 @@ dependencies:
   flutter_local_notifications: ^12.0.0
   pin_code_fields: ^7.4.0
   google_maps_flutter: ^2.2.1
-#  device_preview:
+  device_preview:
   geocoding: ^2.0.5
   geolocator: ^9.0.2
   flutter_typeahead: ^4.1.1
@@ -64,6 +64,7 @@ dependencies:
   url_launcher: ^6.1.6
   app_settings: 4.1.8
   scroll_edge_listener: ^0.1.1
+  map_launcher: ^2.4.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -79,7 +80,18 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
+  flutter_launcher_icons: ^0.10.0
   flutter_lints: ^2.0.0
+
+#  when change icon app
+#  flutter pub get
+#  flutter pub run flutter_launcher_icons:main
+#  should put num to minSdkVersion example(21)  in build.gradle
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo.jpg"
+  remove_alpha_ios: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

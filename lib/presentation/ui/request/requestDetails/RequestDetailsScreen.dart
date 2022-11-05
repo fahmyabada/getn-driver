@@ -445,7 +445,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     RequestDetailsCubit.get(context)
                                         .requestDetails!
                                         .from!
-                                        .placeLongitude!);
+                                        .placeLongitude!,context);
                               },
                               icon: Icon(
                                 Icons.wrong_location_sharp,
@@ -1093,7 +1093,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                 trip.to!.placeLatitude!
                                                     .toString(),
                                                 trip.to!.placeLongitude!
-                                                    .toString());
+                                                    .toString(),context);
                                           },
                                           icon: Icon(
                                             Icons.wrong_location_sharp,

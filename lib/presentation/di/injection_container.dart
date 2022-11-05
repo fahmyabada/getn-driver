@@ -75,6 +75,7 @@ import 'package:getn_driver/domain/usecase/tripCreate/GetPlaceDetailsUseCase.dar
 import 'package:getn_driver/domain/usecase/tripCreate/GetSearchLocationUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripDetails/GetTripDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripDetails/PutTripDetailsUseCase.dart';
+import 'package:getn_driver/domain/usecase/tripDetails/SetPolyLinesUseCase.dart';
 import 'package:getn_driver/domain/usecase/wallet/CreateRequestsTransactionUseCase.dart';
 import 'package:getn_driver/domain/usecase/wallet/GetCountriesWalletUseCase.dart';
 import 'package:getn_driver/domain/usecase/wallet/GetRequestsWalletUseCase.dart';
@@ -131,6 +132,7 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => GetCountriesWalletUseCase(getIt()));
   getIt.registerLazySingleton(() => CreateRequestsTransactionUseCase(getIt()));
   getIt.registerLazySingleton(() => GetProfileUseCase(getIt()));
+  getIt.registerLazySingleton(() => SetPolyLinesUseCase(getIt()));
 
   // Repository
   getIt.registerLazySingleton<AuthRepository>(

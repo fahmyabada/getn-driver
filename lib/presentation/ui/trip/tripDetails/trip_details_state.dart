@@ -36,3 +36,17 @@ class TripDetailsEditSuccessState extends TripDetailsInitial {
 
   TripDetailsEditSuccessState(this.data, this.type);
 }
+
+class GoogleMapInitial extends TripDetailsInitial {}
+
+class GoogleMapErrorState extends TripDetailsInitial {
+  final String message;
+
+  GoogleMapErrorState(this.message);
+}
+
+class GoogleMapSuccessState extends TripDetailsInitial {
+  final APIResultModel? test;
+
+  GoogleMapSuccessState(this.test);
+}

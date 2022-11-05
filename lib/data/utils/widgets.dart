@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:getn_driver/data/utils/colors.dart';
+import 'package:map_launcher/map_launcher.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void navigateAndFinish(context, widget) => Navigator.pushAndRemoveUntil(
@@ -25,32 +26,41 @@ Future<dynamic> navigateToWithRefreshPagePrevious(context, widget) async {
   );
 }
 
-Future<void> launchInMap(
-    String sLat, String sLon, String dLat, String dLon) async {
-  String mapOptions = [
-    'saddr= $sLat,$sLon',
-    'daddr= $dLat,$dLon',
-    'dir_action=navigate'
-  ].join('&');
-
-  final googleUrl = 'https://www.google.com/maps?$mapOptions';
-  final appleUrl =
-      'https://maps.apple.com/?saddr=$sLat,$sLon&daddr=$dLat,$dLon&directionsmode=driving';
-
-  if (Platform.isAndroid) {
-    final Uri urlParse = Uri.parse(googleUrl);
-    if (!await launchUrl(
-      urlParse,
-    )) {
-      throw 'Could not launch $googleUrl';
-    }
-  } else if (Platform.isIOS) {
-    final Uri urlParse = Uri.parse(appleUrl);
-    if (!await launchUrl(
-      urlParse,
-    )) {
-      throw 'Could not launch $appleUrl';
-    }
+Future<void> launchInMap(String sLat, String sLon, String dLat, String dLon,
+    BuildContext context) async {
+  if (await MapLauncher.isMapAvailable(MapType.google) ?? false) {
+    await MapLauncher.showDirections(
+      destination: Coords(
+        double.parse(dLat),
+        double.parse(dLat),
+      ),
+      destinationTitle: " Trip From",
+      mapType: MapType.google,
+      originTitle: 'Trip To',
+      origin: Coords(
+        double.parse(sLat),
+        double.parse(sLon),
+      ),
+    );
+  } else if (await MapLauncher.isMapAvailable(MapType.apple) ?? false) {
+    await MapLauncher.showDirections(
+      destination: Coords(
+        double.parse(dLat),
+        double.parse(dLat),
+      ),
+      destinationTitle: " Trip From",
+      mapType: MapType.apple,
+      originTitle: 'Trip To',
+      origin: Coords(
+        double.parse(sLat),
+        double.parse(sLon),
+      ),
+    );
+  } else {
+    showToastt(
+        text: "you have not maps..",
+        state: ToastStates.error,
+        context: context);
   }
 }
 

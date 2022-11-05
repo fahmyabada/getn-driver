@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:getn_driver/data/api/Dio_Helper.dart';
+import 'package:getn_driver/data/model/api_result_model.dart';
 import 'package:getn_driver/data/model/placeDetails/PlaceDetails.dart';
 import 'package:getn_driver/data/model/predictionsPlaceSearch/PredictionsPlaceSearch.dart';
 import 'package:getn_driver/data/model/request/DataRequest.dart';
@@ -18,6 +19,8 @@ abstract class TripDetailsRemoteDataSource {
   Future<Either<String, PredictionsPlaceSearch?>> searchLocation(String text);
 
   Future<Either<String, PlaceDetails?>> placeDetails(String placeId);
+
+  Future<Either<String, APIResultModel>> setPolyLines(dynamic parameters);
 }
 
 class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
@@ -141,6 +144,34 @@ class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
       });
     }  catch (error) {
       return Left(handleError(error));
+    }
+  }
+
+  @override
+  Future<Either<String, APIResultModel>> setPolyLines(
+      dynamic parameters) async {
+    try {
+      return await Dio().post(
+           'https://maps.googleapis.com/maps/api/directions/json', queryParameters: parameters)
+          .then((value) async {
+        if (value.statusCode == 200) {
+          try {
+            final responseBody = value.data;
+            return Right(APIResultModel(
+              success: value.statusCode == 200,
+              message: responseBody['status'] ?? responseBody['error_message'],
+              data:  responseBody,
+            ));
+          } catch (error) {
+            print('Error in getting result from response:\n $error');
+            return const Left("cannot init result api");
+          }
+        } else {
+          return Left(serverFailureMessage);
+        }
+      });
+    } on Exception {
+      return Left(serverFailureMessage);
     }
   }
 }
