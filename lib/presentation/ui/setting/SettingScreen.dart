@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/ui/editProfile/EditProfileScreen.dart';
+import 'package:getn_driver/presentation/ui/myCar/MyCarScreen.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({Key? key}) : super(key: key);
@@ -27,6 +28,15 @@ class SettingScreen extends StatelessWidget {
             ),
             SizedBox(
               height: 10.h,
+            ),
+            buildSettingItem(
+              context: context,
+              title: "My Car",
+              onClick: () {
+                navigateTo(
+                    context,
+                    const MyCarScreen());
+              },
             ),
           ],
         ),

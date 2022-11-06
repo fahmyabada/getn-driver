@@ -160,14 +160,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                             navigateTo(
                                                 context,
                                                 RequestDetailsScreen(
-                                                  idRequest: notification.id,
+                                                  idRequest: notification.typeId,
                                                 ));
                                           } else if (notification.type ==
                                               "trip") {
                                             navigateTo(
                                                 context,
                                                 TripDetailsScreen(
-                                                  idTrip: notification.id,
+                                                  idTrip: notification.typeId,
                                                 ));
                                           }else if (notification.type ==
                                               "walletTransaction" || notification.type ==

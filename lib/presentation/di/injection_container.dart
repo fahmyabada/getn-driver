@@ -10,6 +10,8 @@ import 'package:getn_driver/data/repository/infoBranch/InfoBranchRemoteDataSourc
 import 'package:getn_driver/data/repository/infoBranch/InfoBranchRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/infoPlace/InfoPlaceRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/infoPlace/InfoPlaceRepositoryImpl.dart';
+import 'package:getn_driver/data/repository/myCar/MyCarRemoteDataSource.dart';
+import 'package:getn_driver/data/repository/myCar/MyCarRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/notifications/NotificationRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/notifications/NotificationRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/policies/PoliciesRemoteDataSource.dart';
@@ -31,6 +33,7 @@ import 'package:getn_driver/domain/repository/BranchesPlaceRepository.dart';
 import 'package:getn_driver/domain/repository/EditProfileRepository.dart';
 import 'package:getn_driver/domain/repository/InfoBranchRepository.dart';
 import 'package:getn_driver/domain/repository/InfoPlaceRepository.dart';
+import 'package:getn_driver/domain/repository/MyCarRepository.dart';
 import 'package:getn_driver/domain/repository/NotificationRepository.dart';
 import 'package:getn_driver/domain/repository/PoliciesRepository.dart';
 import 'package:getn_driver/domain/repository/RecomendPlaceRepository.dart';
@@ -60,6 +63,11 @@ import 'package:getn_driver/domain/usecase/editProfile/GetProfileDetailsUseCase.
 import 'package:getn_driver/domain/usecase/infoBranch/GetBranchesInfoBranchUseCase.dart';
 import 'package:getn_driver/domain/usecase/infoBranch/InfoPlaceBranchUseCase.dart';
 import 'package:getn_driver/domain/usecase/infoPlace/InfoPlaceUseCase.dart';
+import 'package:getn_driver/domain/usecase/myCar/CarEditUseCase.dart';
+import 'package:getn_driver/domain/usecase/myCar/GetMyCarModelUseCase.dart';
+import 'package:getn_driver/domain/usecase/myCar/GetMyCarSubCategoryUseCase.dart';
+import 'package:getn_driver/domain/usecase/myCar/GetMyCarUseCase.dart';
+import 'package:getn_driver/domain/usecase/myCar/GetMyColorUseCase.dart';
 import 'package:getn_driver/domain/usecase/notifications/GetNotificationUseCase.dart';
 import 'package:getn_driver/domain/usecase/policies/GetPoliciesUseCase.dart';
 import 'package:getn_driver/domain/usecase/recomendPlaces/GetRecomendPlacesUseCase.dart';
@@ -133,6 +141,11 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => CreateRequestsTransactionUseCase(getIt()));
   getIt.registerLazySingleton(() => GetProfileUseCase(getIt()));
   getIt.registerLazySingleton(() => SetPolyLinesUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetMyCarSubCategoryUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetMyCarModelUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetMyColorUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetMyCarUseCase(getIt()));
+  getIt.registerLazySingleton(() => CarEditUseCase(getIt()));
 
   // Repository
   getIt.registerLazySingleton<AuthRepository>(
@@ -151,6 +164,13 @@ Future<void> init() async {
 
   getIt.registerLazySingleton<NotificationRepository>(
         () => NotificationRepositoryImpl(
+      getIt(),
+      getIt(),
+    ),
+  );
+
+  getIt.registerLazySingleton<MyCarRepository>(
+        () => MyCarRepositoryImpl(
       getIt(),
       getIt(),
     ),
@@ -265,6 +285,9 @@ Future<void> init() async {
 
   getIt.registerLazySingleton<NotificationRemoteDataSource>(
           () => NotificationRemoteDataSourceImpl());
+
+  getIt.registerLazySingleton<MyCarRemoteDataSource>(
+          () => MyCarRemoteDataSourceImpl());
 
 
   //! Core

@@ -28,7 +28,9 @@ class MapUtils {
     } while (index < len);
 
     /*adding to previous value as done in encoding */
-    for (var i = 2; i < lList.length; i++) lList[i] += lList[i - 2];
+    for (var i = 2; i < lList.length; i++) {
+      lList[i] += lList[i - 2];
+    }
 
     print(lList.toString());
 
