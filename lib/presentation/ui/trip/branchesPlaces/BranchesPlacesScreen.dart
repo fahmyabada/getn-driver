@@ -55,7 +55,9 @@ class _BranchesPlacesScreenState extends State<BranchesPlacesScreen> {
             child: Scaffold(
               appBar: AppBar(
                 title: Text(
-                  'choose your destination',
+                  LanguageCubit.get(context)
+                      .getTexts('ChooseDestination')
+                      .toString(),
                   style: TextStyle(color: primaryColor, fontSize: 20.sp),
                 ),
                 centerTitle: true,
@@ -198,7 +200,9 @@ class _BranchesPlacesScreenState extends State<BranchesPlacesScreen> {
                                             }
                                           });
                                         },
-                                        text: 'Info',
+                                        text: LanguageCubit.get(context)
+                                            .getTexts('Info')
+                                            .toString(),
                                         backColor: accentColor,
                                         textColor: white),
                                     defaultButton2(
@@ -225,7 +229,9 @@ class _BranchesPlacesScreenState extends State<BranchesPlacesScreen> {
                                                       data.placeLongitude!),
                                                   firstTime: true));
                                         },
-                                        text: 'Select',
+                                        text: LanguageCubit.get(context)
+                                            .getTexts('Select')
+                                            .toString(),
                                         backColor: blueColor,
                                         textColor: white),
                                   ],

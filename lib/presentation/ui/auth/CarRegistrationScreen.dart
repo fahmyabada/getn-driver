@@ -99,9 +99,11 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
             // outside to dismiss
             builder: (BuildContext context) {
               return CustomDialogImage(
-                title: "Take Image",
-                description:
-                    'Camera permissions denied\n You must enable the access camera to take photo \n you can choose setting and enable camera then try back',
+                title:
+                    LanguageCubit.get(context).getTexts('TakeImage').toString(),
+                description: LanguageCubit.get(context)
+                    .getTexts('CameraPermissions')
+                    .toString(),
                 type: "checkImageDeniedForever",
                 backgroundColor: white,
                 btnOkColor: accentColor,
@@ -150,7 +152,9 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                   .setString('typeSign', "signWithCarRegistration");
 
               showToastt(
-                  text: "login successfully",
+                  text: LanguageCubit.get(context)
+                      .getTexts('LoginSuccessfully')
+                      .toString(),
                   state: ToastStates.success,
                   context: context);
 
@@ -178,7 +182,9 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
             child: Scaffold(
               appBar: AppBar(
                 title: Text(
-                  "Car Registration",
+                  LanguageCubit.get(context)
+                      .getTexts('CarRegistration')
+                      .toString(),
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       fontSize: 20.sp,
@@ -515,12 +521,16 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                             defaultFormField(
                               controller: carNumberController,
                               type: TextInputType.text,
-                              label: "Car Number",
+                              label: LanguageCubit.get(context)
+                                  .getTexts('CarNumber')
+                                  .toString(),
                               textSize: 20,
                               border: false,
                               borderRadius: 50,
                               validatorText: carNumberController.text,
-                              validatorMessage: "Enter Car Number Please..",
+                              validatorMessage: LanguageCubit.get(context)
+                                  .getTexts('EnterCarNumber')
+                                  .toString(),
                               onEditingComplete: () {
                                 FocusScope.of(context).nextFocus();
                               },
@@ -535,7 +545,9 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                         height: 30.h,
                       ),
                       Text(
-                        "Front Car License Image ",
+                        LanguageCubit.get(context)
+                            .getTexts('FrontCarLicenseImage')
+                            .toString(),
                         textAlign: TextAlign.start,
                         style: TextStyle(
                             fontSize: 22.sp,
@@ -579,7 +591,9 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                         height: 30.h,
                       ),
                       Text(
-                        "Back Car License Image ",
+                        LanguageCubit.get(context)
+                            .getTexts('BackCarLicenseImage')
+                            .toString(),
                         textAlign: TextAlign.start,
                         style: TextStyle(
                             fontSize: 22.sp,
@@ -623,7 +637,9 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                         height: 20.h,
                       ),
                       Text(
-                        'Gallery',
+                        LanguageCubit.get(context)
+                            .getTexts('Gallery')
+                            .toString(),
                         style: TextStyle(
                             fontSize: 24.sp,
                             color: black,
@@ -779,12 +795,16 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                                   SignCubit.get(context).carCreate(formData);
                                 } else {
                                   showToastt(
-                                      text: "please fill all data first...",
+                                      text: LanguageCubit.get(context)
+                                          .getTexts('pleaseFillAllData')
+                                          .toString(),
                                       state: ToastStates.error,
                                       context: context);
                                 }
                               },
-                              text: "Save",
+                              text: LanguageCubit.get(context)
+                                  .getTexts('Save')
+                                  .toString(),
                               backColor: accentColor,
                               textColor: white),
                     ],

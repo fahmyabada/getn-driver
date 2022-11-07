@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -14,7 +15,6 @@ import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
 import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:ui' as ui;
 
 class VerifyImageScreen extends StatefulWidget {
   const VerifyImageScreen(
@@ -69,7 +69,7 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
 
     if (getIt<SharedPreferences>().getBool("isEn") != null) {
       LanguageCubit.get(context).isEn =
-      getIt<SharedPreferences>().getBool("isEn")!;
+          getIt<SharedPreferences>().getBool("isEn")!;
     }
   }
 
@@ -96,7 +96,8 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
             getIt<SharedPreferences>().setString('token', state.data.token!);
           }
           if (state.data.image?.src != null) {
-            getIt<SharedPreferences>().setString('userImage', state.data.image!.src!);
+            getIt<SharedPreferences>()
+                .setString('userImage', state.data.image!.src!);
           }
           getIt<SharedPreferences>().setString('countryId', widget.countryId!);
 
@@ -117,7 +118,9 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
           child: Scaffold(
             appBar: AppBar(
               title: Text(
-                "Verify your identity",
+                LanguageCubit.get(context)
+                    .getTexts('VerifyIdentity')
+                    .toString(),
                 textAlign: TextAlign.start,
                 style: TextStyle(
                     fontSize: 20.sp,
@@ -169,21 +172,27 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
                   ),
                   widget.typeScreen == "register"
                       ? Text(
-                          "Verify your identity by taking a selfie shot of your photo For the verification of something",
+                          LanguageCubit.get(context)
+                              .getTexts('VerifyIdentityRegister')
+                              .toString(),
                           textAlign: TextAlign.start,
                           style:
                               TextStyle(fontSize: 20.sp, color: primaryColor),
                         )
                       : widget.typeScreen == "frontNationalId"
                           ? Text(
-                              "Verify your front NationalId by taking shot of your photo ",
+                              LanguageCubit.get(context)
+                                  .getTexts('VerifyIdentityFrontNationalId')
+                                  .toString(),
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                   fontSize: 20.sp, color: primaryColor),
                             )
                           : widget.typeScreen == "backNationalId"
                               ? Text(
-                                  "Verify your back NationalId by taking shot of your photo ",
+                                  LanguageCubit.get(context)
+                                      .getTexts('VerifyIdentityBackNationalId')
+                                      .toString(),
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
                                       fontSize: 20.sp, color: primaryColor),
@@ -207,14 +216,20 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
                               //                     :
                               widget.typeScreen == "frontDriverLicence"
                                   ? Text(
-                                      "Verify your front driver licence by taking shot of your photo ",
+                                      LanguageCubit.get(context)
+                                          .getTexts(
+                                              'VerifyIdentityFrontDriverLicence')
+                                          .toString(),
                                       textAlign: TextAlign.start,
                                       style: TextStyle(
                                           fontSize: 20.sp, color: primaryColor),
                                     )
                                   : widget.typeScreen == "backDriverLicence"
                                       ? Text(
-                                          "Verify your back driver licence by taking shot of your photo ",
+                                          LanguageCubit.get(context)
+                                              .getTexts(
+                                                  'VerifyIdentityBackDriverLicence')
+                                              .toString(),
                                           textAlign: TextAlign.start,
                                           style: TextStyle(
                                               fontSize: 20.sp,
@@ -327,12 +342,16 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
                                 }
                               } else {
                                 showToastt(
-                                    text: "choose photo first please...",
+                                    text: LanguageCubit.get(context)
+                                        .getTexts('ChoosePhoto')
+                                        .toString(),
                                     state: ToastStates.error,
                                     context: context);
                               }
                             },
-                            text: "Done",
+                            text: LanguageCubit.get(context)
+                                .getTexts('Done')
+                                .toString(),
                             backColor: accentColor,
                             textColor: white),
                   ),
@@ -365,16 +384,19 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
         if (kDebugMode) {
           print('imageErrorVerifyImage***************** =$_pickImageError');
         }
-        if(e.toString() == "PlatformException(camera_access_denied, The user did not allow camera access., null, null)"){
+        if (e.toString() ==
+            "PlatformException(camera_access_denied, The user did not allow camera access., null, null)") {
           showDialog(
             context: context,
             barrierDismissible: false,
             // outside to dismiss
             builder: (BuildContext context) {
               return CustomDialogImage(
-                title: "Take Image",
-                description:
-                'Camera permissions denied\n You must enable the access camera to take photo \n you can choose setting and enable camera then try back',
+                title:
+                    LanguageCubit.get(context).getTexts('TakeImage').toString(),
+                description: LanguageCubit.get(context)
+                    .getTexts('CameraPermissions')
+                    .toString(),
                 type: "checkImageDeniedForever",
                 backgroundColor: white,
                 btnOkColor: accentColor,
@@ -384,12 +406,9 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
               );
             },
           );
-        }
-        else{
+        } else {
           showToastt(
-              text: e.toString(),
-              state: ToastStates.error,
-              context: context);
+              text: e.toString(), state: ToastStates.error, context: context);
         }
       });
     }

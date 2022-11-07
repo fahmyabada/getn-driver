@@ -52,7 +52,9 @@ class _RecomendPlacesScreenState extends State<RecomendPlacesScreen> {
             child: Scaffold(
               appBar: AppBar(
                 title: Text(
-                  'choose your destination',
+                  LanguageCubit.get(context)
+                      .getTexts('ChooseDestination')
+                      .toString(),
                   style: TextStyle(color: primaryColor, fontSize: 20.sp),
                 ),
                 centerTitle: true,
@@ -208,7 +210,9 @@ class _RecomendPlacesScreenState extends State<RecomendPlacesScreen> {
                                             });
                                           }
                                         },
-                                        text: 'Info',
+                                        text: LanguageCubit.get(context)
+                                            .getTexts('Info')
+                                            .toString(),
                                         backColor: accentColor,
                                         textColor: white),
                                     data.branchesCount! >= 1
@@ -227,7 +231,9 @@ class _RecomendPlacesScreenState extends State<RecomendPlacesScreen> {
                                               Navigator.of(context)
                                                   .pop(location);
                                             },
-                                            text: 'Branches',
+                                            text: LanguageCubit.get(context)
+                                                .getTexts('Branches')
+                                                .toString(),
                                             backColor: blueColor,
                                             textColor: white)
                                         : defaultButton2(
@@ -247,7 +253,9 @@ class _RecomendPlacesScreenState extends State<RecomendPlacesScreen> {
                                                           data.placeLongitude!),
                                                       firstTime: true));
                                             },
-                                            text: 'Select',
+                                            text: LanguageCubit.get(context)
+                                                .getTexts('Select')
+                                                .toString(),
                                             backColor: blueColor,
                                             textColor: white),
                                   ],

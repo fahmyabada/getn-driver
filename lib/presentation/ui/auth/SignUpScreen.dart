@@ -149,7 +149,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
           }
           if (state.message == "{phone:  Already user}") {
             showToastt(
-                text: "Already you have account \n SignIn please..",
+                text: LanguageCubit.get(context)
+                    .getTexts('SignInPlease')
+                    .toString(),
                 state: ToastStates.error,
                 context: context);
             Navigator.pop(context);
@@ -329,7 +331,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               border: true,
                               borderColor: white,
                               validatorText: phoneController.text,
-                              validatorMessage: "Enter Phone Please..",
+                              validatorMessage: LanguageCubit.get(context)
+                                  .getTexts('EnterPhone')
+                                  .toString(),
                               onEditingComplete: () {
                                 FocusScope.of(context).unfocus();
                               }),
@@ -404,12 +408,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               }
                             } else {
                               showToastt(
-                                  text: "country code note found",
+                                  text: LanguageCubit.get(context)
+                                      .getTexts('CountryCodeMotFound')
+                                      .toString(),
                                   state: ToastStates.error,
                                   context: context);
                             }
                           },
-                          text: "Next",
+                          text: LanguageCubit.get(context)
+                              .getTexts('Next')
+                              .toString(),
                           backColor: accentColor,
                           textColor: white),
                 ),

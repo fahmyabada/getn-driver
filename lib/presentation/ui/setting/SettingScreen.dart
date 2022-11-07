@@ -43,7 +43,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 children: [
                   Text(
                     LanguageCubit.get(context)
-                        .getTexts("Arabic")
+                        .getTexts('Arabic')
                         .toString(),
                     style: TextStyle(
                         color: black,
@@ -63,7 +63,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
                   Text(
                     LanguageCubit.get(context)
-                        .getTexts("English")
+                        .getTexts('English')
                         .toString(),
                     style: TextStyle(
                         color: black,
@@ -77,7 +77,9 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
             buildSettingItem(
               context: context,
-              title: "My Account",
+              title: LanguageCubit.get(context)
+                  .getTexts('MyAccount')
+                  .toString(),
               onClick: () {
                 navigateTo(
                     context,
@@ -89,7 +91,9 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
             buildSettingItem(
               context: context,
-              title: "My Car",
+              title: LanguageCubit.get(context)
+                  .getTexts('MyCar')
+                  .toString(),
               onClick: () {
                 navigateTo(
                     context,
@@ -133,7 +137,9 @@ class _SettingScreenState extends State<SettingScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'Setting',
+            LanguageCubit.get(context)
+                .getTexts('Setting')
+                .toString(),
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.w500,

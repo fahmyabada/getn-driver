@@ -53,7 +53,9 @@ class _InfoPlaceScreenState extends State<InfoPlaceScreen> {
             child: Scaffold(
               appBar: AppBar(
                 title: Text(
-                  '${widget.type!} Details',
+                  '${widget.type!} ${LanguageCubit.get(context)
+                      .getTexts('Details')
+                      .toString()}',
                   style: TextStyle(color: primaryColor, fontSize: 20.sp),
                 ),
                 centerTitle: true,
@@ -188,7 +190,9 @@ class _InfoPlaceScreenState extends State<InfoPlaceScreen> {
                               height: 25.h,
                             ),
                             Text(
-                              'About Place',
+                              LanguageCubit.get(context)
+                                  .getTexts('AboutPlace')
+                                  .toString(),
                               style: TextStyle(
                                   fontSize: 20.sp,
                                   color: black,
@@ -236,7 +240,9 @@ class _InfoPlaceScreenState extends State<InfoPlaceScreen> {
                                       : Navigator.of(context)
                                           .pop(CurrentLocation(placeId: InfoPlaceCubit.get(context).info!.id!, description: LanguageCubit.get(context).isEn ? InfoPlaceCubit.get(context).info!.title!.en! : InfoPlaceCubit.get(context).info!.title!.ar!, latitude: double.parse(InfoPlaceCubit.get(context).info!.placeLatitude!), longitude: double.parse(InfoPlaceCubit.get(context).info!.placeLongitude!), firstTime: true));
                                 },
-                                text: "select this ${widget.type!}",
+                                text: "${LanguageCubit.get(context)
+                                    .getTexts('selectThis')
+                                    .toString()} ${widget.type!}",
                                 backColor: accentColor,
                                 textColor: white)
                           ],

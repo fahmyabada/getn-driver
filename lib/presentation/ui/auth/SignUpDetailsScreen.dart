@@ -105,7 +105,9 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                 color: black,
               ),
               title: Text(
-                "Complete your Registration",
+                LanguageCubit.get(context)
+                    .getTexts('CompleteRegistration')
+                    .toString(),
                 textAlign: TextAlign.start,
                 style: TextStyle(
                     fontSize: 20.sp,
@@ -199,7 +201,9 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                         width: 10.w,
                       ),
                       Text(
-                        'Personal Information',
+                        LanguageCubit.get(context)
+                            .getTexts('PersonalInformation')
+                            .toString(),
                         style: TextStyle(
                             fontSize: 18.sp, fontWeight: FontWeight.bold),
                       ),
@@ -215,12 +219,16 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                         defaultFormField(
                           controller: fullNameController,
                           type: TextInputType.text,
-                          label: "Full Name",
+                          label: LanguageCubit.get(context)
+                              .getTexts('FullName')
+                              .toString(),
                           textSize: 20,
                           border: false,
                           borderRadius: 50,
                           validatorText: fullNameController.text,
-                          validatorMessage: "Enter Full Name Please..",
+                          validatorMessage: LanguageCubit.get(context)
+                              .getTexts('EnterFullName')
+                              .toString(),
                           onEditingComplete: () {
                             FocusScope.of(context).nextFocus();
                           },
@@ -231,12 +239,16 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                         defaultFormField(
                           controller: emailController,
                           type: TextInputType.text,
-                          label: "Email",
+                          label: LanguageCubit.get(context)
+                              .getTexts('Email')
+                              .toString(),
                           textSize: 20,
                           border: false,
                           borderRadius: 50,
                           validatorText: emailController.text,
-                          validatorMessage: "Enter Email Please..",
+                          validatorMessage: LanguageCubit.get(context)
+                              .getTexts('EnterEmail')
+                              .toString(),
                           onEditingComplete: () {
                             FocusScope.of(context).nextFocus();
                           },
@@ -247,12 +259,16 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                         defaultFormField(
                           controller: whatsAppController,
                           type: TextInputType.number,
-                          label: "WhatsApp",
+                          label: LanguageCubit.get(context)
+                              .getTexts('WhatsApp')
+                              .toString(),
                           textSize: 20,
                           border: false,
                           borderRadius: 50,
                           validatorText: whatsAppController.text,
-                          validatorMessage: "Enter WhatsApp Please..",
+                          validatorMessage: LanguageCubit.get(context)
+                              .getTexts('EnterWhatsApp')
+                              .toString(),
                           onEditingComplete: () {
                             FocusScope.of(context).nextFocus();
                           },
@@ -266,12 +282,16 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                             child: defaultFormField(
                               controller: birthDateController,
                               type: TextInputType.text,
-                              label: "Birthday",
+                              label: LanguageCubit.get(context)
+                                  .getTexts('Birthday')
+                                  .toString(),
                               textSize: 20,
                               border: false,
                               borderRadius: 50,
                               validatorText: birthDateController.text,
-                              validatorMessage: "Enter Birthday Please..",
+                              validatorMessage: LanguageCubit.get(context)
+                                  .getTexts('EnterBirthday')
+                                  .toString(),
                               onEditingComplete: () {
                                 FocusScope.of(context).unfocus();
                               },
@@ -314,7 +334,9 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                         width: 10.w,
                       ),
                       Text(
-                        'Address',
+                        LanguageCubit.get(context)
+                            .getTexts('Address')
+                            .toString(),
                         style: TextStyle(
                             fontSize: 18.sp, fontWeight: FontWeight.bold),
                       ),
@@ -346,7 +368,9 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                       ? loading()
                       : SignCubit.get(context).failureCity.isNotEmpty
                           ? errorMessage2(
-                              message: 'error occurred when get Cites',
+                              message: LanguageCubit.get(context)
+                                  .getTexts('ErrorGetCites')
+                                  .toString(),
                               press: () {
                                 SignCubit.get(context)
                                     .getCity(widget.countryId);
@@ -463,7 +487,9 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                       ? loading()
                       : SignCubit.get(context).failureArea.isNotEmpty
                           ? errorMessage2(
-                              message: 'error occurred when get Area',
+                              message: LanguageCubit.get(context)
+                                  .getTexts('ErrorGetArea')
+                                  .toString(),
                               press: () {
                                 SignCubit.get(context).getArea(
                                     widget.countryId, dropDownValueCity!.id!);
@@ -578,12 +604,16 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                     child: defaultFormField(
                       controller: addressController,
                       type: TextInputType.text,
-                      label: "Address",
+                      label: LanguageCubit.get(context)
+                          .getTexts('Address')
+                          .toString(),
                       textSize: 20,
                       border: false,
                       borderRadius: 50,
                       validatorText: addressController.text,
-                      validatorMessage: "Enter Address Please..",
+                      validatorMessage: LanguageCubit.get(context)
+                          .getTexts('EnterAddress')
+                          .toString(),
                       onEditingComplete: () {
                         FocusScope.of(context).unfocus();
                       },
@@ -604,7 +634,9 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                         width: 10.w,
                       ),
                       Text(
-                        'Availabilities',
+                        LanguageCubit.get(context)
+                            .getTexts('Availabilities')
+                            .toString(),
                         style: TextStyle(
                             fontSize: 18.sp, fontWeight: FontWeight.bold),
                       ),
@@ -623,7 +655,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                   Row(
                     children: [
                       Text(
-                        "Role",
+                        LanguageCubit.get(context).getTexts('Role').toString(),
                         textAlign: TextAlign.start,
                         style: TextStyle(
                             fontSize: 20.sp,
@@ -674,7 +706,10 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("i confirm that i have read & agree to the",
+                          Text(
+                              LanguageCubit.get(context)
+                                  .getTexts('read&agree')
+                                  .toString(),
                               style: TextStyle(fontSize: 17.sp, color: black)),
                           Row(
                             mainAxisSize: MainAxisSize.min,
@@ -689,11 +724,17 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                     terms = value;
                                   });
                                 },
-                                child: Text("Terms & condition ",
+                                child: Text(
+                                    LanguageCubit.get(context)
+                                        .getTexts('Terms&Condition')
+                                        .toString(),
                                     style: TextStyle(
                                         fontSize: 17.sp, color: accentColor)),
                               ),
-                              Text("and Privacy Policy",
+                              Text(
+                                  LanguageCubit.get(context)
+                                      .getTexts('AndPrivacyPolicy')
+                                      .toString(),
                                   style:
                                       TextStyle(fontSize: 17.sp, color: black)),
                             ],
@@ -756,19 +797,24 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                               );
                             } else {
                               showToastt(
-                                  text: "check in Terms & condition first..",
+                                  text: LanguageCubit.get(context)
+                                      .getTexts('CheckTerms&Condition')
+                                      .toString(),
                                   state: ToastStates.error,
                                   context: context);
                             }
                           } else {
                             showToastt(
-                                text:
-                                    'Be sure to choose image and fill personal information ,address and availability',
+                                text: LanguageCubit.get(context)
+                                    .getTexts('FillAllData')
+                                    .toString(),
                                 state: ToastStates.error,
                                 context: context);
                           }
                         },
-                        text: "Next",
+                        text: LanguageCubit.get(context)
+                            .getTexts('Next')
+                            .toString(),
                         backColor: accentColor,
                         textColor: white),
                   ),
@@ -860,9 +906,11 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
             // outside to dismiss
             builder: (BuildContext context) {
               return CustomDialogImage(
-                title: "Take Image",
-                description:
-                    'Camera permissions denied\n You must enable the access camera to take photo \n you can choose setting and enable camera then try back',
+                title:
+                    LanguageCubit.get(context).getTexts('TakeImage').toString(),
+                description: LanguageCubit.get(context)
+                    .getTexts('CameraPermissions')
+                    .toString(),
                 type: "checkImageDeniedForever",
                 backgroundColor: white,
                 btnOkColor: accentColor,

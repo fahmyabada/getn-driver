@@ -82,7 +82,9 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
             });
             Navigator.pop(context);
             showToastt(
-                text: "success transaction",
+                text: LanguageCubit.get(context)
+                    .getTexts('SuccessTransaction')
+                    .toString(),
                 state: ToastStates.success,
                 context: context);
           } else if (state is CreateRequestErrorState) {
@@ -103,7 +105,9 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
             child: Scaffold(
               appBar: AppBar(
                 title: Text(
-                  'Request Transaction',
+                  LanguageCubit.get(context)
+                      .getTexts('RequestTransaction')
+                      .toString(),
                   style: TextStyle(
                     fontSize: 20.sp,
                     fontWeight: FontWeight.bold,
@@ -306,7 +310,9 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                                               validatorText:
                                                   phoneController!.text,
                                               validatorMessage:
-                                                  "Enter Phone Please..",
+                                                  LanguageCubit.get(context)
+                                                      .getTexts('EnterPhone')
+                                                      .toString(),
                                               onEditingComplete: () {
                                                 FocusScope.of(context)
                                                     .nextFocus();
@@ -343,7 +349,9 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                                     child: defaultFormField(
                                         controller: accountTypeController,
                                         type: TextInputType.text,
-                                        label: "Account Type",
+                                        label: LanguageCubit.get(context)
+                                            .getTexts('AccountType')
+                                            .toString(),
                                         textSize: 22,
                                         borderRadius: 50,
                                         border: true,
@@ -351,7 +359,9 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                                         validatorText:
                                             accountTypeController!.text,
                                         validatorMessage:
-                                            "Enter Account Type Please..",
+                                            LanguageCubit.get(context)
+                                                .getTexts('EnterAccountType')
+                                                .toString(),
                                         onEditingComplete: () {
                                           FocusScope.of(context).nextFocus();
                                         }),
@@ -374,7 +384,9 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                                     child: defaultFormField(
                                         controller: accountNameController,
                                         type: TextInputType.text,
-                                        label: "Account Name",
+                                        label: LanguageCubit.get(context)
+                                            .getTexts('AccountName')
+                                            .toString(),
                                         textSize: 22,
                                         borderRadius: 50,
                                         border: true,
@@ -382,7 +394,9 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                                         validatorText:
                                             accountNameController!.text,
                                         validatorMessage:
-                                            "Enter Account Name Please..",
+                                            LanguageCubit.get(context)
+                                                .getTexts('EnterAccountName')
+                                                .toString(),
                                         onEditingComplete: () {
                                           FocusScope.of(context).nextFocus();
                                         }),
@@ -405,14 +419,18 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                                     child: defaultFormField(
                                         controller: bankNameController,
                                         type: TextInputType.text,
-                                        label: "Bank Name",
+                                        label: LanguageCubit.get(context)
+                                            .getTexts('BankName')
+                                            .toString(),
                                         textSize: 22,
                                         borderRadius: 50,
                                         border: true,
                                         borderColor: white,
                                         validatorText: bankNameController!.text,
                                         validatorMessage:
-                                            "Enter Bank Name Please..",
+                                            LanguageCubit.get(context)
+                                                .getTexts('EnterBankName')
+                                                .toString(),
                                         onEditingComplete: () {
                                           FocusScope.of(context).nextFocus();
                                         }),
@@ -435,7 +453,9 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                                     child: defaultFormField(
                                         controller: accountNumberController,
                                         type: TextInputType.number,
-                                        label: "Account Number",
+                                        label: LanguageCubit.get(context)
+                                            .getTexts('AccountNumber')
+                                            .toString(),
                                         textSize: 22,
                                         borderRadius: 50,
                                         border: true,
@@ -443,7 +463,9 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                                         validatorText:
                                             accountNumberController!.text,
                                         validatorMessage:
-                                            "Enter Account Number Please..",
+                                            LanguageCubit.get(context)
+                                                .getTexts('EnterAccountNumber')
+                                                .toString(),
                                         onEditingComplete: () {
                                           FocusScope.of(context).nextFocus();
                                         }),
@@ -466,13 +488,18 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                                     child: defaultFormField(
                                         controller: ibanController,
                                         type: TextInputType.number,
-                                        label: "iban",
+                                        label: LanguageCubit.get(context)
+                                            .getTexts('iban')
+                                            .toString(),
                                         textSize: 22,
                                         borderRadius: 50,
                                         border: true,
                                         borderColor: white,
                                         validatorText: ibanController!.text,
-                                        validatorMessage: "Enter iban Please..",
+                                        validatorMessage:
+                                            LanguageCubit.get(context)
+                                                .getTexts('EnterIban')
+                                                .toString(),
                                         onEditingComplete: () {
                                           FocusScope.of(context).unfocus();
                                         }),
@@ -496,13 +523,17 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                           child: defaultFormField(
                               controller: mountController,
                               type: TextInputType.number,
-                              label: "amount",
+                              label: LanguageCubit.get(context)
+                                  .getTexts('amount')
+                                  .toString(),
                               textSize: 22,
                               borderRadius: 50,
                               border: true,
                               borderColor: white,
                               validatorText: mountController!.text,
-                              validatorMessage: "Enter Mount Please..",
+                              validatorMessage: LanguageCubit.get(context)
+                                  .getTexts('EnterAmount')
+                                  .toString(),
                               onEditingComplete: () {
                                 FocusScope.of(context).unfocus();
                               }),
@@ -539,7 +570,9 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                                         load = false;
                                       });
                                       showToastt(
-                                          text: "please fill all data first...",
+                                          text: LanguageCubit.get(context)
+                                              .getTexts('pleaseFillAllData')
+                                              .toString(),
                                           state: ToastStates.error,
                                           context: context);
                                     }
@@ -571,13 +604,18 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                                         load = false;
                                       });
                                       showToastt(
-                                          text: "please fill all data first...",
+                                          text:
+                                          LanguageCubit.get(context)
+                                              .getTexts('pleaseFillAllData')
+                                              .toString(),
                                           state: ToastStates.error,
                                           context: context);
                                     }
                                   }
                                 },
-                                text: "Save",
+                                text: LanguageCubit.get(context)
+                                    .getTexts('Save')
+                                    .toString(),
                                 backColor: accentColor,
                                 textColor: white),
                       ),
@@ -618,7 +656,8 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                   },
                   // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
-                Text('Phone', style: TextStyle(fontSize: 14.sp, color: black)),
+                Text(LanguageCubit.get(context).getTexts('Phone').toString(),
+                    style: TextStyle(fontSize: 14.sp, color: black)),
               ],
             ),
           ),
@@ -649,7 +688,7 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                   // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 Text(
-                  'Visa',
+                  LanguageCubit.get(context).getTexts('Visa').toString(),
                   style: TextStyle(fontSize: 14.sp, color: black),
                 ),
               ],

@@ -104,7 +104,7 @@ class _WalletScreenState extends State<WalletScreen> {
           child: Scaffold(
             appBar: AppBar(
               title: Text(
-                'My Wallet',
+                LanguageCubit.get(context).getTexts('MyWallet').toString(),
                 style: TextStyle(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.bold,
@@ -158,7 +158,9 @@ class _WalletScreenState extends State<WalletScreen> {
                                 size: 80.sp,
                               ),
                               Text(
-                                'Balance',
+                                LanguageCubit.get(context)
+                                    .getTexts('Balance')
+                                    .toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 26.sp,
@@ -178,7 +180,10 @@ class _WalletScreenState extends State<WalletScreen> {
                                             SizedBox(
                                               width: 280.w,
                                               child: buildBalanceRow(
-                                                title: 'Wallet',
+                                                title:
+                                                    LanguageCubit.get(context)
+                                                        .getTexts('Wallet')
+                                                        .toString(),
                                                 balance: WalletCubit.get(
                                                             context)
                                                         .walletValue
@@ -195,7 +200,10 @@ class _WalletScreenState extends State<WalletScreen> {
                                             SizedBox(
                                               width: 280.w,
                                               child: buildBalanceRow(
-                                                title: 'Hold',
+                                                title:
+                                                    LanguageCubit.get(context)
+                                                        .getTexts('Hold')
+                                                        .toString(),
                                                 balance: WalletCubit.get(
                                                             context)
                                                         .walletHold
@@ -210,7 +218,9 @@ class _WalletScreenState extends State<WalletScreen> {
                                       : errorMessage2(
                                           message: WalletCubit.get(context)
                                                   .walletFailure ??
-                                              'Not Found Data',
+                                              LanguageCubit.get(context)
+                                                  .getTexts('NotFoundData')
+                                                  .toString(),
                                           press: () {
                                             WalletCubit.get(context)
                                                 .indexWallet = 1;
@@ -239,7 +249,9 @@ class _WalletScreenState extends State<WalletScreen> {
                                       });
                                     });
                                   },
-                                  text: 'Request Transaction',
+                                  text: LanguageCubit.get(context)
+                                      .getTexts('RequestTransaction')
+                                      .toString(),
                                 ),
                               ),
                             ],
@@ -252,7 +264,9 @@ class _WalletScreenState extends State<WalletScreen> {
                       const Divider(),
                       ListTile(
                         title: Text(
-                          'Last Transactions',
+                          LanguageCubit.get(context)
+                              .getTexts('LastTransactions')
+                              .toString(),
                           style: TextStyle(
                             color: primaryColor,
                             fontWeight: FontWeight.bold,
@@ -327,7 +341,9 @@ class _WalletScreenState extends State<WalletScreen> {
                                             );
                                           })
                                       : errorMessage2(
-                                          message: 'Not Found Data',
+                                          message: LanguageCubit.get(context)
+                                              .getTexts('NotFoundData')
+                                              .toString(),
                                           press: () {
                                             WalletCubit.get(context)
                                                 .getWallet(1);
@@ -411,7 +427,10 @@ class _WalletScreenState extends State<WalletScreen> {
                                                 );
                                               })
                                           : errorMessage2(
-                                              message: 'Not Found Data',
+                                              message:
+                                                  LanguageCubit.get(context)
+                                                      .getTexts('NotFoundData')
+                                                      .toString(),
                                               press: () {
                                                 WalletCubit.get(context)
                                                     .getRequests(1);
@@ -450,11 +469,17 @@ class _WalletScreenState extends State<WalletScreen> {
               backgroundColor: primaryColor,
               selectedItemColor: accentColor,
               unselectedItemColor: grey,
-              items: const [
+              items: [
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.upcoming), label: "Wallet"),
+                    icon: const Icon(Icons.upcoming),
+                    label: LanguageCubit.get(context)
+                        .getTexts('Wallet')
+                        .toString()),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.settings), label: "Requests"),
+                    icon: const Icon(Icons.settings),
+                    label: LanguageCubit.get(context)
+                        .getTexts('Requests')
+                        .toString()),
               ],
             ),
           ),

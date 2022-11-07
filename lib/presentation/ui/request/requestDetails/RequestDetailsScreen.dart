@@ -120,7 +120,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             // }
             if (state.message == "{status:  you can't start request now}") {
               showToastt(
-                  text: 'The journey hasn\'t started yet',
+                  text: LanguageCubit.get(context)
+                      .getTexts('journeyStartedYet')
+                      .toString(),
                   state: ToastStates.error,
                   context: context);
             } else {
@@ -173,8 +175,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 // outside to dismiss
                 builder: (BuildContext context) {
                   return CustomDialogLocation(
-                    title: "Location",
-                    description: 'Location permissions are denied',
+                    title: LanguageCubit.get(context)
+                        .getTexts('Location')
+                        .toString(),
+                    description: LanguageCubit.get(context)
+                        .getTexts('LocationPermissions')
+                        .toString(),
                     type: "checkLocationDenied",
                     backgroundColor: white,
                     btnOkColor: accentColor,
@@ -191,9 +197,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 // outside to dismiss
                 builder: (BuildContext mContext) {
                   return CustomDialogLocation(
-                    title: "Location",
-                    description:
-                        'Location permissions are permanently denied\n You must enable the access location so that we can determine your location and save the visit\n choose setting and enable location then try back',
+                    title: LanguageCubit.get(context)
+                        .getTexts('Location')
+                        .toString(),
+                    description: LanguageCubit.get(context)
+                        .getTexts('LocationPermissionsPermanently')
+                        .toString(),
                     type: "checkLocationDeniedForever",
                     backgroundColor: white,
                     btnOkColor: accentColor,
@@ -222,7 +231,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             child: Scaffold(
               appBar: AppBar(
                 title: Text(
-                  'Requests',
+                  LanguageCubit.get(context)
+                      .getTexts('RequestDetails')
+                      .toString(),
                   style: TextStyle(color: primaryColor, fontSize: 20.sp),
                 ),
                 centerTitle: true,
@@ -495,7 +506,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                           '${RequestDetailsCubit.get(context).requestDetails?.client2?.country?.code}${RequestDetailsCubit.get(context).requestDetails?.client2?.phone}');
                                     } else {
                                       showToastt(
-                                          text: "this client not have phone...",
+                                          text: LanguageCubit.get(context)
+                                              .getTexts('ClientNotHavePhone')
+                                              .toString(),
                                           state: ToastStates.error,
                                           context: context);
                                     }
@@ -504,7 +517,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                   paddingVertical: 1,
                                   paddingHorizontal: 5,
                                   borderRadius: 10,
-                                  text: 'Call Client',
+                                  text: LanguageCubit.get(context)
+                                      .getTexts('Call Client')
+                                      .toString(),
                                   backColor: greenColor,
                                   textColor: white,
                                   icon: Icons.phone),
@@ -533,7 +548,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                   paddingVertical: 1,
                                   paddingHorizontal: 5,
                                   borderRadius: 10,
-                                  text: 'WhatsApp',
+                                  text: LanguageCubit.get(context)
+                                      .getTexts('WhatsApp')
+                                      .toString(),
                                   backColor: greenColor,
                                   textColor: white,
                                   icon: Icons.whatsapp),
@@ -575,7 +592,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               Row(
                 children: [
                   Text(
-                    'Status :',
+                    LanguageCubit.get(context).getTexts('Status').toString(),
                     style: TextStyle(
                       color: black,
                       fontSize: 15.sp,
@@ -596,7 +613,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               Row(
                 children: [
                   Text(
-                    'Payment Status :',
+                    LanguageCubit.get(context)
+                        .getTexts('PaymentStatus')
+                        .toString(),
                     style: TextStyle(
                       color: black,
                       fontSize: 15.sp,
@@ -621,7 +640,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Trip start and date',
+                LanguageCubit.get(context).getTexts('TripStartDate').toString(),
                 style: TextStyle(
                   color: black,
                   fontSize: 15.sp,
@@ -674,7 +693,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             children: [
               Expanded(
                 child: Text(
-                  'Picked Location',
+                  LanguageCubit.get(context)
+                      .getTexts('PickedLocation')
+                      .toString(),
                   style: TextStyle(
                       color: greenColor,
                       fontSize: 16.sp,
@@ -726,9 +747,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       id: RequestDetailsCubit.get(context)
                                           .requestDetails!
                                           .id!,
-                                      title: 'Requests',
-                                      description:
-                                          'are you sure to end Request..',
+                                      title: LanguageCubit.get(context)
+                                          .getTexts('Requests')
+                                          .toString(),
+                                      description: LanguageCubit.get(context)
+                                          .getTexts('EndRequest')
+                                          .toString(),
                                       status: btnStatus[
                                           '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
                                       type: "end",
@@ -837,9 +861,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     id: RequestDetailsCubit.get(context)
                                         .requestDetails!
                                         .id!,
-                                    title: 'Warning',
-                                    description:
-                                        'you will charged a cancelation fee..',
+                                    title: LanguageCubit.get(context)
+                                        .getTexts('Warning')
+                                        .toString(),
+                                    description: LanguageCubit.get(context)
+                                        .getTexts('CancelationFee')
+                                        .toString(),
                                     type: btnStatus[
                                         '${RequestDetailsCubit.get(context).requestDetails!.status}']![1]);
                               },
@@ -862,9 +889,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     id: RequestDetailsCubit.get(context)
                                         .requestDetails!
                                         .id!,
-                                    title: 'Do you want to reject?',
-                                    description:
-                                        'If you want to be rejected, you must first enter the reason for rejection and press OK..',
+                                    title: LanguageCubit.get(context)
+                                        .getTexts('DoReject')
+                                        .toString(),
+                                    description: LanguageCubit.get(context)
+                                        .getTexts('IfRejected')
+                                        .toString(),
                                     type: btnStatus[
                                         '${RequestDetailsCubit.get(context).requestDetails!.status}']![1]);
                               },
@@ -957,7 +987,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    'Picked Point',
+                                                    LanguageCubit.get(context)
+                                                        .getTexts('PickedPoint')
+                                                        .toString(),
                                                     style: TextStyle(
                                                         color: black,
                                                         fontSize: 15.sp,
@@ -986,7 +1018,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                       MainAxisAlignment.end,
                                                   children: [
                                                     Text(
-                                                      'Status :',
+                                                      LanguageCubit.get(context)
+                                                          .getTexts('Status')
+                                                          .toString(),
                                                       style: TextStyle(
                                                         color: black,
                                                         fontSize: 15.sp,
@@ -1068,7 +1102,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    'Picked Point',
+                                                    LanguageCubit.get(context)
+                                                        .getTexts('PickedPoint')
+                                                        .toString(),
                                                     style: TextStyle(
                                                         color: black,
                                                         fontSize: 15.sp,
@@ -1156,7 +1192,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                   padding: EdgeInsets.all(10.r),
                                                   child: Column(children: [
                                                     Text(
-                                                      'Distance',
+                                                      LanguageCubit.get(context)
+                                                          .getTexts('Distance')
+                                                          .toString(),
                                                       style: TextStyle(
                                                           color: grey2,
                                                           fontSize: 14.sp),
@@ -1186,7 +1224,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                   padding: EdgeInsets.all(10.r),
                                                   child: Column(children: [
                                                     Text(
-                                                      'Points',
+                                                      LanguageCubit.get(context)
+                                                          .getTexts('Points')
+                                                          .toString(),
                                                       style: TextStyle(
                                                           color: grey2,
                                                           fontSize: 14.sp),
@@ -1216,7 +1256,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                   padding: EdgeInsets.all(10.r),
                                                   child: Column(children: [
                                                     Text(
-                                                      '1 Km Points',
+                                                      LanguageCubit.get(context)
+                                                          .getTexts('1KmPoints')
+                                                          .toString(),
                                                       style: TextStyle(
                                                           color: grey2,
                                                           fontSize: 14.sp),
@@ -1303,7 +1345,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     },
                   )
                 : errorMessage2(
-                    message: 'Not Found Data',
+                    message: LanguageCubit.get(context)
+                        .getTexts('NotFoundData')
+                        .toString(),
                     press: () {
                       RequestDetailsCubit.get(context).indexTrips = 1;
                       RequestDetailsCubit.get(context)

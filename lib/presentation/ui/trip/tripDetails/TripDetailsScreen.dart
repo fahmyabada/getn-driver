@@ -214,7 +214,9 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
               child: Scaffold(
                 appBar: AppBar(
                   title: Text(
-                    'Trip Details',
+                    LanguageCubit.get(context)
+                        .getTexts('TripDetails')
+                        .toString(),
                     style: TextStyle(color: primaryColor, fontSize: 20.sp),
                   ),
                   leading: IconButton(
@@ -342,7 +344,9 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                     child: Column(
                                       children: [
                                         Text(
-                                          'Trip is',
+                                          LanguageCubit.get(context)
+                                              .getTexts('TripIs')
+                                              .toString(),
                                           style: TextStyle(
                                               color: black, fontSize: 15.sp),
                                         ),
@@ -357,7 +361,9 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                   TripDetailsCubit.get(context)
                                                       .tripDetails!
                                                       .status!]!
-                                              : 'Running',
+                                              : LanguageCubit.get(context)
+                                                  .getTexts('Running')
+                                                  .toString(),
                                           style: TextStyle(
                                               color: greenColor,
                                               fontSize: 17.sp,
@@ -498,7 +504,9 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                     '${TripDetailsCubit.get(context).tripDetails?.client2?.country?.code}${TripDetailsCubit.get(context).tripDetails?.client2?.phone}');
                               } else {
                                 showToastt(
-                                    text: "this client not have phone...",
+                                    text: LanguageCubit.get(context)
+                                        .getTexts('ClientNotHavePhone')
+                                        .toString(),
                                     state: ToastStates.error,
                                     context: context);
                               }
@@ -507,7 +515,9 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                             paddingVertical: 1,
                             paddingHorizontal: 5,
                             borderRadius: 10,
-                            text: 'Call Client',
+                            text: LanguageCubit.get(context)
+                                .getTexts('CallClient')
+                                .toString(),
                             backColor: greenColor,
                             textColor: white,
                             icon: Icons.phone),
@@ -536,7 +546,9 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                             paddingVertical: 1,
                             paddingHorizontal: 5,
                             borderRadius: 10,
-                            text: 'WhatsApp',
+                            text: LanguageCubit.get(context)
+                                .getTexts('WhatsApp')
+                                .toString(),
                             backColor: greenColor,
                             textColor: white,
                             icon: Icons.whatsapp),
@@ -572,7 +584,9 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Picked Point',
+                      LanguageCubit.get(context)
+                          .getTexts('PickedPoint')
+                          .toString(),
                       style: TextStyle(
                           color: black,
                           fontSize: 14.sp,
@@ -651,7 +665,9 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Picked Point',
+                      LanguageCubit.get(context)
+                          .getTexts('PickedPoint')
+                          .toString(),
                       style: TextStyle(
                           color: black,
                           fontSize: 14.sp,
@@ -723,7 +739,9 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                   padding: EdgeInsets.all(10.r),
                   child: Column(children: [
                     Text(
-                      'Distance',
+                      LanguageCubit.get(context)
+                          .getTexts('Distance')
+                          .toString(),
                       style: TextStyle(color: grey2, fontSize: 13.sp),
                     ),
                     SizedBox(
@@ -752,7 +770,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                   padding: EdgeInsets.all(10.r),
                   child: Column(children: [
                     Text(
-                      'Points',
+                      LanguageCubit.get(context).getTexts('Points').toString(),
                       style: TextStyle(color: grey2, fontSize: 13.sp),
                     ),
                     SizedBox(
@@ -781,7 +799,9 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                   padding: EdgeInsets.all(10.r),
                   child: Column(children: [
                     Text(
-                      '1 Km Points',
+                      LanguageCubit.get(context)
+                          .getTexts('1KmPoints')
+                          .toString(),
                       style: TextStyle(color: grey2, fontSize: 13.sp),
                     ),
                     SizedBox(
@@ -853,9 +873,12 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                         builder: (_) {
                           return CustomDialogRejectTripDetails(
                             id: TripDetailsCubit.get(context).tripDetails!.id!,
-                            title: 'Do you want to reject?',
-                            description:
-                                'If you want to be rejected, you must first enter the reason for rejection and press OK..',
+                            title: LanguageCubit.get(context)
+                                .getTexts('DoReject')
+                                .toString(),
+                            description: LanguageCubit.get(context)
+                                .getTexts('IfRejected')
+                                .toString(),
                           );
                         },
                       ).then((value) {
@@ -902,8 +925,12 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                   id: TripDetailsCubit.get(context)
                                       .tripDetails!
                                       .id!,
-                                  title: 'Trip',
-                                  description: 'are you sure to end trip..',
+                                  title: LanguageCubit.get(context)
+                                      .getTexts('Trip')
+                                      .toString(),
+                                  description: LanguageCubit.get(context)
+                                      .getTexts('AreEndTrip')
+                                      .toString(),
                                   status: btnStatus[
                                       '${TripDetailsCubit.get(context).tripDetails!.status}']![0],
                                   type: "end",

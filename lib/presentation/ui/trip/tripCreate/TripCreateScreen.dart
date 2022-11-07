@@ -86,7 +86,9 @@ class _TripCreateScreenState extends State<TripCreateScreen> {
             if (state.data!.id!.isNotEmpty) {
               Navigator.of(context).pop(widget.requestId!);
               showToastt(
-                  text: "create successfully",
+                  text: LanguageCubit.get(context)
+                      .getTexts('CreateSuccessfully')
+                      .toString(),
                   state: ToastStates.success,
                   context: context);
             }
@@ -105,7 +107,9 @@ class _TripCreateScreenState extends State<TripCreateScreen> {
             child: Scaffold(
               appBar: AppBar(
                 title: Text(
-                  'Trip Details',
+                  LanguageCubit.get(context)
+                      .getTexts('TripDetails')
+                      .toString(),
                   style: TextStyle(color: primaryColor, fontSize: 20.sp),
                 ),
                 actions: [
@@ -206,7 +210,9 @@ class _TripCreateScreenState extends State<TripCreateScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                'Select Next Destination',
+                                LanguageCubit.get(context)
+                                    .getTexts('SelectNextDestination')
+                                    .toString(),
                                 style: TextStyle(color: black, fontSize: 20.sp),
                               ),
                               SizedBox(
@@ -224,7 +230,9 @@ class _TripCreateScreenState extends State<TripCreateScreen> {
                                   child: Text(
                                     toAddress.isNotEmpty
                                         ? toAddress
-                                        : 'Set on map',
+                                        : LanguageCubit.get(context)
+                                        .getTexts('SetOnMap')
+                                        .toString(),
                                     style: TextStyle(fontSize: 18.sp),
                                   ),
                                 ),
@@ -253,7 +261,9 @@ class _TripCreateScreenState extends State<TripCreateScreen> {
                                 height: 15.h,
                               ),
                               defaultButton3(
-                                  text: 'Recommended Places',
+                                  text: LanguageCubit.get(context)
+                                      .getTexts('RecommendedPlaces')
+                                      .toString(),
                                   press: () async {
                                     CurrentLocation data =
                                         await navigateToWithRefreshPagePrevious(
@@ -290,7 +300,9 @@ class _TripCreateScreenState extends State<TripCreateScreen> {
                               state is CreateTripInitial
                                   ? loading()
                                   : defaultButton3(
-                                      text: 'Request',
+                                      text: LanguageCubit.get(context)
+                                          .getTexts('Request')
+                                          .toString(),
                                       press: () {
                                         if (toAddress.isNotEmpty) {
                                           getDistance(toLatitude!, toLongitude!)
@@ -335,7 +347,9 @@ class _TripCreateScreenState extends State<TripCreateScreen> {
                                         } else {
                                           showToastt(
                                               text:
-                                                  "you should choose destination first..",
+                                              LanguageCubit.get(context)
+                                                  .getTexts('ChooseDestinationFirst')
+                                                  .toString(),
                                               state: ToastStates.error,
                                               context: context);
                                         }

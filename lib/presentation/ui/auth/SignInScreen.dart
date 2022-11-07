@@ -149,7 +149,9 @@ class _SignInScreenState extends State<SignInScreen> {
           }
           if (state.message == "{phone:  phone or country incorrect}") {
             showToastt(
-                text: "You Don\'t have an account\nRegister first please...",
+                text: LanguageCubit.get(context)
+                    .getTexts('RegisterFirstPlease')
+                    .toString(),
                 state: ToastStates.error,
                 context: context);
           } else {
@@ -320,7 +322,9 @@ class _SignInScreenState extends State<SignInScreen> {
                               border: true,
                               borderColor: white,
                               validatorText: phoneController.text,
-                              validatorMessage: "Enter Phone Please..",
+                              validatorMessage: LanguageCubit.get(context)
+                                  .getTexts('EnterPhone')
+                                  .toString(),
                               onEditingComplete: () {
                                 FocusScope.of(context).unfocus();
                               }),
@@ -376,12 +380,16 @@ class _SignInScreenState extends State<SignInScreen> {
                               }
                             } else {
                               showToastt(
-                                  text: "country code note found",
+                                  text: LanguageCubit.get(context)
+                                      .getTexts('CountryCodeMotFound')
+                                      .toString(),
                                   state: ToastStates.error,
                                   context: context);
                             }
                           },
-                          text: "Next",
+                          text: LanguageCubit.get(context)
+                              .getTexts('Next')
+                              .toString(),
                           backColor: accentColor,
                           textColor: white),
                 ),
@@ -392,12 +400,16 @@ class _SignInScreenState extends State<SignInScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'You Don\'t have an account,',
+                      LanguageCubit.get(context)
+                          .getTexts('haveNotAccount')
+                          .toString(),
                       style: TextStyle(color: black, fontSize: 16.sp),
                     ),
                     InkWell(
                       child: Text(
-                        'Sign Up Now',
+                        LanguageCubit.get(context)
+                            .getTexts('SignUpNow')
+                            .toString(),
                         style: TextStyle(color: accentColor, fontSize: 16.sp),
                       ),
                       onTap: () {

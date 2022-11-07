@@ -75,7 +75,9 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
           child: Scaffold(
             appBar: AppBar(
               title: Text(
-                "Driver Information",
+                LanguageCubit.get(context)
+                    .getTexts('DriverInformation')
+                    .toString(),
                 textAlign: TextAlign.start,
                 style: TextStyle(
                     fontSize: 20.sp,
@@ -107,7 +109,9 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Front NationalId',
+                              LanguageCubit.get(context)
+                                  .getTexts('FrontNationalId')
+                                  .toString(),
                               style:
                               TextStyle(fontSize: 20.sp, color: primaryColor),
                             ),
@@ -118,7 +122,9 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                               size: 25.w,
                             )
                                 : Text(
-                              'Update',
+                              LanguageCubit.get(context)
+                                  .getTexts('Update')
+                                  .toString(),
                               style: TextStyle(
                                   fontSize: 20.sp, color: greenColor),
                             )
@@ -159,7 +165,9 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'back NationalId',
+                              LanguageCubit.get(context)
+                                  .getTexts('BackNationalId')
+                                  .toString(),
                               style:
                               TextStyle(fontSize: 20.sp, color: primaryColor),
                             ),
@@ -170,7 +178,9 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                               size: 25.w,
                             )
                                 : Text(
-                              'Update',
+                              LanguageCubit.get(context)
+                                  .getTexts('Update')
+                                  .toString(),
                               style: TextStyle(
                                   fontSize: 20.sp, color: greenColor),
                             )
@@ -299,7 +309,9 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Front Driver Licence',
+                              LanguageCubit.get(context)
+                                  .getTexts('FrontDriverLicence')
+                                  .toString(),
                               style:
                               TextStyle(fontSize: 20.sp, color: primaryColor),
                             ),
@@ -310,7 +322,9 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                               size: 25.w,
                             )
                                 : Text(
-                              'Update',
+                              LanguageCubit.get(context)
+                                  .getTexts('Update')
+                                  .toString(),
                               style: TextStyle(
                                   fontSize: 20.sp, color: greenColor),
                             )
@@ -351,7 +365,9 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Back Driver Licence',
+                              LanguageCubit.get(context)
+                                  .getTexts('BackDriverLicence')
+                                  .toString(),
                               style:
                               TextStyle(fontSize: 20.sp, color: primaryColor),
                             ),
@@ -362,7 +378,9 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                               size: 25.w,
                             )
                                 : Text(
-                              'Update',
+                              LanguageCubit.get(context)
+                                  .getTexts('Update')
+                                  .toString(),
                               style: TextStyle(
                                   fontSize: 20.sp, color: greenColor),
                             )
@@ -407,12 +425,16 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                                 backDriverLicenceString);
                           } else {
                             showToastt(
-                                text: "please fill all data first...",
+                                text: LanguageCubit.get(context)
+                                    .getTexts('pleaseFillAllData')
+                                    .toString(),
                                 state: ToastStates.error,
                                 context: context);
                           }
                         },
-                        text: "Done",
+                        text: LanguageCubit.get(context)
+                            .getTexts('Done')
+                            .toString(),
                         backColor: accentColor,
                         textColor: white),
                   ),

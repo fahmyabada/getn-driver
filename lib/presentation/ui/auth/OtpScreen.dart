@@ -125,7 +125,9 @@ class _OtpScreenState extends State<OtpScreen> {
           load = false;
         });
         showToastt(
-            text: "uncorrect code", state: ToastStates.error, context: context);
+            text: LanguageCubit.get(context)
+                .getTexts('UncorrectCode')
+                .toString(), state: ToastStates.error, context: context);
       }
     } catch (error) {
       setState((){
@@ -232,7 +234,9 @@ class _OtpScreenState extends State<OtpScreen> {
               print('OtpScreen*******SignInSuccessState');
             }
             showToastt(
-                text: "login successfully",
+                text: LanguageCubit.get(context)
+                    .getTexts('LoginSuccessfully')
+                    .toString(),
                 state: ToastStates.success,
                 context: context);
             if (state.data.phone != null) {
@@ -299,7 +303,9 @@ class _OtpScreenState extends State<OtpScreen> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 25.r),
                       child: Text(
-                        "Enter the 6- digit code sent to \n ${widget
+                        "${LanguageCubit.get(context)
+                            .getTexts('Enter6-digit')
+                            .toString()} \n ${widget
                             .phoneWithCountry}",
                         textAlign: TextAlign.center,
                         style: TextStyle(
@@ -322,7 +328,9 @@ class _OtpScreenState extends State<OtpScreen> {
                         animationType: AnimationType.fade,
                         validator: (v) {
                           if (v!.length < 3) {
-                            return "Enter Code Please...";
+                            return LanguageCubit.get(context)
+                                .getTexts('EnterCode')
+                                .toString();
                           } else {
                             return null;
                           }
@@ -402,7 +410,9 @@ class _OtpScreenState extends State<OtpScreen> {
                             nextButton(context);
                           },
                           disablePress: openNext,
-                          text: "Next",
+                          text: LanguageCubit.get(context)
+                              .getTexts('Next')
+                              .toString(),
                           backColor: accentColor,
                           textColor: white),
                     ),
@@ -436,16 +446,22 @@ class _OtpScreenState extends State<OtpScreen> {
             verifyPhone(widget.phoneWithCountry);
           },
           child: Text(
-            "resend ",
+            LanguageCubit.get(context)
+                .getTexts('resend')
+                .toString(),
             style: TextStyle(color: blueColor, fontSize: 18.sp),
           ),
         )
             : Text(
-          "resend ",
+          LanguageCubit.get(context)
+              .getTexts('resend')
+              .toString(),
           style: TextStyle(color: greyColor, fontSize: 18.sp),
         ),
         Text(
-          "code in ",
+          LanguageCubit.get(context)
+              .getTexts('codeIn')
+              .toString(),
           style: TextStyle(color: black, fontSize: 18.sp),
         ),
         Text(

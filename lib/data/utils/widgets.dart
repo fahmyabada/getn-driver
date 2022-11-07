@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:getn_driver/data/utils/colors.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:map_launcher/map_launcher.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -58,7 +59,7 @@ Future<void> launchInMap(String sLat, String sLon, String dLat, String dLon,
     );
   } else {
     showToastt(
-        text: "you have not maps..",
+        text: LanguageCubit.get(context).getTexts('HaveNotMaps').toString(),
         state: ToastStates.error,
         context: context);
   }
@@ -84,7 +85,9 @@ Future<void> openWhatsapp(String whatsapp, BuildContext context) async {
     }
   } on Exception {
     showToastt(
-        text: "whatsapp no installed, please installed..",
+        text: LanguageCubit.get(context)
+            .getTexts('WhatsappNoInstalled')
+            .toString(),
         state: ToastStates.error,
         context: context);
   }

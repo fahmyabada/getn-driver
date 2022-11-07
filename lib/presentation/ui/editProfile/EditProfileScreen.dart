@@ -162,7 +162,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             child: Scaffold(
                 appBar: AppBar(
                   title: Text(
-                    'My Account',
+                    LanguageCubit.get(context).getTexts('MyAccount').toString(),
                     style: TextStyle(
                         fontSize: 20.sp,
                         fontWeight: FontWeight.bold,
@@ -234,16 +234,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                             20.r),
                                                   ),
                                                   child: Stack(
-                                                    children: const [
+                                                    children: [
                                                       Center(
                                                         child: Text(
-                                                          'No image',
-                                                          style: TextStyle(
+                                                          LanguageCubit.get(
+                                                                  context)
+                                                              .getTexts(
+                                                                  'NoImage')
+                                                              .toString(),
+                                                          style:
+                                                              const TextStyle(
                                                             color: Colors.white,
                                                           ),
                                                         ),
                                                       ),
-                                                      Positioned(
+                                                      const Positioned(
                                                         bottom: 10,
                                                         right: 10,
                                                         child: Center(
@@ -302,7 +307,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                         width: 10.w,
                                       ),
                                       Text(
-                                        'Personal Information',
+                                        LanguageCubit.get(context)
+                                            .getTexts('PersonalInformation')
+                                            .toString(),
                                         style: TextStyle(
                                             fontSize: 18.sp,
                                             fontWeight: FontWeight.bold),
@@ -319,13 +326,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                         defaultFormField(
                                           controller: nameController,
                                           type: TextInputType.text,
-                                          label: "Name",
+                                          label: LanguageCubit.get(context)
+                                              .getTexts('Name')
+                                              .toString(),
                                           textSize: 20,
                                           border: false,
                                           borderRadius: 50,
                                           validatorText: nameController.text,
                                           validatorMessage:
-                                              "Enter Name Please..",
+                                              LanguageCubit.get(context)
+                                                  .getTexts('EnterName')
+                                                  .toString(),
                                           onEditingComplete: () {
                                             FocusScope.of(context).nextFocus();
                                           },
@@ -336,13 +347,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                         defaultFormField(
                                           controller: emailController,
                                           type: TextInputType.text,
-                                          label: "Email",
+                                          label: LanguageCubit.get(context)
+                                              .getTexts('Email')
+                                              .toString(),
                                           textSize: 20,
                                           border: false,
                                           borderRadius: 50,
                                           validatorText: emailController.text,
                                           validatorMessage:
-                                              "Enter Name Please..",
+                                              LanguageCubit.get(context)
+                                                  .getTexts('EnterEmail')
+                                                  .toString(),
                                           onEditingComplete: () {
                                             FocusScope.of(context).nextFocus();
                                           },
@@ -353,14 +368,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                         defaultFormField(
                                           controller: whatsAppController,
                                           type: TextInputType.number,
-                                          label: "WhatsApp",
+                                          label: LanguageCubit.get(context)
+                                              .getTexts('WhatsApp')
+                                              .toString(),
                                           textSize: 20,
                                           border: false,
                                           borderRadius: 50,
                                           validatorText:
                                               whatsAppController.text,
                                           validatorMessage:
-                                              "Enter WhatsApp Please..",
+                                              LanguageCubit.get(context)
+                                                  .getTexts('EnterWhatsApp')
+                                                  .toString(),
                                           onEditingComplete: () {
                                             FocusScope.of(context).nextFocus();
                                           },
@@ -374,14 +393,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                             child: defaultFormField(
                                               controller: birthDateController,
                                               type: TextInputType.text,
-                                              label: "Birthday",
+                                              label: LanguageCubit.get(context)
+                                                  .getTexts('Birthday')
+                                                  .toString(),
                                               textSize: 20,
                                               border: false,
                                               borderRadius: 50,
                                               validatorText:
                                                   birthDateController.text,
                                               validatorMessage:
-                                                  "Enter Birthday Please..",
+                                                  LanguageCubit.get(context)
+                                                      .getTexts('EnterBirthday')
+                                                      .toString(),
                                               onEditingComplete: () {
                                                 FocusScope.of(context)
                                                     .unfocus();
@@ -429,7 +452,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                         width: 10.w,
                                       ),
                                       Text(
-                                        'Address',
+                                        LanguageCubit.get(context)
+                                            .getTexts('Address')
+                                            .toString(),
                                         style: TextStyle(
                                             fontSize: 18.sp,
                                             fontWeight: FontWeight.bold),
@@ -445,8 +470,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                               .failureCountry
                                               .isNotEmpty
                                           ? errorMessage2(
-                                              message:
-                                                  'error occurred when get countries',
+                                              message: LanguageCubit.get(
+                                                      context)
+                                                  .getTexts('ErrorGetCountries')
+                                                  .toString(),
                                               press: () {
                                                 EditProfileCubit.get(context)
                                                     .getCountries();
@@ -602,7 +629,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                               .isNotEmpty
                                           ? errorMessage2(
                                               message:
-                                                  'error occurred when get Cites',
+                                                  LanguageCubit.get(context)
+                                                      .getTexts('ErrorGetCites')
+                                                      .toString(),
                                               press: () {
                                                 EditProfileCubit.get(context)
                                                     .getCity(
@@ -762,7 +791,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                               .isNotEmpty
                                           ? errorMessage2(
                                               message:
-                                                  'error occurred when get Area',
+                                                  LanguageCubit.get(context)
+                                                      .getTexts('ErrorGetArea')
+                                                      .toString(),
                                               press: () {
                                                 EditProfileCubit.get(context)
                                                     .getArea(
@@ -914,13 +945,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     child: defaultFormField(
                                       controller: addressController,
                                       type: TextInputType.text,
-                                      label: "Address",
+                                      label: LanguageCubit.get(context)
+                                          .getTexts('Address')
+                                          .toString(),
                                       textSize: 20,
                                       border: false,
                                       borderRadius: 50,
                                       validatorText: addressController.text,
                                       validatorMessage:
-                                          "Enter Address Please..",
+                                          LanguageCubit.get(context)
+                                              .getTexts('EnterAddress')
+                                              .toString(),
                                       onEditingComplete: () {
                                         FocusScope.of(context).unfocus();
                                       },
@@ -942,7 +977,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                         width: 10.w,
                                       ),
                                       Text(
-                                        'Availabilities',
+                                        LanguageCubit.get(context)
+                                            .getTexts('Availabilities')
+                                            .toString(),
                                         style: TextStyle(
                                             fontSize: 18.sp,
                                             fontWeight: FontWeight.bold),
@@ -1035,13 +1072,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                       whatsApp);
                                             } else {
                                               showToastt(
-                                                  text:
-                                                      'Be sure to choose image and fill personal information ,address and availability',
+                                                  text: LanguageCubit.get(
+                                                          context)
+                                                      .getTexts('FillAllData')
+                                                      .toString(),
                                                   state: ToastStates.error,
                                                   context: context);
                                             }
                                           },
-                                          text: "Save",
+                                          text: LanguageCubit.get(context)
+                                              .getTexts('Save')
+                                              .toString(),
                                           backColor: accentColor,
                                           textColor: white),
                                 ],
@@ -1133,9 +1174,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             // outside to dismiss
             builder: (BuildContext context) {
               return CustomDialogImage(
-                title: "Take Image",
-                description:
-                    'Camera permissions denied\n You must enable the access camera to take photo \n you can choose setting and enable camera then try back',
+                title:
+                    LanguageCubit.get(context).getTexts('TakeImage').toString(),
+                description: LanguageCubit.get(context)
+                    .getTexts('CameraPermissions')
+                    .toString(),
                 type: "checkImageDeniedForever",
                 backgroundColor: white,
                 btnOkColor: accentColor,

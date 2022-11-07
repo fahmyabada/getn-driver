@@ -63,7 +63,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
           child: Scaffold(
             appBar: AppBar(
               title: Text(
-                'Notifications',
+                LanguageCubit.get(context)
+                    .getTexts('Notifications')
+                    .toString(),
                 style: TextStyle(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.bold,
@@ -253,7 +255,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   },
                                 )
                               : errorMessage2(
-                                  message: 'Not Found Data',
+                                  message: LanguageCubit.get(context)
+                                      .getTexts('NotFoundData')
+                                      .toString(),
                                   press: () {
                                     NotificationCubit.get(context)
                                         .getNotification(1);

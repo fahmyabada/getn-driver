@@ -109,9 +109,11 @@ class _MyCarScreenState extends State<MyCarScreen> {
             // outside to dismiss
             builder: (BuildContext context) {
               return CustomDialogImage(
-                title: "Take Image",
-                description:
-                    'Camera permissions denied\n You must enable the access camera to take photo \n you can choose setting and enable camera then try back',
+                title:
+                    LanguageCubit.get(context).getTexts('TakeImage').toString(),
+                description: LanguageCubit.get(context)
+                    .getTexts('CameraPermissions')
+                    .toString(),
                 type: "checkImageDeniedForever",
                 backgroundColor: white,
                 btnOkColor: accentColor,
@@ -203,7 +205,9 @@ class _MyCarScreenState extends State<MyCarScreen> {
               editCarLoading = false;
             });
             showToastt(
-                text: "successfully update",
+                text: LanguageCubit.get(context)
+                    .getTexts('SuccessfullyUpdate')
+                    .toString(),
                 state: ToastStates.success,
                 context: context);
             Navigator.pop(context);
@@ -225,7 +229,7 @@ class _MyCarScreenState extends State<MyCarScreen> {
             child: Scaffold(
               appBar: AppBar(
                 title: Text(
-                  "My Car",
+                  LanguageCubit.get(context).getTexts('MyCar').toString(),
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       fontSize: 20.sp,
@@ -241,7 +245,9 @@ class _MyCarScreenState extends State<MyCarScreen> {
                           press: () {
                             navigateTo(context, const CarRegistrationScreen());
                           },
-                          text: "Add Car",
+                          text: LanguageCubit.get(context)
+                              .getTexts('AddCar')
+                              .toString(),
                           backColor: accentColor,
                           textColor: white)
                       : SingleChildScrollView(
@@ -605,13 +611,17 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                       defaultFormField(
                                         controller: carNumberController,
                                         type: TextInputType.text,
-                                        label: "Car Number",
+                                        label: LanguageCubit.get(context)
+                                            .getTexts('CarNumber')
+                                            .toString(),
                                         textSize: 20,
                                         border: false,
                                         borderRadius: 50,
                                         validatorText: carNumberController.text,
                                         validatorMessage:
-                                            "Enter Car Number Please..",
+                                            LanguageCubit.get(context)
+                                                .getTexts('EnterCarNumber')
+                                                .toString(),
                                         onEditingComplete: () {
                                           FocusScope.of(context).nextFocus();
                                         },
@@ -626,7 +636,9 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                   height: 30.h,
                                 ),
                                 Text(
-                                  "Front Car License Image ",
+                                  LanguageCubit.get(context)
+                                      .getTexts('FrontCarLicenseImage')
+                                      .toString(),
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
                                       fontSize: 22.sp,
@@ -692,7 +704,9 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                   height: 30.h,
                                 ),
                                 Text(
-                                  "Back Car License Image ",
+                                  LanguageCubit.get(context)
+                                      .getTexts('BackCarLicenseImage')
+                                      .toString(),
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
                                       fontSize: 22.sp,
@@ -758,7 +772,9 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                   height: 20.h,
                                 ),
                                 Text(
-                                  'Gallery',
+                                  LanguageCubit.get(context)
+                                      .getTexts('Gallery')
+                                      .toString(),
                                   style: TextStyle(
                                       fontSize: 24.sp,
                                       color: black,
@@ -1002,13 +1018,17 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                 .carEdit(formData, id);
                                           } else {
                                             showToastt(
-                                                text:
-                                                    "please fill all data first...",
+                                                text: LanguageCubit.get(context)
+                                                    .getTexts(
+                                                        'pleaseFillAllData')
+                                                    .toString(),
                                                 state: ToastStates.error,
                                                 context: context);
                                           }
                                         },
-                                        text: "Save",
+                                        text: LanguageCubit.get(context)
+                                            .getTexts('Save')
+                                            .toString(),
                                         backColor: accentColor,
                                         textColor: white),
                               ],

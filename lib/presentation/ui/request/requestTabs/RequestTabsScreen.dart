@@ -187,7 +187,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              'Requests',
+              LanguageCubit.get(context).getTexts('Requests').toString(),
               style: TextStyle(color: primaryColor, fontSize: 20.sp),
             ),
             centerTitle: true,
@@ -201,7 +201,9 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                   : state is RequestCurrentSuccessState
                       ? RequestCubit.get(context).requestCurrent.isEmpty
                           ? errorMessage(
-                              message: "Not Found Data",
+                              message: LanguageCubit.get(context)
+                                  .getTexts('NotFoundData')
+                                  .toString(),
                               press: () {
                                 RequestCubit.get(context).getRequestCurrent(1);
                               })
@@ -333,7 +335,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                 children: [
                                                   Expanded(
                                                     child: Text(
-                                                      'refId: ${current.referenceId}',
+                                                      '${LanguageCubit.get(context).getTexts('refId').toString()} ${current.referenceId}',
                                                       textAlign:
                                                           TextAlign.start,
                                                       style: TextStyle(
@@ -347,7 +349,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                   ),
                                                   Expanded(
                                                     child: Text(
-                                                      'status: ${btnStatus3[current.status]}',
+                                                      '${LanguageCubit.get(context).getTexts('Status').toString()} ${btnStatus3[current.status]}',
                                                       textAlign: TextAlign.end,
                                                       style: TextStyle(
                                                         color: black,
@@ -380,7 +382,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                             .start,
                                                     children: [
                                                       Text(
-                                                        'Picked Point',
+                                                        LanguageCubit.get(
+                                                                context)
+                                                            .getTexts(
+                                                                'PickedPoint')
+                                                            .toString(),
                                                         style: TextStyle(
                                                             color: black,
                                                             fontSize: 18.sp,
@@ -523,7 +529,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                     .center,
                                                             children: [
                                                               Text(
-                                                                'Days',
+                                                                LanguageCubit.get(
+                                                                        context)
+                                                                    .getTexts(
+                                                                        'Days')
+                                                                    .toString(),
                                                                 style: TextStyle(
                                                                     color:
                                                                         grey2,
@@ -534,7 +544,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                 height: 5.h,
                                                               ),
                                                               Text(
-                                                                '${current.days!.length} Days',
+                                                                '${current.days!.length} ${LanguageCubit.get(context).getTexts('Days').toString()}',
                                                                 textAlign:
                                                                     TextAlign
                                                                         .center,
@@ -563,7 +573,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                     .center,
                                                             children: [
                                                               Text(
-                                                                'Used Points',
+                                                                LanguageCubit.get(
+                                                                        context)
+                                                                    .getTexts(
+                                                                        'UsedPoints')
+                                                                    .toString(),
                                                                 textAlign:
                                                                     TextAlign
                                                                         .center,
@@ -609,7 +623,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                     .center,
                                                             children: [
                                                               Text(
-                                                                'Total Distance',
+                                                                LanguageCubit.get(
+                                                                        context)
+                                                                    .getTexts(
+                                                                        'TotalDistance')
+                                                                    .toString(),
                                                                 textAlign:
                                                                     TextAlign
                                                                         .center,
@@ -656,7 +674,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                     .center,
                                                             children: [
                                                               Text(
-                                                                'Total Price',
+                                                                LanguageCubit.get(
+                                                                        context)
+                                                                    .getTexts(
+                                                                        'TotalPrice')
+                                                                    .toString(),
                                                                 textAlign:
                                                                     TextAlign
                                                                         .center,
@@ -724,7 +746,9 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                   : state is RequestUpComingSuccessState
                       ? RequestCubit.get(context).requestUpComing.isEmpty
                           ? errorMessage(
-                              message: "Not Found Data",
+                              message: LanguageCubit.get(context)
+                                  .getTexts('NotFoundData')
+                                  .toString(),
                               press: () {
                                 RequestCubit.get(context).getRequestUpComing(1);
                               })
@@ -931,7 +955,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                   .start,
                                                           children: [
                                                             Text(
-                                                              'Picked Point',
+                                                              LanguageCubit.get(
+                                                                      context)
+                                                                  .getTexts(
+                                                                      'PickedPoint')
+                                                                  .toString(),
                                                               style: TextStyle(
                                                                   color: black,
                                                                   fontSize:
@@ -1085,7 +1113,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                           .center,
                                                                   children: [
                                                                     Text(
-                                                                      'Days',
+                                                                      LanguageCubit.get(
+                                                                              context)
+                                                                          .getTexts(
+                                                                              'Days')
+                                                                          .toString(),
                                                                       style: TextStyle(
                                                                           color:
                                                                               grey2,
@@ -1127,7 +1159,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                           .center,
                                                                   children: [
                                                                     Text(
-                                                                      'Used Points',
+                                                                      LanguageCubit.get(
+                                                                              context)
+                                                                          .getTexts(
+                                                                              'UsedPoints')
+                                                                          .toString(),
                                                                       textAlign:
                                                                           TextAlign
                                                                               .center,
@@ -1176,7 +1212,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                           .center,
                                                                   children: [
                                                                     Text(
-                                                                      'Total Distance',
+                                                                      LanguageCubit.get(
+                                                                              context)
+                                                                          .getTexts(
+                                                                              'TotalDistance')
+                                                                          .toString(),
                                                                       textAlign:
                                                                           TextAlign
                                                                               .center,
@@ -1224,7 +1264,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                           .center,
                                                                   children: [
                                                                     Text(
-                                                                      'Total Price',
+                                                                      LanguageCubit.get(
+                                                                              context)
+                                                                          .getTexts(
+                                                                              'TotalPrice')
+                                                                          .toString(),
                                                                       textAlign:
                                                                           TextAlign
                                                                               .center,
@@ -1313,7 +1357,9 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                   : state is RequestPastSuccessState
                       ? RequestCubit.get(context).requestPast.isEmpty
                           ? errorMessage(
-                              message: "Not Found Data",
+                              message: LanguageCubit.get(context)
+                                  .getTexts('NotFoundData')
+                                  .toString(),
                               press: () {
                                 RequestCubit.get(context).getRequestPast(1);
                               })
@@ -1518,7 +1564,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                   .start,
                                                           children: [
                                                             Text(
-                                                              'Picked Point',
+                                                              LanguageCubit.get(
+                                                                      context)
+                                                                  .getTexts(
+                                                                      'PickedPoint')
+                                                                  .toString(),
                                                               style: TextStyle(
                                                                   color: black,
                                                                   fontSize:
@@ -1672,7 +1722,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                           .center,
                                                                   children: [
                                                                     Text(
-                                                                      'Days',
+                                                                      LanguageCubit.get(
+                                                                              context)
+                                                                          .getTexts(
+                                                                              'Days')
+                                                                          .toString(),
                                                                       style: TextStyle(
                                                                           color:
                                                                               grey2,
@@ -1714,7 +1768,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                           .center,
                                                                   children: [
                                                                     Text(
-                                                                      'Used Points',
+                                                                      LanguageCubit.get(
+                                                                              context)
+                                                                          .getTexts(
+                                                                              'UsedPoints')
+                                                                          .toString(),
                                                                       textAlign:
                                                                           TextAlign
                                                                               .center,
@@ -1762,7 +1820,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                           .center,
                                                                   children: [
                                                                     Text(
-                                                                      'Total Distance',
+                                                                      LanguageCubit.get(
+                                                                              context)
+                                                                          .getTexts(
+                                                                              'TotalDistance')
+                                                                          .toString(),
                                                                       textAlign:
                                                                           TextAlign
                                                                               .center,
@@ -1809,7 +1871,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                           .center,
                                                                   children: [
                                                                     Text(
-                                                                      'Total Price',
+                                                                      LanguageCubit.get(
+                                                                              context)
+                                                                          .getTexts(
+                                                                              'TotalPrice')
+                                                                          .toString(),
                                                                       textAlign:
                                                                           TextAlign
                                                                               .center,
@@ -1898,7 +1964,9 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                   : state is RequestPendingSuccessState
                       ? RequestCubit.get(context).requestPending.isEmpty
                           ? errorMessage(
-                              message: "Not Found Data",
+                              message: LanguageCubit.get(context)
+                                  .getTexts('NotFoundData')
+                                  .toString(),
                               press: () {
                                 RequestCubit.get(context).getRequestPending(1);
                               })
@@ -2067,7 +2135,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                 .start,
                                                         children: [
                                                           Text(
-                                                            'Picked Point',
+                                                            LanguageCubit.get(
+                                                                    context)
+                                                                .getTexts(
+                                                                    'PickedPoint')
+                                                                .toString(),
                                                             style: TextStyle(
                                                                 color: black,
                                                                 fontSize: 18.sp,
@@ -2218,7 +2290,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                         .center,
                                                                 children: [
                                                                   Text(
-                                                                    'Days',
+                                                                    LanguageCubit.get(
+                                                                            context)
+                                                                        .getTexts(
+                                                                            'Days')
+                                                                        .toString(),
                                                                     style: TextStyle(
                                                                         color:
                                                                             grey2,
@@ -2258,7 +2334,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                         .center,
                                                                 children: [
                                                                   Text(
-                                                                    'Used Points',
+                                                                    LanguageCubit.get(
+                                                                            context)
+                                                                        .getTexts(
+                                                                            'UsedPoints')
+                                                                        .toString(),
                                                                     textAlign:
                                                                         TextAlign
                                                                             .center,
@@ -2305,7 +2385,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                         .center,
                                                                 children: [
                                                                   Text(
-                                                                    'Total Distance',
+                                                                    LanguageCubit.get(
+                                                                            context)
+                                                                        .getTexts(
+                                                                            'TotalDistance')
+                                                                        .toString(),
                                                                     textAlign:
                                                                         TextAlign
                                                                             .center,
@@ -2352,7 +2436,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                         .center,
                                                                 children: [
                                                                   Text(
-                                                                    'Total Price',
+                                                                    LanguageCubit.get(
+                                                                            context)
+                                                                        .getTexts(
+                                                                            'TotalPrice')
+                                                                        .toString(),
                                                                     textAlign:
                                                                         TextAlign
                                                                             .center,
@@ -2456,10 +2544,16 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                         RequestCubit(),
                                                                     child:
                                                                         CustomDialogRequestTabs(
-                                                                      title:
-                                                                          'Do you want to reject?',
-                                                                      description:
-                                                                          'If you want to be rejected, you must first enter the reason for rejection and press OK..',
+                                                                      title: LanguageCubit.get(
+                                                                              context)
+                                                                          .getTexts(
+                                                                              'DoReject')
+                                                                          .toString(),
+                                                                      description: LanguageCubit.get(
+                                                                              context)
+                                                                          .getTexts(
+                                                                              'IfRejected')
+                                                                          .toString(),
                                                                       backgroundColor:
                                                                           white,
                                                                       btnOkColor:
@@ -2505,10 +2599,16 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                                                         RequestCubit(),
                                                                     child:
                                                                         CustomDialogRequestTabs(
-                                                                      title:
-                                                                          'Do you want to reject?',
-                                                                      description:
-                                                                          'If you want to be rejected, you must first enter the reason for rejection and press OK..',
+                                                                      title: LanguageCubit.get(
+                                                                              context)
+                                                                          .getTexts(
+                                                                              'DoReject')
+                                                                          .toString(),
+                                                                      description: LanguageCubit.get(
+                                                                              context)
+                                                                          .getTexts(
+                                                                              'IfRejected')
+                                                                          .toString(),
                                                                       backgroundColor:
                                                                           white,
                                                                       btnOkColor:
@@ -2606,15 +2706,26 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
             backgroundColor: primaryColor,
             selectedItemColor: accentColor,
             unselectedItemColor: grey,
-            items: const [
+            items: [
               BottomNavigationBarItem(
-                  icon: Icon(Icons.settings), label: "current"),
+                  icon: const Icon(Icons.settings),
+                  label: LanguageCubit.get(context)
+                      .getTexts('current')
+                      .toString()),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.upcoming), label: "upcoming"),
+                  icon: const Icon(Icons.upcoming),
+                  label: LanguageCubit.get(context)
+                      .getTexts('upcoming')
+                      .toString()),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.person_pin_outlined), label: "past"),
+                  icon: const Icon(Icons.person_pin_outlined),
+                  label:
+                      LanguageCubit.get(context).getTexts('past').toString()),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.person_pin_outlined), label: "pending"),
+                  icon: const Icon(Icons.person_pin_outlined),
+                  label: LanguageCubit.get(context)
+                      .getTexts('pending')
+                      .toString()),
             ],
           ),
         ),

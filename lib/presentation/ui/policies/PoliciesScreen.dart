@@ -29,7 +29,9 @@ class _PoliciesScreenState extends State<PoliciesScreen> {
           children: [
             buildSettingItem(
               context: context,
-              title: "Terms & Conditions",
+              title: LanguageCubit.get(context)
+                  .getTexts('Terms&Condition')
+                  .toString(),
               onClick: () {
                 navigateTo(
                     context,
@@ -43,7 +45,9 @@ class _PoliciesScreenState extends State<PoliciesScreen> {
             ),
             buildSettingItem(
               context: context,
-              title: "Privacy Policy",
+              title: LanguageCubit.get(context)
+                  .getTexts('PrivacyPolicy')
+                  .toString(),
               onClick: () {
                 navigateTo(
                     context,
@@ -57,7 +61,9 @@ class _PoliciesScreenState extends State<PoliciesScreen> {
             ),
             buildSettingItem(
               context: context,
-              title: 'About Us',
+              title: LanguageCubit.get(context)
+                  .getTexts('AboutUs')
+                  .toString(),
               onClick: () {
                 navigateTo(
                     context,
@@ -71,7 +77,9 @@ class _PoliciesScreenState extends State<PoliciesScreen> {
             ),
             buildSettingItem(
               context: context,
-              title: 'Contact Us',
+              title:  LanguageCubit.get(context)
+                  .getTexts('ContactUs')
+                  .toString(),
               onClick: () {
                 navigateTo(
                     context,
@@ -85,7 +93,9 @@ class _PoliciesScreenState extends State<PoliciesScreen> {
             ),
             buildSettingItem(
               context: context,
-              title: 'FAQs',
+              title: LanguageCubit.get(context)
+                  .getTexts('FAQs')
+                  .toString(),
               onClick: () {
                 navigateTo(
                     context,
@@ -141,7 +151,9 @@ class _PoliciesScreenState extends State<PoliciesScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'Policies',
+            LanguageCubit.get(context)
+                .getTexts('Policies')
+                .toString(),
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.w500,

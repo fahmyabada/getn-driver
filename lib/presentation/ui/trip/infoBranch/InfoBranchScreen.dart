@@ -52,7 +52,9 @@ class _InfoBranchScreenState extends State<InfoBranchScreen> {
             child: Scaffold(
               appBar: AppBar(
                 title: Text(
-                  'Branch Details',
+                  LanguageCubit.get(context)
+                      .getTexts('BranchDetails')
+                      .toString(),
                   style: TextStyle(color: primaryColor, fontSize: 20.sp),
                 ),
                 centerTitle: true,
@@ -180,7 +182,9 @@ class _InfoBranchScreenState extends State<InfoBranchScreen> {
                               height: 25.h,
                             ),
                             Text(
-                              'About Place',
+                              LanguageCubit.get(context)
+                                  .getTexts('AboutPlace')
+                                  .toString(),
                               style: TextStyle(
                                   fontSize: 20.sp,
                                   color: black,
@@ -343,7 +347,10 @@ class _InfoBranchScreenState extends State<InfoBranchScreen> {
                                                           }
                                                         });
                                                       },
-                                                      text: 'Info',
+                                                      text: LanguageCubit.get(
+                                                              context)
+                                                          .getTexts('Info')
+                                                          .toString(),
                                                       backColor: accentColor,
                                                       textColor: white),
                                                   defaultButton2(
@@ -375,7 +382,10 @@ class _InfoBranchScreenState extends State<InfoBranchScreen> {
                                                                     .placeLongitude!),
                                                             firstTime: true));
                                                       },
-                                                      text: 'Select',
+                                                      text: LanguageCubit.get(
+                                                              context)
+                                                          .getTexts('Select')
+                                                          .toString(),
                                                       backColor: blueColor,
                                                       textColor: white),
                                                 ],
