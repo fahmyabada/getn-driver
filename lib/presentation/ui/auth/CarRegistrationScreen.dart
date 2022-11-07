@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -12,6 +13,7 @@ import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/RequestTabsScreen.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
 import 'package:http_parser/http_parser.dart';
@@ -60,7 +62,6 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
             print('_imageFrontCar***************** =${_imageFrontCar!.path}');
           }
         });
-
       } else if (type == "carBack") {
         setState(() {
           _imageBackCar = File(pickedFile.path);
@@ -69,7 +70,6 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
             print('_imageBackCar***************** =${_imageBackCar!.path}');
           }
         });
-
       } else if (type == "galley") {
         final data = await MultipartFile.fromFile(
             File(pickedFile.path).path.toString(),
@@ -88,9 +88,11 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
       setState(() {
         _pickImageError = e;
         if (kDebugMode) {
-          print('imageErrorCarRegisteration***************** =$_pickImageError');
+          print(
+              'imageErrorCarRegisteration***************** =$_pickImageError');
         }
-        if(e.toString() == "PlatformException(camera_access_denied, The user did not allow camera access., null, null)"){
+        if (e.toString() ==
+            "PlatformException(camera_access_denied, The user did not allow camera access., null, null)") {
           showDialog(
             context: context,
             barrierDismissible: false,
@@ -99,7 +101,7 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
               return CustomDialogImage(
                 title: "Take Image",
                 description:
-                'Camera permissions denied\n You must enable the access camera to take photo \n you can choose setting and enable camera then try back',
+                    'Camera permissions denied\n You must enable the access camera to take photo \n you can choose setting and enable camera then try back',
                 type: "checkImageDeniedForever",
                 backgroundColor: white,
                 btnOkColor: accentColor,
@@ -109,13 +111,21 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
               );
             },
           );
-        }else{
+        } else {
           showToastt(
-              text: e.toString(),
-              state: ToastStates.error,
-              context: context);
+              text: e.toString(), state: ToastStates.error, context: context);
         }
       });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (getIt<SharedPreferences>().getBool("isEn") != null) {
+      LanguageCubit.get(context).isEn =
+          getIt<SharedPreferences>().getBool("isEn")!;
     }
   }
 
@@ -144,9 +154,11 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                   state: ToastStates.success,
                   context: context);
 
-              navigateAndFinish(context, BlocProvider(
-                  create: (context) => RequestCubit(),
-                  child: const RequestTabsScreen()));
+              navigateAndFinish(
+                  context,
+                  BlocProvider(
+                      create: (context) => RequestCubit(),
+                      child: const RequestTabsScreen()));
             }
           } else if (state is CarCreateErrorState) {
             setState(() {
@@ -159,588 +171,624 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
           }
         },
         builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(
-                "Car Registration",
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.bold,
-                    color: primaryColor),
+          return Directionality(
+            textDirection: LanguageCubit.get(context).isEn
+                ? ui.TextDirection.ltr
+                : ui.TextDirection.rtl,
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text(
+                  "Car Registration",
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.bold,
+                      color: primaryColor),
+                ),
+                centerTitle: true,
               ),
-              centerTitle: true,
-            ),
-            body: SingleChildScrollView(
-              child: Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // SizedBox(
-                    //   height: 30.h,
-                    // ),
-                    // Text(
-                    //   "Complete your Car Registration",
-                    //   textAlign: TextAlign.start,
-                    //   style: TextStyle(
-                    //       fontSize: 25.sp,
-                    //       fontWeight: FontWeight.bold,
-                    //       color: primaryColor),
-                    // ),
-                    // SizedBox(
-                    //   height: 50.h,
-                    // ),
-                    // carModel
-                    SignCubit.get(context).carSubCategoryLoading
-                        ? loading()
-                        : Container(
-                            width: 1.sw,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50.r),
-                              border: Border.all(
-                                width: 1,
-                                color: Colors.black,
+              body: SingleChildScrollView(
+                child: Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // SizedBox(
+                      //   height: 30.h,
+                      // ),
+                      // Text(
+                      //   "Complete your Car Registration",
+                      //   textAlign: TextAlign.start,
+                      //   style: TextStyle(
+                      //       fontSize: 25.sp,
+                      //       fontWeight: FontWeight.bold,
+                      //       color: primaryColor),
+                      // ),
+                      // SizedBox(
+                      //   height: 50.h,
+                      // ),
+                      // carModel
+                      SignCubit.get(context).carSubCategoryLoading
+                          ? loading()
+                          : Container(
+                              width: 1.sw,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50.r),
+                                border: Border.all(
+                                  width: 1,
+                                  color: Colors.black,
+                                ),
                               ),
-                            ),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton2(
-                                //      value: controller.selectedCountry?.value,
-                                dropdownDecoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(14.r),
-                                  border: Border.all(
-                                    width: 1,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                isExpanded: true,
-                                iconSize: 40.sp,
-                                icon: Container(
-                                  margin:
-                                      EdgeInsetsDirectional.only(end: 18.r),
-                                  child: Icon(
-                                    Icons.arrow_drop_down,
-                                    color: grey2,
-                                    size: 40.sp,
-                                  ),
-                                ),
-                                style: const TextStyle(color: Colors.grey),
-                                onChanged: (Data? value) {
-                                  setState(() {
-                                    dropDownValueCarSubCategory = value;
-                                  });
-                                },
-                                hint: Container(
-                                  width: 1.sw,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 10.r, vertical: 5.r),
-                                  child: Center(
-                                    child: Text(
-                                        dropDownValueCarSubCategory
-                                                ?.title?.en! ??
-                                            "Car Model",
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                            overflow: TextOverflow.ellipsis,
-                                            color: Colors.black,
-                                            fontSize: 20.sp)),
-                                  ),
-                                ),
-                                items: SignCubit.get(context)
-                                    .carSubCategory
-                                    .map((selectedCountry) {
-                                  return DropdownMenuItem<Data>(
-                                    value: selectedCountry,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(selectedCountry.title?.en ?? "",
-                                            textAlign: TextAlign.center,
-                                            maxLines: 1,
-                                            style: TextStyle(
-                                                overflow:
-                                                    TextOverflow.ellipsis,
-                                                color: Colors.black,
-                                                fontSize: 20.sp)),
-                                        SizedBox(
-                                          height: 5.h,
-                                        ),
-                                        // divider
-                                        Container(
-                                          width: 1.sw,
-                                          height: 1.h,
-                                          color: Colors.grey[400],
-                                        ),
-                                      ],
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton2(
+                                  //      value: controller.selectedCountry?.value,
+                                  dropdownDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14.r),
+                                    border: Border.all(
+                                      width: 1,
+                                      color: Colors.black,
                                     ),
-                                  );
-                                }).toList(),
-                              ),
-                            ),
-                          ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    // carModel
-                    SignCubit.get(context).carModelLoading
-                        ? loading()
-                        : Container(
-                            width: 1.sw,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50.r),
-                              border: Border.all(
-                                width: 1,
-                                color: Colors.black,
-                              ),
-                            ),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton2(
-                                //      value: controller.selectedCountry?.value,
-                                dropdownDecoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(14.r),
-                                  border: Border.all(
-                                    width: 1,
-                                    color: Colors.black,
                                   ),
-                                ),
-                                isExpanded: true,
-                                iconSize: 40.sp,
-                                icon: Container(
-                                  margin:
-                                      EdgeInsetsDirectional.only(end: 18.r),
-                                  child: Icon(
-                                    Icons.arrow_drop_down,
-                                    color: grey2,
-                                    size: 40.sp,
-                                  ),
-                                ),
-                                style: const TextStyle(color: Colors.grey),
-                                onChanged: (Data? value) {
-                                  setState(() {
-                                    dropDownValueCarModel = value;
-                                  });
-                                },
-                                hint: Container(
-                                  width: 1.sw,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 10.r, vertical: 5.r),
-                                  child: Center(
-                                    child: Text(
-                                        dropDownValueCarModel?.title?.en! ??
-                                            "year",
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                            overflow: TextOverflow.ellipsis,
-                                            color: Colors.black,
-                                            fontSize: 20.sp)),
-                                  ),
-                                ),
-                                items: SignCubit.get(context)
-                                    .carModel
-                                    .map((selectedCountry) {
-                                  return DropdownMenuItem<Data>(
-                                    value: selectedCountry,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(selectedCountry.title?.en ?? "",
-                                            textAlign: TextAlign.center,
-                                            maxLines: 1,
-                                            style: TextStyle(
-                                                overflow:
-                                                    TextOverflow.ellipsis,
-                                                color: Colors.black,
-                                                fontSize: 20.sp)),
-                                        SizedBox(
-                                          height: 5.h,
-                                        ),
-                                        // divider
-                                        Container(
-                                          width: 1.sw,
-                                          height: 1.h,
-                                          color: Colors.grey[400],
-                                        ),
-                                      ],
+                                  isExpanded: true,
+                                  iconSize: 40.sp,
+                                  icon: Container(
+                                    margin:
+                                        EdgeInsetsDirectional.only(end: 18.r),
+                                    child: Icon(
+                                      Icons.arrow_drop_down,
+                                      color: grey2,
+                                      size: 40.sp,
                                     ),
-                                  );
-                                }).toList(),
-                              ),
-                            ),
-                          ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    // carColor
-                    SignCubit.get(context).colorsLoading
-                        ? loading()
-                        : Container(
-                            width: 1.sw,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50.r),
-                              border: Border.all(
-                                width: 1,
-                                color: Colors.black,
-                              ),
-                            ),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton2(
-                                //      value: controller.selectedCountry?.value,
-                                dropdownDecoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(14.r),
-                                  border: Border.all(
-                                    width: 1,
-                                    color: Colors.black,
                                   ),
-                                ),
-                                isExpanded: true,
-                                iconSize: 40.sp,
-                                icon: Container(
-                                  margin:
-                                      EdgeInsetsDirectional.only(end: 18.r),
-                                  child: Icon(
-                                    Icons.arrow_drop_down,
-                                    color: grey2,
-                                    size: 40.sp,
-                                  ),
-                                ),
-                                style: const TextStyle(color: Colors.grey),
-                                onChanged: (Data? value) {
-                                  setState(() {
-                                    dropDownValueColor = value;
-                                  });
-                                },
-                                hint: Container(
-                                  width: 1.sw,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 10.r, vertical: 5.r),
-                                  child: Center(
-                                    child: Text(
-                                        dropDownValueColor?.title?.en! ??
-                                            "Color",
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                            overflow: TextOverflow.ellipsis,
-                                            color: Colors.black,
-                                            fontSize: 20.sp)),
-                                  ),
-                                ),
-                                items: SignCubit.get(context)
-                                    .colors
-                                    .map((selectedCountry) {
-                                  return DropdownMenuItem<Data>(
-                                    value: selectedCountry,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(selectedCountry.title?.en ?? "",
-                                            textAlign: TextAlign.center,
-                                            maxLines: 1,
-                                            style: TextStyle(
-                                                overflow:
-                                                    TextOverflow.ellipsis,
-                                                color: Colors.black,
-                                                fontSize: 20.sp)),
-                                        SizedBox(
-                                          height: 5.h,
-                                        ),
-                                        // divider
-                                        Container(
-                                          width: 1.sw,
-                                          height: 1.h,
-                                          color: Colors.grey[400],
-                                        ),
-                                      ],
+                                  style: const TextStyle(color: Colors.grey),
+                                  onChanged: (Data? value) {
+                                    setState(() {
+                                      dropDownValueCarSubCategory = value;
+                                    });
+                                  },
+                                  hint: Container(
+                                    width: 1.sw,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 10.r, vertical: 5.r),
+                                    child: Center(
+                                      child: Text(
+                                          LanguageCubit.get(context).isEn
+                                              ? dropDownValueCarSubCategory
+                                                      ?.title?.en! ??
+                                                  "Car Model"
+                                              : dropDownValueCarSubCategory
+                                                      ?.title?.ar! ??
+                                                  "نوع السيارة",
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                              overflow: TextOverflow.ellipsis,
+                                              color: Colors.black,
+                                              fontSize: 20.sp)),
                                     ),
-                                  );
-                                }).toList(),
+                                  ),
+                                  items: SignCubit.get(context)
+                                      .carSubCategory
+                                      .map((selectedCountry) {
+                                    return DropdownMenuItem<Data>(
+                                      value: selectedCountry,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                              LanguageCubit.get(context).isEn
+                                                  ? selectedCountry.title?.en ??
+                                                      ""
+                                                  : selectedCountry.title?.ar ??
+                                                      "",
+                                              textAlign: TextAlign.center,
+                                              maxLines: 1,
+                                              style: TextStyle(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  color: Colors.black,
+                                                  fontSize: 20.sp)),
+                                          SizedBox(
+                                            height: 5.h,
+                                          ),
+                                          // divider
+                                          Container(
+                                            width: 1.sw,
+                                            height: 1.h,
+                                            color: Colors.grey[400],
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
                               ),
                             ),
-                          ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    Form(
-                      key: formKey,
-                      child: Column(
-                        children: [
-                          defaultFormField(
-                            controller: carNumberController,
-                            type: TextInputType.text,
-                            label: "Car Number",
-                            textSize: 20,
-                            border: false,
-                            borderRadius: 50,
-                            validatorText: carNumberController.text,
-                            validatorMessage: "Enter Car Number Please..",
-                            onEditingComplete: () {
-                              FocusScope.of(context).nextFocus();
-                            },
-                          ),
-                          SizedBox(
-                            height: 20.h,
-                          ),
-                        ],
+                      SizedBox(
+                        height: 20.h,
                       ),
-                    ),
-                    SizedBox(
-                      height: 30.h,
-                    ),
-                    Text(
-                      "Front Car License Image ",
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                          fontSize: 22.sp,
-                          fontWeight: FontWeight.bold,
-                          color: primaryColor),
-                    ),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    InkWell(
-                      child: Container(
-                        height: 250.h,
-                        width: 300.w,
-                        decoration: BoxDecoration(
-                          color: white,
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(25.r),
-                          border: Border.all(color: Colors.black),
+                      // carModel
+                      SignCubit.get(context).carModelLoading
+                          ? loading()
+                          : Container(
+                              width: 1.sw,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50.r),
+                                border: Border.all(
+                                  width: 1,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton2(
+                                  //      value: controller.selectedCountry?.value,
+                                  dropdownDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14.r),
+                                    border: Border.all(
+                                      width: 1,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  isExpanded: true,
+                                  iconSize: 40.sp,
+                                  icon: Container(
+                                    margin:
+                                        EdgeInsetsDirectional.only(end: 18.r),
+                                    child: Icon(
+                                      Icons.arrow_drop_down,
+                                      color: grey2,
+                                      size: 40.sp,
+                                    ),
+                                  ),
+                                  style: const TextStyle(color: Colors.grey),
+                                  onChanged: (Data? value) {
+                                    setState(() {
+                                      dropDownValueCarModel = value;
+                                    });
+                                  },
+                                  hint: Container(
+                                    width: 1.sw,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 10.r, vertical: 5.r),
+                                    child: Center(
+                                      child: Text(
+                                          LanguageCubit.get(context).isEn
+                                              ? dropDownValueCarModel
+                                                      ?.title?.en! ??
+                                                  "year"
+                                              : dropDownValueCarModel
+                                                      ?.title?.ar! ??
+                                                  "سنة",
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                              overflow: TextOverflow.ellipsis,
+                                              color: Colors.black,
+                                              fontSize: 20.sp)),
+                                    ),
+                                  ),
+                                  items: SignCubit.get(context)
+                                      .carModel
+                                      .map((selectedCountry) {
+                                    return DropdownMenuItem<Data>(
+                                      value: selectedCountry,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                              LanguageCubit.get(context).isEn
+                                                  ? selectedCountry.title?.en ??
+                                                      ""
+                                                  : selectedCountry.title?.ar ??
+                                                      "",
+                                              textAlign: TextAlign.center,
+                                              maxLines: 1,
+                                              style: TextStyle(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  color: Colors.black,
+                                                  fontSize: 20.sp)),
+                                          SizedBox(
+                                            height: 5.h,
+                                          ),
+                                          // divider
+                                          Container(
+                                            width: 1.sw,
+                                            height: 1.h,
+                                            color: Colors.grey[400],
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ),
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                      // carColor
+                      SignCubit.get(context).colorsLoading
+                          ? loading()
+                          : Container(
+                              width: 1.sw,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50.r),
+                                border: Border.all(
+                                  width: 1,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton2(
+                                  //      value: controller.selectedCountry?.value,
+                                  dropdownDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14.r),
+                                    border: Border.all(
+                                      width: 1,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  isExpanded: true,
+                                  iconSize: 40.sp,
+                                  icon: Container(
+                                    margin:
+                                        EdgeInsetsDirectional.only(end: 18.r),
+                                    child: Icon(
+                                      Icons.arrow_drop_down,
+                                      color: grey2,
+                                      size: 40.sp,
+                                    ),
+                                  ),
+                                  style: const TextStyle(color: Colors.grey),
+                                  onChanged: (Data? value) {
+                                    setState(() {
+                                      dropDownValueColor = value;
+                                    });
+                                  },
+                                  hint: Container(
+                                    width: 1.sw,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 10.r, vertical: 5.r),
+                                    child: Center(
+                                      child: Text(
+                                          LanguageCubit.get(context).isEn
+                                              ? dropDownValueColor
+                                                      ?.title?.en! ??
+                                                  "Color"
+                                              : dropDownValueColor
+                                                      ?.title?.ar! ??
+                                                  "اللون",
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                              overflow: TextOverflow.ellipsis,
+                                              color: Colors.black,
+                                              fontSize: 20.sp)),
+                                    ),
+                                  ),
+                                  items: SignCubit.get(context)
+                                      .colors
+                                      .map((selectedCountry) {
+                                    return DropdownMenuItem<Data>(
+                                      value: selectedCountry,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                              LanguageCubit.get(context).isEn
+                                                  ? selectedCountry.title?.en ??
+                                                      ""
+                                                  : selectedCountry.title?.ar ??
+                                                      "",
+                                              textAlign: TextAlign.center,
+                                              maxLines: 1,
+                                              style: TextStyle(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  color: Colors.black,
+                                                  fontSize: 20.sp)),
+                                          SizedBox(
+                                            height: 5.h,
+                                          ),
+                                          // divider
+                                          Container(
+                                            width: 1.sw,
+                                            height: 1.h,
+                                            color: Colors.grey[400],
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ),
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                      Form(
+                        key: formKey,
+                        child: Column(
+                          children: [
+                            defaultFormField(
+                              controller: carNumberController,
+                              type: TextInputType.text,
+                              label: "Car Number",
+                              textSize: 20,
+                              border: false,
+                              borderRadius: 50,
+                              validatorText: carNumberController.text,
+                              validatorMessage: "Enter Car Number Please..",
+                              onEditingComplete: () {
+                                FocusScope.of(context).nextFocus();
+                              },
+                            ),
+                            SizedBox(
+                              height: 20.h,
+                            ),
+                          ],
                         ),
-                        child: frontCarLicenseImage.isNotEmpty
-                            ? SizedBox(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(25.r),
-                                  child: Image.file(
-                                    _imageFrontCar!,
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
-                              )
-                            : Icon(
-                                Icons.person_pin_outlined,
-                                color: Colors.black87,
-                                size: 115.sp,
-                              ),
                       ),
-                      onTap: () {
-                        selectImageSource(ImageSource.camera, "carFront");
-                      },
-                    ),
-                    SizedBox(
-                      height: 30.h,
-                    ),
-                    Text(
-                      "Back Car License Image ",
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                          fontSize: 22.sp,
-                          fontWeight: FontWeight.bold,
-                          color: primaryColor),
-                    ),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    InkWell(
-                      child: Container(
-                        height: 250.h,
-                        width: 300.w,
-                        decoration: BoxDecoration(
-                          color: white,
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(25.r),
-                          border: Border.all(color: Colors.black),
-                        ),
-                        child: backCarLicenseImage.isNotEmpty
-                            ? SizedBox(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(25.r),
-                                  child: Image.file(
-                                    _imageBackCar!,
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
-                              )
-                            : Icon(
-                                Icons.person_pin_outlined,
-                                color: Colors.black87,
-                                size: 115.sp,
-                              ),
+                      SizedBox(
+                        height: 30.h,
                       ),
-                      onTap: () {
-                        selectImageSource(ImageSource.camera, "carBack");
-                      },
-                    ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    Text(
-                      'Gallery',
-                      style: TextStyle(
-                          fontSize: 24.sp,
-                          color: black,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    GridView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: listGallery.length,
-                      shrinkWrap: true,
-                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 150.sp,
-                          crossAxisSpacing: 20.w,
-                          mainAxisSpacing: 20.h),
-                      itemBuilder: (context, i) {
-                        if (i == listGallery.length - 1) {
-                          return Padding(
-                            padding: EdgeInsets.all(20.r),
-                            child: CircleAvatar(
-                              backgroundColor: accentColor,
-                              child: IconButton(
-                                icon: Icon(Icons.add,
-                                    size: 35.sp, color: white),
-                                onPressed: () {
-                                  selectImageSource(
-                                      ImageSource.camera, "galley");
-                                },
-                              ),
-                            ),
-                          );
-                        } else {
-                          return Stack(
-                            children: [
-                              Container(
-                                height: 200.h,
-                                width: 250.w,
-                                decoration: BoxDecoration(
-                                  color: white,
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(25.r),
-                                  border: Border.all(color: Colors.black),
-                                ),
-                                child: SizedBox(
+                      Text(
+                        "Front Car License Image ",
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            fontSize: 22.sp,
+                            fontWeight: FontWeight.bold,
+                            color: primaryColor),
+                      ),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      InkWell(
+                        child: Container(
+                          height: 250.h,
+                          width: 300.w,
+                          decoration: BoxDecoration(
+                            color: white,
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(25.r),
+                            border: Border.all(color: Colors.black),
+                          ),
+                          child: frontCarLicenseImage.isNotEmpty
+                              ? SizedBox(
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(25.r),
                                     child: Image.file(
-                                      listGallery[i],
+                                      _imageFrontCar!,
                                       fit: BoxFit.fill,
                                     ),
                                   ),
+                                )
+                              : Icon(
+                                  Icons.person_pin_outlined,
+                                  color: Colors.black87,
+                                  size: 115.sp,
+                                ),
+                        ),
+                        onTap: () {
+                          selectImageSource(ImageSource.camera, "carFront");
+                        },
+                      ),
+                      SizedBox(
+                        height: 30.h,
+                      ),
+                      Text(
+                        "Back Car License Image ",
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            fontSize: 22.sp,
+                            fontWeight: FontWeight.bold,
+                            color: primaryColor),
+                      ),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      InkWell(
+                        child: Container(
+                          height: 250.h,
+                          width: 300.w,
+                          decoration: BoxDecoration(
+                            color: white,
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(25.r),
+                            border: Border.all(color: Colors.black),
+                          ),
+                          child: backCarLicenseImage.isNotEmpty
+                              ? SizedBox(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(25.r),
+                                    child: Image.file(
+                                      _imageBackCar!,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                )
+                              : Icon(
+                                  Icons.person_pin_outlined,
+                                  color: Colors.black87,
+                                  size: 115.sp,
+                                ),
+                        ),
+                        onTap: () {
+                          selectImageSource(ImageSource.camera, "carBack");
+                        },
+                      ),
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                      Text(
+                        'Gallery',
+                        style: TextStyle(
+                            fontSize: 24.sp,
+                            color: black,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                      GridView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: listGallery.length,
+                        shrinkWrap: true,
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 150.sp,
+                            crossAxisSpacing: 20.w,
+                            mainAxisSpacing: 20.h),
+                        itemBuilder: (context, i) {
+                          if (i == listGallery.length - 1) {
+                            return Padding(
+                              padding: EdgeInsets.all(20.r),
+                              child: CircleAvatar(
+                                backgroundColor: accentColor,
+                                child: IconButton(
+                                  icon: Icon(Icons.add,
+                                      size: 35.sp, color: white),
+                                  onPressed: () {
+                                    selectImageSource(
+                                        ImageSource.camera, "galley");
+                                  },
                                 ),
                               ),
-                              Align(
-                                alignment: AlignmentDirectional.bottomEnd,
-                                child: CircleAvatar(
-                                  backgroundColor: accentColor,
-                                  child: IconButton(
-                                    icon: Icon(Icons.close,
-                                        size: 25.sp, color: white),
-                                    onPressed: () {
-                                      setState(() {
-                                        listGallery.removeAt(i);
-                                        listGalleryValue.removeAt(i);
-                                      });
-                                    },
+                            );
+                          } else {
+                            return Stack(
+                              children: [
+                                Container(
+                                  height: 200.h,
+                                  width: 250.w,
+                                  decoration: BoxDecoration(
+                                    color: white,
+                                    shape: BoxShape.rectangle,
+                                    borderRadius: BorderRadius.circular(25.r),
+                                    border: Border.all(color: Colors.black),
+                                  ),
+                                  child: SizedBox(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(25.r),
+                                      child: Image.file(
+                                        listGallery[i],
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          );
-                        }
-                      },
-                    ),
-                    SizedBox(
-                      height: 60.h,
-                    ),
-                    carLoading
-                        ? loading()
-                        : defaultButton3(
-                            press: () async {
-                              print(
-                                  "CarModel*****************${dropDownValueCarSubCategory?.title!.en} ++ ${dropDownValueCarSubCategory?.id!}");
-                              print(
-                                  "CarModelYear*****************${dropDownValueCarModel?.title!.en} ++ ${dropDownValueCarModel?.id!}");
-                              print(
-                                  "color*****************${dropDownValueColor?.title!.en} ++ ${dropDownValueColor?.id!}");
-                              print(
-                                  "CarNum*****************${carNumberController.text}");
-                              print(
-                                  "fontCar*****************$frontCarLicenseImage");
-                              print(
-                                  "backCar*****************$backCarLicenseImage");
-                              print(
-                                  "gallery*****************${listGalleryValue.toString()}");
-                              if (dropDownValueCarSubCategory != null &&
-                                  dropDownValueCarModel != null &&
-                                  dropDownValueColor != null &&
-                                  formKey.currentState!.validate() &&
-                                  frontCarLicenseImage.isNotEmpty &&
-                                  backCarLicenseImage.isNotEmpty ) {
-                                setState(() {
-                                  carLoading = true;
-                                });
-                                var formData;
-                                if(listGalleryValue.isNotEmpty){
-                                  formData = FormData.fromMap({
-                                    'carModel':
-                                    dropDownValueCarSubCategory?.id!,
-                                    'carModelYear': dropDownValueCarModel?.id!,
-                                    'carColor': dropDownValueColor?.id!,
-                                    'carNumber':
-                                    carNumberController.text.toString(),
-                                    'gallery': listGalleryValue,
-                                    'frontCarLicenseImage':
-                                    await MultipartFile.fromFile(
-                                        frontCarLicenseImage,
-                                        filename: frontCarLicenseImage,
-                                        contentType:
-                                        MediaType("image", "jpeg")),
-                                    'backCarLicenseImage':
-                                    await MultipartFile.fromFile(
-                                        backCarLicenseImage,
-                                        filename: backCarLicenseImage,
-                                        contentType:
-                                        MediaType("image", "jpeg")),
+                                Align(
+                                  alignment: AlignmentDirectional.bottomEnd,
+                                  child: CircleAvatar(
+                                    backgroundColor: accentColor,
+                                    child: IconButton(
+                                      icon: Icon(Icons.close,
+                                          size: 25.sp, color: white),
+                                      onPressed: () {
+                                        setState(() {
+                                          listGallery.removeAt(i);
+                                          listGalleryValue.removeAt(i);
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                        },
+                      ),
+                      SizedBox(
+                        height: 60.h,
+                      ),
+                      carLoading
+                          ? loading()
+                          : defaultButton3(
+                              press: () async {
+                                print(
+                                    "CarModel*****************${dropDownValueCarSubCategory?.title!.en} ++ ${dropDownValueCarSubCategory?.id!}");
+                                print(
+                                    "CarModelYear*****************${dropDownValueCarModel?.title!.en} ++ ${dropDownValueCarModel?.id!}");
+                                print(
+                                    "color*****************${dropDownValueColor?.title!.en} ++ ${dropDownValueColor?.id!}");
+                                print(
+                                    "CarNum*****************${carNumberController.text}");
+                                print(
+                                    "fontCar*****************$frontCarLicenseImage");
+                                print(
+                                    "backCar*****************$backCarLicenseImage");
+                                print(
+                                    "gallery*****************${listGalleryValue.toString()}");
+                                if (dropDownValueCarSubCategory != null &&
+                                    dropDownValueCarModel != null &&
+                                    dropDownValueColor != null &&
+                                    formKey.currentState!.validate() &&
+                                    frontCarLicenseImage.isNotEmpty &&
+                                    backCarLicenseImage.isNotEmpty) {
+                                  setState(() {
+                                    carLoading = true;
                                   });
-                                }else{
-                                  formData = FormData.fromMap({
-                                    'carModel':
-                                    dropDownValueCarSubCategory?.id!,
-                                    'carModelYear': dropDownValueCarModel?.id!,
-                                    'carColor': dropDownValueColor?.id!,
-                                    'carNumber':
-                                    carNumberController.text.toString(),
-                                    'frontCarLicenseImage':
-                                    await MultipartFile.fromFile(
-                                        frontCarLicenseImage,
-                                        filename: frontCarLicenseImage,
-                                        contentType:
-                                        MediaType("image", "jpeg")),
-                                    'backCarLicenseImage':
-                                    await MultipartFile.fromFile(
-                                        backCarLicenseImage,
-                                        filename: backCarLicenseImage,
-                                        contentType:
-                                        MediaType("image", "jpeg")),
-                                  });
+                                  var formData;
+                                  if (listGalleryValue.isNotEmpty) {
+                                    formData = FormData.fromMap({
+                                      'carModel':
+                                          dropDownValueCarSubCategory?.id!,
+                                      'carModelYear':
+                                          dropDownValueCarModel?.id!,
+                                      'carColor': dropDownValueColor?.id!,
+                                      'carNumber':
+                                          carNumberController.text.toString(),
+                                      'gallery': listGalleryValue,
+                                      'frontCarLicenseImage':
+                                          await MultipartFile.fromFile(
+                                              frontCarLicenseImage,
+                                              filename: frontCarLicenseImage,
+                                              contentType:
+                                                  MediaType("image", "jpeg")),
+                                      'backCarLicenseImage':
+                                          await MultipartFile.fromFile(
+                                              backCarLicenseImage,
+                                              filename: backCarLicenseImage,
+                                              contentType:
+                                                  MediaType("image", "jpeg")),
+                                    });
+                                  } else {
+                                    formData = FormData.fromMap({
+                                      'carModel':
+                                          dropDownValueCarSubCategory?.id!,
+                                      'carModelYear':
+                                          dropDownValueCarModel?.id!,
+                                      'carColor': dropDownValueColor?.id!,
+                                      'carNumber':
+                                          carNumberController.text.toString(),
+                                      'frontCarLicenseImage':
+                                          await MultipartFile.fromFile(
+                                              frontCarLicenseImage,
+                                              filename: frontCarLicenseImage,
+                                              contentType:
+                                                  MediaType("image", "jpeg")),
+                                      'backCarLicenseImage':
+                                          await MultipartFile.fromFile(
+                                              backCarLicenseImage,
+                                              filename: backCarLicenseImage,
+                                              contentType:
+                                                  MediaType("image", "jpeg")),
+                                    });
+                                  }
+                                  SignCubit.get(context).carCreate(formData);
+                                } else {
+                                  showToastt(
+                                      text: "please fill all data first...",
+                                      state: ToastStates.error,
+                                      context: context);
                                 }
-                                SignCubit.get(context).carCreate(formData);
-                              } else {
-                                showToastt(
-                                    text: "please fill all data first...",
-                                    state: ToastStates.error,
-                                    context: context);
-                              }
-                            },
-                            text: "Save",
-                            backColor: accentColor,
-                            textColor: white),
-                  ],
+                              },
+                              text: "Save",
+                              backColor: accentColor,
+                              textColor: white),
+                    ],
+                  ),
                 ),
               ),
             ),

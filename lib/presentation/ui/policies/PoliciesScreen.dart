@@ -2,11 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/presentation/di/injection_container.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:getn_driver/presentation/ui/policies/PolicyDetailsScreen.dart';
+import 'dart:ui' as ui;
 
-class PoliciesScreen extends StatelessWidget {
-  PoliciesScreen({Key? key}) : super(key: key);
+import 'package:shared_preferences/shared_preferences.dart';
 
+class PoliciesScreen extends StatefulWidget {
+  const PoliciesScreen({Key? key}) : super(key: key);
+
+  @override
+  State<PoliciesScreen> createState() => _PoliciesScreenState();
+}
+
+class _PoliciesScreenState extends State<PoliciesScreen> {
 
   bodyWidget(BuildContext context) {
     return SingleChildScrollView(
@@ -113,21 +123,36 @@ class PoliciesScreen extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    if (getIt<SharedPreferences>().getBool("isEn") != null) {
+      LanguageCubit.get(context).isEn =
+      getIt<SharedPreferences>().getBool("isEn")!;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Policies',
-          style: TextStyle(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.w500,
-            color: primaryColor,
+    return Directionality(
+      textDirection: LanguageCubit.get(context).isEn
+          ? ui.TextDirection.ltr
+          : ui.TextDirection.rtl,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Policies',
+            style: TextStyle(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w500,
+              color: primaryColor,
+            ),
           ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        child: bodyWidget(context),
+        body: SingleChildScrollView(
+          child: bodyWidget(context),
+        ),
       ),
     );
   }

@@ -12,7 +12,9 @@ import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/firebase_options.dart';
 import 'package:getn_driver/main_cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:getn_driver/presentation/ui/splash/SplashScreen.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
 // for error connection with api
@@ -20,6 +22,7 @@ void main() async {
 
   // for example ensure Initialized shared perefence
   WidgetsFlutterBinding.ensureInitialized();
+  initializeDateFormatting();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -62,6 +65,9 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider(
             create: (context) => MainCubit(),
+          ),
+          BlocProvider(
+            create: (context) => LanguageCubit(),
           )
         ],
         child: MaterialApp(

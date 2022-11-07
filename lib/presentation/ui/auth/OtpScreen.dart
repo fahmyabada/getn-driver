@@ -13,10 +13,12 @@ import 'package:getn_driver/presentation/ui/auth/CarRegistrationScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/DriverInformationScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/SignUpDetailsScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/RequestTabsScreen.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:ui' as ui;
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({Key? key,
@@ -74,6 +76,10 @@ class _OtpScreenState extends State<OtpScreen> {
     super.initState();
     startTimer();
     verificationId = widget.verificationId;
+    if (getIt<SharedPreferences>().getBool("isEn") != null) {
+      LanguageCubit.get(context).isEn =
+      getIt<SharedPreferences>().getBool("isEn")!;
+    }
   }
 
   @override
@@ -192,216 +198,221 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SignCubit(),
-      child: BlocConsumer<SignCubit, SignState>(listener: (context1, state) {
-        if (state is SendOtpSuccessState) {
-          if (kDebugMode) {
-            print('OtpScreen*******SendOtpSuccessState');
+    return Directionality(
+      textDirection: LanguageCubit.get(context).isEn
+          ? ui.TextDirection.ltr
+          : ui.TextDirection.rtl,
+      child: BlocProvider(
+        create: (context) => SignCubit(),
+        child: BlocConsumer<SignCubit, SignState>(listener: (context1, state) {
+          if (state is SendOtpSuccessState) {
+            if (kDebugMode) {
+              print('OtpScreen*******SendOtpSuccessState');
+            }
+            setState(() {
+              openResend = false;
+              openNext = false;
+              duration = const Duration(minutes: 1);
+            });
+            startTimer();
           }
-          setState(() {
-            openResend = false;
-            openNext = false;
-            duration = const Duration(minutes: 1);
-          });
-          startTimer();
-        }
-        else if (state is SendOtpErrorState) {
-          if (kDebugMode) {
-            print('OtpScreen*******SendOtpErrorState');
-          }
+          else if (state is SendOtpErrorState) {
+            if (kDebugMode) {
+              print('OtpScreen*******SendOtpErrorState');
+            }
 
-          showToastt(
-              text: state.message, state: ToastStates.error, context: context);
-        }
-        else if (state is SignInSuccessState) {
-          setState((){
-            load = false;
-          });
-          if (kDebugMode) {
-            print('OtpScreen*******SignInSuccessState');
+            showToastt(
+                text: state.message, state: ToastStates.error, context: context);
           }
-          showToastt(
-              text: "login successfully",
-              state: ToastStates.success,
-              context: context);
-          if (state.data.phone != null) {
-            getIt<SharedPreferences>().setString('phone', state.data.phone!);
-          }
-          if (state.data.name != null) {
-            getIt<SharedPreferences>().setString('name', state.data.name!);
-          }
-          if (state.data.token != null) {
-            getIt<SharedPreferences>().setString('token', state.data.token!);
-          }
-          if (state.data.image!.src != null) {
-            getIt<SharedPreferences>().setString('userImage', state.data.image!.src!);
-          }
-          getIt<SharedPreferences>().setString('countryId', widget.countryId);
+          else if (state is SignInSuccessState) {
+            setState((){
+              load = false;
+            });
+            if (kDebugMode) {
+              print('OtpScreen*******SignInSuccessState');
+            }
+            showToastt(
+                text: "login successfully",
+                state: ToastStates.success,
+                context: context);
+            if (state.data.phone != null) {
+              getIt<SharedPreferences>().setString('phone', state.data.phone!);
+            }
+            if (state.data.name != null) {
+              getIt<SharedPreferences>().setString('name', state.data.name!);
+            }
+            if (state.data.token != null) {
+              getIt<SharedPreferences>().setString('token', state.data.token!);
+            }
+            if (state.data.image!.src != null) {
+              getIt<SharedPreferences>().setString('userImage', state.data.image!.src!);
+            }
+            getIt<SharedPreferences>().setString('countryId', widget.countryId);
 
-          if (state.data.frontNationalImage?.src == null) {
-            getIt<SharedPreferences>().setString('typeSign', "sign");
-            navigateAndFinish(context, const DriverInformationScreen());
-          } else if (state.data.hasCar != null && !state.data.hasCar!) {
-            getIt<SharedPreferences>()
-                .setString('typeSign', "signWithInformation");
-            navigateAndFinish(context, const CarRegistrationScreen());
-          } else if (state.data.hasCar != null &&
-              state.data.hasCar! &&
-              state.data.frontNationalImage?.src != null) {
-            getIt<SharedPreferences>()
-                .setString('typeSign', "signWithCarRegistration");
-            navigateAndFinish(context, BlocProvider(
-                create: (context) => RequestCubit(),
-                child: const RequestTabsScreen()));
+            if (state.data.frontNationalImage?.src == null) {
+              getIt<SharedPreferences>().setString('typeSign', "sign");
+              navigateAndFinish(context, const DriverInformationScreen());
+            } else if (state.data.hasCar != null && !state.data.hasCar!) {
+              getIt<SharedPreferences>()
+                  .setString('typeSign', "signWithInformation");
+              navigateAndFinish(context, const CarRegistrationScreen());
+            } else if (state.data.hasCar != null &&
+                state.data.hasCar! &&
+                state.data.frontNationalImage?.src != null) {
+              getIt<SharedPreferences>()
+                  .setString('typeSign', "signWithCarRegistration");
+              navigateAndFinish(context, BlocProvider(
+                  create: (context) => RequestCubit(),
+                  child: const RequestTabsScreen()));
+            }
           }
-        }
-        else if (state is SignInErrorState) {
-          if (kDebugMode) {
-            print('OtpScreen*******SignInErrorState');
-          }
+          else if (state is SignInErrorState) {
+            if (kDebugMode) {
+              print('OtpScreen*******SignInErrorState');
+            }
 
-          setState((){
-            load = false;
-          });
-          showToastt(
-              text: state.message, state: ToastStates.error, context: context);
-        }
-      }, builder: (context, state) {
-        return Scaffold(
-          backgroundColor: white,
-          appBar: AppBar(
-            leading: IconButton(
-              icon: const Icon(
-                Icons.arrow_back,
-                color: black,
-              ),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
+            setState((){
+              load = false;
+            });
+            showToastt(
+                text: state.message, state: ToastStates.error, context: context);
+          }
+        }, builder: (context, state) {
+          return Scaffold(
             backgroundColor: white,
-            elevation: 0.0,
-            iconTheme: const IconThemeData(color: black),
-          ),
-          body: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 25.r),
-                    child: Text(
-                      "Enter the 6- digit code sent to \n ${widget
-                          .phoneWithCountry}",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30.sp,
-                          color: black),
-                    ),
-                  ),
-                  SizedBox(height: 30.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 25.r),
-                    child: PinCodeTextField(
-                      appContext: context,
-                      length: 6,
-
-                      pastedTextStyle: TextStyle(
-                        color: Colors.green.shade600,
-                        fontWeight: FontWeight.bold,
+            appBar: AppBar(
+              leading: IconButton(
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: black,
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              backgroundColor: white,
+              elevation: 0.0,
+              iconTheme: const IconThemeData(color: black),
+            ),
+            body: Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 25.r),
+                      child: Text(
+                        "Enter the 6- digit code sent to \n ${widget
+                            .phoneWithCountry}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30.sp,
+                            color: black),
                       ),
-                      animationType: AnimationType.fade,
-                      validator: (v) {
-                        if (v!.length < 3) {
-                          return "Enter Code Please...";
-                        } else {
-                          return null;
-                        }
-                      },
-                      obscureText: false,
-                      pinTheme: PinTheme(
-                          shape: PinCodeFieldShape.box,
-                          borderRadius: BorderRadius.circular(5),
-                          fieldHeight: 50,
-                          fieldWidth: 40,
-                          activeFillColor: Colors.white,
-                          inactiveFillColor: Colors.white,
-                          inactiveColor: blueLight),
-                      cursorColor: Colors.black,
-                      animationDuration: const Duration(milliseconds: 300),
-                      enableActiveFill: true,
-                      keyboardType: TextInputType.number,
-                      boxShadows: const [
-                        BoxShadow(
-                          offset: Offset(0, 1),
-                          color: Colors.black12,
-                          blurRadius: 10,
-                        )
-                      ],
-                      onCompleted: (v) {
-                        debugPrint("Completed");
-                      },
-                      onChanged: (value) {
-                        debugPrint(value);
-                        if (value.length == 6) {
-                          setState(() {
-                            otp = value;
-                            openResend = false;
-                            openNext = true;
-                            if (timer!.isActive) {
-                              timer!.cancel();
-                            }
-                          });
-                        } else {
-                          setState(() {
-                            openResend = true;
-                            openNext = false;
-                          });
-                        }
-                      },
-                      enablePinAutofill: true,
-
-                      beforeTextPaste: (text) {
-                        debugPrint("Allowing to paste $text");
-                        //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
-                        //but you can show anything you want here, like your pop up saying wrong paste format or etc
-                        return true;
-                      },
                     ),
-                  ),
-                  SizedBox(height: 30.h),
-                  // SelectableText("App Signature : $signature",
-                  //     enableInteractiveSelection: true),
-                  // ElevatedButton(
-                  //   child: const Text('Get app signature'),
-                  //   onPressed: () async {
-                  //     signature = await SmsAutoFill().getAppSignature;
-                  //     setState(() {});
-                  //   },
-                  // ),
-                  SizedBox(height: 35.h),
-                  buildTime(context),
-                  SizedBox(height: 32.h),
-                  Container(
-                    margin:
-                    EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
-                    child: load ?
-                    loading() :
-                    defaultButton3(
-                        press: () {
-                          load = true;
-                          nextButton(context);
+                    SizedBox(height: 30.h),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 25.r),
+                      child: PinCodeTextField(
+                        appContext: context,
+                        length: 6,
+
+                        pastedTextStyle: TextStyle(
+                          color: Colors.green.shade600,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        animationType: AnimationType.fade,
+                        validator: (v) {
+                          if (v!.length < 3) {
+                            return "Enter Code Please...";
+                          } else {
+                            return null;
+                          }
                         },
-                        disablePress: openNext,
-                        text: "Next",
-                        backColor: accentColor,
-                        textColor: white),
-                  ),
-                ],
+                        obscureText: false,
+                        pinTheme: PinTheme(
+                            shape: PinCodeFieldShape.box,
+                            borderRadius: BorderRadius.circular(5),
+                            fieldHeight: 50,
+                            fieldWidth: 40,
+                            activeFillColor: Colors.white,
+                            inactiveFillColor: Colors.white,
+                            inactiveColor: blueLight),
+                        cursorColor: Colors.black,
+                        animationDuration: const Duration(milliseconds: 300),
+                        enableActiveFill: true,
+                        keyboardType: TextInputType.number,
+                        boxShadows: const [
+                          BoxShadow(
+                            offset: Offset(0, 1),
+                            color: Colors.black12,
+                            blurRadius: 10,
+                          )
+                        ],
+                        onCompleted: (v) {
+                          debugPrint("Completed");
+                        },
+                        onChanged: (value) {
+                          debugPrint(value);
+                          if (value.length == 6) {
+                            setState(() {
+                              otp = value;
+                              openResend = false;
+                              openNext = true;
+                              if (timer!.isActive) {
+                                timer!.cancel();
+                              }
+                            });
+                          } else {
+                            setState(() {
+                              openResend = true;
+                              openNext = false;
+                            });
+                          }
+                        },
+                        enablePinAutofill: true,
+
+                        beforeTextPaste: (text) {
+                          debugPrint("Allowing to paste $text");
+                          //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
+                          //but you can show anything you want here, like your pop up saying wrong paste format or etc
+                          return true;
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 30.h),
+                    // SelectableText("App Signature : $signature",
+                    //     enableInteractiveSelection: true),
+                    // ElevatedButton(
+                    //   child: const Text('Get app signature'),
+                    //   onPressed: () async {
+                    //     signature = await SmsAutoFill().getAppSignature;
+                    //     setState(() {});
+                    //   },
+                    // ),
+                    SizedBox(height: 35.h),
+                    buildTime(context),
+                    SizedBox(height: 32.h),
+                    Container(
+                      margin:
+                      EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
+                      child: load ?
+                      loading() :
+                      defaultButton3(
+                          press: () {
+                            load = true;
+                            nextButton(context);
+                          },
+                          disablePress: openNext,
+                          text: "Next",
+                          backColor: accentColor,
+                          textColor: white),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 

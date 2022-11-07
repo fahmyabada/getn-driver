@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:getn_driver/data/model/policies/Content.dart';
 import 'package:getn_driver/data/model/policies/PoliciesModel.dart';
 import 'package:getn_driver/domain/usecase/policies/GetPoliciesUseCase.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
@@ -15,7 +16,7 @@ class PoliciesCubit extends Cubit<PoliciesState> {
 
   var getPoliciesUseCase = getIt<GetPoliciesUseCase>();
 
-  String? content;
+  Content? content;
 
   void getPolicies(String title) async {
     emit(PoliciesLoading());
@@ -30,11 +31,10 @@ class PoliciesCubit extends Cubit<PoliciesState> {
       print("PoliciesErrorState*********** $failure1");
       return PoliciesErrorState(failure1);
     }, (data) {
-      content = data!.content?.en;
+      content = data!.content;
       print("PoliciesSuccessState*********** $content");
 
       return PoliciesSuccessState(data);
     });
   }
-
 }

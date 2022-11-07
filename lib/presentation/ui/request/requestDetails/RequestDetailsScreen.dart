@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +10,7 @@ import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/main_cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
 import 'package:getn_driver/presentation/ui/trip/tripDetails/TripDetailsScreen.dart';
 import 'package:intl/intl.dart';
@@ -85,6 +88,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
     getIt<SharedPreferences>().setString('typeScreen', "requestDetails");
     getIt<SharedPreferences>().setString('requestDetailsId', widget.idRequest!);
+    if (getIt<SharedPreferences>().getBool("isEn") != null) {
+      LanguageCubit.get(context).isEn =
+          getIt<SharedPreferences>().getBool("isEn")!;
+    }
   }
 
   @override
@@ -208,156 +215,162 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           }
         },
         builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(
-                'Requests',
-                style: TextStyle(color: primaryColor, fontSize: 20.sp),
+          return Directionality(
+            textDirection: LanguageCubit.get(context).isEn
+                ? ui.TextDirection.ltr
+                : ui.TextDirection.rtl,
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text(
+                  'Requests',
+                  style: TextStyle(color: primaryColor, fontSize: 20.sp),
+                ),
+                centerTitle: true,
+                elevation: 1.0,
               ),
-              centerTitle: true,
-              elevation: 1.0,
-            ),
-            body: RequestDetailsCubit.get(context).loadingRequest
-                ? loading()
-                : RequestDetailsCubit.get(context).failureRequest.isNotEmpty
-                    ? errorMessage2(
-                        message:
-                            RequestDetailsCubit.get(context).failureRequest,
-                        press: () {
-                          RequestDetailsCubit.get(context)
-                              .getRequestDetails(widget.idRequest!);
-                          RequestDetailsCubit.get(context)
-                              .getTripsRequestDetails(1, widget.idRequest!);
-                        })
-                    : RequestDetailsCubit.get(context).requestDetails!.id !=
-                            null
-                        ? Container(
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 15.r, vertical: 20.r),
-                            child: ScrollEdgeListener(
-                              edge: ScrollEdge.end,
-                              // edgeOffset: 400,
-                              // continuous: false,
-                              // debounce: const Duration(milliseconds: 500),
-                              // dispatch: true,
-                              listener: () {
-                                setState(() {
-                                  print(
-                                      "_controllerLoadingTrips*********** ${RequestDetailsCubit.get(context).indexTrips}");
-                                  loadingMoreTrips = true;
-                                });
-                                _loadMoreTrips(context);
-                              },
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    client(context),
-                                    SizedBox(
-                                      height: 15.h,
-                                    ),
-                                    // divider
-                                    Container(
-                                      width: 1.sw,
-                                      height: 1.h,
-                                      color: Colors.grey[400],
-                                    ),
-                                    SizedBox(
-                                      height: 15.h,
-                                    ),
+              body: RequestDetailsCubit.get(context).loadingRequest
+                  ? loading()
+                  : RequestDetailsCubit.get(context).failureRequest.isNotEmpty
+                      ? errorMessage2(
+                          message:
+                              RequestDetailsCubit.get(context).failureRequest,
+                          press: () {
+                            RequestDetailsCubit.get(context)
+                                .getRequestDetails(widget.idRequest!);
+                            RequestDetailsCubit.get(context)
+                                .getTripsRequestDetails(1, widget.idRequest!);
+                          })
+                      : RequestDetailsCubit.get(context).requestDetails!.id !=
+                              null
+                          ? Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 15.r, vertical: 20.r),
+                              child: ScrollEdgeListener(
+                                edge: ScrollEdge.end,
+                                // edgeOffset: 400,
+                                // continuous: false,
+                                // debounce: const Duration(milliseconds: 500),
+                                // dispatch: true,
+                                listener: () {
+                                  setState(() {
+                                    print(
+                                        "_controllerLoadingTrips*********** ${RequestDetailsCubit.get(context).indexTrips}");
+                                    loadingMoreTrips = true;
+                                  });
+                                  _loadMoreTrips(context);
+                                },
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.vertical,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      client(context),
+                                      SizedBox(
+                                        height: 15.h,
+                                      ),
+                                      // divider
+                                      Container(
+                                        width: 1.sw,
+                                        height: 1.h,
+                                        color: Colors.grey[400],
+                                      ),
+                                      SizedBox(
+                                        height: 15.h,
+                                      ),
 
-                                    requestInfo(context),
-                                    SizedBox(
-                                      height: 15.h,
-                                    ),
-                                    buttonStatus(context, state),
+                                      requestInfo(context),
+                                      SizedBox(
+                                        height: 15.h,
+                                      ),
+                                      buttonStatus(context, state),
 
-                                    widget.typeScreen != null &&
-                                            widget.typeScreen == "past"
-                                        ? Container()
-                                        : RequestDetailsCubit.get(context)
-                                                    .requestDetails
-                                                    ?.paymentStatus! ==
-                                                "paid"
-                                            ? Container()
-                                            : Text(
-                                                'client don\'t paid yet',
-                                                style: TextStyle(
-                                                    color: accentColor,
-                                                    fontSize: 15.sp,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
+                                      widget.typeScreen != null &&
+                                              widget.typeScreen == "past"
+                                          ? Container()
+                                          : RequestDetailsCubit.get(context)
+                                                      .requestDetails
+                                                      ?.paymentStatus! ==
+                                                  "paid"
+                                              ? Container()
+                                              : Text(
+                                                  'client don\'t paid yet',
+                                                  style: TextStyle(
+                                                      color: accentColor,
+                                                      fontSize: 15.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
 
-                                    SizedBox(
-                                      height: 15.h,
-                                    ),
-                                    // divider
-                                    Container(
-                                      width: 1.sw,
-                                      height: 1.h,
-                                      color: Colors.grey[400],
-                                    ),
-                                    // add trip
-                                    /*  SizedBox(
-                                      height: 15.h,
-                                    ),
-                                    RequestDetailsCubit.get(context)
-                                                    .requestDetails!
-                                                    .status !=
-                                                null &&
-                                            RequestDetailsCubit.get(context)
-                                                    .requestDetails!
-                                                    .status ==
-                                                "start" &&
-                                            currentDate.isBefore(
-                                              DateFormat("yyyy-MM-ddTHH:mm")
-                                                  .parse(RequestDetailsCubit.get(
-                                                          context)
+                                      SizedBox(
+                                        height: 15.h,
+                                      ),
+                                      // divider
+                                      Container(
+                                        width: 1.sw,
+                                        height: 1.h,
+                                        color: Colors.grey[400],
+                                      ),
+                                      // add trip
+                                      /*  SizedBox(
+                                        height: 15.h,
+                                      ),
+                                      RequestDetailsCubit.get(context)
                                                       .requestDetails!
-                                                      .to!),
-                                            ) &&
-                                            currentDate.isAfter(
-                                              DateFormat("yyyy-MM-ddTHH:mm")
-                                                  .parse(RequestDetailsCubit.get(
-                                                          context)
+                                                      .status !=
+                                                  null &&
+                                              RequestDetailsCubit.get(context)
                                                       .requestDetails!
-                                                      .from!
-                                                      .date!),
-                                            )
-                                        ? state is CurrentLocationLoading
-                                            ? const Center(
-                                                child: CircularProgressIndicator(
-                                                color: black,
-                                              ))
-                                            : defaultButton2(
-                                                text: 'Add Trip',
-                                                press: () {
-                                                  RequestDetailsCubit.get(context)
-                                                      .getCurrentLocation();
-                                                },
-                                                textColor: white,
-                                                backColor: accentColor)
-                                        : Container(),*/
-                                    SizedBox(
-                                      height: 15.h,
-                                    ),
-                                    trips(context, state),
-                                  ],
+                                                      .status ==
+                                                  "start" &&
+                                              currentDate.isBefore(
+                                                DateFormat("yyyy-MM-ddTHH:mm")
+                                                    .parse(RequestDetailsCubit.get(
+                                                            context)
+                                                        .requestDetails!
+                                                        .to!),
+                                              ) &&
+                                              currentDate.isAfter(
+                                                DateFormat("yyyy-MM-ddTHH:mm")
+                                                    .parse(RequestDetailsCubit.get(
+                                                            context)
+                                                        .requestDetails!
+                                                        .from!
+                                                        .date!),
+                                              )
+                                          ? state is CurrentLocationLoading
+                                              ? const Center(
+                                                  child: CircularProgressIndicator(
+                                                  color: black,
+                                                ))
+                                              : defaultButton2(
+                                                  text: 'Add Trip',
+                                                  press: () {
+                                                    RequestDetailsCubit.get(context)
+                                                        .getCurrentLocation();
+                                                  },
+                                                  textColor: white,
+                                                  backColor: accentColor)
+                                          : Container(),*/
+                                      SizedBox(
+                                        height: 15.h,
+                                      ),
+                                      trips(context, state),
+                                    ],
+                                  ),
                                 ),
                               ),
+                            )
+                          : Center(
+                              child: Text(
+                                RequestDetailsCubit.get(context).failureRequest,
+                                style: TextStyle(
+                                    fontSize: 20.sp,
+                                    color: blueColor,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
-                          )
-                        : Center(
-                            child: Text(
-                              RequestDetailsCubit.get(context).failureRequest,
-                              style: TextStyle(
-                                  fontSize: 20.sp,
-                                  color: blueColor,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
+            ),
           );
         },
       ),
@@ -408,7 +421,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               height: 5.h,
                             ),
                             Text(
-                              '${RequestDetailsCubit.get(context).requestDetails!.client2!.country!.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.city?.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.area?.title!.en!}',
+                              LanguageCubit.get(context).isEn
+                                  ? '${RequestDetailsCubit.get(context).requestDetails!.client2!.country!.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.city?.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.area?.title!.en!}'
+                                  : '${RequestDetailsCubit.get(context).requestDetails!.client2!.country!.title!.ar!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.city?.title!.ar!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.area?.title!.ar!}',
                               style: TextStyle(fontSize: 18.sp, color: grey2),
                             ),
                           ],
@@ -445,7 +460,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     RequestDetailsCubit.get(context)
                                         .requestDetails!
                                         .from!
-                                        .placeLongitude!,context);
+                                        .placeLongitude!,
+                                    context);
                               },
                               icon: Icon(
                                 Icons.wrong_location_sharp,
@@ -614,22 +630,34 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               Row(
                 children: [
                   Text(
-                    DateFormat.yMEd().format(DateTime.parse(
-                        RequestDetailsCubit.get(context)
-                            .requestDetails!
-                            .from!
-                            .date!)),
+                    LanguageCubit.get(context).isEn
+                        ? DateFormat.yMEd().format(DateTime.parse(
+                            RequestDetailsCubit.get(context)
+                                .requestDetails!
+                                .from!
+                                .date!))
+                        : DateFormat.yMEd("ar").format(DateTime.parse(
+                            RequestDetailsCubit.get(context)
+                                .requestDetails!
+                                .from!
+                                .date!)),
                     style: TextStyle(color: grey2, fontSize: 14.sp),
                   ),
                   SizedBox(
                     width: 5.w,
                   ),
                   Text(
-                    DateFormat.jm().format(DateTime.parse(
-                        RequestDetailsCubit.get(context)
-                            .requestDetails!
-                            .from!
-                            .date!)),
+                    LanguageCubit.get(context).isEn
+                        ? DateFormat.jm().format(DateTime.parse(
+                            RequestDetailsCubit.get(context)
+                                .requestDetails!
+                                .from!
+                                .date!))
+                        : DateFormat.jm("ar").format(DateTime.parse(
+                            RequestDetailsCubit.get(context)
+                                .requestDetails!
+                                .from!
+                                .date!)),
                     style: TextStyle(
                       color: grey2,
                       fontSize: 14.sp,
@@ -980,18 +1008,31 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                   height: 15.h,
                                                 ),
                                                 Text(
-                                                  DateFormat.jm().format(
-                                                      DateTime.parse(
-                                                          trip.startDate!)),
+                                                  LanguageCubit.get(context)
+                                                          .isEn
+                                                      ? DateFormat.jm().format(
+                                                          DateTime.parse(
+                                                              trip.startDate!))
+                                                      : DateFormat.jm("ar")
+                                                          .format(DateTime
+                                                              .parse(trip
+                                                                  .startDate!)),
                                                   style: TextStyle(
                                                     color: grey2,
                                                     fontSize: 14.sp,
                                                   ),
                                                 ),
                                                 Text(
-                                                  DateFormat.yMEd().format(
-                                                      DateTime.parse(
-                                                          trip.startDate!)),
+                                                  LanguageCubit.get(context)
+                                                          .isEn
+                                                      ? DateFormat.yMEd()
+                                                          .format(DateTime
+                                                              .parse(trip
+                                                                  .startDate!))
+                                                      : DateFormat.yMEd("ar")
+                                                          .format(DateTime
+                                                              .parse(trip
+                                                                  .startDate!)),
                                                   style: TextStyle(
                                                       color: grey2,
                                                       fontSize: 13.sp),
@@ -1093,7 +1134,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                 trip.to!.placeLatitude!
                                                     .toString(),
                                                 trip.to!.placeLongitude!
-                                                    .toString(),context);
+                                                    .toString(),
+                                                context);
                                           },
                                           icon: Icon(
                                             Icons.wrong_location_sharp,

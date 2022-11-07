@@ -1,16 +1,50 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/presentation/di/injection_container.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class TermsScreen extends StatelessWidget {
+class TermsScreen extends StatefulWidget {
   const TermsScreen({Key? key}) : super(key: key);
 
   @override
+  State<TermsScreen> createState() => _TermsScreenState();
+}
+
+class _TermsScreenState extends State<TermsScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    if (getIt<SharedPreferences>().getBool("isEn") != null) {
+      LanguageCubit.get(context).isEn =
+          getIt<SharedPreferences>().getBool("isEn")!;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
+    return Directionality(
+      textDirection: LanguageCubit.get(context).isEn
+          ? ui.TextDirection.ltr
+          : ui.TextDirection.rtl,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "Terms & Conditions",
+            textAlign: TextAlign.start,
+            style: TextStyle(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.bold,
+                color: primaryColor),
+          ),
+          centerTitle: true,
+        ),
+        body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.r, vertical: 20.r),
           child: Column(
             children: [
@@ -19,20 +53,10 @@ class TermsScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      height: 70.h,
+                      height: 10.h,
                     ),
                     Text(
-                      'Terms & Cnditions',
-                      style: TextStyle(
-                          fontSize: 30.sp,
-                          fontWeight: FontWeight.bold,
-                          color: primaryColor),
-                    ),
-                    SizedBox(
-                      height: 50.h,
-                    ),
-                    Text(
-                      'Assigment',
+                      'Assignment',
                       style: TextStyle(
                           fontSize: 25.sp,
                           fontWeight: FontWeight.bold,

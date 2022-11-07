@@ -11,8 +11,10 @@ import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/auth/DriverInformationScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:ui' as ui;
 
 class VerifyImageScreen extends StatefulWidget {
   const VerifyImageScreen(
@@ -62,6 +64,16 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
   bool verifyImageLoading = false;
 
   @override
+  void initState() {
+    super.initState();
+
+    if (getIt<SharedPreferences>().getBool("isEn") != null) {
+      LanguageCubit.get(context).isEn =
+      getIt<SharedPreferences>().getBool("isEn")!;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => SignCubit(),
@@ -98,24 +110,27 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
               text: state.message, state: ToastStates.error, context: context);
         }
       }, builder: (context, state) {
-        return Scaffold(
-          body: SafeArea(
-            child: Container(
+        return Directionality(
+          textDirection: LanguageCubit.get(context).isEn
+              ? ui.TextDirection.ltr
+              : ui.TextDirection.rtl,
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(
+                "Verify your identity",
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                    color: primaryColor),
+              ),
+              centerTitle: true,
+            ),
+            body: Container(
               margin: EdgeInsets.symmetric(horizontal: 40.r, vertical: 20.r),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    height: 30.h,
-                  ),
-                  Text(
-                    "Verify your identity",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                        fontSize: 25.sp,
-                        fontWeight: FontWeight.bold,
-                        color: primaryColor),
-                  ),
                   SizedBox(
                     height: 30.h,
                   ),

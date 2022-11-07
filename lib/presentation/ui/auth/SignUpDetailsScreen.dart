@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,12 +10,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/model/signModel/Country.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/auth/TermsScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/VerifyImageScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class SignUpDetailsScreen extends StatefulWidget {
@@ -55,7 +59,15 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
   List<DateTime> availabilities = [];
   List<String> availabilitiesValues = [];
 
+  @override
+  void initState() {
+    super.initState();
 
+    if (getIt<SharedPreferences>().getBool("isEn") != null) {
+      LanguageCubit.get(context).isEn =
+          getIt<SharedPreferences>().getBool("isEn")!;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +93,10 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
           }
         }
       }, builder: (context, state) {
-        return SafeArea(
+        return Directionality(
+          textDirection: LanguageCubit.get(context).isEn
+              ? ui.TextDirection.ltr
+              : ui.TextDirection.rtl,
           child: Scaffold(
             appBar: AppBar(
               leading: const Icon(
@@ -93,7 +108,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                 "Complete your Registration",
                 textAlign: TextAlign.start,
                 style: TextStyle(
-                    fontSize: 25.sp,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.bold,
                     color: primaryColor),
               ),
@@ -384,8 +399,13 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                             horizontal: 10.r, vertical: 5.r),
                                         child: Center(
                                           child: Text(
-                                              dropDownValueCity?.title?.en! ??
-                                                  "Country",
+                                              LanguageCubit.get(context).isEn
+                                                  ? dropDownValueCity
+                                                          ?.title?.en! ??
+                                                      "Country"
+                                                  : dropDownValueCity
+                                                          ?.title?.ar! ??
+                                                      "دولة",
                                               maxLines: 2,
                                               style: TextStyle(
                                                   overflow:
@@ -404,8 +424,14 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                                 MainAxisAlignment.center,
                                             children: [
                                               Text(
-                                                  selectedCountry.title?.en ??
-                                                      "",
+                                                  LanguageCubit.get(context)
+                                                          .isEn
+                                                      ? selectedCountry
+                                                              .title?.en ??
+                                                          ""
+                                                      : selectedCountry
+                                                              .title?.ar ??
+                                                          "",
                                                   textAlign: TextAlign.center,
                                                   maxLines: 1,
                                                   style: TextStyle(
@@ -487,8 +513,13 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                             horizontal: 10.r, vertical: 5.r),
                                         child: Center(
                                           child: Text(
-                                              dropDownValueArea?.title?.en! ??
-                                                  "Country",
+                                              LanguageCubit.get(context).isEn
+                                                  ? dropDownValueArea
+                                                          ?.title?.en! ??
+                                                      "Country"
+                                                  : dropDownValueArea
+                                                          ?.title?.ar! ??
+                                                      "دولة",
                                               maxLines: 2,
                                               style: TextStyle(
                                                   overflow:
@@ -507,8 +538,14 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                                 MainAxisAlignment.center,
                                             children: [
                                               Text(
-                                                  selectedCountry.title?.en ??
-                                                      "",
+                                                  LanguageCubit.get(context)
+                                                          .isEn
+                                                      ? selectedCountry
+                                                              .title?.en ??
+                                                          ""
+                                                      : selectedCountry
+                                                              .title?.ar ??
+                                                          "",
                                                   textAlign: TextAlign.center,
                                                   maxLines: 1,
                                                   style: TextStyle(
@@ -815,7 +852,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
         if (kDebugMode) {
           print('imageErrorSignUp***************** =$_pickImageError');
         }
-        if(e.toString() == "PlatformException(camera_access_denied, The user did not allow camera access., null, null)"){
+        if (e.toString() ==
+            "PlatformException(camera_access_denied, The user did not allow camera access., null, null)") {
           showDialog(
             context: context,
             barrierDismissible: false,
@@ -824,7 +862,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
               return CustomDialogImage(
                 title: "Take Image",
                 description:
-                'Camera permissions denied\n You must enable the access camera to take photo \n you can choose setting and enable camera then try back',
+                    'Camera permissions denied\n You must enable the access camera to take photo \n you can choose setting and enable camera then try back',
                 type: "checkImageDeniedForever",
                 backgroundColor: white,
                 btnOkColor: accentColor,
@@ -834,11 +872,9 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
               );
             },
           );
-        }else{
+        } else {
           showToastt(
-              text: e.toString(),
-              state: ToastStates.error,
-              context: context);
+              text: e.toString(), state: ToastStates.error, context: context);
         }
       });
     }

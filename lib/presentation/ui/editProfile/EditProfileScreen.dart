@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +14,7 @@ import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/editProfile/edit_profile_cubit.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,6 +49,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   List<DateTime> availabilities = [];
   List<String> availabilitiesValues = [];
 
+  @override
+  void initState() {
+    super.initState();
+
+    if (getIt<SharedPreferences>().getBool("isEn") != null) {
+      LanguageCubit.get(context).isEn =
+          getIt<SharedPreferences>().getBool("isEn")!;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -144,823 +155,900 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           }
         },
         builder: (context, state) {
-          return Scaffold(
-              appBar: AppBar(
-                title: Text(
-                  'My Account',
-                  style: TextStyle(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.bold,
-                      color: black),
+          return Directionality(
+            textDirection: LanguageCubit.get(context).isEn
+                ? ui.TextDirection.ltr
+                : ui.TextDirection.rtl,
+            child: Scaffold(
+                appBar: AppBar(
+                  title: Text(
+                    'My Account',
+                    style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold,
+                        color: black),
+                  ),
+                  centerTitle: true,
                 ),
-                centerTitle: true,
-              ),
-              body: state is GetProfileDetailsLoading
-                  ? loading()
-                  : EditProfileCubit.get(context).failure.isNotEmpty
-                      ? errorMessage2(
-                          message: EditProfileCubit.get(context).failure,
-                          press: () {
-                            EditProfileCubit.get(context).getProfileDetails();
-                          })
-                      : SingleChildScrollView(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 20.r, horizontal: 16.r),
-                            child: Column(
-                              children: [
-                                Center(
-                                  child: InkWell(
-                                    onTap: () async {
-                                      _showImageSourceActionSheet(context);
-                                    },
-                                    borderRadius: BorderRadius.circular(20.r),
-                                    child: _imageUser == null
-                                        ? EditProfileCubit.get(context)
-                                                    .profileDetails
-                                                    ?.image
-                                                    ?.src !=
-                                                null
-                                            ? ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(20.r),
-                                                child: Stack(
-                                                  children: [
-                                                    ImageTools.image(
-                                                        fit: BoxFit.fill,
-                                                        url: EditProfileCubit
-                                                                .get(context)
-                                                            .profileDetails
-                                                            ?.image
-                                                            ?.src,
-                                                        height: 150.w,
-                                                        width: 150.w),
-                                                    const Positioned(
-                                                      bottom: 10,
-                                                      right: 10,
-                                                      child: Center(
-                                                        child: Icon(
-                                                          Icons.camera_alt,
-                                                          color: Colors.grey,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              )
-                                            : Container(
-                                                width: 150.w,
-                                                height: 150.w,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.grey,
+                body: state is GetProfileDetailsLoading
+                    ? loading()
+                    : EditProfileCubit.get(context).failure.isNotEmpty
+                        ? errorMessage2(
+                            message: EditProfileCubit.get(context).failure,
+                            press: () {
+                              EditProfileCubit.get(context).getProfileDetails();
+                            })
+                        : SingleChildScrollView(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 20.r, horizontal: 16.r),
+                              child: Column(
+                                children: [
+                                  Center(
+                                    child: InkWell(
+                                      onTap: () async {
+                                        _showImageSourceActionSheet(context);
+                                      },
+                                      borderRadius: BorderRadius.circular(20.r),
+                                      child: _imageUser == null
+                                          ? EditProfileCubit.get(context)
+                                                      .profileDetails
+                                                      ?.image
+                                                      ?.src !=
+                                                  null
+                                              ? ClipRRect(
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           20.r),
-                                                ),
-                                                child: Stack(
-                                                  children: const [
-                                                    Center(
-                                                      child: Text(
-                                                        'No image',
-                                                        style: TextStyle(
-                                                          color: Colors.white,
+                                                  child: Stack(
+                                                    children: [
+                                                      ImageTools.image(
+                                                          fit: BoxFit.fill,
+                                                          url: EditProfileCubit
+                                                                  .get(context)
+                                                              .profileDetails
+                                                              ?.image
+                                                              ?.src,
+                                                          height: 150.w,
+                                                          width: 150.w),
+                                                      const Positioned(
+                                                        bottom: 10,
+                                                        right: 10,
+                                                        child: Center(
+                                                          child: Icon(
+                                                            Icons.camera_alt,
+                                                            color: Colors.grey,
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                    Positioned(
-                                                      bottom: 10,
-                                                      right: 10,
-                                                      child: Center(
-                                                        child: Icon(
-                                                          Icons.camera_alt,
-                                                          color: Colors.white70,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              )
-                                        : Stack(
-                                            fit: StackFit.loose,
-                                            alignment: Alignment.center,
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(20.r),
-                                                child: Image.file(
-                                                  _imageUser!,
+                                                    ],
+                                                  ),
+                                                )
+                                              : Container(
                                                   width: 150.w,
                                                   height: 150.w,
-                                                  fit: BoxFit.fill,
-                                                ),
-                                              ),
-                                              const Positioned(
-                                                bottom: 10,
-                                                right: 10,
-                                                child: Center(
-                                                  child: Icon(
-                                                    Icons.camera_alt,
-                                                    color: Colors.white70,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.grey,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20.r),
+                                                  ),
+                                                  child: Stack(
+                                                    children: const [
+                                                      Center(
+                                                        child: Text(
+                                                          'No image',
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Positioned(
+                                                        bottom: 10,
+                                                        right: 10,
+                                                        child: Center(
+                                                          child: Icon(
+                                                            Icons.camera_alt,
+                                                            color:
+                                                                Colors.white70,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                          : Stack(
+                                              fit: StackFit.loose,
+                                              alignment: Alignment.center,
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20.r),
+                                                  child: Image.file(
+                                                    _imageUser!,
+                                                    width: 150.w,
+                                                    height: 150.w,
+                                                    fit: BoxFit.fill,
                                                   ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
+                                                const Positioned(
+                                                  bottom: 10,
+                                                  right: 10,
+                                                  child: Center(
+                                                    child: Icon(
+                                                      Icons.camera_alt,
+                                                      color: Colors.white70,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                    ),
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 32.h,
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.person,
-                                      size: 25.sp,
-                                      color: grey2,
-                                    ),
-                                    SizedBox(
-                                      width: 10.w,
-                                    ),
-                                    Text(
-                                      'Personal Information',
-                                      style: TextStyle(
-                                          fontSize: 18.sp,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 25.h,
-                                ),
-                                Form(
-                                  key: formKey,
-                                  child: Column(
+                                  SizedBox(
+                                    height: 32.h,
+                                  ),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
-                                      defaultFormField(
-                                        controller: nameController,
-                                        type: TextInputType.text,
-                                        label: "Name",
-                                        textSize: 20,
-                                        border: false,
-                                        borderRadius: 50,
-                                        validatorText: nameController.text,
-                                        validatorMessage: "Enter Name Please..",
-                                        onEditingComplete: () {
-                                          FocusScope.of(context).nextFocus();
-                                        },
+                                      Icon(
+                                        Icons.person,
+                                        size: 25.sp,
+                                        color: grey2,
                                       ),
                                       SizedBox(
-                                        height: 16.h,
+                                        width: 10.w,
                                       ),
-                                      defaultFormField(
-                                        controller: emailController,
-                                        type: TextInputType.text,
-                                        label: "Email",
-                                        textSize: 20,
-                                        border: false,
-                                        borderRadius: 50,
-                                        validatorText: emailController.text,
-                                        validatorMessage: "Enter Name Please..",
-                                        onEditingComplete: () {
-                                          FocusScope.of(context).nextFocus();
-                                        },
-                                      ),
-                                      SizedBox(
-                                        height: 16.h,
-                                      ),
-                                      defaultFormField(
-                                        controller: whatsAppController,
-                                        type: TextInputType.number,
-                                        label: "WhatsApp",
-                                        textSize: 20,
-                                        border: false,
-                                        borderRadius: 50,
-                                        validatorText: whatsAppController.text,
-                                        validatorMessage:
-                                            "Enter WhatsApp Please..",
-                                        onEditingComplete: () {
-                                          FocusScope.of(context).nextFocus();
-                                        },
-                                      ),
-                                      SizedBox(
-                                        height: 16.h,
-                                      ),
-                                      InkWell(
-                                        child: IgnorePointer(
-                                          ignoring: true,
-                                          child: defaultFormField(
-                                            controller: birthDateController,
-                                            type: TextInputType.text,
-                                            label: "Birthday",
-                                            textSize: 20,
-                                            border: false,
-                                            borderRadius: 50,
-                                            validatorText:
-                                                birthDateController.text,
-                                            validatorMessage:
-                                                "Enter Birthday Please..",
-                                            onEditingComplete: () {
-                                              FocusScope.of(context).unfocus();
-                                            },
-                                          ),
-                                        ),
-                                        onTap: () async {
-                                          final now = DateTime.now();
-                                          final pickedDate =
-                                              await showDatePicker(
-                                            context: context,
-                                            initialDate: now,
-                                            firstDate: DateTime(now.year - 100),
-                                            lastDate: now,
-                                          );
-
-                                          if (pickedDate != null) {
-                                            birthDateController.text =
-                                                DateFormat("yyyy-MM-dd")
-                                                    .format(pickedDate);
-                                          }
-                                        },
-                                      ),
-                                      SizedBox(
-                                        height: 32.h,
+                                      Text(
+                                        'Personal Information',
+                                        style: TextStyle(
+                                            fontSize: 18.sp,
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ],
                                   ),
-                                ),
-                                Divider(height: 2.h, color: black),
-                                SizedBox(
-                                  height: 32.h,
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.location_on,
-                                      size: 25.sp,
-                                      color: grey2,
+                                  SizedBox(
+                                    height: 25.h,
+                                  ),
+                                  Form(
+                                    key: formKey,
+                                    child: Column(
+                                      children: [
+                                        defaultFormField(
+                                          controller: nameController,
+                                          type: TextInputType.text,
+                                          label: "Name",
+                                          textSize: 20,
+                                          border: false,
+                                          borderRadius: 50,
+                                          validatorText: nameController.text,
+                                          validatorMessage:
+                                              "Enter Name Please..",
+                                          onEditingComplete: () {
+                                            FocusScope.of(context).nextFocus();
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 16.h,
+                                        ),
+                                        defaultFormField(
+                                          controller: emailController,
+                                          type: TextInputType.text,
+                                          label: "Email",
+                                          textSize: 20,
+                                          border: false,
+                                          borderRadius: 50,
+                                          validatorText: emailController.text,
+                                          validatorMessage:
+                                              "Enter Name Please..",
+                                          onEditingComplete: () {
+                                            FocusScope.of(context).nextFocus();
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 16.h,
+                                        ),
+                                        defaultFormField(
+                                          controller: whatsAppController,
+                                          type: TextInputType.number,
+                                          label: "WhatsApp",
+                                          textSize: 20,
+                                          border: false,
+                                          borderRadius: 50,
+                                          validatorText:
+                                              whatsAppController.text,
+                                          validatorMessage:
+                                              "Enter WhatsApp Please..",
+                                          onEditingComplete: () {
+                                            FocusScope.of(context).nextFocus();
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 16.h,
+                                        ),
+                                        InkWell(
+                                          child: IgnorePointer(
+                                            ignoring: true,
+                                            child: defaultFormField(
+                                              controller: birthDateController,
+                                              type: TextInputType.text,
+                                              label: "Birthday",
+                                              textSize: 20,
+                                              border: false,
+                                              borderRadius: 50,
+                                              validatorText:
+                                                  birthDateController.text,
+                                              validatorMessage:
+                                                  "Enter Birthday Please..",
+                                              onEditingComplete: () {
+                                                FocusScope.of(context)
+                                                    .unfocus();
+                                              },
+                                            ),
+                                          ),
+                                          onTap: () async {
+                                            final now = DateTime.now();
+                                            final pickedDate =
+                                                await showDatePicker(
+                                              context: context,
+                                              initialDate: now,
+                                              firstDate:
+                                                  DateTime(now.year - 100),
+                                              lastDate: now,
+                                            );
+
+                                            if (pickedDate != null) {
+                                              birthDateController.text =
+                                                  DateFormat("yyyy-MM-dd")
+                                                      .format(pickedDate);
+                                            }
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 32.h,
+                                        ),
+                                      ],
                                     ),
-                                    SizedBox(
-                                      width: 10.w,
-                                    ),
-                                    Text(
-                                      'Address',
-                                      style: TextStyle(
-                                          fontSize: 18.sp,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 25.h,
-                                ),
-                                EditProfileCubit.get(context).loadingCountry
-                                    ? loading()
-                                    : EditProfileCubit.get(context)
-                                            .failureCountry
-                                            .isNotEmpty
-                                        ? errorMessage2(
-                                            message:
-                                                'error occurred when get countries',
-                                            press: () {
-                                              EditProfileCubit.get(context)
-                                                  .getCountries();
-                                            })
-                                        : EditProfileCubit.get(context)
-                                                .countries
-                                                .isNotEmpty
-                                            ? Container(
-                                                width: 1.sw,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          50.r),
-                                                  border: Border.all(
-                                                    width: 1,
-                                                    color: Colors.black,
+                                  ),
+                                  Divider(height: 2.h, color: black),
+                                  SizedBox(
+                                    height: 32.h,
+                                  ),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.location_on,
+                                        size: 25.sp,
+                                        color: grey2,
+                                      ),
+                                      SizedBox(
+                                        width: 10.w,
+                                      ),
+                                      Text(
+                                        'Address',
+                                        style: TextStyle(
+                                            fontSize: 18.sp,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 25.h,
+                                  ),
+                                  EditProfileCubit.get(context).loadingCountry
+                                      ? loading()
+                                      : EditProfileCubit.get(context)
+                                              .failureCountry
+                                              .isNotEmpty
+                                          ? errorMessage2(
+                                              message:
+                                                  'error occurred when get countries',
+                                              press: () {
+                                                EditProfileCubit.get(context)
+                                                    .getCountries();
+                                              })
+                                          : EditProfileCubit.get(context)
+                                                  .countries
+                                                  .isNotEmpty
+                                              ? Container(
+                                                  width: 1.sw,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            50.r),
+                                                    border: Border.all(
+                                                      width: 1,
+                                                      color: Colors.black,
+                                                    ),
                                                   ),
-                                                ),
-                                                child:
-                                                    DropdownButtonHideUnderline(
-                                                  child: DropdownButton2(
-                                                    //      value: controller.selectedCountry?.value,
-                                                    dropdownDecoration:
-                                                        BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              14.r),
-                                                      border: Border.all(
-                                                        width: 1,
-                                                        color: Colors.black,
-                                                      ),
-                                                    ),
-                                                    isExpanded: true,
-                                                    iconSize: 40.sp,
-                                                    icon: Container(
-                                                      margin:
-                                                          EdgeInsetsDirectional
-                                                              .only(end: 18.r),
-                                                      child: Icon(
-                                                        Icons.arrow_drop_down,
-                                                        color: grey2,
-                                                        size: 40.sp,
-                                                      ),
-                                                    ),
-                                                    style: const TextStyle(
-                                                        color: Colors.grey),
-                                                    onChanged:
-                                                        (Country? value) {
-                                                      setState(() {
-                                                        dropDownValueCountries =
-                                                            value;
-                                                        EditProfileCubit.get(
-                                                                context)
-                                                            .getCity(
-                                                                dropDownValueCountries!
-                                                                    .id!);
-                                                      });
-                                                    },
-                                                    hint: Container(
-                                                      width: 1.sw,
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 10.r,
-                                                              vertical: 5.r),
-                                                      child: Center(
-                                                        child: Text(
-                                                            dropDownValueCountries
-                                                                    ?.title
-                                                                    ?.en! ??
-                                                                "Country",
-                                                            maxLines: 2,
-                                                            style: TextStyle(
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                                color: Colors
-                                                                    .black,
-                                                                fontSize:
-                                                                    20.sp)),
-                                                      ),
-                                                    ),
-                                                    items: EditProfileCubit.get(
-                                                            context)
-                                                        .countries
-                                                        .map((selectedCountry) {
-                                                      return DropdownMenuItem<
-                                                          Country>(
-                                                        value: selectedCountry,
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Text(
-                                                                selectedCountry
-                                                                        .title?.en ??
-                                                                    "",
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                maxLines: 1,
-                                                                style: TextStyle(
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    color: Colors
-                                                                        .black,
-                                                                    fontSize:
-                                                                        20.sp)),
-                                                            SizedBox(
-                                                              height: 5.h,
-                                                            ),
-                                                            // divider
-                                                            Container(
-                                                              width: 1.sw,
-                                                              height: 1.h,
-                                                              color: Colors
-                                                                  .grey[400],
-                                                            ),
-                                                          ],
+                                                  child:
+                                                      DropdownButtonHideUnderline(
+                                                    child: DropdownButton2(
+                                                      //      value: controller.selectedCountry?.value,
+                                                      dropdownDecoration:
+                                                          BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(14.r),
+                                                        border: Border.all(
+                                                          width: 1,
+                                                          color: Colors.black,
                                                         ),
-                                                      );
-                                                    }).toList(),
-                                                  ),
-                                                ),
-                                              )
-                                            : Container(),
-                                SizedBox(
-                                  height: 16.h,
-                                ),
-                                EditProfileCubit.get(context).loadingCity
-                                    ? loading()
-                                    : EditProfileCubit.get(context)
-                                            .failureCity
-                                            .isNotEmpty
-                                        ? errorMessage2(
-                                            message:
-                                                'error occurred when get Cites',
-                                            press: () {
-                                              EditProfileCubit.get(context)
-                                                  .getCity(
-                                                      dropDownValueCountries!
-                                                          .id!);
-                                            })
-                                        : EditProfileCubit.get(context)
-                                                .city
-                                                .isNotEmpty
-                                            ? Container(
-                                                width: 1.sw,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          50.r),
-                                                  border: Border.all(
-                                                    width: 1,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                                child:
-                                                    DropdownButtonHideUnderline(
-                                                  child: DropdownButton2(
-                                                    //      value: controller.selectedCountry?.value,
-                                                    dropdownDecoration:
-                                                        BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              14.r),
-                                                      border: Border.all(
-                                                        width: 1,
-                                                        color: Colors.black,
                                                       ),
-                                                    ),
-                                                    isExpanded: true,
-                                                    iconSize: 40.sp,
-                                                    icon: Container(
-                                                      margin:
-                                                          EdgeInsetsDirectional
-                                                              .only(end: 18.r),
-                                                      child: Icon(
-                                                        Icons.arrow_drop_down,
-                                                        color: grey2,
-                                                        size: 40.sp,
-                                                      ),
-                                                    ),
-                                                    style: const TextStyle(
-                                                        color: Colors.grey),
-                                                    onChanged:
-                                                        (Country? value) {
-                                                      setState(() {
-                                                        dropDownValueCity =
-                                                            value;
-                                                        EditProfileCubit.get(
-                                                                context)
-                                                            .getArea(
-                                                                dropDownValueCountries!
-                                                                    .id!,
-                                                                dropDownValueCity!
-                                                                    .id!);
-                                                      });
-                                                    },
-                                                    hint: Container(
-                                                      width: 1.sw,
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 10.r,
-                                                              vertical: 5.r),
-                                                      child: Center(
-                                                        child: Text(
-                                                            dropDownValueCity
-                                                                    ?.title
-                                                                    ?.en! ??
-                                                                "Country",
-                                                            maxLines: 2,
-                                                            style: TextStyle(
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                                color: Colors
-                                                                    .black,
-                                                                fontSize:
-                                                                    20.sp)),
-                                                      ),
-                                                    ),
-                                                    items: EditProfileCubit.get(
-                                                            context)
-                                                        .city
-                                                        .map((selectedCountry) {
-                                                      return DropdownMenuItem<
-                                                          Country>(
-                                                        value: selectedCountry,
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Text(
-                                                                selectedCountry
-                                                                        .title?.en ??
-                                                                    "",
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                maxLines: 1,
-                                                                style: TextStyle(
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    color: Colors
-                                                                        .black,
-                                                                    fontSize:
-                                                                        20.sp)),
-                                                            SizedBox(
-                                                              height: 5.h,
-                                                            ),
-                                                            // divider
-                                                            Container(
-                                                              width: 1.sw,
-                                                              height: 1.h,
-                                                              color: Colors
-                                                                  .grey[400],
-                                                            ),
-                                                          ],
+                                                      isExpanded: true,
+                                                      iconSize: 40.sp,
+                                                      icon: Container(
+                                                        margin:
+                                                            EdgeInsetsDirectional
+                                                                .only(
+                                                                    end: 18.r),
+                                                        child: Icon(
+                                                          Icons.arrow_drop_down,
+                                                          color: grey2,
+                                                          size: 40.sp,
                                                         ),
-                                                      );
-                                                    }).toList(),
+                                                      ),
+                                                      style: const TextStyle(
+                                                          color: Colors.grey),
+                                                      onChanged:
+                                                          (Country? value) {
+                                                        setState(() {
+                                                          dropDownValueCountries =
+                                                              value;
+                                                          EditProfileCubit.get(
+                                                                  context)
+                                                              .getCity(
+                                                                  dropDownValueCountries!
+                                                                      .id!);
+                                                        });
+                                                      },
+                                                      hint: Container(
+                                                        width: 1.sw,
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                                horizontal:
+                                                                    10.r,
+                                                                vertical: 5.r),
+                                                        child: Center(
+                                                          child: Text(
+                                                              LanguageCubit.get(context)
+                                                                      .isEn
+                                                                  ? dropDownValueCountries
+                                                                          ?.title
+                                                                          ?.en! ??
+                                                                      "Country"
+                                                                  : dropDownValueCountries
+                                                                          ?.title
+                                                                          ?.ar! ??
+                                                                      "دولة",
+                                                              maxLines: 2,
+                                                              style: TextStyle(
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize:
+                                                                      20.sp)),
+                                                        ),
+                                                      ),
+                                                      items: EditProfileCubit
+                                                              .get(context)
+                                                          .countries
+                                                          .map(
+                                                              (selectedCountry) {
+                                                        return DropdownMenuItem<
+                                                            Country>(
+                                                          value:
+                                                              selectedCountry,
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Text(
+                                                                  LanguageCubit.get(
+                                                                              context)
+                                                                          .isEn
+                                                                      ? selectedCountry
+                                                                              .title
+                                                                              ?.en ??
+                                                                          ""
+                                                                      : selectedCountry
+                                                                              .title
+                                                                              ?.ar ??
+                                                                          "",
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
+                                                                  maxLines: 1,
+                                                                  style: TextStyle(
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      color: Colors
+                                                                          .black,
+                                                                      fontSize:
+                                                                          20.sp)),
+                                                              SizedBox(
+                                                                height: 5.h,
+                                                              ),
+                                                              // divider
+                                                              Container(
+                                                                width: 1.sw,
+                                                                height: 1.h,
+                                                                color: Colors
+                                                                    .grey[400],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        );
+                                                      }).toList(),
+                                                    ),
                                                   ),
-                                                ),
-                                              )
-                                            : Container(),
-                                SizedBox(
-                                  height: 16.h,
-                                ),
-                                EditProfileCubit.get(context).loadingArea
-                                    ? loading()
-                                    : EditProfileCubit.get(context)
-                                            .failureArea
-                                            .isNotEmpty
-                                        ? errorMessage2(
-                                            message:
-                                                'error occurred when get Area',
-                                            press: () {
+                                                )
+                                              : Container(),
+                                  SizedBox(
+                                    height: 16.h,
+                                  ),
+                                  EditProfileCubit.get(context).loadingCity
+                                      ? loading()
+                                      : EditProfileCubit.get(context)
+                                              .failureCity
+                                              .isNotEmpty
+                                          ? errorMessage2(
+                                              message:
+                                                  'error occurred when get Cites',
+                                              press: () {
+                                                EditProfileCubit.get(context)
+                                                    .getCity(
+                                                        dropDownValueCountries!
+                                                            .id!);
+                                              })
+                                          : EditProfileCubit.get(context)
+                                                  .city
+                                                  .isNotEmpty
+                                              ? Container(
+                                                  width: 1.sw,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            50.r),
+                                                    border: Border.all(
+                                                      width: 1,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                  child:
+                                                      DropdownButtonHideUnderline(
+                                                    child: DropdownButton2(
+                                                      //      value: controller.selectedCountry?.value,
+                                                      dropdownDecoration:
+                                                          BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(14.r),
+                                                        border: Border.all(
+                                                          width: 1,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                      isExpanded: true,
+                                                      iconSize: 40.sp,
+                                                      icon: Container(
+                                                        margin:
+                                                            EdgeInsetsDirectional
+                                                                .only(
+                                                                    end: 18.r),
+                                                        child: Icon(
+                                                          Icons.arrow_drop_down,
+                                                          color: grey2,
+                                                          size: 40.sp,
+                                                        ),
+                                                      ),
+                                                      style: const TextStyle(
+                                                          color: Colors.grey),
+                                                      onChanged:
+                                                          (Country? value) {
+                                                        setState(() {
+                                                          dropDownValueCity =
+                                                              value;
+                                                          EditProfileCubit.get(
+                                                                  context)
+                                                              .getArea(
+                                                                  dropDownValueCountries!
+                                                                      .id!,
+                                                                  dropDownValueCity!
+                                                                      .id!);
+                                                        });
+                                                      },
+                                                      hint: Container(
+                                                        width: 1.sw,
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                                horizontal:
+                                                                    10.r,
+                                                                vertical: 5.r),
+                                                        child: Center(
+                                                          child: Text(
+                                                              LanguageCubit.get(context)
+                                                                      .isEn
+                                                                  ? dropDownValueCity
+                                                                          ?.title
+                                                                          ?.en! ??
+                                                                      "Country"
+                                                                  : dropDownValueCity
+                                                                          ?.title
+                                                                          ?.ar! ??
+                                                                      "دولة",
+                                                              maxLines: 2,
+                                                              style: TextStyle(
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize:
+                                                                      20.sp)),
+                                                        ),
+                                                      ),
+                                                      items: EditProfileCubit
+                                                              .get(context)
+                                                          .city
+                                                          .map(
+                                                              (selectedCountry) {
+                                                        return DropdownMenuItem<
+                                                            Country>(
+                                                          value:
+                                                              selectedCountry,
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Text(
+                                                                  LanguageCubit.get(
+                                                                              context)
+                                                                          .isEn
+                                                                      ? selectedCountry
+                                                                              .title
+                                                                              ?.en ??
+                                                                          ""
+                                                                      : selectedCountry
+                                                                              .title
+                                                                              ?.ar ??
+                                                                          "",
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
+                                                                  maxLines: 1,
+                                                                  style: TextStyle(
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      color: Colors
+                                                                          .black,
+                                                                      fontSize:
+                                                                          20.sp)),
+                                                              SizedBox(
+                                                                height: 5.h,
+                                                              ),
+                                                              // divider
+                                                              Container(
+                                                                width: 1.sw,
+                                                                height: 1.h,
+                                                                color: Colors
+                                                                    .grey[400],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        );
+                                                      }).toList(),
+                                                    ),
+                                                  ),
+                                                )
+                                              : Container(),
+                                  SizedBox(
+                                    height: 16.h,
+                                  ),
+                                  EditProfileCubit.get(context).loadingArea
+                                      ? loading()
+                                      : EditProfileCubit.get(context)
+                                              .failureArea
+                                              .isNotEmpty
+                                          ? errorMessage2(
+                                              message:
+                                                  'error occurred when get Area',
+                                              press: () {
+                                                EditProfileCubit.get(context)
+                                                    .getArea(
+                                                        dropDownValueCountries!
+                                                            .id!,
+                                                        dropDownValueCity!.id!);
+                                              })
+                                          : EditProfileCubit.get(context)
+                                                  .area
+                                                  .isNotEmpty
+                                              ? Container(
+                                                  width: 1.sw,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            50.r),
+                                                    border: Border.all(
+                                                      width: 1,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                  child:
+                                                      DropdownButtonHideUnderline(
+                                                    child: DropdownButton2(
+                                                      //      value: controller.selectedCountry?.value,
+                                                      dropdownDecoration:
+                                                          BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(14.r),
+                                                        border: Border.all(
+                                                          width: 1,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                      isExpanded: true,
+                                                      iconSize: 40.sp,
+                                                      icon: Container(
+                                                        margin:
+                                                            EdgeInsetsDirectional
+                                                                .only(
+                                                                    end: 18.r),
+                                                        child: Icon(
+                                                          Icons.arrow_drop_down,
+                                                          color: grey2,
+                                                          size: 40.sp,
+                                                        ),
+                                                      ),
+                                                      style: const TextStyle(
+                                                          color: Colors.grey),
+                                                      onChanged:
+                                                          (Country? value) {
+                                                        setState(() {
+                                                          dropDownValueArea =
+                                                              value;
+                                                        });
+                                                      },
+                                                      hint: Container(
+                                                        width: 1.sw,
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                                horizontal:
+                                                                    10.r,
+                                                                vertical: 5.r),
+                                                        child: Center(
+                                                          child: Text(
+                                                              LanguageCubit.get(context)
+                                                                      .isEn
+                                                                  ? dropDownValueArea
+                                                                          ?.title
+                                                                          ?.en! ??
+                                                                      "Country"
+                                                                  : dropDownValueArea
+                                                                          ?.title
+                                                                          ?.ar! ??
+                                                                      "دولة",
+                                                              maxLines: 2,
+                                                              style: TextStyle(
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize:
+                                                                      20.sp)),
+                                                        ),
+                                                      ),
+                                                      items: EditProfileCubit
+                                                              .get(context)
+                                                          .area
+                                                          .map(
+                                                              (selectedCountry) {
+                                                        return DropdownMenuItem<
+                                                            Country>(
+                                                          value:
+                                                              selectedCountry,
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Text(
+                                                                  LanguageCubit.get(
+                                                                              context)
+                                                                          .isEn
+                                                                      ? selectedCountry
+                                                                              .title
+                                                                              ?.en ??
+                                                                          ""
+                                                                      : selectedCountry
+                                                                              .title
+                                                                              ?.ar ??
+                                                                          "",
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
+                                                                  maxLines: 1,
+                                                                  style: TextStyle(
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      color: Colors
+                                                                          .black,
+                                                                      fontSize:
+                                                                          20.sp)),
+                                                              SizedBox(
+                                                                height: 5.h,
+                                                              ),
+                                                              // divider
+                                                              Container(
+                                                                width: 1.sw,
+                                                                height: 1.h,
+                                                                color: Colors
+                                                                    .grey[400],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        );
+                                                      }).toList(),
+                                                    ),
+                                                  ),
+                                                )
+                                              : Container(),
+                                  SizedBox(
+                                    height: 16.h,
+                                  ),
+                                  Form(
+                                    key: formKeyAddress,
+                                    child: defaultFormField(
+                                      controller: addressController,
+                                      type: TextInputType.text,
+                                      label: "Address",
+                                      textSize: 20,
+                                      border: false,
+                                      borderRadius: 50,
+                                      validatorText: addressController.text,
+                                      validatorMessage:
+                                          "Enter Address Please..",
+                                      onEditingComplete: () {
+                                        FocusScope.of(context).unfocus();
+                                      },
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 40.h,
+                                  ),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.event_available,
+                                        size: 25.sp,
+                                        color: grey2,
+                                      ),
+                                      SizedBox(
+                                        width: 10.w,
+                                      ),
+                                      Text(
+                                        'Availabilities',
+                                        style: TextStyle(
+                                            fontSize: 18.sp,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 25.h,
+                                  ),
+                                  SfDateRangePicker(
+                                    onSelectionChanged: _onSelectionChanged,
+                                    selectionMode:
+                                        DateRangePickerSelectionMode.multiple,
+                                    initialSelectedDates: availabilities,
+                                  ),
+                                  SizedBox(
+                                    height: 40.h,
+                                  ),
+                                  EditProfileCubit.get(context).loadingEdit
+                                      ? loading()
+                                      : defaultButton3(
+                                          press: () {
+                                            if (formKey.currentState!
+                                                    .validate() &&
+                                                dropDownValueCountries !=
+                                                    null &&
+                                                dropDownValueCity != null &&
+                                                dropDownValueArea != null &&
+                                                userImage.isNotEmpty &&
+                                                availabilities.isNotEmpty) {
+                                              String whatsApp = "";
+                                              if (whatsAppController.text
+                                                      .startsWith('0') &&
+                                                  whatsAppController
+                                                          .text.length >
+                                                      1) {
+                                                final splitPhone =
+                                                    const TextEditingValue()
+                                                        .copyWith(
+                                                  text: whatsAppController.text
+                                                      .replaceAll(
+                                                          RegExp(r'^0+(?=.)'),
+                                                          ''),
+                                                  selection: whatsAppController
+                                                      .selection
+                                                      .copyWith(
+                                                    baseOffset:
+                                                        whatsAppController
+                                                                .text.length -
+                                                            1,
+                                                    extentOffset:
+                                                        whatsAppController
+                                                                .text.length -
+                                                            1,
+                                                  ),
+                                                );
+                                                whatsApp =
+                                                    splitPhone.text.toString();
+                                              } else {
+                                                whatsApp = whatsAppController
+                                                    .text
+                                                    .toString();
+                                              }
+
+                                              FocusScopeNode currentFocus =
+                                                  FocusScope.of(context);
+                                              if (!currentFocus
+                                                  .hasPrimaryFocus) {
+                                                currentFocus.focusedChild
+                                                    ?.unfocus();
+                                              }
+
                                               EditProfileCubit.get(context)
-                                                  .getArea(
+                                                  .editProfileDetails(
+                                                      nameController.text
+                                                          .toString(),
+                                                      emailController.text
+                                                          .toString(),
+                                                      birthDateController.text
+                                                          .toString(),
                                                       dropDownValueCountries!
                                                           .id!,
-                                                      dropDownValueCity!.id!);
-                                            })
-                                        : EditProfileCubit.get(context)
-                                                .area
-                                                .isNotEmpty
-                                            ? Container(
-                                                width: 1.sw,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          50.r),
-                                                  border: Border.all(
-                                                    width: 1,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                                child:
-                                                    DropdownButtonHideUnderline(
-                                                  child: DropdownButton2(
-                                                    //      value: controller.selectedCountry?.value,
-                                                    dropdownDecoration:
-                                                        BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              14.r),
-                                                      border: Border.all(
-                                                        width: 1,
-                                                        color: Colors.black,
-                                                      ),
-                                                    ),
-                                                    isExpanded: true,
-                                                    iconSize: 40.sp,
-                                                    icon: Container(
-                                                      margin:
-                                                          EdgeInsetsDirectional
-                                                              .only(end: 18.r),
-                                                      child: Icon(
-                                                        Icons.arrow_drop_down,
-                                                        color: grey2,
-                                                        size: 40.sp,
-                                                      ),
-                                                    ),
-                                                    style: const TextStyle(
-                                                        color: Colors.grey),
-                                                    onChanged:
-                                                        (Country? value) {
-                                                      setState(() {
-                                                        dropDownValueArea =
-                                                            value;
-                                                      });
-                                                    },
-                                                    hint: Container(
-                                                      width: 1.sw,
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 10.r,
-                                                              vertical: 5.r),
-                                                      child: Center(
-                                                        child: Text(
-                                                            dropDownValueArea
-                                                                    ?.title
-                                                                    ?.en! ??
-                                                                "Country",
-                                                            maxLines: 2,
-                                                            style: TextStyle(
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                                color: Colors
-                                                                    .black,
-                                                                fontSize:
-                                                                    20.sp)),
-                                                      ),
-                                                    ),
-                                                    items: EditProfileCubit.get(
-                                                            context)
-                                                        .area
-                                                        .map((selectedCountry) {
-                                                      return DropdownMenuItem<
-                                                          Country>(
-                                                        value: selectedCountry,
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Text(
-                                                                selectedCountry
-                                                                        .title?.en ??
-                                                                    "",
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                maxLines: 1,
-                                                                style: TextStyle(
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    color: Colors
-                                                                        .black,
-                                                                    fontSize:
-                                                                        20.sp)),
-                                                            SizedBox(
-                                                              height: 5.h,
-                                                            ),
-                                                            // divider
-                                                            Container(
-                                                              width: 1.sw,
-                                                              height: 1.h,
-                                                              color: Colors
-                                                                  .grey[400],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      );
-                                                    }).toList(),
-                                                  ),
-                                                ),
-                                              )
-                                            : Container(),
-                                SizedBox(
-                                  height: 16.h,
-                                ),
-                                Form(
-                                  key: formKeyAddress,
-                                  child: defaultFormField(
-                                    controller: addressController,
-                                    type: TextInputType.text,
-                                    label: "Address",
-                                    textSize: 20,
-                                    border: false,
-                                    borderRadius: 50,
-                                    validatorText: addressController.text,
-                                    validatorMessage: "Enter Address Please..",
-                                    onEditingComplete: () {
-                                      FocusScope.of(context).unfocus();
-                                    },
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 40.h,
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.event_available,
-                                      size: 25.sp,
-                                      color: grey2,
-                                    ),
-                                    SizedBox(
-                                      width: 10.w,
-                                    ),
-                                    Text(
-                                      'Availabilities',
-                                      style: TextStyle(
-                                          fontSize: 18.sp,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 25.h,
-                                ),
-                                SfDateRangePicker(
-                                  onSelectionChanged: _onSelectionChanged,
-                                  selectionMode:
-                                      DateRangePickerSelectionMode.multiple,
-                                  initialSelectedDates: availabilities,
-                                ),
-                                SizedBox(
-                                  height: 40.h,
-                                ),
-                                EditProfileCubit.get(context).loadingEdit
-                                    ? loading()
-                                    : defaultButton3(
-                                        press: () {
-                                          if (formKey.currentState!
-                                                  .validate() &&
-                                              dropDownValueCountries != null &&
-                                              dropDownValueCity != null &&
-                                              dropDownValueArea != null &&
-                                              userImage.isNotEmpty &&
-                                              availabilities.isNotEmpty) {
-                                            String whatsApp = "";
-                                            if (whatsAppController.text
-                                                    .startsWith('0') &&
-                                                whatsAppController.text.length >
-                                                    1) {
-                                              final splitPhone =
-                                                  const TextEditingValue()
-                                                      .copyWith(
-                                                text: whatsAppController.text
-                                                    .replaceAll(
-                                                        RegExp(r'^0+(?=.)'),
-                                                        ''),
-                                                selection: whatsAppController
-                                                    .selection
-                                                    .copyWith(
-                                                  baseOffset: whatsAppController
-                                                          .text.length -
-                                                      1,
-                                                  extentOffset:
-                                                      whatsAppController
-                                                              .text.length -
-                                                          1,
-                                                ),
-                                              );
-                                              whatsApp =
-                                                  splitPhone.text.toString();
+                                                      dropDownValueCity!.id!,
+                                                      dropDownValueArea!.id!,
+                                                      userImage,
+                                                      availabilitiesValues,
+                                                      imageRemote,
+                                                      addressController.text
+                                                          .toString(),
+                                                      whatsApp);
                                             } else {
-                                              whatsApp = whatsAppController.text
-                                                  .toString();
+                                              showToastt(
+                                                  text:
+                                                      'Be sure to choose image and fill personal information ,address and availability',
+                                                  state: ToastStates.error,
+                                                  context: context);
                                             }
-
-                                            FocusScopeNode currentFocus =
-                                                FocusScope.of(context);
-                                            if (!currentFocus.hasPrimaryFocus) {
-                                              currentFocus.focusedChild
-                                                  ?.unfocus();
-                                            }
-
-                                            EditProfileCubit.get(context)
-                                                .editProfileDetails(
-                                                    nameController.text
-                                                        .toString(),
-                                                    emailController.text
-                                                        .toString(),
-                                                    birthDateController.text
-                                                        .toString(),
-                                                    dropDownValueCountries!.id!,
-                                                    dropDownValueCity!.id!,
-                                                    dropDownValueArea!.id!,
-                                                    userImage,
-                                                    availabilitiesValues,
-                                                    imageRemote,
-                                                    addressController.text
-                                                        .toString(),
-                                                    whatsApp);
-                                          } else {
-                                            showToastt(
-                                                text:
-                                                    'Be sure to choose image and fill personal information ,address and availability',
-                                                state: ToastStates.error,
-                                                context: context);
-                                          }
-                                        },
-                                        text: "Save",
-                                        backColor: accentColor,
-                                        textColor: white),
-                              ],
+                                          },
+                                          text: "Save",
+                                          backColor: accentColor,
+                                          textColor: white),
+                                ],
+                              ),
                             ),
-                          ),
-                        ));
+                          )),
+          );
         },
       ),
     );
@@ -1037,7 +1125,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         if (kDebugMode) {
           print('imageErrorEditProfile***************** =$_pickImageError');
         }
-        if(e.toString() == "PlatformException(camera_access_denied, The user did not allow camera access., null, null)"){
+        if (e.toString() ==
+            "PlatformException(camera_access_denied, The user did not allow camera access., null, null)") {
           showDialog(
             context: context,
             barrierDismissible: false,
@@ -1046,7 +1135,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               return CustomDialogImage(
                 title: "Take Image",
                 description:
-                'Camera permissions denied\n You must enable the access camera to take photo \n you can choose setting and enable camera then try back',
+                    'Camera permissions denied\n You must enable the access camera to take photo \n you can choose setting and enable camera then try back',
                 type: "checkImageDeniedForever",
                 backgroundColor: white,
                 btnOkColor: accentColor,
@@ -1056,13 +1145,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               );
             },
           );
-        }else{
+        } else {
           showToastt(
-              text: e.toString(),
-              state: ToastStates.error,
-              context: context);
+              text: e.toString(), state: ToastStates.error, context: context);
         }
-
       });
     }
   }

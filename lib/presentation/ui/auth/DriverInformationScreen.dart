@@ -7,7 +7,9 @@ import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/ui/auth/CarRegistrationScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/VerifyImageScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:ui' as ui;
 
 class DriverInformationScreen extends StatefulWidget {
   const DriverInformationScreen({Key? key}) : super(key: key);
@@ -35,6 +37,16 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
   String backDriverLicenceString = "";
 
   @override
+  void initState() {
+    super.initState();
+
+    if (getIt<SharedPreferences>().getBool("isEn") != null) {
+      LanguageCubit.get(context).isEn =
+      getIt<SharedPreferences>().getBool("isEn")!;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => SignCubit(),
@@ -56,24 +68,27 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
               text: state.message, state: ToastStates.error, context: context);
         }
       }, builder: (context, state) {
-        return Scaffold(
-          body: SafeArea(
-            child: Container(
+        return Directionality(
+          textDirection: LanguageCubit.get(context).isEn
+              ? ui.TextDirection.ltr
+              : ui.TextDirection.rtl,
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(
+                "Driver Information",
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                    color: primaryColor),
+              ),
+              centerTitle: true,
+            ),
+            body: Container(
               margin: EdgeInsets.symmetric(horizontal: 20.r),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: 30.h,
-                  ),
-                  Text(
-                    "Driver Information",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                        fontSize: 25.sp,
-                        fontWeight: FontWeight.bold,
-                        color: primaryColor),
-                  ),
                   SizedBox(
                     height: 30.h,
                   ),

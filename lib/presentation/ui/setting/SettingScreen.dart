@@ -2,11 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/ui/editProfile/EditProfileScreen.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:getn_driver/presentation/ui/myCar/MyCarScreen.dart';
+import 'dart:ui' as ui;
 
-class SettingScreen extends StatelessWidget {
+import 'package:shared_preferences/shared_preferences.dart';
+
+class SettingScreen extends StatefulWidget {
   const SettingScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SettingScreen> createState() => _SettingScreenState();
+}
+
+class _SettingScreenState extends State<SettingScreen> {
+  bool? isEn;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (getIt<SharedPreferences>().getBool("isEn") != null) {
+      isEn = getIt<SharedPreferences>().getBool("isEn")!;
+    }
+  }
 
   bodyWidget(BuildContext context) {
     return SingleChildScrollView(
@@ -17,6 +38,43 @@ class SettingScreen extends StatelessWidget {
         ),
         child: Column(
           children: [
+            ListTile(
+              title: Row(
+                children: [
+                  Text(
+                    LanguageCubit.get(context)
+                        .getTexts("Arabic")
+                        .toString(),
+                    style: TextStyle(
+                        color: black,
+                        fontSize: 20.sp),
+                  ),
+                  Switch(
+                    activeColor: primaryColor,
+                    value:
+                    LanguageCubit.get(context)
+                        .isEn,
+                    onChanged: (value) {
+                      setState(() {
+                        LanguageCubit.get(context)
+                            .changeLan(value);
+                      });
+                    },
+                  ),
+                  Text(
+                    LanguageCubit.get(context)
+                        .getTexts("English")
+                        .toString(),
+                    style: TextStyle(
+                        color: black,
+                        fontSize: 20.sp),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 10.h,
+            ),
             buildSettingItem(
               context: context,
               title: "My Account",
@@ -68,20 +126,25 @@ class SettingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Setting',
-          style: TextStyle(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.w500,
-            color: primaryColor,
+    return Directionality(
+      textDirection: LanguageCubit.get(context).isEn
+          ? ui.TextDirection.ltr
+          : ui.TextDirection.rtl,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Setting',
+            style: TextStyle(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w500,
+              color: primaryColor,
+            ),
           ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        child: bodyWidget(context),
+        body: SingleChildScrollView(
+          child: bodyWidget(context),
+        ),
       ),
     );
   }
