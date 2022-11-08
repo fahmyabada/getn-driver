@@ -208,6 +208,7 @@ Widget defaultFormField(
                 ))
             : null,
       ),
+
       onChanged: (s) {
         changed != null ? changed(s) : null;
       },
@@ -277,9 +278,7 @@ Widget defaultButton3(
             borderRadius: BorderRadius.circular(30.r),
           ),
           textStyle: TextStyle(
-              fontSize: 24.sp,
-              fontWeight: FontWeight.bold,
-              fontStyle: FontStyle.italic),
+              fontSize: 24.sp),
         ),
         child: Text(
           text,

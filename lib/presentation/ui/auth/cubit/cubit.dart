@@ -240,7 +240,8 @@ class SignCubit extends Cubit<SignState> {
       String address,
       List<String> availabilities,
       String userImage,
-      String whatsApp) async {
+      String whatsApp,
+      String whatsappCountry) async {
     String verifyImageName = photo.split('/').last;
     String userImageName = userImage.split('/').last;
     final body = jsonEncode(availabilities);
@@ -251,6 +252,7 @@ class SignCubit extends Cubit<SignState> {
       'email': email,
       'birthDate': birthDate,
       'whatsapp': whatsApp,
+      'whatsappCountry': whatsappCountry,
       'country': countryId,
       'city': cityId,
       'area': areaId,

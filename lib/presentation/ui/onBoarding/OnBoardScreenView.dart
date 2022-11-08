@@ -3,42 +3,71 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:getn_driver/data/model/OnBoardingItem.dart';
 import 'package:getn_driver/data/utils/colors.dart';
-import 'package:getn_driver/data/utils/strings.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/ui/auth/SignInScreen.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 
 
-class OnBoardScreenView extends StatelessWidget {
-   OnBoardScreenView({Key? key}) : super(key: key);
+class OnBoardScreenView extends StatefulWidget {
+   const OnBoardScreenView({Key? key}) : super(key: key);
 
-  final pages = <OnBoardingItem>[
-    OnBoardingItem(
-      title: Strings.title1,
-      subTitle: Strings.subTitle1,
-      image: 'assets/onboard/1.png',
-    ),
-    OnBoardingItem(
-      title: Strings.title2,
-      subTitle: Strings.subTitle2,
-      image: 'assets/onboard/2.png',
-    ),
-    OnBoardingItem(
-      title: Strings.title3,
-      subTitle: Strings.subTitle3,
-      image: 'assets/onboard/3.png',
-    ),
-    OnBoardingItem(
-      title: Strings.title4,
-      subTitle: Strings.subTitle4,
-      image: 'assets/onboard/4.png',
-    ),
-  ];
+  @override
+  State<OnBoardScreenView> createState() => _OnBoardScreenViewState();
+}
 
+class _OnBoardScreenViewState extends State<OnBoardScreenView> {
+   List<OnBoardingItem> pages = [];
 
+   @override
+  void initState() {
+    super.initState();
+
+    pages =  <OnBoardingItem>[
+      OnBoardingItem(
+        title: LanguageCubit.get(context)
+            .getTexts('title1')
+            .toString(),
+        subTitle: LanguageCubit.get(context)
+            .getTexts('subTitle1')
+            .toString(),
+        image: 'assets/onboard/1.png',
+      ),
+      OnBoardingItem(
+        title: LanguageCubit.get(context)
+            .getTexts('title2')
+            .toString(),
+        subTitle: LanguageCubit.get(context)
+            .getTexts('subTitle2')
+            .toString(),
+        image: 'assets/onboard/2.png',
+      ),
+      OnBoardingItem(
+        title: LanguageCubit.get(context)
+            .getTexts('title3')
+            .toString(),
+        subTitle: LanguageCubit.get(context)
+            .getTexts('subTitle3')
+            .toString(),
+        image: 'assets/onboard/3.png',
+      ),
+      OnBoardingItem(
+        title: LanguageCubit.get(context)
+            .getTexts('title4')
+            .toString(),
+        subTitle: LanguageCubit.get(context)
+            .getTexts('subTitle4')
+            .toString(),
+        image: 'assets/onboard/4.png',
+      ),
+    ];
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primaryColor,
+      appBar: AppBar(
+        backgroundColor: primaryColor,
+      ),
       body: PageView.builder(
           itemCount: pages.length,
           itemBuilder: (context, index) {
@@ -108,7 +137,9 @@ class OnBoardScreenView extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(30.r)),
                               child: Center(
                                 child: Text(
-                                  Strings.getStarted.toUpperCase(),
+                                  LanguageCubit.get(context)
+                                      .getTexts('getStarted')
+                                      .toString().toUpperCase(),
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 20.sp,

@@ -109,16 +109,13 @@ class _TermsScreenState extends State<TermsScreen> {
                   ],
                 ),
               ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
-                child: defaultButton3(
-                    press: () {
-                      Navigator.of(context).pop(true);
-                    },
-                    text: "Accept",
-                    backColor: accentColor,
-                    textColor: white),
-              ),
+              defaultButton3(
+                  press: () {
+                    Navigator.of(context).pop(true);
+                  },
+                  text: "Accept",
+                  backColor: accentColor,
+                  textColor: white),
             ],
           ),
         ),

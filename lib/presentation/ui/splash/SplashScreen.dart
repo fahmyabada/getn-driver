@@ -12,6 +12,7 @@ import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/notificationService/local_notification_service.dart';
 import 'package:getn_driver/presentation/ui/auth/CarRegistrationScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/DriverInformationScreen.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:getn_driver/presentation/ui/onBoarding/OnBoardScreenView.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/RequestTabsScreen.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
@@ -33,6 +34,10 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
+    if (getIt<SharedPreferences>().getBool("isEn") != null) {
+      LanguageCubit.get(context).isEn =
+      getIt<SharedPreferences>().getBool("isEn")!;
+    }
     LocalNotificationService.initialize(context);
     registerNotification();
   }

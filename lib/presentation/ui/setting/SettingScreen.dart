@@ -18,14 +18,14 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
-  bool? isEn;
 
   @override
   void initState() {
     super.initState();
 
     if (getIt<SharedPreferences>().getBool("isEn") != null) {
-      isEn = getIt<SharedPreferences>().getBool("isEn")!;
+      LanguageCubit.get(context).isEn =
+      getIt<SharedPreferences>().getBool("isEn")!;
     }
   }
 
@@ -38,52 +38,17 @@ class _SettingScreenState extends State<SettingScreen> {
         ),
         child: Column(
           children: [
-            ListTile(
-              title: Row(
-                children: [
-                  Text(
-                    LanguageCubit.get(context)
-                        .getTexts('Arabic')
-                        .toString(),
-                    style: TextStyle(
-                        color: black,
-                        fontSize: 20.sp),
-                  ),
-                  Switch(
-                    activeColor: primaryColor,
-                    value:
-                    LanguageCubit.get(context)
-                        .isEn,
-                    onChanged: (value) {
-                      setState(() {
-                        LanguageCubit.get(context)
-                            .changeLan(value);
-                      });
-                    },
-                  ),
-                  Text(
-                    LanguageCubit.get(context)
-                        .getTexts('English')
-                        .toString(),
-                    style: TextStyle(
-                        color: black,
-                        fontSize: 20.sp),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 10.h,
-            ),
+
             buildSettingItem(
               context: context,
               title: LanguageCubit.get(context)
                   .getTexts('MyAccount')
                   .toString(),
-              onClick: () {
-                navigateTo(
+              onClick: () async{
+               await navigateToWithRefreshPagePrevious(
                     context,
                     const EditProfileScreen());
+               setState(() {});
               },
             ),
             SizedBox(

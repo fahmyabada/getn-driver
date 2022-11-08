@@ -11,9 +11,16 @@ import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/main_cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
+import 'package:getn_driver/presentation/ui/auth/SignInScreen.dart';
 import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
+import 'package:getn_driver/presentation/ui/notifications/NotificationScreen.dart';
+import 'package:getn_driver/presentation/ui/notifications/notification_cubit.dart';
+import 'package:getn_driver/presentation/ui/policies/PoliciesScreen.dart';
 import 'package:getn_driver/presentation/ui/request/requestDetails/RequestDetailsScreen.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
+import 'package:getn_driver/presentation/ui/setting/SettingScreen.dart';
+import 'package:getn_driver/presentation/ui/wallet/WalletScreen.dart';
+import 'package:getn_driver/presentation/ui/wallet/wallet_cubit.dart';
 import 'package:intl/intl.dart';
 import 'package:scroll_edge_listener/scroll_edge_listener.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -2684,7 +2691,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           : Container(),
             ],
           ),
-          drawer: const DrawerMenu(),
+          drawer: sideBar(),
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: _currentIndex,
             onTap: (index) {
@@ -2732,4 +2739,148 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
       );
     });
   }
+
+  Widget sideBar() => Drawer(
+        child: ListView(
+          children: <Widget>[
+            DrawerHeader(
+              decoration: const BoxDecoration(color: blueColor),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 40.r,
+                    backgroundColor: grey3,
+                    backgroundImage: NetworkImage(getIt<SharedPreferences>()
+                            .getString('userImage') ??
+                        "https://www.pphfoundation.ca/wp-content/uploads/2018/05/default-avatar.png"), // for Network image
+                  ),
+                  SizedBox(
+                    width: 15.w,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          getIt<SharedPreferences>().getString("name") ?? "",
+                          maxLines: 1,
+                          style: TextStyle(
+                              overflow: TextOverflow.ellipsis,
+                              color: white,
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          "+20${getIt<SharedPreferences>().getString("phone")}",
+                          style: TextStyle(
+                            color: white,
+                            fontSize: 20.sp,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              title: Text(
+                LanguageCubit.get(context).getTexts('Home').toString(),
+                style: TextStyle(
+                  color: grey2,
+                  fontSize: 20.sp,
+                ),
+              ),
+              leading: const Icon(Icons.home, color: grey2),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text(
+                LanguageCubit.get(context).getTexts('Wallet').toString(),
+                style: TextStyle(
+                  color: grey2,
+                  fontSize: 20.sp,
+                ),
+              ),
+              leading: const Icon(
+                Icons.account_balance_wallet,
+                color: grey2,
+              ),
+              onTap: () {
+                navigateTo(
+                    context,
+                    BlocProvider(
+                        create: (context) => WalletCubit(),
+                        child: const WalletScreen()));
+              },
+            ),
+            ListTile(
+              title: Text(
+                LanguageCubit.get(context).getTexts('Notifications').toString(),
+                style: TextStyle(
+                  color: grey2,
+                  fontSize: 20.sp,
+                ),
+              ),
+              leading: const Icon(Icons.notifications, color: grey2),
+              onTap: () {
+                navigateTo(
+                    context,
+                    BlocProvider(
+                        create: (context) => NotificationCubit(),
+                        child: const NotificationScreen()));
+              },
+            ),
+            ListTile(
+              title: Text(
+                LanguageCubit.get(context).getTexts('Setting').toString(),
+                style: TextStyle(
+                  color: grey2,
+                  fontSize: 20.sp,
+                ),
+              ),
+              leading: const Icon(Icons.settings, color: grey2),
+              onTap: () async {
+                await navigateToWithRefreshPagePrevious(
+                    context, const SettingScreen());
+                setState(() {});
+              },
+            ),
+            ListTile(
+              title: Text(
+                LanguageCubit.get(context).getTexts('Policies').toString(),
+                style: TextStyle(
+                  color: grey2,
+                  fontSize: 20.sp,
+                ),
+              ),
+              leading: const Icon(
+                Icons.policy,
+                color: grey2,
+              ),
+              onTap: () {
+                navigateTo(context, const PoliciesScreen());
+              },
+            ),
+            ListTile(
+              title: Text(
+                LanguageCubit.get(context).getTexts('SignOut').toString(),
+                style: TextStyle(
+                  color: grey2,
+                  fontSize: 20.sp,
+                ),
+              ),
+              leading: const Icon(Icons.exit_to_app, color: grey2),
+              onTap: () {
+                getIt<SharedPreferences>().clear().then((value) {
+                  navigateAndFinish(context, const SignInScreen());
+                });
+              },
+            ),
+          ],
+        ),
+      );
 }

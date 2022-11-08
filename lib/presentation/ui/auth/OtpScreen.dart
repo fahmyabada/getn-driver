@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' as ui;
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -18,16 +19,16 @@ import 'package:getn_driver/presentation/ui/request/requestTabs/RequestTabsScree
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:ui' as ui;
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({Key? key,
-    required this.phone,
-    required this.countryId,
-    required this.type,
-    this.verificationId,
-    required this.phoneWithCountry,
-    this.countryName})
+  const OtpScreen(
+      {Key? key,
+      required this.phone,
+      required this.countryId,
+      required this.type,
+      this.verificationId,
+      required this.phoneWithCountry,
+      this.countryName})
       : super(key: key);
 
   final String phone;
@@ -47,10 +48,24 @@ class _OtpScreenState extends State<OtpScreen> {
   Timer? timer;
   bool openResend = false;
   bool openNext = false;
-  String? verificationId,
-      authStatus = "",
-      otp;
+  String? verificationId, authStatus = "", otp;
   bool load = false;
+
+  @override
+  void initState() {
+    super.initState();
+    startTimer();
+    verificationId = widget.verificationId;
+    if (getIt<SharedPreferences>().getBool("isEn") != null) {
+      LanguageCubit.get(context).isEn =
+          getIt<SharedPreferences>().getBool("isEn")!;
+    }
+  }
+
+  void startTimer() {
+    timer =
+        Timer.periodic(const Duration(seconds: 1), (timer) => subtractTime());
+  }
 
   void subtractTime() {
     const subtractSeconds = 1;
@@ -66,22 +81,6 @@ class _OtpScreenState extends State<OtpScreen> {
     });
   }
 
-  void startTimer() {
-    timer =
-        Timer.periodic(const Duration(seconds: 1), (timer) => subtractTime());
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    startTimer();
-    verificationId = widget.verificationId;
-    if (getIt<SharedPreferences>().getBool("isEn") != null) {
-      LanguageCubit.get(context).isEn =
-      getIt<SharedPreferences>().getBool("isEn")!;
-    }
-  }
-
   @override
   void dispose() {
     timer!.cancel();
@@ -94,18 +93,22 @@ class _OtpScreenState extends State<OtpScreen> {
         verificationId: verificationId!, smsCode: otp!);
     try {
       final result =
-      await FirebaseAuth.instance.signInWithCredential(authCreds);
+          await FirebaseAuth.instance.signInWithCredential(authCreds);
       if (result.user != null) {
         if (kDebugMode) {
           print('refreshToken11***********}');
         }
         final idToken = await FirebaseAuth.instance.currentUser!.getIdToken();
         getIt<SharedPreferences>().setString('firebaseToken', idToken);
+
         if (widget.type == "login") {
           SignCubit.get(context)
               .makeLogin(widget.phone, widget.countryId, idToken);
         } else {
           if (getIt<SharedPreferences>().getString('firebaseToken') != null) {
+            setState(() {
+              load = false;
+            });
             navigateTo(
                 context,
                 SignUpDetailsScreen(
@@ -113,7 +116,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   countryId: widget.countryId,
                   countryName: widget.countryName,
                   firebaseToken:
-                  getIt<SharedPreferences>().getString('firebaseToken')!,
+                      getIt<SharedPreferences>().getString('firebaseToken')!,
                 ));
           }
         }
@@ -121,17 +124,20 @@ class _OtpScreenState extends State<OtpScreen> {
         if (kDebugMode) {
           print("Error");
         }
-        setState((){
+        setState(() {
           load = false;
         });
+
         showToastt(
-            text: LanguageCubit.get(context)
-                .getTexts('UncorrectCode')
-                .toString(), state: ToastStates.error, context: context);
+            text:
+                LanguageCubit.get(context).getTexts('UncorrectCode').toString(),
+            state: ToastStates.error,
+            context: context);
       }
     } catch (error) {
-      setState((){
+      setState(() {
         load = false;
+        openResend = true;
       });
       print("Exception*************${error}");
       if (widget.type == "login") {
@@ -151,7 +157,7 @@ class _OtpScreenState extends State<OtpScreen> {
   Future<void> verifyPhone(phoneNumber) async {
     await FirebaseAuth.instance.verifyPhoneNumber(
 
-      /// Make sure to prefix with your country code
+        /// Make sure to prefix with your country code
         phoneNumber: phoneNumber,
 
         ///No duplicated SMS will be sent out upon re-entry (before timeout).
@@ -217,17 +223,17 @@ class _OtpScreenState extends State<OtpScreen> {
               duration = const Duration(minutes: 1);
             });
             startTimer();
-          }
-          else if (state is SendOtpErrorState) {
+          } else if (state is SendOtpErrorState) {
             if (kDebugMode) {
               print('OtpScreen*******SendOtpErrorState');
             }
 
             showToastt(
-                text: state.message, state: ToastStates.error, context: context);
-          }
-          else if (state is SignInSuccessState) {
-            setState((){
+                text: state.message,
+                state: ToastStates.error,
+                context: context);
+          } else if (state is SignInSuccessState) {
+            setState(() {
               load = false;
             });
             if (kDebugMode) {
@@ -249,7 +255,8 @@ class _OtpScreenState extends State<OtpScreen> {
               getIt<SharedPreferences>().setString('token', state.data.token!);
             }
             if (state.data.image!.src != null) {
-              getIt<SharedPreferences>().setString('userImage', state.data.image!.src!);
+              getIt<SharedPreferences>()
+                  .setString('userImage', state.data.image!.src!);
             }
             getIt<SharedPreferences>().setString('countryId', widget.countryId);
 
@@ -265,21 +272,24 @@ class _OtpScreenState extends State<OtpScreen> {
                 state.data.frontNationalImage?.src != null) {
               getIt<SharedPreferences>()
                   .setString('typeSign', "signWithCarRegistration");
-              navigateAndFinish(context, BlocProvider(
-                  create: (context) => RequestCubit(),
-                  child: const RequestTabsScreen()));
+              navigateAndFinish(
+                  context,
+                  BlocProvider(
+                      create: (context) => RequestCubit(),
+                      child: const RequestTabsScreen()));
             }
-          }
-          else if (state is SignInErrorState) {
+          } else if (state is SignInErrorState) {
             if (kDebugMode) {
               print('OtpScreen*******SignInErrorState');
             }
 
-            setState((){
+            setState(() {
               load = false;
             });
             showToastt(
-                text: state.message, state: ToastStates.error, context: context);
+                text: state.message,
+                state: ToastStates.error,
+                context: context);
           }
         }, builder: (context, state) {
           return Scaffold(
@@ -303,10 +313,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 25.r),
                       child: Text(
-                        "${LanguageCubit.get(context)
-                            .getTexts('Enter6-digit')
-                            .toString()} \n ${widget
-                            .phoneWithCountry}",
+                        "${LanguageCubit.get(context).getTexts('Enter6-digit').toString()} \n ${widget.phoneWithCountry}",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -320,7 +327,6 @@ class _OtpScreenState extends State<OtpScreen> {
                       child: PinCodeTextField(
                         appContext: context,
                         length: 6,
-
                         pastedTextStyle: TextStyle(
                           color: Colors.green.shade600,
                           fontWeight: FontWeight.bold,
@@ -377,7 +383,6 @@ class _OtpScreenState extends State<OtpScreen> {
                           }
                         },
                         enablePinAutofill: true,
-
                         beforeTextPaste: (text) {
                           debugPrint("Allowing to paste $text");
                           //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
@@ -400,21 +405,21 @@ class _OtpScreenState extends State<OtpScreen> {
                     buildTime(context),
                     SizedBox(height: 32.h),
                     Container(
-                      margin:
-                      EdgeInsets.symmetric(horizontal: 25.r, vertical: 30.r),
-                      child: load ?
-                      loading() :
-                      defaultButton3(
-                          press: () {
-                            load = true;
-                            nextButton(context);
-                          },
-                          disablePress: openNext,
-                          text: LanguageCubit.get(context)
-                              .getTexts('Next')
-                              .toString(),
-                          backColor: accentColor,
-                          textColor: white),
+                      margin: EdgeInsets.symmetric(
+                          horizontal: 25.r, vertical: 30.r),
+                      child: load
+                          ? loading()
+                          : defaultButton3(
+                              press: () {
+                                load = true;
+                                nextButton(context);
+                              },
+                              disablePress: openNext,
+                              text: LanguageCubit.get(context)
+                                  .getTexts('Next')
+                                  .toString(),
+                              backColor: accentColor,
+                              textColor: white),
                     ),
                   ],
                 ),
@@ -436,38 +441,37 @@ class _OtpScreenState extends State<OtpScreen> {
       children: [
         openResend
             ? InkWell(
-          onTap: () {
-            setState(() {
-              openResend = false;
-              openNext = false;
-              duration = const Duration(minutes: 1);
-            });
-            startTimer();
-            verifyPhone(widget.phoneWithCountry);
-          },
-          child: Text(
-            LanguageCubit.get(context)
-                .getTexts('resend')
-                .toString(),
-            style: TextStyle(color: blueColor, fontSize: 18.sp),
-          ),
-        )
+                onTap: () {
+                  setState(() {
+                    openResend = false;
+                    openNext = false;
+                    duration = const Duration(minutes: 1);
+                  });
+                  startTimer();
+                  verifyPhone(widget.phoneWithCountry);
+                },
+                child: Text(
+                  LanguageCubit.get(context).getTexts('resend').toString(),
+                  style: TextStyle(color: blueColor, fontSize: 18.sp),
+                ),
+              )
             : Text(
-          LanguageCubit.get(context)
-              .getTexts('resend')
-              .toString(),
-          style: TextStyle(color: greyColor, fontSize: 18.sp),
-        ),
+                LanguageCubit.get(context).getTexts('resend').toString(),
+                style: TextStyle(color: greyColor, fontSize: 18.sp),
+              ),
         Text(
-          LanguageCubit.get(context)
-              .getTexts('codeIn')
-              .toString(),
+          LanguageCubit.get(context).getTexts('codeIn').toString(),
           style: TextStyle(color: black, fontSize: 18.sp),
         ),
-        Text(
-          "$minutes:$seconds",
-          style: TextStyle(color: black, fontSize: 18.sp),
-        ),
+        timer!.isActive
+            ? Text(
+                "$minutes:$seconds",
+                style: TextStyle(color: black, fontSize: 18.sp),
+              )
+            : Text(
+                "00:00",
+                style: TextStyle(color: black, fontSize: 18.sp),
+              ),
       ],
     );
   }

@@ -217,11 +217,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                   ));
                                             } else if (notification.type ==
                                                 "trip") {
-                                              navigateTo(
-                                                  context,
-                                                  TripDetailsScreen(
-                                                    idTrip: notification.typeId,
-                                                  ));
+                                              if (notification.typeId != null) {
+                                                navigateTo(
+                                                    context,
+                                                    TripDetailsScreen(
+                                                      idTrip:
+                                                          notification.typeId,
+                                                    ));
+                                              }
                                             } else if (notification.type ==
                                                     "walletTransaction" ||
                                                 notification.type ==

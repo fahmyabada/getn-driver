@@ -9,7 +9,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/model/signModel/Country.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
-import 'package:getn_driver/data/utils/strings.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/ui/auth/OtpScreen.dart';
@@ -184,11 +183,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 SizedBox(
                   width: 200.w,
                   child: Text(
-                    Strings.signUpWithMobileNumber,
+                    LanguageCubit.get(context)
+                        .getTexts('signUpWithMobileNumber')
+                        .toString(),
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        fontSize: 25.sp,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 23.sp,
                         color: primaryColor),
                   ),
                 ),
@@ -205,7 +205,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Row(
                     children: [
                       state is CountriesLoading
-                          ? loading()
+                          ? Container(
+                              margin: EdgeInsetsDirectional.only(end: 10.w),
+                              child: loading(),
+                            )
                           : SignCubit.get(context).countries.isNotEmpty
                               ? Expanded(
                                   flex: 2,
@@ -315,9 +318,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         SignCubit.get(context).getCountries();
                                       }),
                                 ),
-                      SizedBox(
-                        width: 5.w,
-                      ),
+
                       Expanded(
                         flex: 4,
                         child: Form(
@@ -341,6 +342,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ],
                   ),
+                ),
+                SizedBox(
+                  height: 20.h,
                 ),
                 Container(
                   margin:
@@ -382,7 +386,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   } else {
                                     showToastt(
                                         text:
-                                            "The mobile number is not less than 11 digits",
+                                        LanguageCubit.get(context)
+                                            .getTexts('MobileNumber12Digits')
+                                            .toString(),
                                         state: ToastStates.error,
                                         context: context);
                                   }
@@ -400,7 +406,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   } else {
                                     showToastt(
                                         text:
-                                            "The mobile number is not less than 10 digits",
+                                        LanguageCubit.get(context)
+                                            .getTexts('MobileNumber10Digits')
+                                            .toString() ,
                                         state: ToastStates.error,
                                         context: context);
                                   }

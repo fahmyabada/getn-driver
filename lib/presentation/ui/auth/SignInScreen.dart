@@ -9,7 +9,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/model/signModel/Country.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
-import 'package:getn_driver/data/utils/strings.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/ui/auth/OtpScreen.dart';
@@ -175,11 +174,12 @@ class _SignInScreenState extends State<SignInScreen> {
                 SizedBox(
                   width: 200.w,
                   child: Text(
-                    Strings.signIn,
+                    LanguageCubit.get(context)
+                        .getTexts('signIn')
+                        .toString(),
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        fontSize: 25.sp,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 23.sp,
                         color: primaryColor),
                   ),
                 ),
@@ -196,7 +196,10 @@ class _SignInScreenState extends State<SignInScreen> {
                   child: Row(
                     children: [
                       state is CountriesLoading
-                          ? loading()
+                          ? Container(
+                              margin: EdgeInsetsDirectional.only(end: 10.w),
+                              child: loading(),
+                            )
                           : SignCubit.get(context).countries.isNotEmpty
                               ? Expanded(
                                   flex: 2,
@@ -306,9 +309,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                         SignCubit.get(context).getCountries();
                                       }),
                                 ),
-                      SizedBox(
-                        width: 5.w,
-                      ),
+
                       Expanded(
                         flex: 4,
                         child: Form(
@@ -332,6 +333,9 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                     ],
                   ),
+                ),
+                SizedBox(
+                  height: 20.h,
                 ),
                 Container(
                   margin:

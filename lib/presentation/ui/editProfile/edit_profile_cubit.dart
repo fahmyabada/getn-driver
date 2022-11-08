@@ -141,10 +141,11 @@ class EditProfileCubit extends Cubit<EditProfileState> {
       bool imageRemote,
       String address,
       String whatsApp,
-      ) async {
+      bool lang,
+      String whatsappCountry) async {
     loadingEdit = true;
     emit(EditProfileLoading());
-    final body =jsonEncode(availabilities);
+    final body = jsonEncode(availabilities);
     String userImageName = userImage.split('/').last;
     FormData formData;
     if (imageRemote) {
@@ -158,6 +159,8 @@ class EditProfileCubit extends Cubit<EditProfileState> {
         'availabilities': body,
         'address': address,
         'whatsapp': whatsApp,
+        'whatsappCountry': whatsappCountry,
+        'lang': lang ? "en" : "ar",
       });
     } else {
       formData = FormData.fromMap({
@@ -172,6 +175,8 @@ class EditProfileCubit extends Cubit<EditProfileState> {
         'availabilities': body,
         'address': address,
         'whatsapp': whatsApp,
+        'whatsappCountry': whatsappCountry,
+        'lang': lang ? "en" : "ar",
       });
     }
     editProfileUserUseCase.execute(formData).then((value) {

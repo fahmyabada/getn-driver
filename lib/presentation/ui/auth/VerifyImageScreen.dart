@@ -33,7 +33,8 @@ class VerifyImageScreen extends StatefulWidget {
       this.address,
       this.availabilities,
       this.userImage,
-      this.whatsApp})
+      this.whatsApp,
+      this.whatsappCountry})
       : super(key: key);
 
   final String? typeScreen;
@@ -51,6 +52,7 @@ class VerifyImageScreen extends StatefulWidget {
   final List<String>? availabilities;
   final String? userImage;
   final String? whatsApp;
+  final String? whatsappCountry;
 
   @override
   State<VerifyImageScreen> createState() => _VerifyImageScreenState();
@@ -298,7 +300,8 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
                                       widget.address!,
                                       widget.availabilities!,
                                       widget.userImage!,
-                                      widget.whatsApp!);
+                                      widget.whatsApp!,
+                                      widget.whatsappCountry!);
                                 } else if (widget.typeScreen ==
                                     "frontNationalId") {
                                   Navigator.of(context).pop(ImageVerify(

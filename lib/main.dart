@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/api/Dio_Helper.dart';
@@ -40,6 +40,7 @@ void main() async {
   //   builder: (context) => MyApp(),
   // ));
 
+
   runApp(const MyApp());
 }
 
@@ -61,33 +62,39 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       designSize: const Size(411, 891),
       minTextAdapt: true,
-      builder: (BuildContext context, child) => MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => MainCubit(),
-          ),
-          BlocProvider(
-            create: (context) => LanguageCubit(),
-          )
-        ],
-        child: MaterialApp(
-          navigatorKey: navigatorKey,
-          debugShowCheckedModeBanner: false,
-          title: 'GetNDriver',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-            scaffoldBackgroundColor: white,
-            appBarTheme: const AppBarTheme(
-              iconTheme: IconThemeData(
-                color: Colors.black, //change your color here
+      builder: (BuildContext context, child) =>
+          MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => MainCubit(),
               ),
-              color: white,
-              elevation: 0.0,
+              BlocProvider(
+                create: (context) => LanguageCubit(),
+              )
+            ],
+            child: MaterialApp(
+              navigatorKey: navigatorKey,
+              debugShowCheckedModeBanner: false,
+              title: 'GetNDriver',
+              theme: ThemeData(
+                primarySwatch: Colors.blue,
+                scaffoldBackgroundColor: white,
+                appBarTheme: const AppBarTheme(
+                  systemOverlayStyle: SystemUiOverlayStyle(
+                    statusBarColor: accentColor,
+                    statusBarBrightness: Brightness.light,
+                    statusBarIconBrightness: Brightness.light,
+                  ),
+                  iconTheme: IconThemeData(
+                    color: Colors.black, //change your color here
+                  ),
+                  color: white,
+                  elevation: 0.0,
+                ),
+              ),
+              home: const SplashScreen(),
             ),
           ),
-          home: const SplashScreen(),
-        ),
-      ),
     );
   }
 }

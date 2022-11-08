@@ -8,6 +8,7 @@ import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/main_cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/ui/auth/SignInScreen.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:getn_driver/presentation/ui/notifications/NotificationScreen.dart';
 import 'package:getn_driver/presentation/ui/notifications/notification_cubit.dart';
 import 'package:getn_driver/presentation/ui/policies/PoliciesScreen.dart';
@@ -960,7 +961,9 @@ class DrawerMenu extends StatelessWidget {
           ),
           ListTile(
             title: Text(
-              "Home",
+              LanguageCubit.get(context)
+                  .getTexts('Home')
+                  .toString(),
               style: TextStyle(
                 color: grey2,
                 fontSize: 20.sp,
@@ -973,7 +976,9 @@ class DrawerMenu extends StatelessWidget {
           ),
           ListTile(
             title: Text(
-              "Wallet",
+              LanguageCubit.get(context)
+                  .getTexts('Wallet')
+                  .toString(),
               style: TextStyle(
                 color: grey2,
                 fontSize: 20.sp,
@@ -993,7 +998,9 @@ class DrawerMenu extends StatelessWidget {
           ),
           ListTile(
             title: Text(
-              "Notification",
+              LanguageCubit.get(context)
+                  .getTexts('Notifications')
+                  .toString() ,
               style: TextStyle(
                 color: grey2,
                 fontSize: 20.sp,
@@ -1010,7 +1017,9 @@ class DrawerMenu extends StatelessWidget {
           ),
           ListTile(
             title: Text(
-              "Settings",
+              LanguageCubit.get(context)
+                  .getTexts('Setting')
+                  .toString(),
               style: TextStyle(
                 color: grey2,
                 fontSize: 20.sp,
@@ -1023,7 +1032,9 @@ class DrawerMenu extends StatelessWidget {
           ),
           ListTile(
             title: Text(
-              "Policies",
+              LanguageCubit.get(context)
+                  .getTexts('Policies')
+                  .toString(),
               style: TextStyle(
                 color: grey2,
                 fontSize: 20.sp,
@@ -1034,12 +1045,14 @@ class DrawerMenu extends StatelessWidget {
               color: grey2,
             ),
             onTap: () {
-              navigateTo(context, PoliciesScreen());
+              navigateTo(context, const PoliciesScreen());
             },
           ),
           ListTile(
             title: Text(
-              "SignOut",
+              LanguageCubit.get(context)
+                  .getTexts('SignOut')
+                  .toString(),
               style: TextStyle(
                 color: grey2,
                 fontSize: 20.sp,

@@ -164,7 +164,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
             RequestDetailsCubit.get(context)
                 .getRequestDetails(widget.idRequest!);
-          } else if (state is CurrentLocationErrorState) {
+          }
+          else if (state is CurrentLocationErrorState) {
             if (kDebugMode) {
               print('CurrentLocationErrorState********* ${state.error}');
             }
@@ -213,7 +214,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 },
               ).then((value) => Navigator.pop(context));
             }
-          } else if (state is TripsSuccessState) {
+          }
+          else if (state is TripsSuccessState) {
             setState(() {
               loadingMoreTrips = false;
             });
