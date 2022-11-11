@@ -17,7 +17,6 @@ import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
-import 'package:getn_driver/presentation/ui/auth/CarRegistrationScreen.dart';
 import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:getn_driver/presentation/ui/myCar/my_car_screen_cubit.dart';
 import 'package:http_parser/http_parser.dart';
@@ -144,13 +143,14 @@ class _MyCarScreenState extends State<MyCarScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => MyCarScreenCubit()
-        ..getCar()
-        ..getColor()
-        ..getCarSubCategory(),
+      create: (context) => MyCarScreenCubit()..getCar(),
       child: BlocConsumer<MyCarScreenCubit, MyCarScreenState>(
         listener: (context, state) async {
           if (state is CarSuccessState) {
+            print('CarSuccessState*******');
+            MyCarScreenCubit.get(context).getColor();
+            MyCarScreenCubit.get(context)
+                .getCarSubCategory();
             if (state.data!.gallery!.isNotEmpty) {
               for (var i = 0; i < state.data!.gallery!.length; i++) {
                 listGallery.insert(
@@ -180,15 +180,10 @@ class _MyCarScreenState extends State<MyCarScreen> {
               }
             });
           } else if (state is CarErrorState) {
-            setState(() {
-              MyCarScreenCubit.get(context).carLoading = false;
-            });
+            print('CarErrorState*******');
 
-            showToastt(
-                text: state.message,
-                state: ToastStates.error,
-                context: context);
           } else if (state is CarModelSuccessState) {
+            print('CarModelSuccessState*******');
             if (state.data!.isNotEmpty && carModelYear.isNotEmpty) {
               setState(() {
                 dropDownValueCarModel = state.data!
@@ -196,10 +191,9 @@ class _MyCarScreenState extends State<MyCarScreen> {
                     .first;
               });
             }
-            MyCarScreenCubit.get(context).carLoading = false;
           } else if (state is CarEditSuccessState) {
             if (kDebugMode) {
-              print('*******CarEditSuccessState');
+              print('CarEditSuccessState*******');
             }
             setState(() {
               editCarLoading = false;
@@ -212,6 +206,7 @@ class _MyCarScreenState extends State<MyCarScreen> {
                 context: context);
             Navigator.pop(context);
           } else if (state is CarEditErrorState) {
+            print('CarEditErrorState*******');
             setState(() {
               editCarLoading = false;
             });
@@ -238,27 +233,17 @@ class _MyCarScreenState extends State<MyCarScreen> {
                 ),
                 centerTitle: true,
               ),
-              body: MyCarScreenCubit.get(context).carLoading
+              body: state is CarLoading
                   ? loading()
-                  : MyCarScreenCubit.get(context).car!.id!.isEmpty
-                      ? defaultButton3(
-                          press: () {
-                            navigateTo(context, const CarRegistrationScreen());
-                          },
-                          text: LanguageCubit.get(context)
-                              .getTexts('AddCar')
-                              .toString(),
-                          backColor: accentColor,
-                          textColor: white)
-                      : RefreshIndicator(
-                       onRefresh: () => Future.delayed(
-                       const Duration(seconds: 2),
-                        () {
-                          MyCarScreenCubit.get(context).getCar();
-                          MyCarScreenCubit.get(context).getColor();
-                          MyCarScreenCubit.get(context).getCarSubCategory();
-                        }),
-                        child: SingleChildScrollView(
+                  : MyCarScreenCubit.get(context).carSuccess
+                      ? RefreshIndicator(
+                          onRefresh: () =>
+                              Future.delayed(const Duration(seconds: 2), () {
+                            MyCarScreenCubit.get(context).getCar();
+                            MyCarScreenCubit.get(context).getColor();
+                            MyCarScreenCubit.get(context).getCarSubCategory();
+                          }),
+                          child: SingleChildScrollView(
                             child: Padding(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 25.r, vertical: 30.r),
@@ -320,10 +305,12 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                       LanguageCubit.get(context)
                                                               .isEn
                                                           ? dropDownValueCarSubCategory
-                                                                  ?.title?.en! ??
+                                                                  ?.title
+                                                                  ?.en! ??
                                                               "Car Model"
                                                           : dropDownValueCarSubCategory
-                                                                  ?.title?.ar! ??
+                                                                  ?.title
+                                                                  ?.ar! ??
                                                               "نوع العربية",
                                                       maxLines: 2,
                                                       style: TextStyle(
@@ -333,18 +320,21 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                           fontSize: 20.sp)),
                                                 ),
                                               ),
-                                              items: MyCarScreenCubit.get(context)
-                                                  .carSubCategory
-                                                  .map((selectedCountry) {
+                                              items:
+                                                  MyCarScreenCubit.get(context)
+                                                      .carSubCategory
+                                                      .map((selectedCountry) {
                                                 return DropdownMenuItem<Data>(
                                                   value: selectedCountry,
                                                   child: Column(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment.center,
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
                                                       Text(
-                                                          LanguageCubit.get(
-                                                                      context)
+                                                          LanguageCubit
+                                                                      .get(
+                                                                          context)
                                                                   .isEn
                                                               ? selectedCountry
                                                                       .title
@@ -354,14 +344,15 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                                       .title
                                                                       ?.ar ??
                                                                   "",
-                                                          textAlign:
-                                                              TextAlign.center,
+                                                          textAlign: TextAlign
+                                                              .center,
                                                           maxLines: 1,
                                                           style: TextStyle(
                                                               overflow:
                                                                   TextOverflow
                                                                       .ellipsis,
-                                                              color: Colors.black,
+                                                              color:
+                                                                  Colors.black,
                                                               fontSize: 20.sp)),
                                                       SizedBox(
                                                         height: 5.h,
@@ -435,10 +426,12 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                       LanguageCubit.get(context)
                                                               .isEn
                                                           ? dropDownValueCarModel
-                                                                  ?.title?.en! ??
+                                                                  ?.title
+                                                                  ?.en! ??
                                                               "year"
                                                           : dropDownValueCarModel
-                                                                  ?.title?.ar! ??
+                                                                  ?.title
+                                                                  ?.ar! ??
                                                               "سنة",
                                                       maxLines: 2,
                                                       style: TextStyle(
@@ -448,18 +441,21 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                           fontSize: 20.sp)),
                                                 ),
                                               ),
-                                              items: MyCarScreenCubit.get(context)
-                                                  .carModel
-                                                  .map((selectedCountry) {
+                                              items:
+                                                  MyCarScreenCubit.get(context)
+                                                      .carModel
+                                                      .map((selectedCountry) {
                                                 return DropdownMenuItem<Data>(
                                                   value: selectedCountry,
                                                   child: Column(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment.center,
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
                                                       Text(
-                                                          LanguageCubit.get(
-                                                                      context)
+                                                          LanguageCubit
+                                                                      .get(
+                                                                          context)
                                                                   .isEn
                                                               ? selectedCountry
                                                                       .title
@@ -469,14 +465,15 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                                       .title
                                                                       ?.ar ??
                                                                   "",
-                                                          textAlign:
-                                                              TextAlign.center,
+                                                          textAlign: TextAlign
+                                                              .center,
                                                           maxLines: 1,
                                                           style: TextStyle(
                                                               overflow:
                                                                   TextOverflow
                                                                       .ellipsis,
-                                                              color: Colors.black,
+                                                              color:
+                                                                  Colors.black,
                                                               fontSize: 20.sp)),
                                                       SizedBox(
                                                         height: 5.h,
@@ -550,10 +547,12 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                       LanguageCubit.get(context)
                                                               .isEn
                                                           ? dropDownValueColor
-                                                                  ?.title?.en! ??
+                                                                  ?.title
+                                                                  ?.en! ??
                                                               "Color"
                                                           : dropDownValueColor
-                                                                  ?.title?.ar! ??
+                                                                  ?.title
+                                                                  ?.ar! ??
                                                               "اللون",
                                                       maxLines: 2,
                                                       style: TextStyle(
@@ -563,18 +562,21 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                           fontSize: 20.sp)),
                                                 ),
                                               ),
-                                              items: MyCarScreenCubit.get(context)
-                                                  .colors
-                                                  .map((selectedCountry) {
+                                              items:
+                                                  MyCarScreenCubit.get(context)
+                                                      .colors
+                                                      .map((selectedCountry) {
                                                 return DropdownMenuItem<Data>(
                                                   value: selectedCountry,
                                                   child: Column(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment.center,
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
                                                       Text(
-                                                          LanguageCubit.get(
-                                                                      context)
+                                                          LanguageCubit
+                                                                      .get(
+                                                                          context)
                                                                   .isEn
                                                               ? selectedCountry
                                                                       .title
@@ -584,14 +586,15 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                                       .title
                                                                       ?.ar ??
                                                                   "",
-                                                          textAlign:
-                                                              TextAlign.center,
+                                                          textAlign: TextAlign
+                                                              .center,
                                                           maxLines: 1,
                                                           style: TextStyle(
                                                               overflow:
                                                                   TextOverflow
                                                                       .ellipsis,
-                                                              color: Colors.black,
+                                                              color:
+                                                                  Colors.black,
                                                               fontSize: 20.sp)),
                                                       SizedBox(
                                                         height: 5.h,
@@ -625,7 +628,8 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                           textSize: 20,
                                           border: false,
                                           borderRadius: 50,
-                                          validatorText: carNumberController.text,
+                                          validatorText:
+                                              carNumberController.text,
                                           validatorMessage:
                                               LanguageCubit.get(context)
                                                   .getTexts('EnterCarNumber')
@@ -663,7 +667,8 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                       decoration: BoxDecoration(
                                         color: white,
                                         shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius.circular(25.r),
+                                        borderRadius:
+                                            BorderRadius.circular(25.r),
                                         border: Border.all(color: Colors.black),
                                       ),
                                       child: _imageFrontCar == null
@@ -733,7 +738,8 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                           shape: BoxShape.rectangle,
                                           borderRadius:
                                               BorderRadius.circular(25.r),
-                                          border: Border.all(color: Colors.black),
+                                          border:
+                                              Border.all(color: Colors.black),
                                         ),
                                         child: _imageBackCar == null
                                             ? MyCarScreenCubit.get(context)
@@ -748,8 +754,8 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                               25.r),
                                                       child: ImageTools.image(
                                                         fit: BoxFit.fill,
-                                                        url: MyCarScreenCubit.get(
-                                                                context)
+                                                        url: MyCarScreenCubit
+                                                                .get(context)
                                                             .car
                                                             ?.backCarLicenseImage
                                                             ?.src,
@@ -764,7 +770,8 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                             : SizedBox(
                                                 child: ClipRRect(
                                                   borderRadius:
-                                                      BorderRadius.circular(25.r),
+                                                      BorderRadius.circular(
+                                                          25.r),
                                                   child: Image.file(
                                                     _imageBackCar!,
                                                     fit: BoxFit.fill,
@@ -792,7 +799,8 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                     height: 20.h,
                                   ),
                                   GridView.builder(
-                                    physics: const NeverScrollableScrollPhysics(),
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
                                     itemCount: listGallery.length,
                                     shrinkWrap: true,
                                     gridDelegate:
@@ -811,7 +819,8 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                   size: 35.sp, color: white),
                                               onPressed: () {
                                                 selectImageSource(
-                                                    ImageSource.camera, "galley");
+                                                    ImageSource.camera,
+                                                    "galley");
                                               },
                                             ),
                                           ),
@@ -833,7 +842,8 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                               child: SizedBox(
                                                 child: ClipRRect(
                                                   borderRadius:
-                                                      BorderRadius.circular(25.r),
+                                                      BorderRadius.circular(
+                                                          25.r),
                                                   child: ImageTools.image(
                                                     url: listGallery[i].value,
                                                     fit: BoxFit.fill,
@@ -842,13 +852,14 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                               ),
                                             ),
                                             Align(
-                                              alignment:
-                                                  AlignmentDirectional.bottomEnd,
+                                              alignment: AlignmentDirectional
+                                                  .bottomEnd,
                                               child: CircleAvatar(
                                                 backgroundColor: accentColor,
                                                 child: IconButton(
                                                   icon: Icon(Icons.close,
-                                                      size: 25.sp, color: white),
+                                                      size: 25.sp,
+                                                      color: white),
                                                   onPressed: () {
                                                     setState(() {
                                                       listGallery.removeAt(i);
@@ -902,8 +913,10 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                 dropDownValueColor != null &&
                                                 formKey.currentState!
                                                     .validate() &&
-                                                frontCarLicenseImage.isNotEmpty &&
-                                                backCarLicenseImage.isNotEmpty) {
+                                                frontCarLicenseImage
+                                                    .isNotEmpty &&
+                                                backCarLicenseImage
+                                                    .isNotEmpty) {
                                               setState(() {
                                                 editCarLoading = true;
                                               });
@@ -918,12 +931,13 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                       dropDownValueCarSubCategory
                                                           ?.id!,
                                                   'carModelYear':
-                                                      dropDownValueCarModel?.id!,
+                                                      dropDownValueCarModel
+                                                          ?.id!,
                                                   'carColor':
                                                       dropDownValueColor?.id!,
-                                                  'carNumber': carNumberController
-                                                      .text
-                                                      .toString(),
+                                                  'carNumber':
+                                                      carNumberController.text
+                                                          .toString(),
                                                   'gallery': listGalleryValue,
                                                   'gallery-old': json.encode(
                                                       listGalleryFromServer),
@@ -935,8 +949,9 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                           frontCarLicenseImage,
                                                           filename:
                                                               frontCarLicenseImage,
-                                                          contentType: MediaType(
-                                                              "image", "jpeg")),
+                                                          contentType:
+                                                              MediaType("image",
+                                                                  "jpeg")),
                                                   'backCarLicenseImage': _imageBackCar ==
                                                           null
                                                       ? jsonEncode(
@@ -945,12 +960,14 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                           backCarLicenseImage,
                                                           filename:
                                                               backCarLicenseImage,
-                                                          contentType: MediaType(
-                                                              "image", "jpeg")),
+                                                          contentType:
+                                                              MediaType("image",
+                                                                  "jpeg")),
                                                 });
                                               } else if (listGalleryValue
                                                       .isNotEmpty &&
-                                                  listGalleryFromServer.isEmpty) {
+                                                  listGalleryFromServer
+                                                      .isEmpty) {
                                                 print(
                                                     "listGallery2*****************${listGalleryValue.isNotEmpty && listGalleryFromServer.isEmpty}");
                                                 formData = FormData.fromMap({
@@ -958,12 +975,13 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                       dropDownValueCarSubCategory
                                                           ?.id!,
                                                   'carModelYear':
-                                                      dropDownValueCarModel?.id!,
+                                                      dropDownValueCarModel
+                                                          ?.id!,
                                                   'carColor':
                                                       dropDownValueColor?.id!,
-                                                  'carNumber': carNumberController
-                                                      .text
-                                                      .toString(),
+                                                  'carNumber':
+                                                      carNumberController.text
+                                                          .toString(),
                                                   'gallery': listGalleryValue,
                                                   'frontCarLicenseImage': _imageFrontCar ==
                                                           null
@@ -973,8 +991,9 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                           frontCarLicenseImage,
                                                           filename:
                                                               frontCarLicenseImage,
-                                                          contentType: MediaType(
-                                                              "image", "jpeg")),
+                                                          contentType:
+                                                              MediaType("image",
+                                                                  "jpeg")),
                                                   'backCarLicenseImage': _imageBackCar ==
                                                           null
                                                       ? jsonEncode(
@@ -983,8 +1002,9 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                           backCarLicenseImage,
                                                           filename:
                                                               backCarLicenseImage,
-                                                          contentType: MediaType(
-                                                              "image", "jpeg")),
+                                                          contentType:
+                                                              MediaType("image",
+                                                                  "jpeg")),
                                                 });
                                               } else {
                                                 print(
@@ -994,12 +1014,13 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                       dropDownValueCarSubCategory
                                                           ?.id!,
                                                   'carModelYear':
-                                                      dropDownValueCarModel?.id!,
+                                                      dropDownValueCarModel
+                                                          ?.id!,
                                                   'carColor':
                                                       dropDownValueColor?.id!,
-                                                  'carNumber': carNumberController
-                                                      .text
-                                                      .toString(),
+                                                  'carNumber':
+                                                      carNumberController.text
+                                                          .toString(),
                                                   'frontCarLicenseImage': _imageFrontCar ==
                                                           null
                                                       ? jsonEncode(
@@ -1008,8 +1029,9 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                           frontCarLicenseImage,
                                                           filename:
                                                               frontCarLicenseImage,
-                                                          contentType: MediaType(
-                                                              "image", "jpeg")),
+                                                          contentType:
+                                                              MediaType("image",
+                                                                  "jpeg")),
                                                   'backCarLicenseImage': _imageBackCar ==
                                                           null
                                                       ? jsonEncode(
@@ -1018,15 +1040,17 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                                           backCarLicenseImage,
                                                           filename:
                                                               backCarLicenseImage,
-                                                          contentType: MediaType(
-                                                              "image", "jpeg")),
+                                                          contentType:
+                                                              MediaType("image",
+                                                                  "jpeg")),
                                                 });
                                               }
                                               MyCarScreenCubit.get(context)
                                                   .carEdit(formData, id);
                                             } else {
                                               showToastt(
-                                                  text: LanguageCubit.get(context)
+                                                  text: LanguageCubit.get(
+                                                          context)
                                                       .getTexts(
                                                           'pleaseFillAllData')
                                                       .toString(),
@@ -1043,7 +1067,17 @@ class _MyCarScreenState extends State<MyCarScreen> {
                               ),
                             ),
                           ),
-                      ),
+                        )
+                      : MyCarScreenCubit.get(context).carError
+                          ? Padding(
+                              padding: EdgeInsets.all(18.r),
+                              child: errorMessage2(
+                                  message: MyCarScreenCubit.get(context).carFailure,
+                                  press: () {
+                                    MyCarScreenCubit.get(context).getCar();
+                                  }),
+                            )
+                          : Container(),
             ),
           );
         },

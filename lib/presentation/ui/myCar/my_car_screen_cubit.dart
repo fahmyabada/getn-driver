@@ -30,13 +30,15 @@ class MyCarScreenCubit extends Cubit<MyCarScreenState> {
   List<category.Data> carModel = [];
   List<category.Data> carSubCategory = [];
   Data? car;
+  bool carSuccess = false;
+  bool carError = false;
+  String carFailure = "";
   bool carModelLoading = false;
   bool carSubCategoryLoading = false;
   bool colorsLoading = false;
-  bool carLoading = false;
 
   void getCar() async {
-    carLoading = true;
+    emit(CarLoading());
     getMyCarUseCase.execute().then((value) {
       emit(eitherLoadedOrErrorStateCar(value));
     });
@@ -44,11 +46,12 @@ class MyCarScreenCubit extends Cubit<MyCarScreenState> {
 
   MyCarScreenState eitherLoadedOrErrorStateCar(Either<String, Data?> data) {
     return data.fold((failure1) {
-      carLoading = false;
+      carError = true;
+      carFailure = failure1;
       return CarErrorState(failure1);
     }, (data) {
-      carLoading = false;
       car = data!;
+      carSuccess = true;
       return CarSuccessState(data);
     });
   }

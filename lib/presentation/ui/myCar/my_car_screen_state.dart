@@ -5,6 +5,8 @@ abstract class MyCarScreenState {}
 
 class MyCarScreenInitial extends MyCarScreenState {}
 
+class CarLoading extends MyCarScreenState {}
+
 class CarErrorState extends MyCarScreenState {
   final String message;
 
