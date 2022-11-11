@@ -32,6 +32,7 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
   bool loadingRequest = false;
   String failureRequest = "";
   String failureTrip = "";
+  String typeScreen = "";
 
   void getRequestDetails(String id) async {
     emit(RequestDetailsInitial());

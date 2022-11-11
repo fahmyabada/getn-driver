@@ -1,7 +1,6 @@
 import 'dart:ui' as ui;
 
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,79 +28,8 @@ class _SignInScreenState extends State<SignInScreen> {
   var phoneController = TextEditingController();
   Country? dropDownValueCountry;
   String splitPhone2 = "";
-  String? verificationId, authStatus = "", otp;
   bool signInLoading = false;
 
-  Future<void> verifyPhone(phoneNumber) async {
-    await FirebaseAuth.instance.verifyPhoneNumber(
-
-        /// Make sure to prefix with your country code
-        phoneNumber: phoneNumber,
-
-        ///No duplicated SMS will be sent out upon re-entry (before timeout).
-        timeout: const Duration(seconds: 5),
-
-        /// If the SIM (with phoneNumber) is in the current device this function is called.
-        /// This function gives `AuthCredential`. Moreover `login` function can be called from this callback
-        /// When this function is called there is no need to enter the OTP, you can click on Login button to sigin directly as the device is now verified
-        verificationCompleted: (AuthCredential authResult) {
-          if (kDebugMode) {
-            print('verifyPhone***********$phoneNumber');
-          }
-          setState(() {
-            authStatus = "Your account is successfully verified";
-          });
-        },
-
-        /// Called when the verification is failed
-        verificationFailed: (final authException) {
-          if (kDebugMode) {
-            print('verificationFailed***********${authException.message!}');
-          }
-          showToastt(
-              text: authException.message!,
-              state: ToastStates.error,
-              context: context);
-
-          setState(() {
-            authStatus = "Authentication failed";
-            signInLoading = false;
-          });
-          showToastt(
-              text: "Authentication failed",
-              state: ToastStates.error,
-              context: context);
-        },
-
-        /// This is called after the OTP is sent. Gives a `verificationId` and `code`
-        codeSent: (String verId, [int? forceResend]) {
-          print('codeSent***********$verId');
-          verificationId = verId;
-          setState(() {
-            authStatus = "OTP has been successfully send";
-            signInLoading = false;
-          });
-          navigateTo(
-            context,
-            OtpScreen(
-              type: "login",
-              verificationId: verificationId,
-              phone: splitPhone2,
-              countryId: dropDownValueCountry!.id!,
-              phoneWithCountry: '${dropDownValueCountry!.code}$splitPhone2',
-            ),
-          );
-        },
-
-        /// After automatic code retrival `tmeout` this function is called
-        codeAutoRetrievalTimeout: (String verId) {
-          print('codeAutoRetrievalTimeout***********$verId');
-          verificationId = verId;
-          setState(() {
-            authStatus = "TIMEOUT";
-          });
-        });
-  }
 
   @override
   void initState() {
@@ -138,7 +66,18 @@ class _SignInScreenState extends State<SignInScreen> {
           if (kDebugMode) {
             print('SignInScreen*******SendOtpSignInSuccessState');
           }
-          verifyPhone('${dropDownValueCountry!.code}$splitPhone2');
+          setState(() {
+            signInLoading = false;
+          });
+          navigateTo(
+            context,
+            OtpScreen(
+              type: "login",
+              phone: splitPhone2,
+              countryId: dropDownValueCountry!.id!,
+              phoneWithCountry: '${dropDownValueCountry!.code}$splitPhone2',
+            ),
+          );
         } else if (state is SendOtpSignInErrorState) {
           setState(() {
             signInLoading = false;

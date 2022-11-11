@@ -581,20 +581,23 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                                         formMountKey.currentState!.validate()) {
                                       var body = jsonEncode({
                                         "paymentMethod": "visa",
-                                        "accountType": accountTypeController!
-                                            .text
-                                            .toString(),
-                                        "accountName": accountNameController!
-                                            .text
-                                            .toString(),
-                                        "bankName":
-                                            bankNameController!.text.toString(),
-                                        "accountNumber":
-                                            accountNumberController!.text
-                                                .toString(),
-                                        "iban": ibanController!.text.toString(),
-                                        "amount":
-                                            mountController!.text.toString(),
+                                        'paymentDetails': {
+                                          'accountType': accountTypeController!
+                                              .text
+                                              .toString(),
+                                          'accountName': accountNameController!
+                                              .text
+                                              .toString(),
+                                          'bankName': bankNameController!.text
+                                              .toString(),
+                                          'accountNumber':
+                                              accountNumberController!.text
+                                                  .toString(),
+                                          'iban':
+                                              ibanController!.text.toString(),
+                                          "amount":
+                                              mountController!.text.toString(),
+                                        }
                                       });
 
                                       WalletCubit.get(context)
@@ -604,8 +607,7 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                                         load = false;
                                       });
                                       showToastt(
-                                          text:
-                                          LanguageCubit.get(context)
+                                          text: LanguageCubit.get(context)
                                               .getTexts('pleaseFillAllData')
                                               .toString(),
                                           state: ToastStates.error,

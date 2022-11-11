@@ -16,7 +16,6 @@ import 'package:getn_driver/presentation/ui/auth/SignUpDetailsScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
 import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/RequestTabsScreen.dart';
-import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,14 +25,12 @@ class OtpScreen extends StatefulWidget {
       required this.phone,
       required this.countryId,
       required this.type,
-      this.verificationId,
       required this.phoneWithCountry,
       this.countryName})
       : super(key: key);
 
   final String phone;
   final String phoneWithCountry;
-  final String? verificationId;
   final String countryId;
   final String type;
   final String? countryName;
@@ -54,8 +51,11 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   void initState() {
     super.initState();
+
+    verifyPhone(widget.phoneWithCountry);
+
     startTimer();
-    verificationId = widget.verificationId;
+
     if (getIt<SharedPreferences>().getBool("isEn") != null) {
       LanguageCubit.get(context).isEn =
           getIt<SharedPreferences>().getBool("isEn")!;
@@ -254,13 +254,13 @@ class _OtpScreenState extends State<OtpScreen> {
             if (state.data.token != null) {
               getIt<SharedPreferences>().setString('token', state.data.token!);
             }
-            if (state.data.image!.src != null) {
+            if (state.data.image != null) {
               getIt<SharedPreferences>()
                   .setString('userImage', state.data.image!.src!);
             }
             getIt<SharedPreferences>().setString('countryId', widget.countryId);
 
-            if (state.data.frontNationalImage?.src == null) {
+            if (state.data.frontNationalImage == null) {
               getIt<SharedPreferences>().setString('typeSign', "sign");
               navigateAndFinish(context, const DriverInformationScreen());
             } else if (state.data.hasCar != null && !state.data.hasCar!) {
@@ -269,14 +269,12 @@ class _OtpScreenState extends State<OtpScreen> {
               navigateAndFinish(context, const CarRegistrationScreen());
             } else if (state.data.hasCar != null &&
                 state.data.hasCar! &&
-                state.data.frontNationalImage?.src != null) {
+                state.data.frontNationalImage != null) {
               getIt<SharedPreferences>()
                   .setString('typeSign', "signWithCarRegistration");
               navigateAndFinish(
                   context,
-                  BlocProvider(
-                      create: (context) => RequestCubit(),
-                      child: const RequestTabsScreen()));
+                  const RequestTabsScreen());
             }
           } else if (state is SignInErrorState) {
             if (kDebugMode) {

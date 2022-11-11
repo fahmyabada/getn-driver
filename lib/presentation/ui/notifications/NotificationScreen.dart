@@ -11,6 +11,7 @@ import 'package:getn_driver/presentation/ui/notifications/notification_cubit.dar
 import 'package:getn_driver/presentation/ui/request/requestDetails/RequestDetailsScreen.dart';
 import 'package:getn_driver/presentation/ui/trip/tripDetails/TripDetailsScreen.dart';
 import 'package:getn_driver/presentation/ui/wallet/WalletScreen.dart';
+import 'package:getn_driver/presentation/ui/wallet/wallet_cubit.dart';
 import 'package:intl/intl.dart';
 import 'package:scroll_edge_listener/scroll_edge_listener.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -125,11 +126,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                                 context)
                                                             .isEn
                                                         ? notification
-                                                                .title!.en! ??
-                                                            ""
+                                                                .title!.en!
                                                         : notification
-                                                                .title!.ar! ??
-                                                            "",
+                                                                .title!.ar!,
                                                     style: TextStyle(
                                                       fontSize: 20.sp,
                                                       fontWeight:
@@ -185,11 +184,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                               Text(
                                                 LanguageCubit.get(context).isEn
                                                     ? notification
-                                                            .content!.en! ??
-                                                        ""
+                                                            .content!.en!
                                                     : notification
-                                                            .content!.ar! ??
-                                                        "",
+                                                            .content!.ar!,
                                                 style: TextStyle(
                                                   fontSize: 20.sp,
                                                   color: greyColor,
@@ -230,7 +227,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                 notification.type ==
                                                     "requestTransaction") {
                                               navigateTo(context,
-                                                  const WalletScreen());
+                                                  BlocProvider(
+                                                      create: (context) => WalletCubit(),
+                                                      child: const WalletScreen()));
                                             }
                                           },
                                         ),

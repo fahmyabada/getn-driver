@@ -15,7 +15,6 @@ import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/auth/cubit/cubit.dart';
 import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/RequestTabsScreen.dart';
-import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -160,9 +159,7 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
 
               navigateAndFinish(
                   context,
-                  BlocProvider(
-                      create: (context) => RequestCubit(),
-                      child: const RequestTabsScreen()));
+                  const RequestTabsScreen());
             }
           } else if (state is CarCreateErrorState) {
             setState(() {

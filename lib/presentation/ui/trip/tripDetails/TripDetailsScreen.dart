@@ -1,13 +1,16 @@
 import 'dart:async';
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:focus_detector/focus_detector.dart';
 import 'package:getn_driver/data/utils/MapUtils.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/main.dart';
 import 'package:getn_driver/main_cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
@@ -138,12 +141,14 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
     }
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    getIt<SharedPreferences>().setString('tripDetailsId', "");
-    getIt<SharedPreferences>().setString('typeScreen', "");
-  }
+  // @override
+  // void dispose() {
+  //   getIt<SharedPreferences>().setString('tripDetailsId', "");
+  //   getIt<SharedPreferences>().setString('typeScreen',"") ;
+  //   print("typeScreenTrip************dispose");
+  //   super.dispose();
+  //
+  // }
 
   @override
   void initState() {
@@ -156,18 +161,37 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
 
     super.initState();
 
+    TripDetailsCubit.get(context).getTripDetails(widget.idTrip!);
+    // Future.delayed(const Duration(seconds: 2),(){
+    //   getIt<SharedPreferences>().setString('typeScreen',"tripDetails") ;
+    //   getIt<SharedPreferences>().setString('tripDetailsId', widget.idTrip!);
+    //   if (kDebugMode) {
+    //     print("typeScreenTrip************initState");
+    //   }
+    // });
     if (getIt<SharedPreferences>().getBool("isEn") != null) {
       LanguageCubit.get(context).isEn =
           getIt<SharedPreferences>().getBool("isEn")!;
     }
+  }
+
+  void viewWillAppear() {
+    print("onResume / viewWillAppear / onFocusGained   TripDetailsScreen");
     getIt<SharedPreferences>().setString('typeScreen', "tripDetails");
     getIt<SharedPreferences>().setString('tripDetailsId', widget.idTrip!);
   }
 
+  void viewWillDisappear() {
+    print("onPause / viewWillDisappear / onFocusLost   TripDetailsScreen");
+    getIt<SharedPreferences>().setString('tripDetailsId', "");
+    getIt<SharedPreferences>().setString('typeScreen', "");
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => TripDetailsCubit()..getTripDetails(widget.idTrip!),
+    return FocusDetector(
+      onFocusGained: viewWillAppear,
+      onFocusLost: viewWillDisappear,
       child: BlocConsumer<TripDetailsCubit, TripDetailsState>(
         listener: (context, state) {
           if (state is TripDetailsEditSuccessState) {
@@ -208,7 +232,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                 : ui.TextDirection.rtl,
             child: WillPopScope(
               onWillPop: () async {
-                Navigator.of(context).pop(widget.idRequest);
+                Navigator.of(navigatorKey.currentState!.context)
+                    .pop(widget.idRequest);
                 return true;
               },
               child: Scaffold(
@@ -219,16 +244,16 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                         .toString(),
                     style: TextStyle(color: primaryColor, fontSize: 20.sp),
                   ),
-                  leading: IconButton(
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: black,
-                      size: 27.sp,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop(widget.idRequest);
-                    },
-                  ),
+                  // leading: IconButton(
+                  //   icon: Icon(
+                  //     Icons.arrow_back,
+                  //     color: black,
+                  //     size: 27.sp,
+                  //   ),
+                  //   onPressed: () {
+                  //     Navigator.of(context).pop(widget.idRequest);
+                  //   },
+                  // ),
                   centerTitle: true,
                   elevation: 1.0,
                 ),
@@ -273,7 +298,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                           message: state.message,
                                           press: () {
                                             TripDetailsCubit.get(context)
-                                                .getTripDetails(widget.idTrip!);
+                                                .getTripDetails(
+                                                    widget.idTrip!);
                                           })),
                                 )
                               : Container(
@@ -310,7 +336,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                   SizedBox(
                                                     height: 5.h,
                                                   ),
-                                                  buttonStatus(context, state),
+                                                  buttonStatus(
+                                                      context, state),
                                                   // SizedBox(
                                                   //   height: 10.h,
                                                   // ),
@@ -358,7 +385,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                       .tripDetails !=
                                                   null
                                               ? txtStatusRunning[
-                                                  TripDetailsCubit.get(context)
+                                                  TripDetailsCubit.get(
+                                                          context)
                                                       .tripDetails!
                                                       .status!]!
                                               : LanguageCubit.get(context)
@@ -489,72 +517,78 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                   SizedBox(
                     height: 5.h,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: defaultButtonWithIcon(
-                            press: () {
-                              if (TripDetailsCubit.get(context)
-                                      .tripDetails
-                                      ?.client2
-                                      ?.phone !=
-                                  null) {
-                                makePhoneCall(
-                                    '${TripDetailsCubit.get(context).tripDetails?.client2?.country?.code}${TripDetailsCubit.get(context).tripDetails?.client2?.phone}');
-                              } else {
-                                showToastt(
-                                    text: LanguageCubit.get(context)
-                                        .getTexts('ClientNotHavePhone')
-                                        .toString(),
-                                    state: ToastStates.error,
-                                    context: context);
-                              }
-                            },
-                            fontSize: 18,
-                            paddingVertical: 1,
-                            paddingHorizontal: 5,
-                            borderRadius: 10,
-                            text: LanguageCubit.get(context)
-                                .getTexts('CallClient')
-                                .toString(),
-                            backColor: greenColor,
-                            textColor: white,
-                            icon: Icons.phone),
-                      ),
-                      SizedBox(
-                        width: 5.w,
-                      ),
-                      Expanded(
-                        child: defaultButtonWithIcon(
-                            press: () {
-                              if (TripDetailsCubit.get(context)
-                                      .tripDetails
-                                      ?.client2
-                                      ?.whatsApp !=
-                                  null) {
-                                openWhatsapp(
-                                    '${TripDetailsCubit.get(context).tripDetails?.client2?.country?.code}${TripDetailsCubit.get(context).tripDetails?.client2?.whatsApp}',
-                                    context);
-                              } else {
-                                openWhatsapp(
-                                    '${TripDetailsCubit.get(context).tripDetails?.client2?.country?.code}${TripDetailsCubit.get(context).tripDetails?.client2?.phone}',
-                                    context);
-                              }
-                            },
-                            fontSize: 18,
-                            paddingVertical: 1,
-                            paddingHorizontal: 5,
-                            borderRadius: 10,
-                            text: LanguageCubit.get(context)
-                                .getTexts('WhatsApp')
-                                .toString(),
-                            backColor: greenColor,
-                            textColor: white,
-                            icon: Icons.whatsapp),
-                      ),
-                    ],
-                  )
+                  TripDetailsCubit.get(context).tripDetails!.status! == "end" ||
+                          TripDetailsCubit.get(context).tripDetails!.status! ==
+                              "reject" ||
+                          TripDetailsCubit.get(context).tripDetails!.status! ==
+                              "cancel"
+                      ? Container()
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: defaultButtonWithIcon(
+                                  press: () {
+                                    if (TripDetailsCubit.get(context)
+                                            .tripDetails
+                                            ?.client2
+                                            ?.phone !=
+                                        null) {
+                                      makePhoneCall(
+                                          '${TripDetailsCubit.get(context).tripDetails?.client2?.country?.code}${TripDetailsCubit.get(context).tripDetails?.client2?.phone}');
+                                    } else {
+                                      showToastt(
+                                          text: LanguageCubit.get(context)
+                                              .getTexts('ClientNotHavePhone')
+                                              .toString(),
+                                          state: ToastStates.error,
+                                          context: context);
+                                    }
+                                  },
+                                  fontSize: 18,
+                                  paddingVertical: 1,
+                                  paddingHorizontal: 5,
+                                  borderRadius: 10,
+                                  text: LanguageCubit.get(context)
+                                      .getTexts('CallClient')
+                                      .toString(),
+                                  backColor: greenColor,
+                                  textColor: white,
+                                  icon: Icons.phone),
+                            ),
+                            SizedBox(
+                              width: 5.w,
+                            ),
+                            Expanded(
+                              child: defaultButtonWithIcon(
+                                  press: () {
+                                    if (TripDetailsCubit.get(context)
+                                            .tripDetails
+                                            ?.client2
+                                            ?.whatsApp !=
+                                        null) {
+                                      openWhatsapp(
+                                          '${TripDetailsCubit.get(context).tripDetails?.client2?.country?.code}${TripDetailsCubit.get(context).tripDetails?.client2?.whatsApp}',
+                                          context);
+                                    } else {
+                                      openWhatsapp(
+                                          '${TripDetailsCubit.get(context).tripDetails?.client2?.country?.code}${TripDetailsCubit.get(context).tripDetails?.client2?.phone}',
+                                          context);
+                                    }
+                                  },
+                                  fontSize: 18,
+                                  paddingVertical: 1,
+                                  paddingHorizontal: 5,
+                                  borderRadius: 10,
+                                  text: LanguageCubit.get(context)
+                                      .getTexts('WhatsApp')
+                                      .toString(),
+                                  backColor: greenColor,
+                                  textColor: white,
+                                  icon: Icons.whatsapp),
+                            ),
+                          ],
+                        )
                 ],
               ),
             ),

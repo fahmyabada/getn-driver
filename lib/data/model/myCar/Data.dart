@@ -15,13 +15,7 @@ class Data {
       Image? image,
       bool? available, 
       bool? individual, 
-      int? tripCount, 
-      int? rating, 
-      int? ratingsCount, 
-      int? totalRatingsCount, 
-      int? seq, 
-      int? numberOfSeats, 
-      bool? status, 
+      bool? status,
       String? updatedAt, 
       String? createdAt, 
       String? id,
@@ -31,8 +25,7 @@ class Data {
       String? carNumber, 
       List<Gallery>? gallery, 
       Driver? driver, 
-      int? v, 
-      CarCategory? carCategory, 
+      CarCategory? carCategory,
       String? carType, 
       User? user,}){
     _frontCarLicenseImage = frontCarLicenseImage;
@@ -40,12 +33,6 @@ class Data {
     _image = image;
     _available = available;
     _individual = individual;
-    _tripCount = tripCount;
-    _rating = rating;
-    _ratingsCount = ratingsCount;
-    _totalRatingsCount = totalRatingsCount;
-    _seq = seq;
-    _numberOfSeats = numberOfSeats;
     _status = status;
     _updatedAt = updatedAt;
     _createdAt = createdAt;
@@ -56,7 +43,6 @@ class Data {
     _carNumber = carNumber;
     _gallery = gallery;
     _driver = driver;
-    _v = v;
     _carCategory = carCategory;
     _carType = carType;
     _user = user;
@@ -68,12 +54,6 @@ class Data {
     _image = json['image'] != null ? Image.fromJson(json['image']) : null;
     _available = json['available'];
     _individual = json['individual'];
-    _tripCount = json['tripCount'];
-    _rating = json['rating'];
-    _ratingsCount = json['ratingsCount'];
-    _totalRatingsCount = json['totalRatingsCount'];
-    _seq = json['seq'];
-    _numberOfSeats = json['numberOfSeats'];
     _status = json['status'];
     _updatedAt = json['updatedAt'];
     _createdAt = json['createdAt'];
@@ -89,7 +69,6 @@ class Data {
       });
     }
     _driver = json['driver'] != null ? Driver.fromJson(json['driver']) : null;
-    _v = json['__v'];
     _carCategory = json['carCategory'] != null ? CarCategory.fromJson(json['carCategory']) : null;
     _carType = json['carType'];
     _user = json['user'] != null ? User.fromJson(json['user']) : null;
@@ -99,12 +78,6 @@ class Data {
   Image? _image;
   bool? _available;
   bool? _individual;
-  int? _tripCount;
-  int? _rating;
-  int? _ratingsCount;
-  int? _totalRatingsCount;
-  int? _seq;
-  int? _numberOfSeats;
   bool? _status;
   String? _updatedAt;
   String? _createdAt;
@@ -115,7 +88,6 @@ class Data {
   String? _carNumber;
   List<Gallery>? _gallery;
   Driver? _driver;
-  int? _v;
   CarCategory? _carCategory;
   String? _carType;
   User? _user;
@@ -125,12 +97,6 @@ class Data {
   Image? get image => _image;
   bool? get available => _available;
   bool? get individual => _individual;
-  int? get tripCount => _tripCount;
-  int? get rating => _rating;
-  int? get ratingsCount => _ratingsCount;
-  int? get totalRatingsCount => _totalRatingsCount;
-  int? get seq => _seq;
-  int? get numberOfSeats => _numberOfSeats;
   bool? get status => _status;
   String? get updatedAt => _updatedAt;
   String? get createdAt => _createdAt;
@@ -141,7 +107,6 @@ class Data {
   String? get carNumber => _carNumber;
   List<Gallery>? get gallery => _gallery;
   Driver? get driver => _driver;
-  int? get v => _v;
   CarCategory? get carCategory => _carCategory;
   String? get carType => _carType;
   User? get user => _user;
@@ -159,12 +124,6 @@ class Data {
     }
     map['available'] = _available;
     map['individual'] = _individual;
-    map['tripCount'] = _tripCount;
-    map['rating'] = _rating;
-    map['ratingsCount'] = _ratingsCount;
-    map['totalRatingsCount'] = _totalRatingsCount;
-    map['seq'] = _seq;
-    map['numberOfSeats'] = _numberOfSeats;
     map['status'] = _status;
     map['updatedAt'] = _updatedAt;
     map['createdAt'] = _createdAt;
@@ -183,7 +142,6 @@ class Data {
     if (_driver != null) {
       map['driver'] = _driver?.toJson();
     }
-    map['__v'] = _v;
     if (_carCategory != null) {
       map['carCategory'] = _carCategory?.toJson();
     }

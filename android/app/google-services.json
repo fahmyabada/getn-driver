@@ -75,11 +75,35 @@
       },
       "oauth_client": [
         {
+          "client_id": "177189268795-3phvdiu5g47cdc27t64qna2mp0lk21u9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.getn.driver",
+            "certificate_hash": "0f26cb799a5e093ecceb19c1a76d28c12bd472a6"
+          }
+        },
+        {
+          "client_id": "177189268795-lpuhf4gh9msbspil49518kr1cijtq5rs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.getn.driver",
+            "certificate_hash": "7ffcc536dde3242e170327b9069c7e14aac9e646"
+          }
+        },
+        {
           "client_id": "177189268795-tbhhvoo8tk7ducloanq664nj7rk9c3cr.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.getn.driver",
             "certificate_hash": "24ceba00ed5cccf2affb255b1f15a646dbb64155"
+          }
+        },
+        {
+          "client_id": "177189268795-vcdvk59uj2ddsite7ue7ndgtmuebv4vu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.getn.driver",
+            "certificate_hash": "cd91132927252f3ef3939552fcd726d0031d5a55"
           }
         },
         {

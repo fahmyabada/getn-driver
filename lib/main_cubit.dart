@@ -10,13 +10,8 @@ class MainCubit extends Cubit<MainState> {
 
   static MainCubit get(context) => BlocProvider.of(context);
 
-  bool tabControllerChanged = false;
-
-  TabController? tabController;
-
   bool refresh = false;
 
-  String typeRequest = "current";
 
 
 }

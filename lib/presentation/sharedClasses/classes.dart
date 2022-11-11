@@ -20,7 +20,7 @@ import 'package:getn_driver/presentation/ui/wallet/WalletScreen.dart';
 import 'package:getn_driver/presentation/ui/wallet/wallet_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class CustomDialogRequestTabs extends StatelessWidget {
+class CustomDialogRequestTabs extends StatefulWidget {
   final String? title, description, id;
   final Color? backgroundColor,
       titleColor,
@@ -28,10 +28,8 @@ class CustomDialogRequestTabs extends StatelessWidget {
       btnOkColor,
       btnCancelColor;
 
-  var commentController = TextEditingController();
-  var formKeyRequest = GlobalKey<FormState>();
 
-  CustomDialogRequestTabs({
+  const CustomDialogRequestTabs({
     Key? key,
     required this.title,
     required this.description,
@@ -44,18 +42,28 @@ class CustomDialogRequestTabs extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<CustomDialogRequestTabs> createState() => _CustomDialogRequestTabsState();
+}
+
+class _CustomDialogRequestTabsState extends State<CustomDialogRequestTabs> {
+  var commentController = TextEditingController();
+
+  var formKeyRequest = GlobalKey<FormState>();
+
+  bool loadingEditDialogPending = false;
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<RequestCubit, RequestState>(
       listener: (context, state) {
         if (state is RequestEditSuccessState) {
-          if (state.data!.status! == "reject") {
-            Navigator.pop(context);
-            MainCubit.get(context).tabController!.animateTo(2);
-          }
+          setState(() {
+            loadingEditDialogPending = false;
+          });
         } else if (state is RequestEditErrorState) {
-          Navigator.pop(context);
-          showToastt(
-              text: state.message, state: ToastStates.error, context: context);
+          setState(() {
+            loadingEditDialogPending = false;
+          });
         }
       },
       builder: (context, state) {
@@ -66,11 +74,11 @@ class CustomDialogRequestTabs extends StatelessWidget {
           elevation: 0,
           backgroundColor: Colors.transparent,
           child: Container(
-            padding: EdgeInsets.only(
-                top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+            padding:
+            EdgeInsets.only(top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
             margin: EdgeInsets.only(top: 50.r),
             decoration: BoxDecoration(
-              color: backgroundColor,
+              color: widget.backgroundColor,
               shape: BoxShape.rectangle,
               borderRadius: BorderRadius.circular(10.r),
             ),
@@ -81,20 +89,20 @@ class CustomDialogRequestTabs extends StatelessWidget {
                   height: 10.r,
                 ),
                 Text(
-                  title!,
+                  widget.title!,
                   style: TextStyle(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w700,
-                      color: titleColor),
+                      color: widget.titleColor),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(
                   height: 16.r,
                 ),
                 Text(
-                  description!,
+                  widget.description!,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16.sp, color: descColor),
+                  style: TextStyle(fontSize: 16.sp, color: widget.descColor),
                 ),
                 SizedBox(
                   height: 44.h,
@@ -121,26 +129,27 @@ class CustomDialogRequestTabs extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    state is! RequestEditInitial
-                        ? MaterialButton(
-                            height: 30.h,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.r)),
-                            color: btnOkColor,
-                            minWidth: 80.w,
-                            onPressed: () {
-                              if (formKeyRequest.currentState!.validate()) {
-                                RequestCubit.get(context).editRequest(
-                                    id!,
-                                    "reject",
-                                    commentController.text.toString());
-                              }
-                            },
-                            child: Text(
-                              'Ok',
-                              style: TextStyle(color: white, fontSize: 15.sp),
-                            ))
-                        : loading(),
+                    loadingEditDialogPending
+                        ? loading()
+                        : MaterialButton(
+                        height: 30.h,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.r)),
+                        color: widget.btnOkColor,
+                        minWidth: 80.w,
+                        onPressed: () {
+                          if (formKeyRequest.currentState!.validate()) {
+                            RequestCubit.get(context).editRequest(widget.id!, "reject",
+                                commentController.text.toString());
+                            setState(() {
+                              loadingEditDialogPending = true;
+                            });
+                          }
+                        },
+                        child: Text(
+                          'Ok',
+                          style: TextStyle(color: white, fontSize: 15.sp),
+                        )),
                     SizedBox(
                       width: 30.w,
                     ),
@@ -148,7 +157,7 @@ class CustomDialogRequestTabs extends StatelessWidget {
                         height: 30.h,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.r)),
-                        color: btnCancelColor,
+                        color: widget.btnCancelColor,
                         onPressed: () => Navigator.pop(context),
                         minWidth: 80.w,
                         child: Text(
@@ -552,7 +561,8 @@ class CustomDialogEndRequestDetails extends StatelessWidget {
     this.title,
     this.description,
     this.id,
-    this.type, this.status,
+    this.type,
+    this.status,
   }) : super(key: key);
 
   @override
@@ -874,10 +884,8 @@ class CustomDialogEndTripDetails extends StatelessWidget {
                               color: accentColor,
                               minWidth: 80.w,
                               onPressed: () {
-                                TripDetailsCubit.get(context).editTrip(
-                                    id!,
-                                    status!,
-                                    type!);
+                                TripDetailsCubit.get(context)
+                                    .editTrip(id!, status!, type!);
                               },
                               child: Text(
                                 'Ok',
@@ -961,9 +969,7 @@ class DrawerMenu extends StatelessWidget {
           ),
           ListTile(
             title: Text(
-              LanguageCubit.get(context)
-                  .getTexts('Home')
-                  .toString(),
+              LanguageCubit.get(context).getTexts('Home').toString(),
               style: TextStyle(
                 color: grey2,
                 fontSize: 20.sp,
@@ -976,9 +982,7 @@ class DrawerMenu extends StatelessWidget {
           ),
           ListTile(
             title: Text(
-              LanguageCubit.get(context)
-                  .getTexts('Wallet')
-                  .toString(),
+              LanguageCubit.get(context).getTexts('Wallet').toString(),
               style: TextStyle(
                 color: grey2,
                 fontSize: 20.sp,
@@ -998,9 +1002,7 @@ class DrawerMenu extends StatelessWidget {
           ),
           ListTile(
             title: Text(
-              LanguageCubit.get(context)
-                  .getTexts('Notifications')
-                  .toString() ,
+              LanguageCubit.get(context).getTexts('Notifications').toString(),
               style: TextStyle(
                 color: grey2,
                 fontSize: 20.sp,
@@ -1017,9 +1019,7 @@ class DrawerMenu extends StatelessWidget {
           ),
           ListTile(
             title: Text(
-              LanguageCubit.get(context)
-                  .getTexts('Setting')
-                  .toString(),
+              LanguageCubit.get(context).getTexts('Setting').toString(),
               style: TextStyle(
                 color: grey2,
                 fontSize: 20.sp,
@@ -1032,9 +1032,7 @@ class DrawerMenu extends StatelessWidget {
           ),
           ListTile(
             title: Text(
-              LanguageCubit.get(context)
-                  .getTexts('Policies')
-                  .toString(),
+              LanguageCubit.get(context).getTexts('Policies').toString(),
               style: TextStyle(
                 color: grey2,
                 fontSize: 20.sp,
@@ -1050,9 +1048,7 @@ class DrawerMenu extends StatelessWidget {
           ),
           ListTile(
             title: Text(
-              LanguageCubit.get(context)
-                  .getTexts('SignOut')
-                  .toString(),
+              LanguageCubit.get(context).getTexts('SignOut').toString(),
               style: TextStyle(
                 color: grey2,
                 fontSize: 20.sp,

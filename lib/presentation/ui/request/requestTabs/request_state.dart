@@ -59,12 +59,12 @@ class RequestPendingSuccessState extends RequestState {
   RequestPendingSuccessState(this.data);
 }
 
-class RequestEditInitial extends RequestState {}
 
 class RequestEditErrorState extends RequestState {
   final String message;
+  final String type;
 
-  RequestEditErrorState(this.message);
+  RequestEditErrorState(this.message, this.type);
 }
 
 class RequestEditSuccessState extends RequestState {

@@ -305,15 +305,29 @@ class _WalletScreenState extends State<WalletScreen> {
                                                   ),
                                                   subtitle:
                                                       Text(item.comment ?? ''),
-                                                  trailing: Text(
-                                                    item.amount!
-                                                        .toStringAsFixed(2),
-                                                    style: TextStyle(
-                                                      color: primaryColor,
-                                                      fontWeight:
+                                                  trailing: Column(
+                                                    children: [
+                                                      Text(
+                                                        item.status!,
+                                                        style: TextStyle(
+                                                          color: primaryColor,
+                                                          fontWeight:
                                                           FontWeight.bold,
-                                                      fontSize: 20.sp,
-                                                    ),
+                                                          fontSize: 20.sp,
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 5.h,),
+                                                      Text(
+                                                        item.amount!
+                                                            .toStringAsFixed(2),
+                                                        style: TextStyle(
+                                                          color: primaryColor,
+                                                          fontWeight:
+                                                          FontWeight.bold,
+                                                          fontSize: 20.sp,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                   contentPadding:
                                                       const EdgeInsets.all(0),

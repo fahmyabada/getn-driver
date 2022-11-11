@@ -6,8 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:getn_driver/main.dart';
 import 'package:getn_driver/presentation/ui/request/requestDetails/RequestDetailsScreen.dart';
+import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
-import 'package:getn_driver/presentation/ui/trip/tripDetails/TripDetailsScreen.dart';
+import 'package:getn_driver/presentation/ui/trip/tripDetails/trip_details_cubit.dart';
 
 class LocalNotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
@@ -151,7 +152,9 @@ class LocalNotificationService {
             } else if (typeScreen == "outTrip") {
               goToNextScreen(id!, "push", typeScreen!);
             } else if (typeScreen == "outTripInRequest") {
-              goToNextScreen(id!, "pushReplacement", "requestDetails");
+              // here if i get trip id and i now in request details
+              // i will refresh page and show notification without enable clickable
+              // goToNextScreen(id!, "pushReplacement", "requestDetails");
             } else if (typeScreen == "inSameRequest") {
               // here if i get same request id i will refresh page and show notification
               // without enable clickable
@@ -205,7 +208,13 @@ class LocalNotificationService {
       navigatorKey.currentState!.pop(id);
     } else if (typeTransfer == "pushReplacement") {
       if (typeScreen == "requestDetails") {
-        navigatorKey.currentState!.pushReplacement(
+        // for refresh data only
+        RequestDetailsCubit.get(navigatorKey.currentContext).typeScreen = "";
+        RequestDetailsCubit.get(navigatorKey.currentContext).getRequestDetails(id);
+
+        // for refresh page but have problem when back and you depend on refresh page
+        // not refresh page because not have get id
+        /*navigatorKey.currentState!.pushReplacement(
           MaterialPageRoute(
             builder: (context) => BlocProvider(
                 create: (context) => RequestCubit(),
@@ -213,9 +222,14 @@ class LocalNotificationService {
                   idRequest: id,
                 )),
           ),
-        );
+        );*/
       } else if (typeScreen == "tripDetails") {
-        navigatorKey.currentState!.pushReplacement(
+        // for refresh data only
+        TripDetailsCubit.get(navigatorKey.currentContext).getTripDetails(id);
+
+        // for refresh page but have problem when back and you depend on refresh page
+        // not refresh page because not have get id
+        /*navigatorKey.currentState!.pushReplacement(
           MaterialPageRoute(
             builder: (context) => BlocProvider(
                 create: (context) => RequestCubit(),
@@ -223,9 +237,16 @@ class LocalNotificationService {
                   idTrip: id,
                 )),
           ),
-        );
+        );*/
+
       } else if (typeScreen == "past") {
-        navigatorKey.currentState!.pushReplacement(
+        // for refresh data only
+        RequestDetailsCubit.get(navigatorKey.currentContext).typeScreen = "past";
+        RequestDetailsCubit.get(navigatorKey.currentContext).getRequestDetails(id);
+
+        // for refresh page but have problem when back and you depend on refresh page
+        // not refresh page because not have get id
+       /* navigatorKey.currentState!.pushReplacement(
           MaterialPageRoute(
             builder: (context) => BlocProvider(
                 create: (context) => RequestCubit(),
@@ -234,7 +255,7 @@ class LocalNotificationService {
                   typeScreen: "past",
                 )),
           ),
-        );
+        );*/
       }
     }
   }
@@ -285,7 +306,7 @@ class LocalNotificationService {
         //payload : holds the data that is passed through the notification when the notification is tapped
         payload: '$payloadValue,$type',
       );
-    }  catch (e) {
+    } catch (e) {
       if (kDebugMode) {
         print(e);
       }

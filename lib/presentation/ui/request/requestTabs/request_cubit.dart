@@ -35,7 +35,19 @@ class RequestCubit extends Cubit<RequestState> {
   bool loadingCurrent = false;
   bool loadingPast = false;
   bool loadingUpComing = false;
+
+  // pending
   bool loadingPending = false;
+  bool successPending = false;
+  bool errorPendingStatus = false;
+  bool loadingEditPending = false;
+  String errorPending = "";
+
+  bool tabControllerChanged = false;
+
+  TabController? tabController;
+
+  String typeRequest = "current";
 
   Future<void> editFcmToken() async {
     getProfileUseCase.execute();
@@ -188,11 +200,13 @@ class RequestCubit extends Cubit<RequestState> {
   RequestState eitherLoadedOrErrorStateRequestPending(
       Either<String, Request?> data) {
     return data.fold((failure1) {
+      errorPendingStatus = true;
       return RequestPendingErrorState(failure1);
     }, (data) {
       requestPending.clear();
       requestPending.addAll(data!.data!);
       indexPending = indexPending + 1;
+      successPending = true;
       return RequestPendingSuccessState(data.data);
     });
   }
@@ -200,28 +214,34 @@ class RequestCubit extends Cubit<RequestState> {
   RequestState eitherLoadedOrErrorStateRequestPending2(
       Either<String, Request?> data) {
     return data.fold((failure1) {
+      errorPendingStatus = true;
       return RequestPendingErrorState(failure1);
     }, (data) {
       if (data!.totalCount! > requestPending.length) {
         requestPending.addAll(data.data!);
         indexPending = indexPending + 1;
       }
+      successPending = true;
       return RequestPendingSuccessState(data.data);
     });
   }
 
   void editRequest(String id, String type, String comment) async {
-    emit(RequestEditInitial());
-
+    if (type == "accept") {
+      loadingEditPending = true;
+    }
     putRequestUseCase.execute(id, type, comment).then((value) {
-      emit(eitherLoadedOrErrorStateRequestEdit(value));
+      if (type == "accept") {
+        loadingEditPending = false;
+      }
+      emit(eitherLoadedOrErrorStateRequestEdit(value, type));
     });
   }
 
   RequestState eitherLoadedOrErrorStateRequestEdit(
-      Either<String, DataRequest?> data) {
+      Either<String, DataRequest?> data, String type) {
     return data.fold((failure1) {
-      return RequestEditErrorState(failure1);
+      return RequestEditErrorState(failure1, type);
     }, (data) {
       return RequestEditSuccessState(data);
     });

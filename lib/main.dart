@@ -13,7 +13,10 @@ import 'package:getn_driver/firebase_options.dart';
 import 'package:getn_driver/main_cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
+import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
+import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
 import 'package:getn_driver/presentation/ui/splash/SplashScreen.dart';
+import 'package:getn_driver/presentation/ui/trip/tripDetails/trip_details_cubit.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
@@ -70,7 +73,16 @@ class MyApp extends StatelessWidget {
               ),
               BlocProvider(
                 create: (context) => LanguageCubit(),
-              )
+              ),
+              BlocProvider(
+                create: (context) => RequestDetailsCubit(),
+              ),
+              BlocProvider(
+                create: (context) => TripDetailsCubit(),
+              ),
+              BlocProvider(
+                create: (context) => RequestCubit(),
+              ),
             ],
             child: MaterialApp(
               navigatorKey: navigatorKey,
