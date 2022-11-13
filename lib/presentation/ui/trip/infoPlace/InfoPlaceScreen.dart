@@ -23,7 +23,7 @@ class InfoPlaceScreen extends StatefulWidget {
 }
 
 class _InfoPlaceScreenState extends State<InfoPlaceScreen> {
-  double _userRating = 3.0;
+  // double _userRating = 3.0;
 
   @override
   void initState() {

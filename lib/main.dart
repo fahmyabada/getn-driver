@@ -23,7 +23,7 @@ void main() async {
 // for error connection with api
   HttpOverrides.global = MyHttpOverrides();
 
-  // for example ensure Initialized shared perefence
+  // for example ensure Initialized shared Preferences
   WidgetsFlutterBinding.ensureInitialized();
   initializeDateFormatting();
 
@@ -50,7 +50,6 @@ void main() async {
 Future<void> backgroundHandler(RemoteMessage message) async {
   if (kDebugMode) {
     print('messageData ********=${message.data.toString()}');
-    print("hhhhhhhhhh");
     print('messageTitle ********=${message.notification!.toString()}');
   }
 }

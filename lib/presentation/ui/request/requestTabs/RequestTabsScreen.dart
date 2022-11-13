@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:focus_detector/focus_detector.dart';
+import 'package:getn_driver/data/model/request/DataRequest.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
@@ -132,12 +133,12 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
   }
 
   void viewWillAppear() {
-    print("onResume / viewWillAppear / onFocusGained    requestDetails");
+    print("onResume / viewWillAppear / onFocusGained    requestTabs");
     getIt<SharedPreferences>().setString('typeScreen', "request");
   }
 
   void viewWillDisappear() {
-    print("onPause / viewWillDisappear / onFocusLost  requestDetails");
+    print("onPause / viewWillDisappear / onFocusLost  requestTabs");
   }
 
   void _loadMoreUpComing() {
@@ -231,545 +232,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                   RequestCubit.get(context)
                                       .getRequestCurrent(1);
                                 })
-                            : ListView.builder(
-                                // key: const PageStorageKey<String>('tab1'),
-                                scrollDirection: Axis.vertical,
-                                itemCount: RequestCubit.get(context)
-                                    .requestCurrent
-                                    .length,
-                                itemBuilder: (context, i) {
-                                  var current = RequestCubit.get(context)
-                                      .requestCurrent[i];
-                                  return InkWell(
-                                    child: Container(
-                                      margin: EdgeInsets.symmetric(
-                                          horizontal: 10.r, vertical: 10.r),
-                                      child: Card(
-                                        elevation: 5.r,
-                                        clipBehavior: Clip.antiAlias,
-                                        child: Container(
-                                          color: white,
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 10.r, horizontal: 7.r),
-                                          child: Column(
-                                            children: [
-                                              SizedBox(
-                                                height: 5.h,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  ClipOval(
-                                                    clipBehavior:
-                                                        Clip.antiAlias,
-                                                    child: ImageTools.image(
-                                                        fit: BoxFit.fill,
-                                                        url: current.client2!
-                                                            .image!.src,
-                                                        height: 70.w,
-                                                        width: 70.w),
-                                                  ),
-                                                  Expanded(
-                                                    child: Container(
-                                                      margin:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 20.r),
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          SizedBox(
-                                                            height: 5.h,
-                                                          ),
-                                                          Row(
-                                                            children: [
-                                                              Expanded(
-                                                                child: Text(
-                                                                  current
-                                                                      .client2!
-                                                                      .name!,
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          17.sp,
-                                                                      color:
-                                                                          black,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          SizedBox(
-                                                            height: 5.h,
-                                                          ),
-                                                          Text(
-                                                            LanguageCubit.get(
-                                                                        context)
-                                                                    .isEn
-                                                                ? '${current.client2!.country?.title!.en!}, ${current.client2!.city?.title!.en!}, ${current.client2!.area?.title!.en!}'
-                                                                : '${current.client2!.country?.title!.ar!}, ${current.client2!.city?.title!.ar!}, ${current.client2!.area?.title!.ar!}',
-                                                            style: TextStyle(
-                                                                fontSize: 15.sp,
-                                                                color: grey2),
-                                                          ),
-                                                          SizedBox(
-                                                            height: 5.h,
-                                                          ),
-                                                          /*RatingBar.builder(
-                                                        minRating: _userRating,
-                                                        itemBuilder:
-                                                            (context, index) =>
-                                                                const Icon(
-                                                          Icons.star,
-                                                          color: Colors.amber,
-                                                        ),
-                                                        itemCount: 5,
-                                                        itemSize: 17.w,
-                                                        updateOnDrag: true,
-                                                        onRatingUpdate: (rating) {
-                                                          setState(() {
-                                                            _userRating = rating;
-                                                          });
-                                                        },
-                                                        unratedColor: Colors.amber
-                                                            .withAlpha(50),
-                                                        direction: Axis.horizontal,
-                                                      ),*/
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                height: 15.h,
-                                              ),
-                                              // divider
-                                              Container(
-                                                width: 1.sw,
-                                                height: 1.h,
-                                                color: Colors.grey[400],
-                                              ),
-                                              SizedBox(
-                                                height: 15.h,
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 8.r),
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: Text(
-                                                        '${LanguageCubit.get(context).getTexts('refId').toString()} ${current.referenceId}',
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                        style: TextStyle(
-                                                          color: black,
-                                                          fontSize: 18.sp,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 10.w,
-                                                    ),
-                                                    Expanded(
-                                                      child: Text(
-                                                        '${LanguageCubit.get(context).getTexts('Status').toString()} ${btnStatus3[current.status]}',
-                                                        textAlign:
-                                                            TextAlign.end,
-                                                        style: TextStyle(
-                                                          color: black,
-                                                          fontSize: 18.sp,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 10.h,
-                                              ),
-                                              Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Icon(
-                                                    Icons.location_on,
-                                                    color: greenColor,
-                                                    size: 20.w,
-                                                  ),
-                                                  SizedBox(
-                                                    width: 10.w,
-                                                  ),
-                                                  Expanded(
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          LanguageCubit.get(
-                                                                  context)
-                                                              .getTexts(
-                                                                  'PickedPoint')
-                                                              .toString(),
-                                                          style: TextStyle(
-                                                              color: black,
-                                                              fontSize: 18.sp,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                        SizedBox(height: 5.h),
-                                                        Text(
-                                                          current.from!
-                                                              .placeTitle!,
-                                                          style: TextStyle(
-                                                              color: grey2,
-                                                              fontSize: 16.sp),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 10.w,
-                                                  ),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.end,
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          Text(
-                                                            LanguageCubit.get(
-                                                                        context)
-                                                                    .isEn
-                                                                ? DateFormat
-                                                                        .yMEd()
-                                                                    .format(DateTime
-                                                                        .parse(current
-                                                                            .from!
-                                                                            .date!))
-                                                                : DateFormat
-                                                                        .yMEd(
-                                                                            "ar")
-                                                                    .format(DateTime
-                                                                        .parse(current
-                                                                            .from!
-                                                                            .date!)),
-                                                            style: TextStyle(
-                                                                color: grey2,
-                                                                fontSize:
-                                                                    14.sp),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 5.w,
-                                                          ),
-                                                          Text(
-                                                            LanguageCubit.get(
-                                                                        context)
-                                                                    .isEn
-                                                                ? DateFormat
-                                                                        .jm()
-                                                                    .format(DateTime
-                                                                        .parse(current
-                                                                            .from!
-                                                                            .date!))
-                                                                : DateFormat.jm(
-                                                                        "ar")
-                                                                    .format(DateTime
-                                                                        .parse(current
-                                                                            .from!
-                                                                            .date!)),
-                                                            style: TextStyle(
-                                                              color: grey2,
-                                                              fontSize: 14.sp,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      SizedBox(
-                                                        height: 5.h,
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          Text(
-                                                            LanguageCubit.get(
-                                                                        context)
-                                                                    .isEn
-                                                                ? DateFormat
-                                                                        .yMEd()
-                                                                    .format(DateTime
-                                                                        .parse(current
-                                                                            .to!))
-                                                                : DateFormat
-                                                                        .yMEd(
-                                                                            "ar")
-                                                                    .format(DateTime
-                                                                        .parse(current
-                                                                            .to!)),
-                                                            style: TextStyle(
-                                                                color: grey2,
-                                                                fontSize:
-                                                                    14.sp),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 5.w,
-                                                          ),
-                                                          Text(
-                                                            LanguageCubit.get(
-                                                                        context)
-                                                                    .isEn
-                                                                ? DateFormat
-                                                                        .jm()
-                                                                    .format(DateTime
-                                                                        .parse(current
-                                                                            .to!))
-                                                                : DateFormat.jm(
-                                                                        "ar")
-                                                                    .format(DateTime
-                                                                        .parse(current
-                                                                            .to!)),
-                                                            style: TextStyle(
-                                                              color: grey2,
-                                                              fontSize: 14.sp,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                height: 10.h,
-                                              ),
-                                              IntrinsicHeight(
-                                                child: Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    Expanded(
-                                                      child: Card(
-                                                        color: yellowLightColor,
-                                                        child: Padding(
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                                  15.r),
-                                                          child: Column(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Text(
-                                                                  LanguageCubit.get(
-                                                                          context)
-                                                                      .getTexts(
-                                                                          'Days')
-                                                                      .toString(),
-                                                                  style: TextStyle(
-                                                                      color:
-                                                                          grey2,
-                                                                      fontSize:
-                                                                          13.sp),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 5.h,
-                                                                ),
-                                                                Text(
-                                                                  '${current.days!.length} ${LanguageCubit.get(context).getTexts('Days').toString()}',
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                  style: TextStyle(
-                                                                      color:
-                                                                          black,
-                                                                      fontSize:
-                                                                          13.sp,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
-                                                                ),
-                                                              ]),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      child: Card(
-                                                        color: rough,
-                                                        child: Padding(
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                                  15.r),
-                                                          child: Column(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Text(
-                                                                  LanguageCubit.get(
-                                                                          context)
-                                                                      .getTexts(
-                                                                          'UsedPoints')
-                                                                      .toString(),
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                  style: TextStyle(
-                                                                      color:
-                                                                          grey2,
-                                                                      fontSize:
-                                                                          12.sp),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 5.h,
-                                                                ),
-                                                                Text(
-                                                                  current
-                                                                      .totalConsumptionPoints!
-                                                                      .toStringAsFixed(
-                                                                          2),
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                  style: TextStyle(
-                                                                      color:
-                                                                          black,
-                                                                      fontSize:
-                                                                          13.sp,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
-                                                                ),
-                                                              ]),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      child: Card(
-                                                        color: greenLightColor,
-                                                        child: Padding(
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                                  15.r),
-                                                          child: Column(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Text(
-                                                                  LanguageCubit.get(
-                                                                          context)
-                                                                      .getTexts(
-                                                                          'TotalDistance')
-                                                                      .toString(),
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                  style: TextStyle(
-                                                                      color:
-                                                                          grey2,
-                                                                      fontSize:
-                                                                          12.sp),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 5.h,
-                                                                ),
-                                                                Text(
-                                                                  current
-                                                                      .consumptionKM!
-                                                                      .toStringAsFixed(
-                                                                          2),
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                  style: TextStyle(
-                                                                      color:
-                                                                          black,
-                                                                      fontSize:
-                                                                          13.sp,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
-                                                                ),
-                                                              ]),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      child: Card(
-                                                        color: blueLight,
-                                                        child: Padding(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  vertical:
-                                                                      15.r),
-                                                          child: Column(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Text(
-                                                                  LanguageCubit.get(
-                                                                          context)
-                                                                      .getTexts(
-                                                                          'TotalPrice')
-                                                                      .toString(),
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                  style: TextStyle(
-                                                                      color:
-                                                                          grey2,
-                                                                      fontSize:
-                                                                          13.sp),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 5.h,
-                                                                ),
-                                                                Text(
-                                                                  current
-                                                                      .totalPrice!
-                                                                      .toStringAsFixed(
-                                                                          2),
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                  style: TextStyle(
-                                                                      color:
-                                                                          black,
-                                                                      fontSize:
-                                                                          13.sp,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
-                                                                ),
-                                                              ]),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    onTap: () async {
-                                      await navigateToWithRefreshPagePrevious(
-                                              context,
-                                              RequestDetailsScreen(
-                                                idRequest: current.id,
-                                              ))
-                                          .then((value) =>
-                                              RequestCubit.get(context)
-                                                  .getRequestCurrent(1));
-                                    },
-                                  );
-                                },
-                              )
+                            : current()
                         : state is RequestCurrentErrorState
                             ? errorMessage(
                                 message: state.message,
@@ -790,577 +253,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                   RequestCubit.get(context)
                                       .getRequestUpComing(1);
                                 })
-                            : ScrollEdgeListener(
-                                edge: ScrollEdge.end,
-                                // edgeOffset: 400,
-                                // continuous: false,
-                                // debounce: const Duration(milliseconds: 500),
-                                // dispatch: true,
-                                listener: () {
-                                  if (RequestCubit.get(context).typeRequest ==
-                                      "upComing") {
-                                    print("_controllerUpcoming*********** ");
-                                    setState(() {
-                                      loadingMoreUpComing = true;
-                                    });
-                                    _loadMoreUpComing();
-                                  }
-                                },
-                                child: ListView.builder(
-                                  // key: const PageStorageKey<String>('tab2'),
-                                  scrollDirection: Axis.vertical,
-                                  itemCount: RequestCubit.get(context)
-                                      .requestUpComing
-                                      .length,
-                                  itemBuilder: (context, i) {
-                                    var upComing = RequestCubit.get(context)
-                                        .requestUpComing[i];
-                                    return Column(
-                                      children: [
-                                        InkWell(
-                                          child: Container(
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 10.r,
-                                                vertical: 10.r),
-                                            child: Card(
-                                              elevation: 5.r,
-                                              clipBehavior: Clip.antiAlias,
-                                              child: Container(
-                                                color: white,
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 10.r,
-                                                    horizontal: 7.r),
-                                                child: Column(
-                                                  children: [
-                                                    SizedBox(
-                                                      height: 5.h,
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        ClipOval(
-                                                          clipBehavior:
-                                                              Clip.antiAlias,
-                                                          child:
-                                                              ImageTools.image(
-                                                                  fit: BoxFit
-                                                                      .fill,
-                                                                  url: upComing
-                                                                      .client2!
-                                                                      .image!
-                                                                      .src,
-                                                                  height: 70.w,
-                                                                  width: 70.w),
-                                                        ),
-                                                        Expanded(
-                                                          child: Container(
-                                                            margin: EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        20.r),
-                                                            child: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                SizedBox(
-                                                                  height: 5.h,
-                                                                ),
-                                                                Row(
-                                                                  children: [
-                                                                    Expanded(
-                                                                      child:
-                                                                          Text(
-                                                                        upComing
-                                                                            .client2!
-                                                                            .name!,
-                                                                        style: TextStyle(
-                                                                            fontSize: 17
-                                                                                .sp,
-                                                                            color:
-                                                                                black,
-                                                                            fontWeight:
-                                                                                FontWeight.bold),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 5.h,
-                                                                ),
-                                                                Text(
-                                                                  LanguageCubit.get(
-                                                                              context)
-                                                                          .isEn
-                                                                      ? '${upComing.client2!.country?.title!.en!}, ${upComing.client2!.city?.title!.en!}, ${upComing.client2!.area?.title!.en!}'
-                                                                      : '${upComing.client2!.country?.title!.ar!}, ${upComing.client2!.city?.title!.ar!}, ${upComing.client2!.area?.title!.ar!}',
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          15.sp,
-                                                                      color:
-                                                                          grey2),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 5.h,
-                                                                ),
-                                                                /* RatingBar.builder(
-                                                              minRating: _userRating,
-                                                              itemBuilder:
-                                                                  (context, index) =>
-                                                                      const Icon(
-                                                                Icons.star,
-                                                                color: Colors.amber,
-                                                              ),
-                                                              itemCount: 5,
-                                                              itemSize: 17.w,
-                                                              updateOnDrag: true,
-                                                              onRatingUpdate: (rating) {
-                                                                setState(() {
-                                                                  _userRating = rating;
-                                                                });
-                                                              },
-                                                              unratedColor: Colors.amber
-                                                                  .withAlpha(50),
-                                                              direction: Axis.horizontal,
-                                                            ),*/
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 15.h,
-                                                    ),
-                                                    // divider
-                                                    Container(
-                                                      width: 1.sw,
-                                                      height: 1.h,
-                                                      color: Colors.grey[400],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 15.h,
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 8.r),
-                                                      child: Row(
-                                                        children: [
-                                                          Expanded(
-                                                            child: Text(
-                                                              'refId: ${upComing.referenceId}',
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .start,
-                                                              style: TextStyle(
-                                                                color: black,
-                                                                fontSize: 18.sp,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 10.w,
-                                                          ),
-                                                          Expanded(
-                                                            child: Text(
-                                                              'status: ${btnStatus3[upComing.status]}',
-                                                              textAlign:
-                                                                  TextAlign.end,
-                                                              style: TextStyle(
-                                                                color: black,
-                                                                fontSize: 18.sp,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 10.h,
-                                                    ),
-                                                    Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Icon(
-                                                          Icons.location_on,
-                                                          color: greenColor,
-                                                          size: 20.w,
-                                                        ),
-                                                        SizedBox(
-                                                          width: 10.w,
-                                                        ),
-                                                        Expanded(
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                LanguageCubit.get(
-                                                                        context)
-                                                                    .getTexts(
-                                                                        'PickedPoint')
-                                                                    .toString(),
-                                                                style: TextStyle(
-                                                                    color:
-                                                                        black,
-                                                                    fontSize:
-                                                                        18.sp,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
-                                                              ),
-                                                              SizedBox(
-                                                                  height: 5.h),
-                                                              Text(
-                                                                upComing.from!
-                                                                    .placeTitle!,
-                                                                // upComing.from!.placeTitle!,
-                                                                style: TextStyle(
-                                                                    color:
-                                                                        grey2,
-                                                                    fontSize:
-                                                                        16.sp),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        SizedBox(
-                                                          width: 10.w,
-                                                        ),
-                                                        Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Row(
-                                                              children: [
-                                                                Text(
-                                                                  LanguageCubit.get(
-                                                                              context)
-                                                                          .isEn
-                                                                      ? DateFormat.yMEd().format(DateTime.parse(upComing
-                                                                          .from!
-                                                                          .date!))
-                                                                      : DateFormat.yMEd("ar").format(DateTime.parse(upComing
-                                                                          .from!
-                                                                          .date!)),
-                                                                  style: TextStyle(
-                                                                      color:
-                                                                          grey2,
-                                                                      fontSize:
-                                                                          14.sp),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 5.w,
-                                                                ),
-                                                                Text(
-                                                                  LanguageCubit.get(
-                                                                              context)
-                                                                          .isEn
-                                                                      ? DateFormat.jm().format(DateTime.parse(upComing
-                                                                          .from!
-                                                                          .date!))
-                                                                      : DateFormat.jm("ar").format(DateTime.parse(upComing
-                                                                          .from!
-                                                                          .date!)),
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color:
-                                                                        grey2,
-                                                                    fontSize:
-                                                                        14.sp,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            SizedBox(
-                                                              height: 5.h,
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                Text(
-                                                                  LanguageCubit.get(
-                                                                              context)
-                                                                          .isEn
-                                                                      ? DateFormat
-                                                                              .yMEd()
-                                                                          .format(DateTime.parse(upComing
-                                                                              .to!))
-                                                                      : DateFormat.yMEd(
-                                                                              "ar")
-                                                                          .format(
-                                                                              DateTime.parse(upComing.to!)),
-                                                                  style: TextStyle(
-                                                                      color:
-                                                                          grey2,
-                                                                      fontSize:
-                                                                          14.sp),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 5.w,
-                                                                ),
-                                                                Text(
-                                                                  LanguageCubit.get(
-                                                                              context)
-                                                                          .isEn
-                                                                      ? DateFormat
-                                                                              .jm()
-                                                                          .format(DateTime.parse(upComing
-                                                                              .to!))
-                                                                      : DateFormat.jm(
-                                                                              "ar")
-                                                                          .format(
-                                                                              DateTime.parse(upComing.to!)),
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color:
-                                                                        grey2,
-                                                                    fontSize:
-                                                                        14.sp,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 5.h,
-                                                    ),
-                                                    IntrinsicHeight(
-                                                      child: Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Expanded(
-                                                            child: Card(
-                                                              color:
-                                                                  yellowLightColor,
-                                                              child: Padding(
-                                                                padding:
-                                                                    EdgeInsets
-                                                                        .all(15
-                                                                            .r),
-                                                                child: Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Text(
-                                                                        LanguageCubit.get(context)
-                                                                            .getTexts('Days')
-                                                                            .toString(),
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                grey2,
-                                                                            fontSize:
-                                                                                13.sp),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            5.h,
-                                                                      ),
-                                                                      Text(
-                                                                        '${upComing.days!.length} Days',
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                black,
-                                                                            fontSize:
-                                                                                13.sp,
-                                                                            fontWeight: FontWeight.bold),
-                                                                      ),
-                                                                    ]),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Expanded(
-                                                            child: Card(
-                                                              color: rough,
-                                                              child: Padding(
-                                                                padding:
-                                                                    EdgeInsets
-                                                                        .all(15
-                                                                            .r),
-                                                                child: Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Text(
-                                                                        LanguageCubit.get(context)
-                                                                            .getTexts('UsedPoints')
-                                                                            .toString(),
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                grey2,
-                                                                            fontSize:
-                                                                                12.sp),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            5.h,
-                                                                      ),
-                                                                      Text(
-                                                                        upComing
-                                                                            .totalConsumptionPoints!
-                                                                            .toStringAsFixed(2),
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                black,
-                                                                            fontSize:
-                                                                                13.sp,
-                                                                            fontWeight: FontWeight.bold),
-                                                                      ),
-                                                                    ]),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Expanded(
-                                                            child: Card(
-                                                              color:
-                                                                  greenLightColor,
-                                                              child: Padding(
-                                                                padding:
-                                                                    EdgeInsets
-                                                                        .all(15
-                                                                            .r),
-                                                                child: Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Text(
-                                                                        LanguageCubit.get(context)
-                                                                            .getTexts('TotalDistance')
-                                                                            .toString(),
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                grey2,
-                                                                            fontSize:
-                                                                                13.sp),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            5.h,
-                                                                      ),
-                                                                      Text(
-                                                                        upComing
-                                                                            .consumptionKM!
-                                                                            .toStringAsFixed(2),
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                black,
-                                                                            fontSize:
-                                                                                13.sp,
-                                                                            fontWeight: FontWeight.bold),
-                                                                      ),
-                                                                    ]),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Expanded(
-                                                            child: Card(
-                                                              color: blueLight,
-                                                              child: Padding(
-                                                                padding: EdgeInsets
-                                                                    .symmetric(
-                                                                        vertical:
-                                                                            15.r),
-                                                                child: Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Text(
-                                                                        LanguageCubit.get(context)
-                                                                            .getTexts('TotalPrice')
-                                                                            .toString(),
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                grey2,
-                                                                            fontSize:
-                                                                                13.sp),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            5.h,
-                                                                      ),
-                                                                      Text(
-                                                                        upComing
-                                                                            .totalPrice!
-                                                                            .toStringAsFixed(2),
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                black,
-                                                                            fontSize:
-                                                                                13.sp,
-                                                                            fontWeight: FontWeight.bold),
-                                                                      ),
-                                                                    ]),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          onTap: () async {
-                                            await navigateToWithRefreshPagePrevious(
-                                                    context,
-                                                    RequestDetailsScreen(
-                                                      idRequest: upComing.id,
-                                                    ))
-                                                .then((value) =>
-                                                    RequestCubit.get(context)
-                                                        .getRequestUpComing(1));
-                                          },
-                                        ),
-                                        i ==
-                                                    RequestCubit.get(context)
-                                                            .requestUpComing
-                                                            .length -
-                                                        1 &&
-                                                loadingMoreUpComing
-                                            ? Column(
-                                                children: [
-                                                  SizedBox(
-                                                    height: 10.h,
-                                                  ),
-                                                  loading(),
-                                                  SizedBox(
-                                                    height: 10.h,
-                                                  ),
-                                                ],
-                                              )
-                                            : Container(),
-                                      ],
-                                    );
-                                  },
-                                ),
-                              )
+                            : upComing()
                         : state is RequestUpComingErrorState
                             ? errorMessage(
                                 message: state.message,
@@ -1380,578 +273,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                 press: () {
                                   RequestCubit.get(context).getRequestPast(1);
                                 })
-                            : ScrollEdgeListener(
-                                edge: ScrollEdge.end,
-                                // edgeOffset: 400,
-                                // continuous: false,
-                                // debounce: const Duration(milliseconds: 500),
-                                // dispatch: true,
-                                listener: () {
-                                  if (RequestCubit.get(context).typeRequest ==
-                                      "past") {
-                                    setState(() {
-                                      print("_controllerPast*********** ");
-                                      loadingMorePast = true;
-                                    });
-                                    _loadMorePast();
-                                  }
-                                },
-                                child: ListView.builder(
-                                  // key: const PageStorageKey<String>('tab2'),
-                                  scrollDirection: Axis.vertical,
-                                  itemCount: RequestCubit.get(context)
-                                      .requestPast
-                                      .length,
-                                  itemBuilder: (context, i) {
-                                    var past = RequestCubit.get(context)
-                                        .requestPast[i];
-
-                                    return Column(
-                                      children: [
-                                        InkWell(
-                                          child: Container(
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 10.r,
-                                                vertical: 10.r),
-                                            child: Card(
-                                              elevation: 5.r,
-                                              clipBehavior: Clip.antiAlias,
-                                              child: Container(
-                                                color: white,
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 10.r,
-                                                    horizontal: 7.r),
-                                                child: Column(
-                                                  children: [
-                                                    SizedBox(
-                                                      height: 5.h,
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        ClipOval(
-                                                          clipBehavior:
-                                                              Clip.antiAlias,
-                                                          child:
-                                                              ImageTools.image(
-                                                                  fit: BoxFit
-                                                                      .fill,
-                                                                  url: past
-                                                                      .client2!
-                                                                      .image!
-                                                                      .src,
-                                                                  height: 70.w,
-                                                                  width: 70.w),
-                                                        ),
-                                                        Expanded(
-                                                          child: Container(
-                                                            margin: EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        20.r),
-                                                            child: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                SizedBox(
-                                                                  height: 5.h,
-                                                                ),
-                                                                Row(
-                                                                  children: [
-                                                                    Expanded(
-                                                                      child:
-                                                                          Text(
-                                                                        past.client2!
-                                                                            .name!,
-                                                                        style: TextStyle(
-                                                                            fontSize: 17
-                                                                                .sp,
-                                                                            color:
-                                                                                black,
-                                                                            fontWeight:
-                                                                                FontWeight.bold),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 5.h,
-                                                                ),
-                                                                Text(
-                                                                  LanguageCubit.get(
-                                                                              context)
-                                                                          .isEn
-                                                                      ? '${past.client2!.country?.title!.en!}, ${past.client2!.city?.title!.en!}, ${past.client2!.area?.title!.en!}'
-                                                                      : '${past.client2!.country?.title!.ar!}, ${past.client2!.city?.title!.ar!}, ${past.client2!.area?.title!.ar!}',
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          15.sp,
-                                                                      color:
-                                                                          grey2),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 5.h,
-                                                                ),
-                                                                /*RatingBar.builder(
-                                                              minRating: _userRating,
-                                                              itemBuilder:
-                                                                  (context, index) =>
-                                                                      const Icon(
-                                                                Icons.star,
-                                                                color: Colors.amber,
-                                                              ),
-                                                              itemCount: 5,
-                                                              itemSize: 17.w,
-                                                              updateOnDrag: true,
-                                                              onRatingUpdate: (rating) {
-                                                                setState(() {
-                                                                  _userRating = rating;
-                                                                });
-                                                              },
-                                                              unratedColor: Colors.amber
-                                                                  .withAlpha(50),
-                                                              direction: Axis.horizontal,
-                                                            ),*/
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 15.h,
-                                                    ),
-                                                    // divider
-                                                    Container(
-                                                      width: 1.sw,
-                                                      height: 1.h,
-                                                      color: Colors.grey[400],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 15.h,
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 8.r),
-                                                      child: Row(
-                                                        children: [
-                                                          Expanded(
-                                                            child: Text(
-                                                              'refId: ${past.referenceId}',
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .start,
-                                                              style: TextStyle(
-                                                                color: black,
-                                                                fontSize: 18.sp,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 10.w,
-                                                          ),
-                                                          Expanded(
-                                                            child: Text(
-                                                              'status: ${btnStatus3[past.status]}',
-                                                              textAlign:
-                                                                  TextAlign.end,
-                                                              style: TextStyle(
-                                                                color: black,
-                                                                fontSize: 18.sp,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 10.h,
-                                                    ),
-                                                    Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Icon(
-                                                          Icons.location_on,
-                                                          color: greenColor,
-                                                          size: 20.w,
-                                                        ),
-                                                        SizedBox(
-                                                          width: 10.w,
-                                                        ),
-                                                        Expanded(
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                LanguageCubit.get(
-                                                                        context)
-                                                                    .getTexts(
-                                                                        'PickedPoint')
-                                                                    .toString(),
-                                                                style: TextStyle(
-                                                                    color:
-                                                                        black,
-                                                                    fontSize:
-                                                                        18.sp,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
-                                                              ),
-                                                              SizedBox(
-                                                                  height: 5.h),
-                                                              Text(
-                                                                past.from!
-                                                                    .placeTitle!,
-                                                                // past.from!.placeTitle!,
-                                                                style: TextStyle(
-                                                                    color:
-                                                                        grey2,
-                                                                    fontSize:
-                                                                        16.sp),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        SizedBox(
-                                                          width: 10.w,
-                                                        ),
-                                                        Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Row(
-                                                              children: [
-                                                                Text(
-                                                                  LanguageCubit.get(
-                                                                              context)
-                                                                          .isEn
-                                                                      ? DateFormat.yMEd().format(DateTime.parse(past
-                                                                          .from!
-                                                                          .date!))
-                                                                      : DateFormat.yMEd("ar").format(DateTime.parse(past
-                                                                          .from!
-                                                                          .date!)),
-                                                                  style: TextStyle(
-                                                                      color:
-                                                                          grey2,
-                                                                      fontSize:
-                                                                          14.sp),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 5.w,
-                                                                ),
-                                                                Text(
-                                                                  LanguageCubit.get(
-                                                                              context)
-                                                                          .isEn
-                                                                      ? DateFormat.jm().format(DateTime.parse(past
-                                                                          .from!
-                                                                          .date!))
-                                                                      : DateFormat.jm("ar").format(DateTime.parse(past
-                                                                          .from!
-                                                                          .date!)),
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color:
-                                                                        grey2,
-                                                                    fontSize:
-                                                                        14.sp,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            SizedBox(
-                                                              height: 5.h,
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                Text(
-                                                                  LanguageCubit.get(
-                                                                              context)
-                                                                          .isEn
-                                                                      ? DateFormat
-                                                                              .yMEd()
-                                                                          .format(DateTime.parse(past
-                                                                              .to!))
-                                                                      : DateFormat.yMEd(
-                                                                              "ar")
-                                                                          .format(
-                                                                              DateTime.parse(past.to!)),
-                                                                  style: TextStyle(
-                                                                      color:
-                                                                          grey2,
-                                                                      fontSize:
-                                                                          14.sp),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 5.w,
-                                                                ),
-                                                                Text(
-                                                                  LanguageCubit.get(
-                                                                              context)
-                                                                          .isEn
-                                                                      ? DateFormat
-                                                                              .jm()
-                                                                          .format(DateTime.parse(past
-                                                                              .to!))
-                                                                      : DateFormat.jm(
-                                                                              "ar")
-                                                                          .format(
-                                                                              DateTime.parse(past.to!)),
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color:
-                                                                        grey2,
-                                                                    fontSize:
-                                                                        14.sp,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 10.h,
-                                                    ),
-                                                    IntrinsicHeight(
-                                                      child: Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Expanded(
-                                                            child: Card(
-                                                              color:
-                                                                  yellowLightColor,
-                                                              child: Padding(
-                                                                padding:
-                                                                    EdgeInsets
-                                                                        .all(15
-                                                                            .r),
-                                                                child: Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Text(
-                                                                        LanguageCubit.get(context)
-                                                                            .getTexts('Days')
-                                                                            .toString(),
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                grey2,
-                                                                            fontSize:
-                                                                                13.sp),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            5.h,
-                                                                      ),
-                                                                      Text(
-                                                                        '${past.days!.length} Days',
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                black,
-                                                                            fontSize:
-                                                                                13.sp,
-                                                                            fontWeight: FontWeight.bold),
-                                                                      ),
-                                                                    ]),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Expanded(
-                                                            child: Card(
-                                                              color: rough,
-                                                              child: Padding(
-                                                                padding:
-                                                                    EdgeInsets
-                                                                        .all(15
-                                                                            .r),
-                                                                child: Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Text(
-                                                                        LanguageCubit.get(context)
-                                                                            .getTexts('UsedPoints')
-                                                                            .toString(),
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                grey2,
-                                                                            fontSize:
-                                                                                12.sp),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            5.h,
-                                                                      ),
-                                                                      Text(
-                                                                        past.totalConsumptionPoints!
-                                                                            .toStringAsFixed(2),
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                black,
-                                                                            fontSize:
-                                                                                13.sp,
-                                                                            fontWeight: FontWeight.bold),
-                                                                      ),
-                                                                    ]),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Expanded(
-                                                            child: Card(
-                                                              color:
-                                                                  greenLightColor,
-                                                              child: Padding(
-                                                                padding:
-                                                                    EdgeInsets
-                                                                        .all(15
-                                                                            .r),
-                                                                child: Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Text(
-                                                                        LanguageCubit.get(context)
-                                                                            .getTexts('TotalDistance')
-                                                                            .toString(),
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                grey2,
-                                                                            fontSize:
-                                                                                12.sp),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            5.h,
-                                                                      ),
-                                                                      Text(
-                                                                        past.consumptionKM!
-                                                                            .toStringAsFixed(2),
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                black,
-                                                                            fontSize:
-                                                                                13.sp,
-                                                                            fontWeight: FontWeight.bold),
-                                                                      ),
-                                                                    ]),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Expanded(
-                                                            child: Card(
-                                                              color: blueLight,
-                                                              child: Padding(
-                                                                padding: EdgeInsets
-                                                                    .symmetric(
-                                                                        vertical:
-                                                                            15.r),
-                                                                child: Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Text(
-                                                                        LanguageCubit.get(context)
-                                                                            .getTexts('TotalPrice')
-                                                                            .toString(),
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                grey2,
-                                                                            fontSize:
-                                                                                13.sp),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            5.h,
-                                                                      ),
-                                                                      Text(
-                                                                        past.totalPrice!
-                                                                            .toStringAsFixed(2),
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                black,
-                                                                            fontSize:
-                                                                                13.sp,
-                                                                            fontWeight: FontWeight.bold),
-                                                                      ),
-                                                                    ]),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          onTap: () async {
-                                            RequestDetailsCubit.get(context)
-                                                .typeScreen = "past";
-
-                                            await navigateToWithRefreshPagePrevious(
-                                                    context,
-                                                    RequestDetailsScreen(
-                                                      idRequest: past.id,
-                                                    ))
-                                                .then((value) =>
-                                                    RequestCubit.get(context)
-                                                        .getRequestPast(1));
-                                          },
-                                        ),
-                                        i ==
-                                                    RequestCubit.get(context)
-                                                            .requestPast
-                                                            .length -
-                                                        1 &&
-                                                loadingMorePast
-                                            ? Column(
-                                                children: [
-                                                  SizedBox(
-                                                    height: 10.h,
-                                                  ),
-                                                  loading(),
-                                                  SizedBox(
-                                                    height: 10.h,
-                                                  ),
-                                                ],
-                                              )
-                                            : Container(),
-                                      ],
-                                    );
-                                  },
-                                ),
-                              )
-                        : state is RequestPastErrorState
+                            : past()
+                    : state is RequestPastErrorState
                             ? errorMessage(
                                 message: state.message,
                                 press: () {
@@ -1970,715 +293,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                   RequestCubit.get(context)
                                       .getRequestPending(1);
                                 })
-                            : ScrollEdgeListener(
-                                edge: ScrollEdge.end,
-                                // edgeOffset: 400,
-                                // continuous: false,
-                                // debounce: const Duration(milliseconds: 500),
-                                // dispatch: true,
-                                listener: () {
-                                  if (RequestCubit.get(context).typeRequest ==
-                                      "pending") {
-                                    if (kDebugMode) {
-                                      print('_controllerPending*******');
-                                    }
-                                    setState(() {
-                                      loadingMorePending = true;
-                                    });
-                                    _loadMorePending();
-                                  }
-                                },
-                                child: ListView.builder(
-                                  // key: const PageStorageKey<String>('tab2'),
-                                  scrollDirection: Axis.vertical,
-                                  itemCount: RequestCubit.get(context)
-                                      .requestPending
-                                      .length,
-                                  itemBuilder: (context, i) {
-                                    var pending = RequestCubit.get(context)
-                                        .requestPending[i];
-                                    final loadAcceptVisible = i == indexPending;
-                                    print(
-                                        "loadAcceptVisible***********$loadAcceptVisible");
-                                    return Column(
-                                      children: [
-                                        Container(
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal: 10.r, vertical: 10.r),
-                                          child: Card(
-                                            elevation: 5.r,
-                                            clipBehavior: Clip.antiAlias,
-                                            child: Container(
-                                              color: white,
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 10.r,
-                                                  horizontal: 7.r),
-                                              child: Column(
-                                                children: [
-                                                  SizedBox(
-                                                    height: 5.h,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      ClipOval(
-                                                        clipBehavior:
-                                                            Clip.antiAlias,
-                                                        child: ImageTools.image(
-                                                            fit: BoxFit.fill,
-                                                            url: pending
-                                                                .client2!
-                                                                .image!
-                                                                .src,
-                                                            height: 70.w,
-                                                            width: 70.w),
-                                                      ),
-                                                      Expanded(
-                                                        child: Container(
-                                                          margin: EdgeInsets
-                                                              .symmetric(
-                                                                  horizontal:
-                                                                      20.r),
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              SizedBox(
-                                                                height: 5.h,
-                                                              ),
-                                                              Row(
-                                                                children: [
-                                                                  Expanded(
-                                                                    child: Text(
-                                                                      pending
-                                                                          .client2!
-                                                                          .name!,
-                                                                      style: TextStyle(
-                                                                          fontSize: 17
-                                                                              .sp,
-                                                                          color:
-                                                                              black,
-                                                                          fontWeight:
-                                                                              FontWeight.bold),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              SizedBox(
-                                                                height: 5.h,
-                                                              ),
-                                                              Text(
-                                                                LanguageCubit.get(
-                                                                            context)
-                                                                        .isEn
-                                                                    ? '${pending.client2!.country?.title!.en!}, ${pending.client2!.city?.title!.en!}, ${pending.client2!.area?.title!.en!}'
-                                                                    : '${pending.client2!.country?.title!.ar!}, ${pending.client2!.city?.title!.ar!}, ${pending.client2!.area?.title!.ar!}',
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        15.sp,
-                                                                    color:
-                                                                        grey2),
-                                                              ),
-                                                              SizedBox(
-                                                                height: 5.h,
-                                                              ),
-                                                              /*RatingBar.builder(
-                                                            minRating: _userRating,
-                                                            itemBuilder:
-                                                                (context, index) =>
-                                                                    const Icon(
-                                                              Icons.star,
-                                                              color: Colors.amber,
-                                                            ),
-                                                            itemCount: 5,
-                                                            itemSize: 17.w,
-                                                            updateOnDrag: true,
-                                                            onRatingUpdate: (rating) {
-                                                              setState(() {
-                                                                _userRating = rating;
-                                                              });
-                                                            },
-                                                            unratedColor: Colors.amber
-                                                                .withAlpha(50),
-                                                            direction: Axis.horizontal,
-                                                          ),*/
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 15.h,
-                                                  ),
-                                                  // divider
-                                                  Container(
-                                                    width: 1.sw,
-                                                    height: 1.h,
-                                                    color: Colors.grey[400],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 15.h,
-                                                  ),
-                                                  Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.location_on,
-                                                        color: greenColor,
-                                                        size: 20.w,
-                                                      ),
-                                                      SizedBox(
-                                                        width: 10.w,
-                                                      ),
-                                                      Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              LanguageCubit.get(
-                                                                      context)
-                                                                  .getTexts(
-                                                                      'PickedPoint')
-                                                                  .toString(),
-                                                              style: TextStyle(
-                                                                  color: black,
-                                                                  fontSize:
-                                                                      18.sp,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            ),
-                                                            SizedBox(
-                                                                height: 5.h),
-                                                            Text(
-                                                              pending.id!,
-                                                              // upComing.from!.placeTitle!,
-                                                              style: TextStyle(
-                                                                  color: grey2,
-                                                                  fontSize:
-                                                                      16.sp),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                        width: 10.w,
-                                                      ),
-                                                      Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Row(
-                                                            children: [
-                                                              Text(
-                                                                LanguageCubit.get(
-                                                                            context)
-                                                                        .isEn
-                                                                    ? DateFormat
-                                                                            .yMEd()
-                                                                        .format(DateTime.parse(pending
-                                                                            .from!
-                                                                            .date!))
-                                                                    : DateFormat.yMEd(
-                                                                            "ar")
-                                                                        .format(DateTime.parse(pending
-                                                                            .from!
-                                                                            .date!)),
-                                                                style: TextStyle(
-                                                                    color:
-                                                                        grey2,
-                                                                    fontSize:
-                                                                        14.sp),
-                                                              ),
-                                                              SizedBox(
-                                                                width: 5.w,
-                                                              ),
-                                                              Text(
-                                                                LanguageCubit.get(
-                                                                            context)
-                                                                        .isEn
-                                                                    ? DateFormat
-                                                                            .jm()
-                                                                        .format(DateTime.parse(pending
-                                                                            .from!
-                                                                            .date!))
-                                                                    : DateFormat.jm(
-                                                                            "ar")
-                                                                        .format(DateTime.parse(pending
-                                                                            .from!
-                                                                            .date!)),
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: grey2,
-                                                                  fontSize:
-                                                                      14.sp,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          SizedBox(
-                                                            height: 5.h,
-                                                          ),
-                                                          Row(
-                                                            children: [
-                                                              Text(
-                                                                LanguageCubit.get(
-                                                                            context)
-                                                                        .isEn
-                                                                    ? DateFormat
-                                                                            .yMEd()
-                                                                        .format(DateTime.parse(pending
-                                                                            .to!))
-                                                                    : DateFormat.yMEd(
-                                                                            "ar")
-                                                                        .format(
-                                                                            DateTime.parse(pending.to!)),
-                                                                style: TextStyle(
-                                                                    color:
-                                                                        grey2,
-                                                                    fontSize:
-                                                                        14.sp),
-                                                              ),
-                                                              SizedBox(
-                                                                width: 5.w,
-                                                              ),
-                                                              Text(
-                                                                LanguageCubit.get(
-                                                                            context)
-                                                                        .isEn
-                                                                    ? DateFormat
-                                                                            .jm()
-                                                                        .format(DateTime.parse(pending
-                                                                            .to!))
-                                                                    : DateFormat.jm(
-                                                                            "ar")
-                                                                        .format(
-                                                                            DateTime.parse(pending.to!)),
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: grey2,
-                                                                  fontSize:
-                                                                      14.sp,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 10.h,
-                                                  ),
-                                                  IntrinsicHeight(
-                                                    child: Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Expanded(
-                                                          child: Card(
-                                                            color:
-                                                                yellowLightColor,
-                                                            child: Padding(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(
-                                                                          15.r),
-                                                              child: Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    Text(
-                                                                      LanguageCubit.get(
-                                                                              context)
-                                                                          .getTexts(
-                                                                              'Days')
-                                                                          .toString(),
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              grey2,
-                                                                          fontSize:
-                                                                              13.sp),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      height:
-                                                                          5.h,
-                                                                    ),
-                                                                    Text(
-                                                                      '${pending.days!.length} Days',
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .center,
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              black,
-                                                                          fontSize: 13
-                                                                              .sp,
-                                                                          fontWeight:
-                                                                              FontWeight.bold),
-                                                                    ),
-                                                                  ]),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          child: Card(
-                                                            color: rough,
-                                                            child: Padding(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(
-                                                                          15.r),
-                                                              child: Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    Text(
-                                                                      LanguageCubit.get(
-                                                                              context)
-                                                                          .getTexts(
-                                                                              'UsedPoints')
-                                                                          .toString(),
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .center,
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              grey2,
-                                                                          fontSize:
-                                                                              12.sp),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      height:
-                                                                          5.h,
-                                                                    ),
-                                                                    Text(
-                                                                      pending
-                                                                          .totalConsumptionPoints!
-                                                                          .toStringAsFixed(
-                                                                              2),
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .center,
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              black,
-                                                                          fontSize: 13
-                                                                              .sp,
-                                                                          fontWeight:
-                                                                              FontWeight.bold),
-                                                                    ),
-                                                                  ]),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          child: Card(
-                                                            color:
-                                                                greenLightColor,
-                                                            child: Padding(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(
-                                                                          15.r),
-                                                              child: Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    Text(
-                                                                      LanguageCubit.get(
-                                                                              context)
-                                                                          .getTexts(
-                                                                              'TotalDistance')
-                                                                          .toString(),
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .center,
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              grey2,
-                                                                          fontSize:
-                                                                              12.sp),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      height:
-                                                                          5.h,
-                                                                    ),
-                                                                    Text(
-                                                                      pending
-                                                                          .consumptionKM!
-                                                                          .toStringAsFixed(
-                                                                              2),
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .center,
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              black,
-                                                                          fontSize: 13
-                                                                              .sp,
-                                                                          fontWeight:
-                                                                              FontWeight.bold),
-                                                                    ),
-                                                                  ]),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          child: Card(
-                                                            color: blueLight,
-                                                            child: Padding(
-                                                              padding: EdgeInsets
-                                                                  .symmetric(
-                                                                      vertical:
-                                                                          15.r),
-                                                              child: Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    Text(
-                                                                      LanguageCubit.get(
-                                                                              context)
-                                                                          .getTexts(
-                                                                              'TotalPrice')
-                                                                          .toString(),
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .center,
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              grey2,
-                                                                          fontSize:
-                                                                              13.sp),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      height:
-                                                                          5.h,
-                                                                    ),
-                                                                    Text(
-                                                                      pending
-                                                                          .totalPrice!
-                                                                          .toStringAsFixed(
-                                                                              2),
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .center,
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              black,
-                                                                          fontSize: 13
-                                                                              .sp,
-                                                                          fontWeight:
-                                                                              FontWeight.bold),
-                                                                    ),
-                                                                  ]),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 15.h,
-                                                  ),
-                                                  pending.status == "pending"
-                                                      ? Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceEvenly,
-                                                          children: [
-                                                            loadAcceptVisible
-                                                                ? RequestCubit.get(
-                                                                            context)
-                                                                        .loadingEditPending
-                                                                    ? loading()
-                                                                    : defaultButton2(
-                                                                        press:
-                                                                            () {
-                                                                          RequestCubit.get(context).editRequest(
-                                                                              pending.id!,
-                                                                              "accept",
-                                                                              "");
-
-                                                                          setState(
-                                                                              () {
-                                                                            indexPending =
-                                                                                i;
-                                                                          });
-                                                                        },
-                                                                        text:
-                                                                            "Accept",
-                                                                        backColor:
-                                                                            greenColor,
-                                                                        textColor:
-                                                                            white)
-                                                                : defaultButton2(
-                                                                    press: () {
-                                                                      RequestCubit.get(context).editRequest(
-                                                                          pending
-                                                                              .id!,
-                                                                          "accept",
-                                                                          "");
-                                                                      setState(
-                                                                          () {
-                                                                        indexPending =
-                                                                            i;
-                                                                      });
-                                                                    },
-                                                                    text:
-                                                                        "Accept",
-                                                                    backColor:
-                                                                        greenColor,
-                                                                    textColor:
-                                                                        white),
-                                                            defaultButton2(
-                                                              press: () {
-                                                                showDialog(
-                                                                  context:
-                                                                      context,
-                                                                  barrierDismissible:
-                                                                      true,
-                                                                  // outside to dismiss
-                                                                  builder:
-                                                                      (BuildContext
-                                                                          context) {
-                                                                    return CustomDialogRequestTabs(
-                                                                      title: LanguageCubit.get(
-                                                                              context)
-                                                                          .getTexts(
-                                                                              'DoReject')
-                                                                          .toString(),
-                                                                      description: LanguageCubit.get(
-                                                                              context)
-                                                                          .getTexts(
-                                                                              'IfRejected')
-                                                                          .toString(),
-                                                                      backgroundColor:
-                                                                          white,
-                                                                      btnOkColor:
-                                                                          accentColor,
-                                                                      btnCancelColor:
-                                                                          grey,
-                                                                      id: pending
-                                                                          .id,
-                                                                      titleColor:
-                                                                          accentColor,
-                                                                      descColor:
-                                                                          black,
-                                                                    );
-                                                                  },
-                                                                );
-                                                              },
-                                                              colorBorder: true,
-                                                              text: "Reject",
-                                                              backColor: white,
-                                                              textColor: grey2,
-                                                            ),
-                                                          ],
-                                                        )
-                                                      : Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            defaultButton2(
-                                                              press: () {
-                                                                showDialog(
-                                                                  context:
-                                                                      context,
-                                                                  barrierDismissible:
-                                                                      true,
-                                                                  // outside to dismiss
-                                                                  builder:
-                                                                      (BuildContext
-                                                                          context) {
-                                                                    return CustomDialogRequestTabs(
-                                                                      title: LanguageCubit.get(
-                                                                              context)
-                                                                          .getTexts(
-                                                                              'DoReject')
-                                                                          .toString(),
-                                                                      description: LanguageCubit.get(
-                                                                              context)
-                                                                          .getTexts(
-                                                                              'IfRejected')
-                                                                          .toString(),
-                                                                      backgroundColor:
-                                                                          white,
-                                                                      btnOkColor:
-                                                                          accentColor,
-                                                                      btnCancelColor:
-                                                                          grey,
-                                                                      id: pending
-                                                                          .id,
-                                                                      titleColor:
-                                                                          accentColor,
-                                                                      descColor:
-                                                                          black,
-                                                                    );
-                                                                  },
-                                                                );
-                                                              },
-                                                              colorBorder: true,
-                                                              text: "Reject",
-                                                              backColor: white,
-                                                              textColor: grey2,
-                                                            ),
-                                                            SizedBox(
-                                                              height: 5.h,
-                                                            ),
-                                                            Text(
-                                                              '${pending.client2?.name} not paid yet..',
-                                                              style: TextStyle(
-                                                                  color:
-                                                                      accentColor,
-                                                                  fontSize:
-                                                                      18.sp),
-                                                            )
-                                                          ],
-                                                        ),
-                                                  SizedBox(
-                                                    height: 5.h,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        i ==
-                                                    RequestCubit.get(context)
-                                                            .requestPending
-                                                            .length -
-                                                        1 &&
-                                                loadingMorePending
-                                            ? Column(
-                                                children: [
-                                                  SizedBox(
-                                                    height: 10.h,
-                                                  ),
-                                                  loading(),
-                                                  SizedBox(
-                                                    height: 10.h,
-                                                  ),
-                                                ],
-                                              )
-                                            : Container(),
-                                      ],
-                                    );
-                                  },
-                                ),
-                              )
+                            : pending()
                         : RequestCubit.get(context).errorPendingStatus
                             ? errorMessage(
                                 message: RequestCubit.get(context).errorPending,
@@ -2738,6 +353,2324 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
       }),
     );
   }
+
+  Widget current() => ListView.builder(
+    // key: const PageStorageKey<String>('tab1'),
+    scrollDirection: Axis.vertical,
+    itemCount: RequestCubit.get(context)
+        .requestCurrent
+        .length,
+    itemBuilder: (context, i) {
+      var current = RequestCubit.get(context)
+          .requestCurrent[i];
+      return InkWell(
+        child: Container(
+          margin: EdgeInsets.symmetric(
+              horizontal: 10.r, vertical: 10.r),
+          child: Card(
+            elevation: 5.r,
+            clipBehavior: Clip.antiAlias,
+            child: Container(
+              color: white,
+              padding: EdgeInsets.symmetric(
+                  vertical: 10.r, horizontal: 7.r),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 5.h,
+                  ),
+                  clientCurrent(current),
+                  SizedBox(
+                    height: 15.h,
+                  ),
+                  // divider
+                  Container(
+                    width: 1.sw,
+                    height: 1.h,
+                    color: Colors.grey[400],
+                  ),
+                  SizedBox(
+                    height: 15.h,
+                  ),
+                  // status
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 8.r),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '${LanguageCubit.get(context).getTexts('refId').toString()} ${current.referenceId}',
+                            textAlign:
+                            TextAlign.start,
+                            style: TextStyle(
+                              color: black,
+                              fontSize: 16.sp,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10.w,
+                        ),
+                        Expanded(
+                          child: Text(
+                            '${LanguageCubit.get(context).getTexts('Status').toString()} ${btnStatus3[current.status]}',
+                            textAlign:
+                            TextAlign.end,
+                            style: TextStyle(
+                              color: black,
+                              fontSize: 16.sp,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  // picked point
+                  Row(
+                    crossAxisAlignment:
+                    CrossAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.location_on,
+                        color: greenColor,
+                        size: 20.w,
+                      ),
+                      SizedBox(
+                        width: 10.w,
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment:
+                          CrossAxisAlignment
+                              .start,
+                          children: [
+                            Text(
+                              LanguageCubit.get(
+                                  context)
+                                  .getTexts(
+                                  'PickedPoint')
+                                  .toString(),
+                              style: TextStyle(
+                                  color: black,
+                                  fontSize: 18.sp,
+                                  fontWeight:
+                                  FontWeight
+                                      .bold),
+                            ),
+                            SizedBox(height: 5.h),
+                            Text(
+                              current.from!
+                                  .placeTitle!,
+                              style: TextStyle(
+                                  color: grey2,
+                                  fontSize: 16.sp),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10.w,
+                      ),
+                      Column(
+                        crossAxisAlignment:
+                        CrossAxisAlignment.end,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                LanguageCubit.get(
+                                    context)
+                                    .isEn
+                                    ? DateFormat
+                                    .yMEd()
+                                    .format(DateTime
+                                    .parse(current
+                                    .from!
+                                    .date!))
+                                    : DateFormat
+                                    .yMEd(
+                                    "ar")
+                                    .format(DateTime
+                                    .parse(current
+                                    .from!
+                                    .date!)),
+                                style: TextStyle(
+                                    color: grey2,
+                                    fontSize:
+                                    14.sp),
+                              ),
+                              SizedBox(
+                                width: 5.w,
+                              ),
+                              Text(
+                                LanguageCubit.get(
+                                    context)
+                                    .isEn
+                                    ? DateFormat
+                                    .jm()
+                                    .format(DateTime
+                                    .parse(current
+                                    .from!
+                                    .date!))
+                                    : DateFormat.jm(
+                                    "ar")
+                                    .format(DateTime
+                                    .parse(current
+                                    .from!
+                                    .date!)),
+                                style: TextStyle(
+                                  color: grey2,
+                                  fontSize: 14.sp,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                LanguageCubit.get(
+                                    context)
+                                    .isEn
+                                    ? DateFormat
+                                    .yMEd()
+                                    .format(DateTime
+                                    .parse(current
+                                    .to!))
+                                    : DateFormat
+                                    .yMEd(
+                                    "ar")
+                                    .format(DateTime
+                                    .parse(current
+                                    .to!)),
+                                style: TextStyle(
+                                    color: grey2,
+                                    fontSize:
+                                    14.sp),
+                              ),
+                              SizedBox(
+                                width: 5.w,
+                              ),
+                              Text(
+                                LanguageCubit.get(
+                                    context)
+                                    .isEn
+                                    ? DateFormat
+                                    .jm()
+                                    .format(DateTime
+                                    .parse(current
+                                    .to!))
+                                    : DateFormat.jm(
+                                    "ar")
+                                    .format(DateTime
+                                    .parse(current
+                                    .to!)),
+                                style: TextStyle(
+                                  color: grey2,
+                                  fontSize: 14.sp,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  distanceCurrent(current),
+                ],
+              ),
+            ),
+          ),
+        ),
+        onTap: () async {
+          await navigateToWithRefreshPagePrevious(
+              context,
+              RequestDetailsScreen(
+                idRequest: current.id,
+              ))
+              .then((value) =>
+              RequestCubit.get(context)
+                  .getRequestCurrent(1));
+        },
+      );
+    },
+  );
+
+  Widget clientCurrent(DataRequest current) => Row(
+    children: [
+      ClipOval(
+        clipBehavior:
+        Clip.antiAlias,
+        child: ImageTools.image(
+            fit: BoxFit.fill,
+            url: current.client2!
+                .image!.src,
+            height: 70.w,
+            width: 70.w),
+      ),
+      Expanded(
+        child: Container(
+          margin:
+          EdgeInsets.symmetric(
+              horizontal: 20.r),
+          child: Column(
+            crossAxisAlignment:
+            CrossAxisAlignment
+                .start,
+            children: [
+              SizedBox(
+                height: 5.h,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      current
+                          .client2!
+                          .name!,
+                      style: TextStyle(
+                          fontSize:
+                          17.sp,
+                          color:
+                          black,
+                          fontWeight:
+                          FontWeight
+                              .bold),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 5.h,
+              ),
+              Text(
+                LanguageCubit.get(
+                    context)
+                    .isEn
+                    ? '${current.client2!.country?.title!.en!}, ${current.client2!.city?.title!.en!}, ${current.client2!.area?.title!.en!}'
+                    : '${current.client2!.country?.title!.ar!}, ${current.client2!.city?.title!.ar!}, ${current.client2!.area?.title!.ar!}',
+                style: TextStyle(
+                    fontSize: 15.sp,
+                    color: grey2),
+              ),
+              SizedBox(
+                height: 5.h,
+              ),
+              /*RatingBar.builder(
+                                                        minRating: _userRating,
+                                                        itemBuilder:
+                                                            (context, index) =>
+                                                                const Icon(
+                                                          Icons.star,
+                                                          color: Colors.amber,
+                                                        ),
+                                                        itemCount: 5,
+                                                        itemSize: 17.w,
+                                                        updateOnDrag: true,
+                                                        onRatingUpdate: (rating) {
+                                                          setState(() {
+                                                            _userRating = rating;
+                                                          });
+                                                        },
+                                                        unratedColor: Colors.amber
+                                                            .withAlpha(50),
+                                                        direction: Axis.horizontal,
+                                                      ),*/
+            ],
+          ),
+        ),
+      )
+    ],
+  );
+
+  Widget distanceCurrent(DataRequest current) => IntrinsicHeight(
+    child: Row(
+      crossAxisAlignment:
+      CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Card(
+            color: yellowLightColor,
+            child: Padding(
+              padding:
+              EdgeInsets.all(
+                  15.r),
+              child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment
+                      .center,
+                  children: [
+                    Text(
+                      LanguageCubit.get(
+                          context)
+                          .getTexts(
+                          'Days')
+                          .toString(),
+                      style: TextStyle(
+                          color:
+                          grey2,
+                          fontSize:
+                          13.sp),
+                    ),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    Text(
+                      '${current.days!.length} ${LanguageCubit.get(context).getTexts('Days').toString()}',
+                      textAlign:
+                      TextAlign
+                          .center,
+                      style: TextStyle(
+                          color:
+                          black,
+                          fontSize:
+                          13.sp,
+                          fontWeight:
+                          FontWeight
+                              .bold),
+                    ),
+                  ]),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Card(
+            color: rough,
+            child: Padding(
+              padding:
+              EdgeInsets.all(
+                  15.r),
+              child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment
+                      .center,
+                  children: [
+                    Text(
+                      LanguageCubit.get(
+                          context)
+                          .getTexts(
+                          'UsedPoints')
+                          .toString(),
+                      textAlign:
+                      TextAlign
+                          .center,
+                      style: TextStyle(
+                          color:
+                          grey2,
+                          fontSize:
+                          12.sp),
+                    ),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    Text(
+                      current
+                          .totalConsumptionPoints!
+                          .toStringAsFixed(
+                          2),
+                      textAlign:
+                      TextAlign
+                          .center,
+                      style: TextStyle(
+                          color:
+                          black,
+                          fontSize:
+                          13.sp,
+                          fontWeight:
+                          FontWeight
+                              .bold),
+                    ),
+                  ]),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Card(
+            color: greenLightColor,
+            child: Padding(
+              padding:
+              EdgeInsets.all(
+                  15.r),
+              child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment
+                      .center,
+                  children: [
+                    Text(
+                      LanguageCubit.get(
+                          context)
+                          .getTexts(
+                          'TotalDistance')
+                          .toString(),
+                      textAlign:
+                      TextAlign
+                          .center,
+                      style: TextStyle(
+                          color:
+                          grey2,
+                          fontSize:
+                          12.sp),
+                    ),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    Text(
+                      current
+                          .consumptionKM!
+                          .toStringAsFixed(
+                          2),
+                      textAlign:
+                      TextAlign
+                          .center,
+                      style: TextStyle(
+                          color:
+                          black,
+                          fontSize:
+                          13.sp,
+                          fontWeight:
+                          FontWeight
+                              .bold),
+                    ),
+                  ]),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Card(
+            color: blueLight,
+            child: Padding(
+              padding: EdgeInsets
+                  .symmetric(
+                  vertical:
+                  15.r),
+              child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment
+                      .center,
+                  children: [
+                    Text(
+                      LanguageCubit.get(
+                          context)
+                          .getTexts(
+                          'TotalPrice')
+                          .toString(),
+                      textAlign:
+                      TextAlign
+                          .center,
+                      style: TextStyle(
+                          color:
+                          grey2,
+                          fontSize:
+                          13.sp),
+                    ),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    Text(
+                      current
+                          .totalPrice!
+                          .toStringAsFixed(
+                          2),
+                      textAlign:
+                      TextAlign
+                          .center,
+                      style: TextStyle(
+                          color:
+                          black,
+                          fontSize:
+                          13.sp,
+                          fontWeight:
+                          FontWeight
+                              .bold),
+                    ),
+                  ]),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  Widget upComing() => ScrollEdgeListener(
+    edge: ScrollEdge.end,
+    // edgeOffset: 400,
+    // continuous: false,
+    // debounce: const Duration(milliseconds: 500),
+    // dispatch: true,
+    listener: () {
+      if (RequestCubit.get(context).typeRequest ==
+          "upComing") {
+        print("_controllerUpcoming*********** ");
+        setState(() {
+          loadingMoreUpComing = true;
+        });
+        _loadMoreUpComing();
+      }
+    },
+    child: ListView.builder(
+      // key: const PageStorageKey<String>('tab2'),
+      scrollDirection: Axis.vertical,
+      itemCount: RequestCubit.get(context)
+          .requestUpComing
+          .length,
+      itemBuilder: (context, i) {
+        var upComing = RequestCubit.get(context)
+            .requestUpComing[i];
+        return Column(
+          children: [
+            InkWell(
+              child: Container(
+                margin: EdgeInsets.symmetric(
+                    horizontal: 10.r,
+                    vertical: 10.r),
+                child: Card(
+                  elevation: 5.r,
+                  clipBehavior: Clip.antiAlias,
+                  child: Container(
+                    color: white,
+                    padding: EdgeInsets.symmetric(
+                        vertical: 10.r,
+                        horizontal: 7.r),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 5.h,
+                        ),
+                        clientUpComing(upComing),
+                        SizedBox(
+                          height: 15.h,
+                        ),
+                        // divider
+                        Container(
+                          width: 1.sw,
+                          height: 1.h,
+                          color: Colors.grey[400],
+                        ),
+                        SizedBox(
+                          height: 15.h,
+                        ),
+                        // status
+                        Padding(
+                          padding:
+                          EdgeInsets.symmetric(
+                              horizontal: 8.r),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  'refId: ${upComing.referenceId}',
+                                  textAlign:
+                                  TextAlign
+                                      .start,
+                                  style: TextStyle(
+                                    color: black,
+                                    fontSize: 18.sp,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  'status: ${btnStatus3[upComing.status]}',
+                                  textAlign:
+                                  TextAlign.end,
+                                  style: TextStyle(
+                                    color: black,
+                                    fontSize: 18.sp,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        // picked point
+                        Row(
+                          crossAxisAlignment:
+                          CrossAxisAlignment
+                              .start,
+                          children: [
+                            Icon(
+                              Icons.location_on,
+                              color: greenColor,
+                              size: 20.w,
+                            ),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment
+                                    .start,
+                                children: [
+                                  Text(
+                                    LanguageCubit.get(
+                                        context)
+                                        .getTexts(
+                                        'PickedPoint')
+                                        .toString(),
+                                    style: TextStyle(
+                                        color:
+                                        black,
+                                        fontSize:
+                                        18.sp,
+                                        fontWeight:
+                                        FontWeight
+                                            .bold),
+                                  ),
+                                  SizedBox(
+                                      height: 5.h),
+                                  Text(
+                                    upComing.from!
+                                        .placeTitle!,
+                                    // upComing.from!.placeTitle!,
+                                    style: TextStyle(
+                                        color:
+                                        grey2,
+                                        fontSize:
+                                        16.sp),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment
+                                  .center,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      LanguageCubit.get(
+                                          context)
+                                          .isEn
+                                          ? DateFormat.yMEd().format(DateTime.parse(upComing
+                                          .from!
+                                          .date!))
+                                          : DateFormat.yMEd("ar").format(DateTime.parse(upComing
+                                          .from!
+                                          .date!)),
+                                      style: TextStyle(
+                                          color:
+                                          grey2,
+                                          fontSize:
+                                          14.sp),
+                                    ),
+                                    SizedBox(
+                                      width: 5.w,
+                                    ),
+                                    Text(
+                                      LanguageCubit.get(
+                                          context)
+                                          .isEn
+                                          ? DateFormat.jm().format(DateTime.parse(upComing
+                                          .from!
+                                          .date!))
+                                          : DateFormat.jm("ar").format(DateTime.parse(upComing
+                                          .from!
+                                          .date!)),
+                                      style:
+                                      TextStyle(
+                                        color:
+                                        grey2,
+                                        fontSize:
+                                        14.sp,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 5.h,
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      LanguageCubit.get(
+                                          context)
+                                          .isEn
+                                          ? DateFormat
+                                          .yMEd()
+                                          .format(DateTime.parse(upComing
+                                          .to!))
+                                          : DateFormat.yMEd(
+                                          "ar")
+                                          .format(
+                                          DateTime.parse(upComing.to!)),
+                                      style: TextStyle(
+                                          color:
+                                          grey2,
+                                          fontSize:
+                                          14.sp),
+                                    ),
+                                    SizedBox(
+                                      width: 5.w,
+                                    ),
+                                    Text(
+                                      LanguageCubit.get(
+                                          context)
+                                          .isEn
+                                          ? DateFormat
+                                          .jm()
+                                          .format(DateTime.parse(upComing
+                                          .to!))
+                                          : DateFormat.jm(
+                                          "ar")
+                                          .format(
+                                          DateTime.parse(upComing.to!)),
+                                      style:
+                                      TextStyle(
+                                        color:
+                                        grey2,
+                                        fontSize:
+                                        14.sp,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 5.h,
+                        ),
+                        distanceUpComing(upComing),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              onTap: () async {
+                await navigateToWithRefreshPagePrevious(
+                    context,
+                    RequestDetailsScreen(
+                      idRequest: upComing.id,
+                    ))
+                    .then((value) =>
+                    RequestCubit.get(context)
+                        .getRequestUpComing(1));
+              },
+            ),
+            i ==
+                RequestCubit.get(context)
+                    .requestUpComing
+                    .length -
+                    1 &&
+                loadingMoreUpComing
+                ? Column(
+              children: [
+                SizedBox(
+                  height: 10.h,
+                ),
+                loading(),
+                SizedBox(
+                  height: 10.h,
+                ),
+              ],
+            )
+                : Container(),
+          ],
+        );
+      },
+    ),
+  );
+
+  Widget clientUpComing(DataRequest upComing) => Row(
+    children: [
+      ClipOval(
+        clipBehavior:
+        Clip.antiAlias,
+        child:
+        ImageTools.image(
+            fit: BoxFit
+                .fill,
+            url: upComing
+                .client2!
+                .image!
+                .src,
+            height: 70.w,
+            width: 70.w),
+      ),
+      Expanded(
+        child: Container(
+          margin: EdgeInsets
+              .symmetric(
+              horizontal:
+              20.r),
+          child: Column(
+            crossAxisAlignment:
+            CrossAxisAlignment
+                .start,
+            children: [
+              SizedBox(
+                height: 5.h,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child:
+                    Text(
+                      upComing
+                          .client2!
+                          .name!,
+                      style: TextStyle(
+                          fontSize: 17
+                              .sp,
+                          color:
+                          black,
+                          fontWeight:
+                          FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 5.h,
+              ),
+              Text(
+                LanguageCubit.get(
+                    context)
+                    .isEn
+                    ? '${upComing.client2!.country?.title!.en!}, ${upComing.client2!.city?.title!.en!}, ${upComing.client2!.area?.title!.en!}'
+                    : '${upComing.client2!.country?.title!.ar!}, ${upComing.client2!.city?.title!.ar!}, ${upComing.client2!.area?.title!.ar!}',
+                style: TextStyle(
+                    fontSize:
+                    15.sp,
+                    color:
+                    grey2),
+              ),
+              SizedBox(
+                height: 5.h,
+              ),
+              /* RatingBar.builder(
+                                                              minRating: _userRating,
+                                                              itemBuilder:
+                                                                  (context, index) =>
+                                                                      const Icon(
+                                                                Icons.star,
+                                                                color: Colors.amber,
+                                                              ),
+                                                              itemCount: 5,
+                                                              itemSize: 17.w,
+                                                              updateOnDrag: true,
+                                                              onRatingUpdate: (rating) {
+                                                                setState(() {
+                                                                  _userRating = rating;
+                                                                });
+                                                              },
+                                                              unratedColor: Colors.amber
+                                                                  .withAlpha(50),
+                                                              direction: Axis.horizontal,
+                                                            ),*/
+            ],
+          ),
+        ),
+      )
+    ],
+  );
+
+  Widget distanceUpComing(DataRequest upComing) => IntrinsicHeight(
+    child: Row(
+      crossAxisAlignment:
+      CrossAxisAlignment
+          .center,
+      children: [
+        Expanded(
+          child: Card(
+            color:
+            yellowLightColor,
+            child: Padding(
+              padding:
+              EdgeInsets
+                  .all(15
+                  .r),
+              child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment
+                      .center,
+                  children: [
+                    Text(
+                      LanguageCubit.get(context)
+                          .getTexts('Days')
+                          .toString(),
+                      style: TextStyle(
+                          color:
+                          grey2,
+                          fontSize:
+                          13.sp),
+                    ),
+                    SizedBox(
+                      height:
+                      5.h,
+                    ),
+                    Text(
+                      '${upComing.days!.length} Days',
+                      textAlign:
+                      TextAlign.center,
+                      style: TextStyle(
+                          color:
+                          black,
+                          fontSize:
+                          13.sp,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ]),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Card(
+            color: rough,
+            child: Padding(
+              padding:
+              EdgeInsets
+                  .all(15
+                  .r),
+              child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment
+                      .center,
+                  children: [
+                    Text(
+                      LanguageCubit.get(context)
+                          .getTexts('UsedPoints')
+                          .toString(),
+                      textAlign:
+                      TextAlign.center,
+                      style: TextStyle(
+                          color:
+                          grey2,
+                          fontSize:
+                          12.sp),
+                    ),
+                    SizedBox(
+                      height:
+                      5.h,
+                    ),
+                    Text(
+                      upComing
+                          .totalConsumptionPoints!
+                          .toStringAsFixed(2),
+                      textAlign:
+                      TextAlign.center,
+                      style: TextStyle(
+                          color:
+                          black,
+                          fontSize:
+                          13.sp,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ]),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Card(
+            color:
+            greenLightColor,
+            child: Padding(
+              padding:
+              EdgeInsets
+                  .all(15
+                  .r),
+              child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment
+                      .center,
+                  children: [
+                    Text(
+                      LanguageCubit.get(context)
+                          .getTexts('TotalDistance')
+                          .toString(),
+                      textAlign:
+                      TextAlign.center,
+                      style: TextStyle(
+                          color:
+                          grey2,
+                          fontSize:
+                          13.sp),
+                    ),
+                    SizedBox(
+                      height:
+                      5.h,
+                    ),
+                    Text(
+                      upComing
+                          .consumptionKM!
+                          .toStringAsFixed(2),
+                      textAlign:
+                      TextAlign.center,
+                      style: TextStyle(
+                          color:
+                          black,
+                          fontSize:
+                          13.sp,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ]),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Card(
+            color: blueLight,
+            child: Padding(
+              padding: EdgeInsets
+                  .symmetric(
+                  vertical:
+                  15.r),
+              child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment
+                      .center,
+                  children: [
+                    Text(
+                      LanguageCubit.get(context)
+                          .getTexts('TotalPrice')
+                          .toString(),
+                      textAlign:
+                      TextAlign.center,
+                      style: TextStyle(
+                          color:
+                          grey2,
+                          fontSize:
+                          13.sp),
+                    ),
+                    SizedBox(
+                      height:
+                      5.h,
+                    ),
+                    Text(
+                      upComing
+                          .totalPrice!
+                          .toStringAsFixed(2),
+                      textAlign:
+                      TextAlign.center,
+                      style: TextStyle(
+                          color:
+                          black,
+                          fontSize:
+                          13.sp,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ]),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  Widget past() => ScrollEdgeListener(
+    edge: ScrollEdge.end,
+    // edgeOffset: 400,
+    // continuous: false,
+    // debounce: const Duration(milliseconds: 500),
+    // dispatch: true,
+    listener: () {
+      if (RequestCubit.get(context).typeRequest ==
+          "past") {
+        setState(() {
+          print("_controllerPast*********** ");
+          loadingMorePast = true;
+        });
+        _loadMorePast();
+      }
+    },
+    child: ListView.builder(
+      // key: const PageStorageKey<String>('tab2'),
+      scrollDirection: Axis.vertical,
+      itemCount: RequestCubit.get(context)
+          .requestPast
+          .length,
+      itemBuilder: (context, i) {
+        var past = RequestCubit.get(context)
+            .requestPast[i];
+
+        return Column(
+          children: [
+            InkWell(
+              child: Container(
+                margin: EdgeInsets.symmetric(
+                    horizontal: 10.r,
+                    vertical: 10.r),
+                child: Card(
+                  elevation: 5.r,
+                  clipBehavior: Clip.antiAlias,
+                  child: Container(
+                    color: white,
+                    padding: EdgeInsets.symmetric(
+                        vertical: 10.r,
+                        horizontal: 7.r),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 5.h,
+                        ),
+                        clientPast(past),
+                        SizedBox(
+                          height: 15.h,
+                        ),
+                        // divider
+                        Container(
+                          width: 1.sw,
+                          height: 1.h,
+                          color: Colors.grey[400],
+                        ),
+                        SizedBox(
+                          height: 15.h,
+                        ),
+                        // status
+                        Padding(
+                          padding:
+                          EdgeInsets.symmetric(
+                              horizontal: 8.r),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  'refId: ${past.referenceId}',
+                                  textAlign:
+                                  TextAlign
+                                      .start,
+                                  style: TextStyle(
+                                    color: black,
+                                    fontSize: 18.sp,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  'status: ${btnStatus3[past.status]}',
+                                  textAlign:
+                                  TextAlign.end,
+                                  style: TextStyle(
+                                    color: black,
+                                    fontSize: 18.sp,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        // picked point
+                        Row(
+                          crossAxisAlignment:
+                          CrossAxisAlignment
+                              .start,
+                          children: [
+                            Icon(
+                              Icons.location_on,
+                              color: greenColor,
+                              size: 20.w,
+                            ),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment
+                                    .start,
+                                children: [
+                                  Text(
+                                    LanguageCubit.get(
+                                        context)
+                                        .getTexts(
+                                        'PickedPoint')
+                                        .toString(),
+                                    style: TextStyle(
+                                        color:
+                                        black,
+                                        fontSize:
+                                        18.sp,
+                                        fontWeight:
+                                        FontWeight
+                                            .bold),
+                                  ),
+                                  SizedBox(
+                                      height: 5.h),
+                                  Text(
+                                    past.from!
+                                        .placeTitle!,
+                                    // past.from!.placeTitle!,
+                                    style: TextStyle(
+                                        color:
+                                        grey2,
+                                        fontSize:
+                                        16.sp),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment
+                                  .center,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      LanguageCubit.get(
+                                          context)
+                                          .isEn
+                                          ? DateFormat.yMEd().format(DateTime.parse(past
+                                          .from!
+                                          .date!))
+                                          : DateFormat.yMEd("ar").format(DateTime.parse(past
+                                          .from!
+                                          .date!)),
+                                      style: TextStyle(
+                                          color:
+                                          grey2,
+                                          fontSize:
+                                          14.sp),
+                                    ),
+                                    SizedBox(
+                                      width: 5.w,
+                                    ),
+                                    Text(
+                                      LanguageCubit.get(
+                                          context)
+                                          .isEn
+                                          ? DateFormat.jm().format(DateTime.parse(past
+                                          .from!
+                                          .date!))
+                                          : DateFormat.jm("ar").format(DateTime.parse(past
+                                          .from!
+                                          .date!)),
+                                      style:
+                                      TextStyle(
+                                        color:
+                                        grey2,
+                                        fontSize:
+                                        14.sp,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 5.h,
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      LanguageCubit.get(
+                                          context)
+                                          .isEn
+                                          ? DateFormat
+                                          .yMEd()
+                                          .format(DateTime.parse(past
+                                          .to!))
+                                          : DateFormat.yMEd(
+                                          "ar")
+                                          .format(
+                                          DateTime.parse(past.to!)),
+                                      style: TextStyle(
+                                          color:
+                                          grey2,
+                                          fontSize:
+                                          14.sp),
+                                    ),
+                                    SizedBox(
+                                      width: 5.w,
+                                    ),
+                                    Text(
+                                      LanguageCubit.get(
+                                          context)
+                                          .isEn
+                                          ? DateFormat
+                                          .jm()
+                                          .format(DateTime.parse(past
+                                          .to!))
+                                          : DateFormat.jm(
+                                          "ar")
+                                          .format(
+                                          DateTime.parse(past.to!)),
+                                      style:
+                                      TextStyle(
+                                        color:
+                                        grey2,
+                                        fontSize:
+                                        14.sp,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        distancePast(past),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              onTap: () async {
+                RequestDetailsCubit.get(context)
+                    .typeScreen = "past";
+
+                await navigateToWithRefreshPagePrevious(
+                    context,
+                    RequestDetailsScreen(
+                      idRequest: past.id,
+                    ))
+                    .then((value) =>
+                    RequestCubit.get(context)
+                        .getRequestPast(1));
+              },
+            ),
+            i ==
+                RequestCubit.get(context)
+                    .requestPast
+                    .length -
+                    1 &&
+                loadingMorePast
+                ? Column(
+              children: [
+                SizedBox(
+                  height: 10.h,
+                ),
+                loading(),
+                SizedBox(
+                  height: 10.h,
+                ),
+              ],
+            )
+                : Container(),
+          ],
+        );
+      },
+    ),
+  );
+
+  Widget clientPast(DataRequest past) => Row(
+    children: [
+      ClipOval(
+        clipBehavior:
+        Clip.antiAlias,
+        child:
+        ImageTools.image(
+            fit: BoxFit
+                .fill,
+            url: past
+                .client2!
+                .image!
+                .src,
+            height: 70.w,
+            width: 70.w),
+      ),
+      Expanded(
+        child: Container(
+          margin: EdgeInsets
+              .symmetric(
+              horizontal:
+              20.r),
+          child: Column(
+            crossAxisAlignment:
+            CrossAxisAlignment
+                .start,
+            children: [
+              SizedBox(
+                height: 5.h,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child:
+                    Text(
+                      past.client2!
+                          .name!,
+                      style: TextStyle(
+                          fontSize: 17
+                              .sp,
+                          color:
+                          black,
+                          fontWeight:
+                          FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 5.h,
+              ),
+              Text(
+                LanguageCubit.get(
+                    context)
+                    .isEn
+                    ? '${past.client2!.country?.title!.en!}, ${past.client2!.city?.title!.en!}, ${past.client2!.area?.title!.en!}'
+                    : '${past.client2!.country?.title!.ar!}, ${past.client2!.city?.title!.ar!}, ${past.client2!.area?.title!.ar!}',
+                style: TextStyle(
+                    fontSize:
+                    15.sp,
+                    color:
+                    grey2),
+              ),
+              SizedBox(
+                height: 5.h,
+              ),
+              /*RatingBar.builder(
+                                                              minRating: _userRating,
+                                                              itemBuilder:
+                                                                  (context, index) =>
+                                                                      const Icon(
+                                                                Icons.star,
+                                                                color: Colors.amber,
+                                                              ),
+                                                              itemCount: 5,
+                                                              itemSize: 17.w,
+                                                              updateOnDrag: true,
+                                                              onRatingUpdate: (rating) {
+                                                                setState(() {
+                                                                  _userRating = rating;
+                                                                });
+                                                              },
+                                                              unratedColor: Colors.amber
+                                                                  .withAlpha(50),
+                                                              direction: Axis.horizontal,
+                                                            ),*/
+            ],
+          ),
+        ),
+      )
+    ],
+  );
+
+  Widget distancePast(DataRequest past) => IntrinsicHeight(
+    child: Row(
+      crossAxisAlignment:
+      CrossAxisAlignment
+          .center,
+      children: [
+        Expanded(
+          child: Card(
+            color:
+            yellowLightColor,
+            child: Padding(
+              padding:
+              EdgeInsets
+                  .all(15
+                  .r),
+              child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment
+                      .center,
+                  children: [
+                    Text(
+                      LanguageCubit.get(context)
+                          .getTexts('Days')
+                          .toString(),
+                      style: TextStyle(
+                          color:
+                          grey2,
+                          fontSize:
+                          13.sp),
+                    ),
+                    SizedBox(
+                      height:
+                      5.h,
+                    ),
+                    Text(
+                      '${past.days!.length} Days',
+                      textAlign:
+                      TextAlign.center,
+                      style: TextStyle(
+                          color:
+                          black,
+                          fontSize:
+                          13.sp,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ]),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Card(
+            color: rough,
+            child: Padding(
+              padding:
+              EdgeInsets
+                  .all(15
+                  .r),
+              child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment
+                      .center,
+                  children: [
+                    Text(
+                      LanguageCubit.get(context)
+                          .getTexts('UsedPoints')
+                          .toString(),
+                      textAlign:
+                      TextAlign.center,
+                      style: TextStyle(
+                          color:
+                          grey2,
+                          fontSize:
+                          12.sp),
+                    ),
+                    SizedBox(
+                      height:
+                      5.h,
+                    ),
+                    Text(
+                      past.totalConsumptionPoints!
+                          .toStringAsFixed(2),
+                      textAlign:
+                      TextAlign.center,
+                      style: TextStyle(
+                          color:
+                          black,
+                          fontSize:
+                          13.sp,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ]),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Card(
+            color:
+            greenLightColor,
+            child: Padding(
+              padding:
+              EdgeInsets
+                  .all(15
+                  .r),
+              child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment
+                      .center,
+                  children: [
+                    Text(
+                      LanguageCubit.get(context)
+                          .getTexts('TotalDistance')
+                          .toString(),
+                      textAlign:
+                      TextAlign.center,
+                      style: TextStyle(
+                          color:
+                          grey2,
+                          fontSize:
+                          12.sp),
+                    ),
+                    SizedBox(
+                      height:
+                      5.h,
+                    ),
+                    Text(
+                      past.consumptionKM!
+                          .toStringAsFixed(2),
+                      textAlign:
+                      TextAlign.center,
+                      style: TextStyle(
+                          color:
+                          black,
+                          fontSize:
+                          13.sp,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ]),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Card(
+            color: blueLight,
+            child: Padding(
+              padding: EdgeInsets
+                  .symmetric(
+                  vertical:
+                  15.r),
+              child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment
+                      .center,
+                  children: [
+                    Text(
+                      LanguageCubit.get(context)
+                          .getTexts('TotalPrice')
+                          .toString(),
+                      textAlign:
+                      TextAlign.center,
+                      style: TextStyle(
+                          color:
+                          grey2,
+                          fontSize:
+                          13.sp),
+                    ),
+                    SizedBox(
+                      height:
+                      5.h,
+                    ),
+                    Text(
+                      past.totalPrice!
+                          .toStringAsFixed(2),
+                      textAlign:
+                      TextAlign.center,
+                      style: TextStyle(
+                          color:
+                          black,
+                          fontSize:
+                          13.sp,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ]),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  Widget pending() => ScrollEdgeListener(
+    edge: ScrollEdge.end,
+    // edgeOffset: 400,
+    // continuous: false,
+    // debounce: const Duration(milliseconds: 500),
+    // dispatch: true,
+    listener: () {
+      if (RequestCubit.get(context).typeRequest ==
+          "pending") {
+        if (kDebugMode) {
+          print('_controllerPending*******');
+        }
+        setState(() {
+          loadingMorePending = true;
+        });
+        _loadMorePending();
+      }
+    },
+    child: ListView.builder(
+      // key: const PageStorageKey<String>('tab2'),
+      scrollDirection: Axis.vertical,
+      itemCount: RequestCubit.get(context)
+          .requestPending
+          .length,
+      itemBuilder: (context, i) {
+        var pending = RequestCubit.get(context)
+            .requestPending[i];
+        final loadAcceptVisible = i == indexPending;
+        print(
+            "loadAcceptVisible***********$loadAcceptVisible");
+        return Column(
+          children: [
+            Container(
+              margin: EdgeInsets.symmetric(
+                  horizontal: 10.r, vertical: 10.r),
+              child: Card(
+                elevation: 5.r,
+                clipBehavior: Clip.antiAlias,
+                child: Container(
+                  color: white,
+                  padding: EdgeInsets.symmetric(
+                      vertical: 10.r,
+                      horizontal: 7.r),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          clientPending(pending),
+                          SizedBox(
+                            height: 15.h,
+                          ),
+                          // divider
+                          Container(
+                            width: 1.sw,
+                            height: 1.h,
+                            color: Colors.grey[400],
+                          ),
+                          SizedBox(
+                            height: 15.h,
+                          ),
+                          // picked point
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.location_on,
+                                color: greenColor,
+                                size: 20.w,
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      LanguageCubit.get(context)
+                                          .getTexts('PickedPoint')
+                                          .toString(),
+                                      style: TextStyle(
+                                          color: black,
+                                          fontSize: 18.sp,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBox(height: 5.h),
+                                    Text(
+                                      pending.id!,
+                                      // upComing.from!.placeTitle!,
+                                      style: TextStyle(
+                                          color: grey2, fontSize: 16.sp),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        LanguageCubit.get(context).isEn
+                                            ? DateFormat.yMEd().format(
+                                                DateTime.parse(
+                                                    pending.from!.date!))
+                                            : DateFormat.yMEd("ar").format(
+                                                DateTime.parse(
+                                                    pending.from!.date!)),
+                                        style: TextStyle(
+                                            color: grey2, fontSize: 14.sp),
+                                      ),
+                                      SizedBox(
+                                        width: 5.w,
+                                      ),
+                                      Text(
+                                        LanguageCubit.get(context).isEn
+                                            ? DateFormat.jm().format(
+                                                DateTime.parse(
+                                                    pending.from!.date!))
+                                            : DateFormat.jm("ar").format(
+                                                DateTime.parse(
+                                                    pending.from!.date!)),
+                                        style: TextStyle(
+                                          color: grey2,
+                                          fontSize: 14.sp,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        LanguageCubit.get(context).isEn
+                                            ? DateFormat.yMEd().format(
+                                                DateTime.parse(pending.to!))
+                                            : DateFormat.yMEd("ar").format(
+                                                DateTime.parse(pending.to!)),
+                                        style: TextStyle(
+                                            color: grey2, fontSize: 14.sp),
+                                      ),
+                                      SizedBox(
+                                        width: 5.w,
+                                      ),
+                                      Text(
+                                        LanguageCubit.get(context).isEn
+                                            ? DateFormat.jm().format(
+                                                DateTime.parse(pending.to!))
+                                            : DateFormat.jm("ar").format(
+                                                DateTime.parse(pending.to!)),
+                                        style: TextStyle(
+                                          color: grey2,
+                                          fontSize: 14.sp,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          distancePending(pending),
+                          SizedBox(
+                            height: 15.h,
+                          ),
+                          btnStatusPending(pending, loadAcceptVisible, i),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                        ],
+                      ),
+                    ),
+              ),
+            ),
+            i ==
+                RequestCubit.get(context)
+                    .requestPending
+                    .length -
+                    1 &&
+                loadingMorePending
+                ? Column(
+              children: [
+                SizedBox(
+                  height: 10.h,
+                ),
+                loading(),
+                SizedBox(
+                  height: 10.h,
+                ),
+              ],
+            )
+                : Container(),
+          ],
+        );
+      },
+    ),
+  );
+
+  Widget clientPending(DataRequest pending) => Row(
+    children: [
+      ClipOval(
+        clipBehavior:
+        Clip.antiAlias,
+        child: ImageTools.image(
+            fit: BoxFit.fill,
+            url: pending
+                .client2!
+                .image!
+                .src,
+            height: 70.w,
+            width: 70.w),
+      ),
+      Expanded(
+        child: Container(
+          margin: EdgeInsets
+              .symmetric(
+              horizontal:
+              20.r),
+          child: Column(
+            crossAxisAlignment:
+            CrossAxisAlignment
+                .start,
+            children: [
+              SizedBox(
+                height: 5.h,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      pending
+                          .client2!
+                          .name!,
+                      style: TextStyle(
+                          fontSize: 17
+                              .sp,
+                          color:
+                          black,
+                          fontWeight:
+                          FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 5.h,
+              ),
+              Text(
+                LanguageCubit.get(
+                    context)
+                    .isEn
+                    ? '${pending.client2!.country?.title!.en!}, ${pending.client2!.city?.title!.en!}, ${pending.client2!.area?.title!.en!}'
+                    : '${pending.client2!.country?.title!.ar!}, ${pending.client2!.city?.title!.ar!}, ${pending.client2!.area?.title!.ar!}',
+                style: TextStyle(
+                    fontSize:
+                    15.sp,
+                    color:
+                    grey2),
+              ),
+              SizedBox(
+                height: 5.h,
+              ),
+              /*RatingBar.builder(
+                                                        minRating: _userRating,
+                                                        itemBuilder:
+                                                            (context, index) =>
+                                                                const Icon(
+                                                          Icons.star,
+                                                          color: Colors.amber,
+                                                        ),
+                                                        itemCount: 5,
+                                                        itemSize: 17.w,
+                                                        updateOnDrag: true,
+                                                        onRatingUpdate: (rating) {
+                                                          setState(() {
+                                                            _userRating = rating;
+                                                          });
+                                                        },
+                                                        unratedColor: Colors.amber
+                                                            .withAlpha(50),
+                                                        direction: Axis.horizontal,
+                                                      ),*/
+            ],
+          ),
+        ),
+      )
+    ],
+  );
+
+  Widget distancePending(DataRequest pending) => IntrinsicHeight(
+    child: Row(
+      crossAxisAlignment:
+      CrossAxisAlignment
+          .center,
+      children: [
+        Expanded(
+          child: Card(
+            color:
+            yellowLightColor,
+            child: Padding(
+              padding:
+              EdgeInsets
+                  .all(
+                  15.r),
+              child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment
+                      .center,
+                  children: [
+                    Text(
+                      LanguageCubit.get(
+                          context)
+                          .getTexts(
+                          'Days')
+                          .toString(),
+                      style: TextStyle(
+                          color:
+                          grey2,
+                          fontSize:
+                          13.sp),
+                    ),
+                    SizedBox(
+                      height:
+                      5.h,
+                    ),
+                    Text(
+                      '${pending.days!.length} Days',
+                      textAlign:
+                      TextAlign
+                          .center,
+                      style: TextStyle(
+                          color:
+                          black,
+                          fontSize: 13
+                              .sp,
+                          fontWeight:
+                          FontWeight.bold),
+                    ),
+                  ]),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Card(
+            color: rough,
+            child: Padding(
+              padding:
+              EdgeInsets
+                  .all(
+                  15.r),
+              child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment
+                      .center,
+                  children: [
+                    Text(
+                      LanguageCubit.get(
+                          context)
+                          .getTexts(
+                          'UsedPoints')
+                          .toString(),
+                      textAlign:
+                      TextAlign
+                          .center,
+                      style: TextStyle(
+                          color:
+                          grey2,
+                          fontSize:
+                          12.sp),
+                    ),
+                    SizedBox(
+                      height:
+                      5.h,
+                    ),
+                    Text(
+                      pending
+                          .totalConsumptionPoints!
+                          .toStringAsFixed(
+                          2),
+                      textAlign:
+                      TextAlign
+                          .center,
+                      style: TextStyle(
+                          color:
+                          black,
+                          fontSize: 13
+                              .sp,
+                          fontWeight:
+                          FontWeight.bold),
+                    ),
+                  ]),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Card(
+            color:
+            greenLightColor,
+            child: Padding(
+              padding:
+              EdgeInsets
+                  .all(
+                  15.r),
+              child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment
+                      .center,
+                  children: [
+                    Text(
+                      LanguageCubit.get(
+                          context)
+                          .getTexts(
+                          'TotalDistance')
+                          .toString(),
+                      textAlign:
+                      TextAlign
+                          .center,
+                      style: TextStyle(
+                          color:
+                          grey2,
+                          fontSize:
+                          12.sp),
+                    ),
+                    SizedBox(
+                      height:
+                      5.h,
+                    ),
+                    Text(
+                      pending
+                          .consumptionKM!
+                          .toStringAsFixed(
+                          2),
+                      textAlign:
+                      TextAlign
+                          .center,
+                      style: TextStyle(
+                          color:
+                          black,
+                          fontSize: 13
+                              .sp,
+                          fontWeight:
+                          FontWeight.bold),
+                    ),
+                  ]),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Card(
+            color: blueLight,
+            child: Padding(
+              padding: EdgeInsets
+                  .symmetric(
+                  vertical:
+                  15.r),
+              child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment
+                      .center,
+                  children: [
+                    Text(
+                      LanguageCubit.get(
+                          context)
+                          .getTexts(
+                          'TotalPrice')
+                          .toString(),
+                      textAlign:
+                      TextAlign
+                          .center,
+                      style: TextStyle(
+                          color:
+                          grey2,
+                          fontSize:
+                          13.sp),
+                    ),
+                    SizedBox(
+                      height:
+                      5.h,
+                    ),
+                    Text(
+                      pending
+                          .totalPrice!
+                          .toStringAsFixed(
+                          2),
+                      textAlign:
+                      TextAlign
+                          .center,
+                      style: TextStyle(
+                          color:
+                          black,
+                          fontSize: 13
+                              .sp,
+                          fontWeight:
+                          FontWeight.bold),
+                    ),
+                  ]),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  Widget btnStatusPending(DataRequest pending, bool loadAcceptVisible, int i) =>
+      pending.status == "pending"
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                loadAcceptVisible
+                    ? RequestCubit.get(context).loadingEditPending
+                        ? loading()
+                        : defaultButton2(
+                            press: () {
+                              RequestCubit.get(context)
+                                  .editRequest(pending.id!, "accept", "");
+
+                              setState(() {
+                                indexPending = i;
+                              });
+                            },
+                            text: "Accept",
+                            backColor: greenColor,
+                            textColor: white)
+                    : defaultButton2(
+                        press: () {
+                          RequestCubit.get(context)
+                              .editRequest(pending.id!, "accept", "");
+                          setState(() {
+                            indexPending = i;
+                          });
+                        },
+                        text: "Accept",
+                        backColor: greenColor,
+                        textColor: white),
+                defaultButton2(
+                  press: () {
+                    showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      // outside to dismiss
+                      builder: (BuildContext context) {
+                        return CustomDialogRequestTabs(
+                          title: LanguageCubit.get(context)
+                              .getTexts('DoReject')
+                              .toString(),
+                          description: LanguageCubit.get(context)
+                              .getTexts('IfRejected')
+                              .toString(),
+                          backgroundColor: white,
+                          btnOkColor: accentColor,
+                          btnCancelColor: grey,
+                          id: pending.id,
+                          titleColor: accentColor,
+                          descColor: black,
+                        );
+                      },
+                    );
+                  },
+                  colorBorder: true,
+                  text: "Reject",
+                  backColor: white,
+                  textColor: grey2,
+                ),
+              ],
+            ) 
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                defaultButton2(
+                  press: () {
+                    showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      // outside to dismiss
+                      builder: (BuildContext context) {
+                        return CustomDialogRequestTabs(
+                          title: LanguageCubit.get(context)
+                              .getTexts('DoReject')
+                              .toString(),
+                          description: LanguageCubit.get(context)
+                              .getTexts('IfRejected')
+                              .toString(),
+                          backgroundColor: white,
+                          btnOkColor: accentColor,
+                          btnCancelColor: grey,
+                          id: pending.id,
+                          titleColor: accentColor,
+                          descColor: black,
+                        );
+                      },
+                    );
+                  },
+                  colorBorder: true,
+                  text: "Reject",
+                  backColor: white,
+                  textColor: grey2,
+                ),
+                SizedBox(
+                  height: 5.h,
+                ),
+                Text(
+                  '${pending.client2?.name} not paid yet..',
+                  style: TextStyle(color: accentColor, fontSize: 18.sp),
+                )
+              ],
+            );
 
   Widget sideBar() => Drawer(
         child: ListView(

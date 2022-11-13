@@ -11,7 +11,4 @@ class MainCubit extends Cubit<MainState> {
   static MainCubit get(context) => BlocProvider.of(context);
 
   bool refresh = false;
-
-
-
 }

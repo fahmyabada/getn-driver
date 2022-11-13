@@ -11,7 +11,6 @@ import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/main.dart';
-import 'package:getn_driver/main_cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
@@ -141,15 +140,6 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
     }
   }
 
-  // @override
-  // void dispose() {
-  //   getIt<SharedPreferences>().setString('tripDetailsId', "");
-  //   getIt<SharedPreferences>().setString('typeScreen',"") ;
-  //   print("typeScreenTrip************dispose");
-  //   super.dispose();
-  //
-  // }
-
   @override
   void initState() {
     BitmapDescriptor.fromAssetImage(
@@ -158,17 +148,10 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
         .then((icon) {
       customIcon = icon;
     });
-
     super.initState();
 
     TripDetailsCubit.get(context).getTripDetails(widget.idTrip!);
-    // Future.delayed(const Duration(seconds: 2),(){
-    //   getIt<SharedPreferences>().setString('typeScreen',"tripDetails") ;
-    //   getIt<SharedPreferences>().setString('tripDetailsId', widget.idTrip!);
-    //   if (kDebugMode) {
-    //     print("typeScreenTrip************initState");
-    //   }
-    // });
+
     if (getIt<SharedPreferences>().getBool("isEn") != null) {
       LanguageCubit.get(context).isEn =
           getIt<SharedPreferences>().getBool("isEn")!;
@@ -195,14 +178,14 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
       child: BlocConsumer<TripDetailsCubit, TripDetailsState>(
         listener: (context, state) {
           if (state is TripDetailsEditSuccessState) {
-            if (state.type == "reject") {
+            if (state.type == "reject" || state.type == "start") {
               Navigator.pop(context);
             }
             TripDetailsCubit.get(context).getTripDetails(widget.idTrip!);
           } else if (state is TripDetailsEditErrorState) {
-            // if(state.type == "reject"){
-            //   Navigator.pop(context);
-            // }
+            if(state.type == "reject" || state.type == "start"){
+              Navigator.pop(context);
+            }
             // Navigator.of(context).pop(widget.idRequest);
             showToastt(
                 text: state.message,
@@ -915,15 +898,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                 .toString(),
                           );
                         },
-                      ).then((value) {
-                        print(
-                            "showDialog************** ${MainCubit.get(context).refresh}");
-                        if (MainCubit.get(context).refresh) {
-                          TripDetailsCubit.get(context)
-                              .getTripDetails(widget.idTrip!);
-                          MainCubit.get(context).refresh = false;
-                        }
-                      });
+                      );
                     },
                     fontSize: 20,
                     paddingVertical: 1,

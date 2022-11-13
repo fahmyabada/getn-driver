@@ -21,7 +21,6 @@ class TripDetailsSuccessState extends TripDetailsInitial {
 
 class TripDetailsEditInitial extends TripDetailsInitial {}
 
-class TripDetailsEditRejectInitial extends TripDetailsInitial {}
 
 class TripDetailsEditErrorState extends TripDetailsInitial {
   final String message;

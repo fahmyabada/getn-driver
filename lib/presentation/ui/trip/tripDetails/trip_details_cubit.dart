@@ -43,9 +43,7 @@ class TripDetailsCubit extends Cubit<TripDetailsState> {
   }
 
   void editTrip(String id, String type, String comment) async {
-    if(type == "reject"){
-      emit(TripDetailsEditRejectInitial());
-    }else{
+    if(type != "reject" || type != "start"){
       emit(TripDetailsEditInitial());
     }
 

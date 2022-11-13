@@ -8,7 +8,6 @@ import 'package:focus_detector/focus_detector.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
-import 'package:getn_driver/main_cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
@@ -85,14 +84,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    // Future.delayed(const Duration(seconds: 2), () {
-    //   getIt<SharedPreferences>().setString('typeScreen',"requestDetails") ;
-    //   getIt<SharedPreferences>()
-    //       .setString('requestDetailsId', widget.idRequest!);
-    //   if (kDebugMode) {
-    //     print("typeScreen************initState");
-    //   }
-    // });
     RequestDetailsCubit.get(context).getCurrentLocation();
 
     if (getIt<SharedPreferences>().getBool("isEn") != null) {
@@ -100,16 +91,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           getIt<SharedPreferences>().getBool("isEn")!;
     }
   }
-
-  // @override
-  // void dispose() {
-  //   getIt<SharedPreferences>().setString('typeScreen',"") ;
-  //   getIt<SharedPreferences>().setString('requestDetailsId', "");
-  //   super.dispose();
-  //   if (kDebugMode) {
-  //     print("typeScreen************dispose");
-  //   }
-  // }
 
   void viewWillAppear() {
     print("onResume / viewWillAppear / onFocusGained     RequestDetailsScreen");
@@ -135,13 +116,17 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 .getTripsRequestDetails(1, widget.idRequest!);
           }
           else if (state is RequestDetailsEditSuccessState) {
+            if (state.type == "reject" || state.type == "mid_pause") {
+              Navigator.pop(context);
+            }
+
             RequestDetailsCubit.get(context)
                 .getRequestDetails(widget.idRequest!);
           }
           else if (state is RequestDetailsEditErrorState) {
-            // if (state.type == "reject") {
-            //   Navigator.pop(context);
-            // }
+            if (state.type == "reject" || state.type == "mid_pause" || state.type == "start") {
+              Navigator.pop(context);
+            }
             if (state.message == "{status:  you can't start request now}") {
               showToastt(
                   text: LanguageCubit.get(context)
@@ -786,16 +771,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       type: "end",
                                     );
                                   },
-                                ).then((value) {
-                                  print(
-                                      "showDialog************** ${MainCubit.get(context).refresh}");
-                                  if (MainCubit.get(context).refresh) {
-                                    RequestDetailsCubit.get(context)
-                                        .getRequestDetails(widget.idRequest!);
-                                    MainCubit.get(context).refresh = false;
-                                  }
-                                });
-                                ;
+                                );
                               } else {
                                 RequestDetailsCubit.get(context).editRequest(
                                     RequestDetailsCubit.get(context)
@@ -898,15 +874,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     type: btnStatus[
                                         '${RequestDetailsCubit.get(context).requestDetails!.status}']![1]);
                               },
-                            ).then((value) {
-                              print(
-                                  "showDialog************** ${MainCubit.get(context).refresh}");
-                              if (MainCubit.get(context).refresh) {
-                                RequestDetailsCubit.get(context)
-                                    .getRequestDetails(widget.idRequest!);
-                                MainCubit.get(context).refresh = false;
-                              }
-                            });
+                            );
                           }
                           else {
                             showDialog(
@@ -927,15 +895,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     type: btnStatus[
                                         '${RequestDetailsCubit.get(context).requestDetails!.status}']![1]);
                               },
-                            ).then((value) {
-                              print(
-                                  "showDialog************** ${MainCubit.get(context).refresh}");
-                              if (MainCubit.get(context).refresh) {
-                                RequestDetailsCubit.get(context)
-                                    .getRequestDetails(widget.idRequest!);
-                                MainCubit.get(context).refresh = false;
-                              }
-                            });
+                            );
                           }
                         },
                         disablePress: RequestDetailsCubit.get(context)

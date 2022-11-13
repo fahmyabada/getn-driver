@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
-import 'package:getn_driver/main_cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/ui/auth/SignInScreen.dart';
 import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
@@ -414,13 +413,11 @@ class CustomDialogImage extends StatelessWidget {
   }
 }
 
-class CustomDialogRejectRequestDetails extends StatelessWidget {
+class CustomDialogRejectRequestDetails extends StatefulWidget {
   final String? title, description, id, type;
 
-  var commentController = TextEditingController();
-  var formKeyRequest = GlobalKey<FormState>();
 
-  CustomDialogRejectRequestDetails({
+  const CustomDialogRejectRequestDetails({
     Key? key,
     this.title,
     this.description,
@@ -429,131 +426,144 @@ class CustomDialogRejectRequestDetails extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<CustomDialogRejectRequestDetails> createState() => _CustomDialogRejectRequestDetailsState();
+}
+
+class _CustomDialogRejectRequestDetailsState
+    extends State<CustomDialogRejectRequestDetails> {
+  var commentController = TextEditingController();
+
+  var formKeyRequest = GlobalKey<FormState>();
+
+  bool loadingRejectRequestDetails = false;
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => RequestDetailsCubit(),
-      child: BlocConsumer<RequestDetailsCubit, RequestDetailsState>(
-        listener: (context, state) {
-          if (state is RequestDetailsEditSuccessState) {
-            Navigator.pop(context);
-            MainCubit.get(context).refresh = true;
-          } else if (state is RequestDetailsEditErrorState) {
-            showToastt(
-                text: state.message,
-                state: ToastStates.error,
-                context: context);
-          }
-        },
-        builder: (context, state) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.r),
+    return BlocConsumer<RequestDetailsCubit, RequestDetailsState>(
+      listener: (context, state) {
+        if (state is RequestDetailsEditSuccessState) {
+          setState(() {
+            loadingRejectRequestDetails = false;
+          });
+        } else if (state is RequestDetailsEditErrorState) {
+          setState(() {
+            loadingRejectRequestDetails = false;
+          });
+        }
+      },
+      builder: (context, state) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          child: Container(
+            padding: EdgeInsets.only(
+                top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+            margin: EdgeInsets.only(top: 50.r),
+            decoration: BoxDecoration(
+              color: white,
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(10.r),
             ),
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            child: Container(
-              padding: EdgeInsets.only(
-                  top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
-              margin: EdgeInsets.only(top: 50.r),
-              decoration: BoxDecoration(
-                color: white,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SizedBox(
-                    height: 10.r,
-                  ),
-                  Text(
-                    title!,
-                    style: TextStyle(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w700,
-                        color: accentColor),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(
-                    height: 16.r,
-                  ),
-                  Text(
-                    description!,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16.sp, color: black),
-                  ),
-                  SizedBox(
-                    height: 44.h,
-                  ),
-                  Form(
-                    key: formKeyRequest,
-                    child: defaultFormField(
-                        controller: commentController,
-                        type: TextInputType.text,
-                        label: "comment",
-                        textSize: 15,
-                        borderRadius: 50,
-                        border: false,
-                        borderColor: white,
-                        validatorText: commentController.text,
-                        validatorMessage: "Enter Comment First Please..",
-                        onEditingComplete: () {
-                          FocusScope.of(context).unfocus();
-                        }),
-                  ),
-                  SizedBox(
-                    height: 24.h,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      state is! RequestDetailsEditRejectInitial
-                          ? MaterialButton(
-                              height: 30.h,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.r)),
-                              color: accentColor,
-                              minWidth: 80.w,
-                              onPressed: () {
-                                if (formKeyRequest.currentState!.validate()) {
-                                  RequestDetailsCubit.get(context).editRequest(
-                                      id!,
-                                      type!,
-                                      commentController.text.toString());
-                                }
-                              },
-                              child: Text(
-                                'Ok',
-                                style: TextStyle(color: white, fontSize: 15.sp),
-                              ))
-                          : loading(),
-                      SizedBox(
-                        width: 30.w,
-                      ),
-                      MaterialButton(
-                          height: 30.h,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.r)),
-                          color: grey,
-                          onPressed: () => Navigator.pop(context),
-                          minWidth: 80.w,
-                          child: Text(
-                            'Cancel',
-                            style: TextStyle(color: black, fontSize: 15.sp),
-                          )),
-                    ],
-                  ),
-                ],
-              ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                SizedBox(
+                  height: 10.r,
+                ),
+                Text(
+                  widget.title!,
+                  style: TextStyle(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w700,
+                      color: accentColor),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(
+                  height: 16.r,
+                ),
+                Text(
+                  widget.description!,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16.sp, color: black),
+                ),
+                SizedBox(
+                  height: 44.h,
+                ),
+                Form(
+                  key: formKeyRequest,
+                  child: defaultFormField(
+                      controller: commentController,
+                      type: TextInputType.text,
+                      label: "comment",
+                      textSize: 15,
+                      borderRadius: 50,
+                      border: false,
+                      borderColor: white,
+                      validatorText: commentController.text,
+                      validatorMessage: "Enter Comment First Please..",
+                      onEditingComplete: () {
+                        FocusScope.of(context).unfocus();
+                      }),
+                ),
+                SizedBox(
+                  height: 24.h,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    loadingRejectRequestDetails
+                        ? loading()
+                        : MaterialButton(
+                            height: 30.h,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.r)),
+                            color: accentColor,
+                            minWidth: 80.w,
+                            onPressed: () {
+                              if (formKeyRequest.currentState!.validate()) {
+                                RequestDetailsCubit.get(context).editRequest(
+                                    widget.id!,
+                                    widget.type!,
+                                    commentController.text.toString());
+
+                                setState(() {
+                                  loadingRejectRequestDetails = true;
+                                });
+                              }
+                            },
+                            child: Text(
+                              'Ok',
+                              style: TextStyle(color: white, fontSize: 15.sp),
+                            )),
+                    SizedBox(
+                      width: 30.w,
+                    ),
+                    MaterialButton(
+                        height: 30.h,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.r)),
+                        color: grey,
+                        onPressed: () => Navigator.pop(context),
+                        minWidth: 80.w,
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(color: black, fontSize: 15.sp),
+                        )),
+                  ],
+                ),
+              ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
 
-class CustomDialogEndRequestDetails extends StatelessWidget {
+class CustomDialogEndRequestDetails extends StatefulWidget {
   final String? title, description, id, type, status;
 
   const CustomDialogEndRequestDetails({
@@ -566,114 +576,121 @@ class CustomDialogEndRequestDetails extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<CustomDialogEndRequestDetails> createState() => _CustomDialogEndRequestDetailsState();
+}
+
+class _CustomDialogEndRequestDetailsState
+    extends State<CustomDialogEndRequestDetails> {
+  bool loadingEndRequestDetails = false;
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => RequestDetailsCubit(),
-      child: BlocConsumer<RequestDetailsCubit, RequestDetailsState>(
-        listener: (context, state) {
-          if (state is RequestDetailsEditSuccessState) {
-            Navigator.pop(context);
-            MainCubit.get(context).refresh = true;
-          } else if (state is RequestDetailsEditErrorState) {
-            showToastt(
-                text: state.message,
-                state: ToastStates.error,
-                context: context);
-          }
-        },
-        builder: (context, state) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.r),
+    return BlocConsumer<RequestDetailsCubit, RequestDetailsState>(
+      listener: (context, state) {
+        if (state is RequestDetailsEditSuccessState) {
+          setState(() {
+            loadingEndRequestDetails = false;
+          });
+        } else if (state is RequestDetailsEditErrorState) {
+          setState(() {
+            loadingEndRequestDetails = false;
+          });
+        }
+      },
+      builder: (context, state) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          child: Container(
+            padding: EdgeInsets.only(
+                top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+            margin: EdgeInsets.only(top: 50.r),
+            decoration: BoxDecoration(
+              color: white,
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(10.r),
             ),
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            child: Container(
-              padding: EdgeInsets.only(
-                  top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
-              margin: EdgeInsets.only(top: 50.r),
-              decoration: BoxDecoration(
-                color: white,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SizedBox(
-                    height: 10.r,
-                  ),
-                  Text(
-                    title!,
-                    style: TextStyle(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w700,
-                        color: accentColor),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(
-                    height: 16.r,
-                  ),
-                  Text(
-                    description!,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16.sp, color: black),
-                  ),
-                  SizedBox(
-                    height: 44.h,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      state is! RequestDetailsEditInitial
-                          ? MaterialButton(
-                              height: 30.h,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.r)),
-                              color: accentColor,
-                              minWidth: 80.w,
-                              onPressed: () {
-                                RequestDetailsCubit.get(context)
-                                    .editRequest(id!, type!, "");
-                              },
-                              child: Text(
-                                'Ok',
-                                style: TextStyle(color: white, fontSize: 15.sp),
-                              ))
-                          : loading(),
-                      SizedBox(
-                        width: 30.w,
-                      ),
-                      MaterialButton(
-                          height: 30.h,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.r)),
-                          color: grey,
-                          onPressed: () => Navigator.pop(context),
-                          minWidth: 80.w,
-                          child: Text(
-                            'Cancel',
-                            style: TextStyle(color: black, fontSize: 15.sp),
-                          )),
-                    ],
-                  ),
-                ],
-              ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                SizedBox(
+                  height: 10.r,
+                ),
+                Text(
+                  widget.title!,
+                  style: TextStyle(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w700,
+                      color: accentColor),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(
+                  height: 16.r,
+                ),
+                Text(
+                  widget.description!,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16.sp, color: black),
+                ),
+                SizedBox(
+                  height: 44.h,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    loadingEndRequestDetails
+                        ? loading()
+                        : MaterialButton(
+                            height: 30.h,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.r)),
+                            color: accentColor,
+                            minWidth: 80.w,
+                            onPressed: () {
+                              RequestDetailsCubit.get(context)
+                                  .editRequest(widget.id!, widget.type!, "");
+
+                              setState(() {
+                                loadingEndRequestDetails = true;
+                              });
+                            },
+                            child: Text(
+                              'Ok',
+                              style: TextStyle(color: white, fontSize: 15.sp),
+                            )),
+                    SizedBox(
+                      width: 30.w,
+                    ),
+                    MaterialButton(
+                        height: 30.h,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.r)),
+                        color: grey,
+                        onPressed: () => Navigator.pop(context),
+                        minWidth: 80.w,
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(color: black, fontSize: 15.sp),
+                        )),
+                  ],
+                ),
+              ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
 
-class CustomDialogRejectTripDetails extends StatelessWidget {
+class CustomDialogRejectTripDetails extends StatefulWidget {
   final String? title, description, id;
 
-  var commentController = TextEditingController();
-  var formKeyRequest = GlobalKey<FormState>();
 
-  CustomDialogRejectTripDetails({
+  const CustomDialogRejectTripDetails({
     Key? key,
     this.title,
     this.description,
@@ -681,131 +698,144 @@ class CustomDialogRejectTripDetails extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<CustomDialogRejectTripDetails> createState() => _CustomDialogRejectTripDetailsState();
+}
+
+class _CustomDialogRejectTripDetailsState
+    extends State<CustomDialogRejectTripDetails> {
+  var commentController = TextEditingController();
+
+  var formKeyRequest = GlobalKey<FormState>();
+
+  bool loadingRejectTripDetails = false;
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => TripDetailsCubit(),
-      child: BlocConsumer<TripDetailsCubit, TripDetailsState>(
-        listener: (context, state) {
-          if (state is TripDetailsEditSuccessState) {
-            Navigator.pop(context);
-            MainCubit.get(context).refresh = true;
-          } else if (state is TripDetailsEditErrorState) {
-            showToastt(
-                text: state.message,
-                state: ToastStates.error,
-                context: context);
-          }
-        },
-        builder: (context, state) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.r),
+    return BlocConsumer<TripDetailsCubit, TripDetailsState>(
+      listener: (context, state) {
+        if (state is TripDetailsEditSuccessState) {
+          setState(() {
+            loadingRejectTripDetails = false;
+          });
+        } else if (state is TripDetailsEditErrorState) {
+          setState(() {
+            loadingRejectTripDetails = false;
+          });
+        }
+      },
+      builder: (context, state) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          child: Container(
+            padding: EdgeInsets.only(
+                top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+            margin: EdgeInsets.only(top: 50.r),
+            decoration: BoxDecoration(
+              color: white,
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(10.r),
             ),
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            child: Container(
-              padding: EdgeInsets.only(
-                  top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
-              margin: EdgeInsets.only(top: 50.r),
-              decoration: BoxDecoration(
-                color: white,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SizedBox(
-                    height: 10.r,
-                  ),
-                  Text(
-                    title!,
-                    style: TextStyle(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w700,
-                        color: accentColor),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(
-                    height: 16.r,
-                  ),
-                  Text(
-                    description!,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16.sp, color: black),
-                  ),
-                  SizedBox(
-                    height: 44.h,
-                  ),
-                  Form(
-                    key: formKeyRequest,
-                    child: defaultFormField(
-                        controller: commentController,
-                        type: TextInputType.text,
-                        label: "comment",
-                        textSize: 15,
-                        borderRadius: 50,
-                        border: false,
-                        borderColor: white,
-                        validatorText: commentController.text,
-                        validatorMessage: "Enter Comment First Please..",
-                        onEditingComplete: () {
-                          FocusScope.of(context).unfocus();
-                        }),
-                  ),
-                  SizedBox(
-                    height: 24.h,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      state is! TripDetailsEditRejectInitial
-                          ? MaterialButton(
-                              height: 30.h,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.r)),
-                              color: accentColor,
-                              minWidth: 80.w,
-                              onPressed: () {
-                                if (formKeyRequest.currentState!.validate()) {
-                                  TripDetailsCubit.get(context).editTrip(
-                                      id!,
-                                      "reject",
-                                      commentController.text.toString());
-                                }
-                              },
-                              child: Text(
-                                'Ok',
-                                style: TextStyle(color: white, fontSize: 15.sp),
-                              ))
-                          : loading(),
-                      SizedBox(
-                        width: 30.w,
-                      ),
-                      MaterialButton(
-                          height: 30.h,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.r)),
-                          color: grey,
-                          onPressed: () => Navigator.pop(context),
-                          minWidth: 80.w,
-                          child: Text(
-                            'Cancel',
-                            style: TextStyle(color: black, fontSize: 15.sp),
-                          )),
-                    ],
-                  ),
-                ],
-              ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                SizedBox(
+                  height: 10.r,
+                ),
+                Text(
+                  widget.title!,
+                  style: TextStyle(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w700,
+                      color: accentColor),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(
+                  height: 16.r,
+                ),
+                Text(
+                  widget.description!,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16.sp, color: black),
+                ),
+                SizedBox(
+                  height: 44.h,
+                ),
+                Form(
+                  key: formKeyRequest,
+                  child: defaultFormField(
+                      controller: commentController,
+                      type: TextInputType.text,
+                      label: "comment",
+                      textSize: 15,
+                      borderRadius: 50,
+                      border: false,
+                      borderColor: white,
+                      validatorText: commentController.text,
+                      validatorMessage: "Enter Comment First Please..",
+                      onEditingComplete: () {
+                        FocusScope.of(context).unfocus();
+                      }),
+                ),
+                SizedBox(
+                  height: 24.h,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    loadingRejectTripDetails
+                        ? loading()
+                        : MaterialButton(
+                            height: 30.h,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.r)),
+                            color: accentColor,
+                            minWidth: 80.w,
+                            onPressed: () {
+                              if (formKeyRequest.currentState!.validate()) {
+                                TripDetailsCubit.get(context).editTrip(
+                                    widget.id!,
+                                    "reject",
+                                    commentController.text.toString());
+
+                                setState(() {
+                                  loadingRejectTripDetails = true;
+                                });
+                              }
+                            },
+                            child: Text(
+                              'Ok',
+                              style: TextStyle(color: white, fontSize: 15.sp),
+                            )),
+                    SizedBox(
+                      width: 30.w,
+                    ),
+                    MaterialButton(
+                        height: 30.h,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.r)),
+                        color: grey,
+                        onPressed: () => Navigator.pop(context),
+                        minWidth: 80.w,
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(color: black, fontSize: 15.sp),
+                        )),
+                  ],
+                ),
+              ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
 
-class CustomDialogEndTripDetails extends StatelessWidget {
+class CustomDialogEndTripDetails extends StatefulWidget {
   final String? title, description, id, type, status;
 
   const CustomDialogEndTripDetails({
@@ -818,102 +848,112 @@ class CustomDialogEndTripDetails extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<CustomDialogEndTripDetails> createState() => _CustomDialogEndTripDetailsState();
+}
+
+class _CustomDialogEndTripDetailsState
+    extends State<CustomDialogEndTripDetails> {
+  bool loadingEndTripDetails = false;
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => TripDetailsCubit(),
-      child: BlocConsumer<TripDetailsCubit, TripDetailsState>(
-        listener: (context, state) {
-          if (state is TripDetailsEditSuccessState) {
-            Navigator.pop(context);
-          } else if (state is TripDetailsEditErrorState) {
-            showToastt(
-                text: state.message,
-                state: ToastStates.error,
-                context: context);
-          }
-        },
-        builder: (context, state) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.r),
+    return BlocConsumer<TripDetailsCubit, TripDetailsState>(
+      listener: (context, state) {
+        if (state is TripDetailsEditSuccessState) {
+          setState(() {
+            loadingEndTripDetails = false;
+          });
+        } else if (state is TripDetailsEditErrorState) {
+          setState(() {
+            loadingEndTripDetails = false;
+          });
+        }
+      },
+      builder: (context, state) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          child: Container(
+            padding: EdgeInsets.only(
+                top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+            margin: EdgeInsets.only(top: 50.r),
+            decoration: BoxDecoration(
+              color: white,
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(10.r),
             ),
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            child: Container(
-              padding: EdgeInsets.only(
-                  top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
-              margin: EdgeInsets.only(top: 50.r),
-              decoration: BoxDecoration(
-                color: white,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SizedBox(
-                    height: 10.r,
-                  ),
-                  Text(
-                    title!,
-                    style: TextStyle(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w700,
-                        color: accentColor),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(
-                    height: 16.r,
-                  ),
-                  Text(
-                    description!,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16.sp, color: black),
-                  ),
-                  SizedBox(
-                    height: 44.h,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      state is! TripDetailsEditInitial
-                          ? MaterialButton(
-                              height: 30.h,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.r)),
-                              color: accentColor,
-                              minWidth: 80.w,
-                              onPressed: () {
-                                TripDetailsCubit.get(context)
-                                    .editTrip(id!, status!, type!);
-                              },
-                              child: Text(
-                                'Ok',
-                                style: TextStyle(color: white, fontSize: 15.sp),
-                              ))
-                          : loading(),
-                      SizedBox(
-                        width: 30.w,
-                      ),
-                      MaterialButton(
-                          height: 30.h,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.r)),
-                          color: grey,
-                          onPressed: () => Navigator.pop(context),
-                          minWidth: 80.w,
-                          child: Text(
-                            'Cancel',
-                            style: TextStyle(color: black, fontSize: 15.sp),
-                          )),
-                    ],
-                  ),
-                ],
-              ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                SizedBox(
+                  height: 10.r,
+                ),
+                Text(
+                  widget.title!,
+                  style: TextStyle(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w700,
+                      color: accentColor),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(
+                  height: 16.r,
+                ),
+                Text(
+                  widget.description!,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16.sp, color: black),
+                ),
+                SizedBox(
+                  height: 44.h,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    loadingEndTripDetails
+                        ? loading()
+                        : MaterialButton(
+                            height: 30.h,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.r)),
+                            color: accentColor,
+                            minWidth: 80.w,
+                            onPressed: () {
+                              TripDetailsCubit.get(context).editTrip(
+                                  widget.id!, widget.status!, "comment");
+
+                              setState(() {
+                                loadingEndTripDetails = true;
+                              });
+                            },
+                            child: Text(
+                              'Ok',
+                              style: TextStyle(color: white, fontSize: 15.sp),
+                            )),
+                    SizedBox(
+                      width: 30.w,
+                    ),
+                    MaterialButton(
+                        height: 30.h,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.r)),
+                        color: grey,
+                        onPressed: () => Navigator.pop(context),
+                        minWidth: 80.w,
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(color: black, fontSize: 15.sp),
+                        )),
+                  ],
+                ),
+              ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
