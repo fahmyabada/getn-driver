@@ -112,7 +112,7 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
   }
 
   void editRequest(String id, String type, String comment) async {
-    if (type != "reject" || type != "mid_pause") {
+    if (type != "reject" && type != "mid_pause" && type != "end") {
       emit(RequestDetailsEditInitial());
     }
 

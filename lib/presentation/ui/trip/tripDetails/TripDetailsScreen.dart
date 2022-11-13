@@ -178,12 +178,12 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
       child: BlocConsumer<TripDetailsCubit, TripDetailsState>(
         listener: (context, state) {
           if (state is TripDetailsEditSuccessState) {
-            if (state.type == "reject" || state.type == "start") {
+            if (state.type == "reject" || state.type == "end") {
               Navigator.pop(context);
             }
             TripDetailsCubit.get(context).getTripDetails(widget.idTrip!);
           } else if (state is TripDetailsEditErrorState) {
-            if(state.type == "reject" || state.type == "start"){
+            if(state.type == "reject" || state.type == "end"){
               Navigator.pop(context);
             }
             // Navigator.of(context).pop(widget.idRequest);
@@ -942,12 +942,12 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                       .toString(),
                                   status: btnStatus[
                                       '${TripDetailsCubit.get(context).tripDetails!.status}']![0],
-                                  type: "end",
                                 );
                               },
-                            ).then((value) {
-                              Navigator.of(context).pop(widget.idRequest);
-                            });
+                            );
+                                // .then((value) {
+                              // Navigator.of(context).pop(widget.idRequest);
+                            // });
                           } else {
                             TripDetailsCubit.get(context).editTrip(
                                 TripDetailsCubit.get(context).tripDetails!.id!,

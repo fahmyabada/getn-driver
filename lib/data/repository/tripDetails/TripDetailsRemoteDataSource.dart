@@ -57,7 +57,7 @@ class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
       String id, String type, String comment) async {
     try {
       FormData? formData;
-      if (type == "accept") {
+      if (type != "reject" && type != "end") {
         formData = FormData.fromMap({"status": type});
       } else {
         formData = FormData.fromMap({"status": type, "comment": comment});

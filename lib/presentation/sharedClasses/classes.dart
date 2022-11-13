@@ -564,14 +564,13 @@ class _CustomDialogRejectRequestDetailsState
 }
 
 class CustomDialogEndRequestDetails extends StatefulWidget {
-  final String? title, description, id, type, status;
+  final String? title, description, id,  status;
 
   const CustomDialogEndRequestDetails({
     Key? key,
     this.title,
     this.description,
     this.id,
-    this.type,
     this.status,
   }) : super(key: key);
 
@@ -651,7 +650,7 @@ class _CustomDialogEndRequestDetailsState
                             minWidth: 80.w,
                             onPressed: () {
                               RequestDetailsCubit.get(context)
-                                  .editRequest(widget.id!, widget.type!, "");
+                                  .editRequest(widget.id!, widget.status!, "");
 
                               setState(() {
                                 loadingEndRequestDetails = true;
@@ -836,14 +835,13 @@ class _CustomDialogRejectTripDetailsState
 }
 
 class CustomDialogEndTripDetails extends StatefulWidget {
-  final String? title, description, id, type, status;
+  final String? title, description, id, status;
 
   const CustomDialogEndTripDetails({
     Key? key,
     this.title,
     this.description,
     this.id,
-    this.type,
     this.status,
   }) : super(key: key);
 

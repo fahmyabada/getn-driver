@@ -88,69 +88,77 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   void nextButton(BuildContext context) async {
-    FocusScope.of(context).requestFocus(FocusNode());
-    AuthCredential authCreds = PhoneAuthProvider.credential(
-        verificationId: verificationId!, smsCode: otp!);
-    try {
-      final result =
-          await FirebaseAuth.instance.signInWithCredential(authCreds);
-      if (result.user != null) {
-        if (kDebugMode) {
-          print('refreshToken11***********}');
-        }
-        final idToken = await FirebaseAuth.instance.currentUser!.getIdToken();
-        getIt<SharedPreferences>().setString('firebaseToken', idToken);
-
-        if (widget.type == "login") {
-          SignCubit.get(context)
-              .makeLogin(widget.phone, widget.countryId, idToken);
-        } else {
-          if (getIt<SharedPreferences>().getString('firebaseToken') != null) {
-            setState(() {
-              load = false;
-            });
-            navigateTo(
-                context,
-                SignUpDetailsScreen(
-                  phone: widget.phone,
-                  countryId: widget.countryId,
-                  countryName: widget.countryName,
-                  firebaseToken:
-                      getIt<SharedPreferences>().getString('firebaseToken')!,
-                ));
+    if (verificationId != null) {
+      FocusScope.of(context).requestFocus(FocusNode());
+      AuthCredential authCreds = PhoneAuthProvider.credential(
+          verificationId: verificationId!, smsCode: otp!);
+      try {
+        final result =
+            await FirebaseAuth.instance.signInWithCredential(authCreds);
+        if (result.user != null) {
+          if (kDebugMode) {
+            print('refreshToken11***********}');
           }
+          final idToken = await FirebaseAuth.instance.currentUser!.getIdToken();
+          getIt<SharedPreferences>().setString('firebaseToken', idToken);
+
+          if (widget.type == "login") {
+            SignCubit.get(context)
+                .makeLogin(widget.phone, widget.countryId, idToken);
+          } else {
+            if (getIt<SharedPreferences>().getString('firebaseToken') != null) {
+              setState(() {
+                load = false;
+              });
+              navigateTo(
+                  context,
+                  SignUpDetailsScreen(
+                    phone: widget.phone,
+                    countryId: widget.countryId,
+                    countryName: widget.countryName,
+                    firebaseToken:
+                        getIt<SharedPreferences>().getString('firebaseToken')!,
+                  ));
+            }
+          }
+        } else {
+          if (kDebugMode) {
+            print("Error");
+          }
+          setState(() {
+            load = false;
+          });
+
+          showToastt(
+              text: LanguageCubit.get(context)
+                  .getTexts('UncorrectCode')
+                  .toString(),
+              state: ToastStates.error,
+              context: context);
         }
-      } else {
-        if (kDebugMode) {
-          print("Error");
-        }
+      } catch (error) {
         setState(() {
           load = false;
+          openResend = true;
         });
-
-        showToastt(
-            text:
-                LanguageCubit.get(context).getTexts('UncorrectCode').toString(),
-            state: ToastStates.error,
-            context: context);
+        print("Exception*************${error}");
+        if (widget.type == "login") {
+          showToastt(
+              text: handleErrorFirebase("login", error.toString()),
+              state: ToastStates.error,
+              context: context);
+        } else {
+          showToastt(
+              text: handleErrorFirebase("register", error.toString()),
+              state: ToastStates.error,
+              context: context);
+        }
       }
-    } catch (error) {
-      setState(() {
-        load = false;
-        openResend = true;
-      });
-      print("Exception*************${error}");
-      if (widget.type == "login") {
-        showToastt(
-            text: handleErrorFirebase("login", error.toString()),
-            state: ToastStates.error,
-            context: context);
-      } else {
-        showToastt(
-            text: handleErrorFirebase("register", error.toString()),
-            state: ToastStates.error,
-            context: context);
-      }
+    } else {
+      showToastt(
+          text: "wait OTP message please..",
+          state: ToastStates.error,
+          context: context);
     }
   }
 
@@ -272,9 +280,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 state.data.frontNationalImage != null) {
               getIt<SharedPreferences>()
                   .setString('typeSign', "signWithCarRegistration");
-              navigateAndFinish(
-                  context,
-                  const RequestTabsScreen());
+              navigateAndFinish(context, const RequestTabsScreen());
             }
           } else if (state is SignInErrorState) {
             if (kDebugMode) {

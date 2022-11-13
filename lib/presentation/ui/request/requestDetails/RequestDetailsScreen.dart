@@ -18,8 +18,7 @@ import 'package:scroll_edge_listener/scroll_edge_listener.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RequestDetailsScreen extends StatefulWidget {
-  const RequestDetailsScreen({Key? key, this.idRequest})
-      : super(key: key);
+  const RequestDetailsScreen({Key? key, this.idRequest}) : super(key: key);
 
   final String? idRequest;
 
@@ -114,17 +113,19 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           if (state is RequestDetailsSuccessState) {
             RequestDetailsCubit.get(context)
                 .getTripsRequestDetails(1, widget.idRequest!);
-          }
-          else if (state is RequestDetailsEditSuccessState) {
-            if (state.type == "reject" || state.type == "mid_pause") {
+          } else if (state is RequestDetailsEditSuccessState) {
+            if (state.type == "reject" ||
+                state.type == "mid_pause" ||
+                state.type == "end") {
               Navigator.pop(context);
             }
 
             RequestDetailsCubit.get(context)
                 .getRequestDetails(widget.idRequest!);
-          }
-          else if (state is RequestDetailsEditErrorState) {
-            if (state.type == "reject" || state.type == "mid_pause" || state.type == "start") {
+          } else if (state is RequestDetailsEditErrorState) {
+            if (state.type == "reject" ||
+                state.type == "mid_pause" ||
+                state.type == "end") {
               Navigator.pop(context);
             }
             if (state.message == "{status:  you can't start request now}") {
@@ -140,8 +141,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   state: ToastStates.error,
                   context: context);
             }
-          }
-          else if (state is CurrentLocationSuccessState) {
+          } else if (state is CurrentLocationSuccessState) {
             print('CurrentLocationSuccessState********* ');
             // this belong add trip
             /*String id = await navigateToWithRefreshPagePrevious(
@@ -174,8 +174,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
             RequestDetailsCubit.get(context)
                 .getRequestDetails(widget.idRequest!);
-          }
-          else if (state is CurrentLocationErrorState) {
+          } else if (state is CurrentLocationErrorState) {
             if (kDebugMode) {
               print('CurrentLocationErrorState********* ${state.error}');
             }
@@ -224,13 +223,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 },
               ).then((value) => Navigator.pop(context));
             }
-          }
-          else if (state is TripsSuccessState) {
+          } else if (state is TripsSuccessState) {
             setState(() {
               loadingMoreTrips = false;
             });
-          }
-          else if (state is TripsErrorState) {
+          } else if (state is TripsErrorState) {
             setState(() {
               loadingMoreTrips = false;
             });
@@ -307,8 +304,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       ),
                                       buttonStatus(context, state),
 
-                                      RequestDetailsCubit.get(context).typeScreen.isNotEmpty &&
-                                          RequestDetailsCubit.get(context).typeScreen == "past"
+                                      RequestDetailsCubit.get(context)
+                                                  .typeScreen
+                                                  .isNotEmpty &&
+                                              RequestDetailsCubit.get(context)
+                                                      .typeScreen ==
+                                                  "past"
                                           ? Container()
                                           : RequestDetailsCubit.get(context)
                                                       .requestDetails
@@ -316,7 +317,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                   "paid"
                                               ? Container()
                                               : Text(
-                                                  'client don\'t paid yet',
+                                                  LanguageCubit.get(context)
+                                                      .getTexts(
+                                                          'clientNotPaidYet')
+                                                      .toString(),
                                                   style: TextStyle(
                                                       color: accentColor,
                                                       fontSize: 15.sp,
@@ -385,8 +389,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             )
                           : Center(
                               child: Text(
-                                RequestDetailsCubit.get(context)
-                                    .failureRequest,
+                                RequestDetailsCubit.get(context).failureRequest,
                                 style: TextStyle(
                                     fontSize: 20.sp,
                                     color: blueColor,
@@ -453,7 +456,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         ),
                       ),
                       RequestDetailsCubit.get(context).typeScreen.isNotEmpty &&
-                          RequestDetailsCubit.get(context).typeScreen == "past" ||
+                                  RequestDetailsCubit.get(context).typeScreen ==
+                                      "past" ||
                               RequestDetailsCubit.get(context)
                                       .requestDetails!
                                       .status ==
@@ -496,7 +500,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     height: 5.h,
                   ),
                   RequestDetailsCubit.get(context).typeScreen.isNotEmpty &&
-                      RequestDetailsCubit.get(context).typeScreen == "past" ||
+                              RequestDetailsCubit.get(context).typeScreen ==
+                                  "past" ||
                           RequestDetailsCubit.get(context)
                                   .requestDetails!
                                   .status ==
@@ -756,6 +761,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                   barrierDismissible: true,
                                   // outside to dismiss
                                   builder: (_) {
+                                    print(
+                                        "CustomDialogRejectRequestDetails1************* ${btnStatus['${RequestDetailsCubit.get(context).requestDetails!.status}']![0]}");
                                     return CustomDialogEndRequestDetails(
                                       id: RequestDetailsCubit.get(context)
                                           .requestDetails!
@@ -768,7 +775,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                           .toString(),
                                       status: btnStatus[
                                           '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
-                                      type: "end",
                                     );
                                   },
                                 );
@@ -875,8 +881,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                         '${RequestDetailsCubit.get(context).requestDetails!.status}']![1]);
                               },
                             );
-                          }
-                          else {
+                          } else {
                             showDialog(
                               context: context,
                               barrierDismissible: true,

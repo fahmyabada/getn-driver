@@ -10,7 +10,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/api/Dio_Helper.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/firebase_options.dart';
-import 'package:getn_driver/main_cubit.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
@@ -67,9 +66,6 @@ class MyApp extends StatelessWidget {
       builder: (BuildContext context, child) =>
           MultiBlocProvider(
             providers: [
-              BlocProvider(
-                create: (context) => MainCubit(),
-              ),
               BlocProvider(
                 create: (context) => LanguageCubit(),
               ),
