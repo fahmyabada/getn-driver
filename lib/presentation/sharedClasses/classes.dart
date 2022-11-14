@@ -18,6 +18,7 @@ import 'package:getn_driver/presentation/ui/trip/tripDetails/trip_details_cubit.
 import 'package:getn_driver/presentation/ui/wallet/WalletScreen.dart';
 import 'package:getn_driver/presentation/ui/wallet/wallet_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:ui' as ui;
 
 class CustomDialogRequestTabs extends StatefulWidget {
   final String? title, description, id;
@@ -51,6 +52,7 @@ class _CustomDialogRequestTabsState extends State<CustomDialogRequestTabs> {
 
   bool loadingEditDialogPending = false;
 
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RequestCubit, RequestState>(
@@ -66,106 +68,111 @@ class _CustomDialogRequestTabsState extends State<CustomDialogRequestTabs> {
         }
       },
       builder: (context, state) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r),
-          ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          child: Container(
-            padding:
-            EdgeInsets.only(top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
-            margin: EdgeInsets.only(top: 50.r),
-            decoration: BoxDecoration(
-              color: widget.backgroundColor,
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(10.r),
+        return Directionality(
+          textDirection: LanguageCubit.get(context).isEn
+              ? ui.TextDirection.ltr
+              : ui.TextDirection.rtl,
+          child: Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.r),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                SizedBox(
-                  height: 10.r,
-                ),
-                Text(
-                  widget.title!,
-                  style: TextStyle(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w700,
-                      color: widget.titleColor),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(
-                  height: 16.r,
-                ),
-                Text(
-                  widget.description!,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16.sp, color: widget.descColor),
-                ),
-                SizedBox(
-                  height: 44.h,
-                ),
-                Form(
-                  key: formKeyRequest,
-                  child: defaultFormField(
-                      controller: commentController,
-                      type: TextInputType.text,
-                      label: "comment",
-                      textSize: 15,
-                      borderRadius: 50,
-                      border: false,
-                      borderColor: white,
-                      validatorText: commentController.text,
-                      validatorMessage: "Enter Comment First Please..",
-                      onEditingComplete: () {
-                        FocusScope.of(context).unfocus();
-                      }),
-                ),
-                SizedBox(
-                  height: 24.h,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    loadingEditDialogPending
-                        ? loading()
-                        : MaterialButton(
-                        height: 30.h,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.r)),
-                        color: widget.btnOkColor,
-                        minWidth: 80.w,
-                        onPressed: () {
-                          if (formKeyRequest.currentState!.validate()) {
-                            RequestCubit.get(context).editRequest(widget.id!, "reject",
-                                commentController.text.toString());
-                            setState(() {
-                              loadingEditDialogPending = true;
-                            });
-                          }
-                        },
-                        child: Text(
-                          'Ok',
-                          style: TextStyle(color: white, fontSize: 15.sp),
-                        )),
-                    SizedBox(
-                      width: 30.w,
-                    ),
-                    MaterialButton(
-                        height: 30.h,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.r)),
-                        color: widget.btnCancelColor,
-                        onPressed: () => Navigator.pop(context),
-                        minWidth: 80.w,
-                        child: Text(
-                          'Cancel',
-                          style: TextStyle(color: black, fontSize: 15.sp),
-                        )),
-                  ],
-                ),
-              ],
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            child: Container(
+              padding:
+              EdgeInsets.only(top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+              margin: EdgeInsets.only(top: 50.r),
+              decoration: BoxDecoration(
+                color: widget.backgroundColor,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                    height: 10.r,
+                  ),
+                  Text(
+                    widget.title!,
+                    style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w700,
+                        color: widget.titleColor),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: 16.r,
+                  ),
+                  Text(
+                    widget.description!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16.sp, color: widget.descColor),
+                  ),
+                  SizedBox(
+                    height: 44.h,
+                  ),
+                  Form(
+                    key: formKeyRequest,
+                    child: defaultFormField(
+                        controller: commentController,
+                        type: TextInputType.text,
+                        label: LanguageCubit.get(context).getTexts('comment').toString(),
+                        textSize: 15,
+                        borderRadius: 50,
+                        border: false,
+                        borderColor: white,
+                        validatorText: commentController.text,
+                        validatorMessage: LanguageCubit.get(context).getTexts('EnterComment').toString(),
+                        onEditingComplete: () {
+                          FocusScope.of(context).unfocus();
+                        }),
+                  ),
+                  SizedBox(
+                    height: 24.h,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      loadingEditDialogPending
+                          ? loading()
+                          : MaterialButton(
+                          height: 30.h,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r)),
+                          color: widget.btnOkColor,
+                          minWidth: 80.w,
+                          onPressed: () {
+                            if (formKeyRequest.currentState!.validate()) {
+                              RequestCubit.get(context).editRequest(widget.id!, "reject",
+                                  commentController.text.toString());
+                              setState(() {
+                                loadingEditDialogPending = true;
+                              });
+                            }
+                          },
+                          child: Text(
+                            LanguageCubit.get(context).getTexts('Ok').toString(),
+                            style: TextStyle(color: white, fontSize: 15.sp),
+                          )),
+                      SizedBox(
+                        width: 30.w,
+                      ),
+                      MaterialButton(
+                          height: 30.h,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r)),
+                          color: widget.btnCancelColor,
+                          onPressed: () => Navigator.pop(context),
+                          minWidth: 80.w,
+                          child: Text(
+                            LanguageCubit.get(context).getTexts('Cancel').toString(),
+                            style: TextStyle(color: black, fontSize: 15.sp),
+                          )),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -174,7 +181,7 @@ class _CustomDialogRequestTabsState extends State<CustomDialogRequestTabs> {
   }
 }
 
-class CustomDialogLocation extends StatelessWidget {
+class CustomDialogLocation extends StatefulWidget {
   final String? title, description, id, type;
   final Color? backgroundColor,
       titleColor,
@@ -182,10 +189,8 @@ class CustomDialogLocation extends StatelessWidget {
       btnOkColor,
       btnCancelColor;
 
-  var commentController = TextEditingController();
-  var formKeyRequest = GlobalKey<FormState>();
 
-  CustomDialogLocation({
+  const CustomDialogLocation({
     Key? key,
     required this.title,
     required this.description,
@@ -199,102 +204,116 @@ class CustomDialogLocation extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<CustomDialogLocation> createState() => _CustomDialogLocationState();
+}
+
+class _CustomDialogLocationState extends State<CustomDialogLocation> {
+  var commentController = TextEditingController();
+
+  var formKeyRequest = GlobalKey<FormState>();
+
+  @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-      child: Container(
-        padding:
-            EdgeInsets.only(top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
-        margin: EdgeInsets.only(top: 50.r),
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(10.r),
+    return Directionality(
+      textDirection: LanguageCubit.get(context).isEn
+          ? ui.TextDirection.ltr
+          : ui.TextDirection.rtl,
+      child: Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            SizedBox(
-              height: 10.r,
-            ),
-            Text(
-              title!,
-              style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w700,
-                  color: titleColor),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(
-              height: 16.r,
-            ),
-            Text(
-              description!,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16.sp, color: descColor),
-            ),
-            SizedBox(
-              height: 24.h,
-            ),
-            type == "checkLocationDenied"
-                ? MaterialButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.r)),
-                    color: btnOkColor,
-                    onPressed: () => Navigator.pop(context),
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 8.r, horizontal: 8.r),
-                      child: Text(
-                        "ok",
-                        style: TextStyle(color: white, fontSize: 15.sp),
-                      ),
-                    ))
-                : type == "checkLocationDeniedForever"
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          MaterialButton(
-                              height: 30.h,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.r)),
-                              color: btnOkColor,
-                              minWidth: 80.w,
-                              onPressed: () => Navigator.pop(context),
-                              child: Text(
-                                "ok",
-                                style: TextStyle(color: white, fontSize: 15.sp),
-                              )),
-                          SizedBox(
-                            width: 30.w,
-                          ),
-                          MaterialButton(
-                              height: 30.h,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.r)),
-                              color: btnCancelColor,
-                              onPressed: () =>
-                                  AppSettings.openLocationSettings(),
-                              minWidth: 80.w,
-                              child: Text(
-                                "Setting",
-                                style: TextStyle(color: black, fontSize: 15.sp),
-                              )),
-                        ],
-                      )
-                    : Container()
-          ],
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding:
+              EdgeInsets.only(top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+          margin: EdgeInsets.only(top: 50.r),
+          decoration: BoxDecoration(
+            color: widget.backgroundColor,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(10.r),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              SizedBox(
+                height: 10.r,
+              ),
+              Text(
+                widget.title!,
+                style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w700,
+                    color: widget.titleColor),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 16.r,
+              ),
+              Text(
+                widget.description!,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16.sp, color: widget.descColor),
+              ),
+              SizedBox(
+                height: 24.h,
+              ),
+              widget.type == "checkLocationDenied"
+                  ? MaterialButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.r)),
+                      color: widget.btnOkColor,
+                      onPressed: () => Navigator.pop(context),
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 8.r, horizontal: 8.r),
+                        child: Text(
+                          "ok",
+                          style: TextStyle(color: white, fontSize: 15.sp),
+                        ),
+                      ))
+                  : widget.type == "checkLocationDeniedForever"
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            MaterialButton(
+                                height: 30.h,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.r)),
+                                color: widget.btnOkColor,
+                                minWidth: 80.w,
+                                onPressed: () => Navigator.pop(context),
+                                child: Text(
+                                  "ok",
+                                  style: TextStyle(color: white, fontSize: 15.sp),
+                                )),
+                            SizedBox(
+                              width: 30.w,
+                            ),
+                            MaterialButton(
+                                height: 30.h,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.r)),
+                                color: widget.btnCancelColor,
+                                onPressed: () =>
+                                    AppSettings.openLocationSettings(),
+                                minWidth: 80.w,
+                                child: Text(
+                                  "Setting",
+                                  style: TextStyle(color: black, fontSize: 15.sp),
+                                )),
+                          ],
+                        )
+                      : Container()
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class CustomDialogImage extends StatelessWidget {
+class CustomDialogImage extends StatefulWidget {
   final String? title, description, id, type;
   final Color? backgroundColor,
       titleColor,
@@ -302,10 +321,8 @@ class CustomDialogImage extends StatelessWidget {
       btnOkColor,
       btnCancelColor;
 
-  var commentController = TextEditingController();
-  var formKeyRequest = GlobalKey<FormState>();
 
-  CustomDialogImage({
+  const CustomDialogImage({
     Key? key,
     required this.title,
     required this.description,
@@ -319,94 +336,109 @@ class CustomDialogImage extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<CustomDialogImage> createState() => _CustomDialogImageState();
+}
+
+class _CustomDialogImageState extends State<CustomDialogImage> {
+  var commentController = TextEditingController();
+
+  var formKeyRequest = GlobalKey<FormState>();
+
+
+  @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-      child: Container(
-        padding:
-            EdgeInsets.only(top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
-        margin: EdgeInsets.only(top: 50.r),
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(10.r),
+    return Directionality(
+      textDirection: LanguageCubit.get(context).isEn
+          ? ui.TextDirection.ltr
+          : ui.TextDirection.rtl,
+      child: Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            SizedBox(
-              height: 10.r,
-            ),
-            Text(
-              title!,
-              style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w700,
-                  color: titleColor),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(
-              height: 16.r,
-            ),
-            Text(
-              description!,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16.sp, color: descColor),
-            ),
-            SizedBox(
-              height: 24.h,
-            ),
-            type == "checkImageDenied"
-                ? MaterialButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.r)),
-                    color: btnOkColor,
-                    onPressed: () => Navigator.pop(context),
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 8.r, horizontal: 8.r),
-                      child: Text(
-                        "ok",
-                        style: TextStyle(color: white, fontSize: 15.sp),
-                      ),
-                    ))
-                : type == "checkImageDeniedForever"
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          MaterialButton(
-                              height: 30.h,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.r)),
-                              color: btnOkColor,
-                              minWidth: 80.w,
-                              onPressed: () => Navigator.pop(context),
-                              child: Text(
-                                "ok",
-                                style: TextStyle(color: white, fontSize: 15.sp),
-                              )),
-                          SizedBox(
-                            width: 30.w,
-                          ),
-                          MaterialButton(
-                              height: 30.h,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.r)),
-                              color: btnCancelColor,
-                              onPressed: () => AppSettings.openAppSettings(),
-                              minWidth: 80.w,
-                              child: Text(
-                                "Setting",
-                                style: TextStyle(color: black, fontSize: 15.sp),
-                              )),
-                        ],
-                      )
-                    : Container()
-          ],
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding:
+              EdgeInsets.only(top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+          margin: EdgeInsets.only(top: 50.r),
+          decoration: BoxDecoration(
+            color: widget.backgroundColor,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(10.r),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              SizedBox(
+                height: 10.r,
+              ),
+              Text(
+                widget.title!,
+                style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w700,
+                    color: widget.titleColor),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 16.r,
+              ),
+              Text(
+                widget.description!,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16.sp, color: widget.descColor),
+              ),
+              SizedBox(
+                height: 24.h,
+              ),
+              widget.type == "checkImageDenied"
+                  ? MaterialButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.r)),
+                      color: widget.btnOkColor,
+                      onPressed: () => Navigator.pop(context),
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 8.r, horizontal: 8.r),
+                        child: Text(
+                          "ok",
+                          style: TextStyle(color: white, fontSize: 15.sp),
+                        ),
+                      ))
+                  : widget.type == "checkImageDeniedForever"
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            MaterialButton(
+                                height: 30.h,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.r)),
+                                color: widget.btnOkColor,
+                                minWidth: 80.w,
+                                onPressed: () => Navigator.pop(context),
+                                child: Text(
+                                  "ok",
+                                  style: TextStyle(color: white, fontSize: 15.sp),
+                                )),
+                            SizedBox(
+                              width: 30.w,
+                            ),
+                            MaterialButton(
+                                height: 30.h,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.r)),
+                                color: widget.btnCancelColor,
+                                onPressed: () => AppSettings.openAppSettings(),
+                                minWidth: 80.w,
+                                child: Text(
+                                  "Setting",
+                                  style: TextStyle(color: black, fontSize: 15.sp),
+                                )),
+                          ],
+                        )
+                      : Container()
+            ],
+          ),
         ),
       ),
     );
@@ -452,109 +484,114 @@ class _CustomDialogRejectRequestDetailsState
         }
       },
       builder: (context, state) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r),
-          ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          child: Container(
-            padding: EdgeInsets.only(
-                top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
-            margin: EdgeInsets.only(top: 50.r),
-            decoration: BoxDecoration(
-              color: white,
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(10.r),
+        return Directionality(
+          textDirection: LanguageCubit.get(context).isEn
+              ? ui.TextDirection.ltr
+              : ui.TextDirection.rtl,
+          child: Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.r),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                SizedBox(
-                  height: 10.r,
-                ),
-                Text(
-                  widget.title!,
-                  style: TextStyle(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w700,
-                      color: accentColor),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(
-                  height: 16.r,
-                ),
-                Text(
-                  widget.description!,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16.sp, color: black),
-                ),
-                SizedBox(
-                  height: 44.h,
-                ),
-                Form(
-                  key: formKeyRequest,
-                  child: defaultFormField(
-                      controller: commentController,
-                      type: TextInputType.text,
-                      label: "comment",
-                      textSize: 15,
-                      borderRadius: 50,
-                      border: false,
-                      borderColor: white,
-                      validatorText: commentController.text,
-                      validatorMessage: "Enter Comment First Please..",
-                      onEditingComplete: () {
-                        FocusScope.of(context).unfocus();
-                      }),
-                ),
-                SizedBox(
-                  height: 24.h,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    loadingRejectRequestDetails
-                        ? loading()
-                        : MaterialButton(
-                            height: 30.h,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.r)),
-                            color: accentColor,
-                            minWidth: 80.w,
-                            onPressed: () {
-                              if (formKeyRequest.currentState!.validate()) {
-                                RequestDetailsCubit.get(context).editRequest(
-                                    widget.id!,
-                                    widget.type!,
-                                    commentController.text.toString());
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            child: Container(
+              padding: EdgeInsets.only(
+                  top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+              margin: EdgeInsets.only(top: 50.r),
+              decoration: BoxDecoration(
+                color: white,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                    height: 10.r,
+                  ),
+                  Text(
+                    widget.title!,
+                    style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w700,
+                        color: accentColor),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: 16.r,
+                  ),
+                  Text(
+                    widget.description!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16.sp, color: black),
+                  ),
+                  SizedBox(
+                    height: 44.h,
+                  ),
+                  Form(
+                    key: formKeyRequest,
+                    child: defaultFormField(
+                        controller: commentController,
+                        type: TextInputType.text,
+                        label: LanguageCubit.get(context).getTexts('comment').toString(),
+                        textSize: 15,
+                        borderRadius: 50,
+                        border: false,
+                        borderColor: white,
+                        validatorText: commentController.text,
+                        validatorMessage: LanguageCubit.get(context).getTexts('EnterComment').toString(),
+                        onEditingComplete: () {
+                          FocusScope.of(context).unfocus();
+                        }),
+                  ),
+                  SizedBox(
+                    height: 24.h,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      loadingRejectRequestDetails
+                          ? loading()
+                          : MaterialButton(
+                              height: 30.h,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.r)),
+                              color: accentColor,
+                              minWidth: 80.w,
+                              onPressed: () {
+                                if (formKeyRequest.currentState!.validate()) {
+                                  RequestDetailsCubit.get(context).editRequest(
+                                      widget.id!,
+                                      widget.type!,
+                                      commentController.text.toString());
 
-                                setState(() {
-                                  loadingRejectRequestDetails = true;
-                                });
-                              }
-                            },
-                            child: Text(
-                              'Ok',
-                              style: TextStyle(color: white, fontSize: 15.sp),
-                            )),
-                    SizedBox(
-                      width: 30.w,
-                    ),
-                    MaterialButton(
-                        height: 30.h,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.r)),
-                        color: grey,
-                        onPressed: () => Navigator.pop(context),
-                        minWidth: 80.w,
-                        child: Text(
-                          'Cancel',
-                          style: TextStyle(color: black, fontSize: 15.sp),
-                        )),
-                  ],
-                ),
-              ],
+                                  setState(() {
+                                    loadingRejectRequestDetails = true;
+                                  });
+                                }
+                              },
+                              child: Text(
+                                LanguageCubit.get(context).getTexts('Ok').toString(),
+                                style: TextStyle(color: white, fontSize: 15.sp),
+                              )),
+                      SizedBox(
+                        width: 30.w,
+                      ),
+                      MaterialButton(
+                          height: 30.h,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r)),
+                          color: grey,
+                          onPressed: () => Navigator.pop(context),
+                          minWidth: 80.w,
+                          child: Text(
+                            LanguageCubit.get(context).getTexts('Cancel').toString(),
+                            style: TextStyle(color: black, fontSize: 15.sp),
+                          )),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -597,86 +634,91 @@ class _CustomDialogEndRequestDetailsState
         }
       },
       builder: (context, state) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r),
-          ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          child: Container(
-            padding: EdgeInsets.only(
-                top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
-            margin: EdgeInsets.only(top: 50.r),
-            decoration: BoxDecoration(
-              color: white,
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(10.r),
+        return Directionality(
+          textDirection: LanguageCubit.get(context).isEn
+              ? ui.TextDirection.ltr
+              : ui.TextDirection.rtl,
+          child: Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.r),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                SizedBox(
-                  height: 10.r,
-                ),
-                Text(
-                  widget.title!,
-                  style: TextStyle(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w700,
-                      color: accentColor),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(
-                  height: 16.r,
-                ),
-                Text(
-                  widget.description!,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16.sp, color: black),
-                ),
-                SizedBox(
-                  height: 44.h,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    loadingEndRequestDetails
-                        ? loading()
-                        : MaterialButton(
-                            height: 30.h,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.r)),
-                            color: accentColor,
-                            minWidth: 80.w,
-                            onPressed: () {
-                              RequestDetailsCubit.get(context)
-                                  .editRequest(widget.id!, widget.status!, "");
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            child: Container(
+              padding: EdgeInsets.only(
+                  top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+              margin: EdgeInsets.only(top: 50.r),
+              decoration: BoxDecoration(
+                color: white,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                    height: 10.r,
+                  ),
+                  Text(
+                    widget.title!,
+                    style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w700,
+                        color: accentColor),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: 16.r,
+                  ),
+                  Text(
+                    widget.description!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16.sp, color: black),
+                  ),
+                  SizedBox(
+                    height: 44.h,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      loadingEndRequestDetails
+                          ? loading()
+                          : MaterialButton(
+                              height: 30.h,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.r)),
+                              color: accentColor,
+                              minWidth: 80.w,
+                              onPressed: () {
+                                RequestDetailsCubit.get(context)
+                                    .editRequest(widget.id!, widget.status!, "");
 
-                              setState(() {
-                                loadingEndRequestDetails = true;
-                              });
-                            },
-                            child: Text(
-                              'Ok',
-                              style: TextStyle(color: white, fontSize: 15.sp),
-                            )),
-                    SizedBox(
-                      width: 30.w,
-                    ),
-                    MaterialButton(
-                        height: 30.h,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.r)),
-                        color: grey,
-                        onPressed: () => Navigator.pop(context),
-                        minWidth: 80.w,
-                        child: Text(
-                          'Cancel',
-                          style: TextStyle(color: black, fontSize: 15.sp),
-                        )),
-                  ],
-                ),
-              ],
+                                setState(() {
+                                  loadingEndRequestDetails = true;
+                                });
+                              },
+                              child: Text(
+                                LanguageCubit.get(context).getTexts('Ok').toString(),
+                                style: TextStyle(color: white, fontSize: 15.sp),
+                              )),
+                      SizedBox(
+                        width: 30.w,
+                      ),
+                      MaterialButton(
+                          height: 30.h,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r)),
+                          color: grey,
+                          onPressed: () => Navigator.pop(context),
+                          minWidth: 80.w,
+                          child: Text(
+                            LanguageCubit.get(context).getTexts('Cancel').toString(),
+                            style: TextStyle(color: black, fontSize: 15.sp),
+                          )),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -723,109 +765,114 @@ class _CustomDialogRejectTripDetailsState
         }
       },
       builder: (context, state) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r),
-          ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          child: Container(
-            padding: EdgeInsets.only(
-                top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
-            margin: EdgeInsets.only(top: 50.r),
-            decoration: BoxDecoration(
-              color: white,
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(10.r),
+        return Directionality(
+          textDirection: LanguageCubit.get(context).isEn
+              ? ui.TextDirection.ltr
+              : ui.TextDirection.rtl,
+          child: Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.r),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                SizedBox(
-                  height: 10.r,
-                ),
-                Text(
-                  widget.title!,
-                  style: TextStyle(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w700,
-                      color: accentColor),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(
-                  height: 16.r,
-                ),
-                Text(
-                  widget.description!,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16.sp, color: black),
-                ),
-                SizedBox(
-                  height: 44.h,
-                ),
-                Form(
-                  key: formKeyRequest,
-                  child: defaultFormField(
-                      controller: commentController,
-                      type: TextInputType.text,
-                      label: "comment",
-                      textSize: 15,
-                      borderRadius: 50,
-                      border: false,
-                      borderColor: white,
-                      validatorText: commentController.text,
-                      validatorMessage: "Enter Comment First Please..",
-                      onEditingComplete: () {
-                        FocusScope.of(context).unfocus();
-                      }),
-                ),
-                SizedBox(
-                  height: 24.h,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    loadingRejectTripDetails
-                        ? loading()
-                        : MaterialButton(
-                            height: 30.h,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.r)),
-                            color: accentColor,
-                            minWidth: 80.w,
-                            onPressed: () {
-                              if (formKeyRequest.currentState!.validate()) {
-                                TripDetailsCubit.get(context).editTrip(
-                                    widget.id!,
-                                    "reject",
-                                    commentController.text.toString());
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            child: Container(
+              padding: EdgeInsets.only(
+                  top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+              margin: EdgeInsets.only(top: 50.r),
+              decoration: BoxDecoration(
+                color: white,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                    height: 10.r,
+                  ),
+                  Text(
+                    widget.title!,
+                    style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w700,
+                        color: accentColor),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: 16.r,
+                  ),
+                  Text(
+                    widget.description!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16.sp, color: black),
+                  ),
+                  SizedBox(
+                    height: 44.h,
+                  ),
+                  Form(
+                    key: formKeyRequest,
+                    child: defaultFormField(
+                        controller: commentController,
+                        type: TextInputType.text,
+                        label: LanguageCubit.get(context).getTexts('comment').toString(),
+                        textSize: 15,
+                        borderRadius: 50,
+                        border: false,
+                        borderColor: white,
+                        validatorText: commentController.text,
+                        validatorMessage: LanguageCubit.get(context).getTexts('EnterComment').toString(),
+                        onEditingComplete: () {
+                          FocusScope.of(context).unfocus();
+                        }),
+                  ),
+                  SizedBox(
+                    height: 24.h,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      loadingRejectTripDetails
+                          ? loading()
+                          : MaterialButton(
+                              height: 30.h,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.r)),
+                              color: accentColor,
+                              minWidth: 80.w,
+                              onPressed: () {
+                                if (formKeyRequest.currentState!.validate()) {
+                                  TripDetailsCubit.get(context).editTrip(
+                                      widget.id!,
+                                      "reject",
+                                      commentController.text.toString());
 
-                                setState(() {
-                                  loadingRejectTripDetails = true;
-                                });
-                              }
-                            },
-                            child: Text(
-                              'Ok',
-                              style: TextStyle(color: white, fontSize: 15.sp),
-                            )),
-                    SizedBox(
-                      width: 30.w,
-                    ),
-                    MaterialButton(
-                        height: 30.h,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.r)),
-                        color: grey,
-                        onPressed: () => Navigator.pop(context),
-                        minWidth: 80.w,
-                        child: Text(
-                          'Cancel',
-                          style: TextStyle(color: black, fontSize: 15.sp),
-                        )),
-                  ],
-                ),
-              ],
+                                  setState(() {
+                                    loadingRejectTripDetails = true;
+                                  });
+                                }
+                              },
+                              child: Text(
+                                LanguageCubit.get(context).getTexts('Ok').toString(),
+                                style: TextStyle(color: white, fontSize: 15.sp),
+                              )),
+                      SizedBox(
+                        width: 30.w,
+                      ),
+                      MaterialButton(
+                          height: 30.h,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r)),
+                          color: grey,
+                          onPressed: () => Navigator.pop(context),
+                          minWidth: 80.w,
+                          child: Text(
+                            LanguageCubit.get(context).getTexts('Cancel').toString(),
+                            style: TextStyle(color: black, fontSize: 15.sp),
+                          )),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -868,86 +915,91 @@ class _CustomDialogEndTripDetailsState
         }
       },
       builder: (context, state) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r),
-          ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          child: Container(
-            padding: EdgeInsets.only(
-                top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
-            margin: EdgeInsets.only(top: 50.r),
-            decoration: BoxDecoration(
-              color: white,
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(10.r),
+        return Directionality(
+          textDirection: LanguageCubit.get(context).isEn
+              ? ui.TextDirection.ltr
+              : ui.TextDirection.rtl,
+          child: Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.r),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                SizedBox(
-                  height: 10.r,
-                ),
-                Text(
-                  widget.title!,
-                  style: TextStyle(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w700,
-                      color: accentColor),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(
-                  height: 16.r,
-                ),
-                Text(
-                  widget.description!,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16.sp, color: black),
-                ),
-                SizedBox(
-                  height: 44.h,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    loadingEndTripDetails
-                        ? loading()
-                        : MaterialButton(
-                            height: 30.h,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.r)),
-                            color: accentColor,
-                            minWidth: 80.w,
-                            onPressed: () {
-                              TripDetailsCubit.get(context).editTrip(
-                                  widget.id!, widget.status!, "comment");
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            child: Container(
+              padding: EdgeInsets.only(
+                  top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+              margin: EdgeInsets.only(top: 50.r),
+              decoration: BoxDecoration(
+                color: white,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                    height: 10.r,
+                  ),
+                  Text(
+                    widget.title!,
+                    style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w700,
+                        color: accentColor),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: 16.r,
+                  ),
+                  Text(
+                    widget.description!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16.sp, color: black),
+                  ),
+                  SizedBox(
+                    height: 44.h,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      loadingEndTripDetails
+                          ? loading()
+                          : MaterialButton(
+                              height: 30.h,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.r)),
+                              color: accentColor,
+                              minWidth: 80.w,
+                              onPressed: () {
+                                TripDetailsCubit.get(context).editTrip(
+                                    widget.id!, widget.status!, "comment");
 
-                              setState(() {
-                                loadingEndTripDetails = true;
-                              });
-                            },
-                            child: Text(
-                              'Ok',
-                              style: TextStyle(color: white, fontSize: 15.sp),
-                            )),
-                    SizedBox(
-                      width: 30.w,
-                    ),
-                    MaterialButton(
-                        height: 30.h,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.r)),
-                        color: grey,
-                        onPressed: () => Navigator.pop(context),
-                        minWidth: 80.w,
-                        child: Text(
-                          'Cancel',
-                          style: TextStyle(color: black, fontSize: 15.sp),
-                        )),
-                  ],
-                ),
-              ],
+                                setState(() {
+                                  loadingEndTripDetails = true;
+                                });
+                              },
+                              child: Text(
+                                LanguageCubit.get(context).getTexts('Ok').toString(),
+                                style: TextStyle(color: white, fontSize: 15.sp),
+                              )),
+                      SizedBox(
+                        width: 30.w,
+                      ),
+                      MaterialButton(
+                          height: 30.h,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r)),
+                          color: grey,
+                          onPressed: () => Navigator.pop(context),
+                          minWidth: 80.w,
+                          child: Text(
+                            LanguageCubit.get(context).getTexts('Cancel').toString(),
+                            style: TextStyle(color: black, fontSize: 15.sp),
+                          )),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );

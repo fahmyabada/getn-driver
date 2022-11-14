@@ -42,32 +42,64 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   };
 
   var btnStatus2 = {
-    'pending': ['Accept', 'Reject'],
-    'accept': ['On My Way', 'Cancel'],
-    'on_my_way': ['Arrive', 'Cancel'],
-    'arrive': ['Start', 'Cancel'],
-    'coming': ['Start', 'Cancel'],
-    'start': ['End', 'Cancel'],
-    'end': [],
-    'mid_pause': [],
-    'reject': [],
-    'cancel': []
+    'en': {
+      'pending': ['Accept', 'Reject'],
+      'accept': ['On My Way', 'Cancel'],
+      'on_my_way': ['Arrive', 'Cancel'],
+      'arrive': ['Start', 'Cancel'],
+      'coming': ['Start', 'Cancel'],
+      'start': ['End', 'Cancel'],
+      'end': [],
+      'mid_pause': [],
+      'reject': [],
+      'cancel': []
+    },
+    'ar': {
+      'pending': ['ٌقبول', 'رفض'],
+      'accept': ['في الطريق', 'إلغاء'],
+      'on_my_way': ['وصلت', 'إلغاء'],
+      'arrive': ['إبدأ', 'إلغاء'],
+      'coming': ['إبدأ', 'إلغاء'],
+      'start': ['إنهاء', 'إلغاء'],
+      'end': [],
+      'mid_pause': [],
+      'reject': [],
+      'cancel': []
+    },
   };
 
   var btnStatus3 = {
-    'pending': 'Pending',
-    'accept': 'Accept',
-    'on_my_way': 'On My Way',
-    'arrive': 'Arrive',
-    'coming': 'Coming',
-    'start': 'Start',
-    'end': 'End',
-    'mid_pause': 'Mid Pause',
-    'reject': 'Reject',
-    'cancel': 'Cancel',
-    'need_confirm': 'Need Confirm',
-    'paid': 'Paid'
+    'en': {
+      'pending': 'Pending',
+      'accept': 'Accept',
+      'on_my_way': 'On My Way',
+      'arrive': 'Arrive',
+      'coming': 'Coming',
+      'start': 'Start',
+      'end': 'End',
+      'mid_pause': 'Mid Pause',
+      'reject': 'Reject',
+      'cancel': 'Cancel',
+      'need_confirm': 'Need Confirm',
+      'paid': 'Paid'
+    },
+    'ar': {
+      'pending': 'قيد الإنتظار',
+      'accept': 'مقبول',
+      'on_my_way': 'في الطريق',
+      'arrive': 'تم الوصول',
+      'coming': 'في الطريق',
+      'start': 'بدأت',
+      'end': 'إنتهت',
+      'mid_pause': 'الغيت',
+      'reject': 'مرفوض',
+      'cancel': 'الغيت',
+      'need_confirm': 'تحتاج للموافقة',
+      'paid': 'مدفوعة'
+    },
   };
+
+
 
   int? indexStatus;
   var formKeyRequest = GlobalKey<FormState>();
@@ -258,7 +290,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           press: () {
                             RequestDetailsCubit.get(context)
                                 .getRequestDetails(widget.idRequest!);
-                          })
+                          },
+                          context: context)
                       : RequestDetailsCubit.get(context).requestDetails!.id !=
                               null
                           ? Container(
@@ -620,10 +653,15 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     width: 5.w,
                   ),
                   Text(
-                    btnStatus3[RequestDetailsCubit.get(context)
-                            .requestDetails!
-                            .status!]
-                        .toString(),
+                    LanguageCubit.get(context).isEn
+                        ? btnStatus3["en"]![RequestDetailsCubit.get(context)
+                                .requestDetails!
+                                .status!]
+                            .toString()
+                        : btnStatus3["ar"]![RequestDetailsCubit.get(context)
+                                .requestDetails!
+                                .status!]
+                            .toString(),
                     style: TextStyle(color: grey2, fontSize: 14.sp),
                   ),
                 ],
@@ -643,10 +681,15 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     width: 5.w,
                   ),
                   Text(
-                    btnStatus3[RequestDetailsCubit.get(context)
-                            .requestDetails!
-                            .paymentStatus!]
-                        .toString(),
+                    LanguageCubit.get(context).isEn
+                        ? btnStatus3["en"]![RequestDetailsCubit.get(context)
+                                .requestDetails!
+                                .paymentStatus!]
+                            .toString()
+                        : btnStatus3["ar"]![RequestDetailsCubit.get(context)
+                                .requestDetails!
+                                .paymentStatus!]
+                            .toString(),
                     style: TextStyle(color: grey2, fontSize: 14.sp),
                   ),
                 ],
@@ -658,7 +701,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                LanguageCubit.get(context).getTexts('TripStartDate').toString(),
+                LanguageCubit.get(context).getTexts('RequestStartDate').toString(),
                 style: TextStyle(
                   color: black,
                   fontSize: 15.sp,
@@ -752,7 +795,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       ? Expanded(
                           child: defaultButton2(
                             press: () {
-                              if (btnStatus2[
+                              if (btnStatus2["en"]![
                                           '${RequestDetailsCubit.get(context).requestDetails!.status}']![
                                       0] ==
                                   "End") {
@@ -797,7 +840,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                             .requestDetails
                                             ?.paymentStatus! ==
                                         "paid"
-                                    ? btnStatus2['${RequestDetailsCubit.get(context).requestDetails!.status}']![
+                                    ? btnStatus2["en"]!['${RequestDetailsCubit.get(context).requestDetails!.status}']![
                                                 0] ==
                                             "start"
                                         ? DateFormat("yyyy-MM-ddTHH:mm")
@@ -815,8 +858,19 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             paddingVertical: 1,
                             paddingHorizontal: 10,
                             borderRadius: 10,
-                            text: btnStatus2[
-                                '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
+                            text: LanguageCubit
+                                .get(context)
+                                .isEn ? btnStatus2["en"]![
+                            '${RequestDetailsCubit
+                                .get(context)
+                                .requestDetails!
+                                .status}']![0] :
+                            btnStatus2["ar"]![
+                            '${RequestDetailsCubit
+                                .get(context)
+                                .requestDetails!
+                                .status}']![0]
+                            ,
                             backColor: greenColor,
                             textColor: white,
                           ),
@@ -918,8 +972,18 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         paddingVertical: 1,
                         paddingHorizontal: 10,
                         borderRadius: 10,
-                        text: btnStatus2[
-                            '${RequestDetailsCubit.get(context).requestDetails!.status}']![1],
+                        text: LanguageCubit
+                            .get(context)
+                            .isEn ? btnStatus2["en"]![
+                        '${RequestDetailsCubit
+                            .get(context)
+                            .requestDetails!
+                            .status}']![1] :
+                        btnStatus2["ar"]![
+                        '${RequestDetailsCubit
+                            .get(context)
+                            .requestDetails!
+                            .status}']![1],
                         backColor: greenColor,
                         textColor: white),
                   ),
@@ -982,7 +1046,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                 children: [
                                                   Text(
                                                     LanguageCubit.get(context)
-                                                        .getTexts('PickedPoint')
+                                                        .getTexts('StartPoint')
                                                         .toString(),
                                                     style: TextStyle(
                                                         color: black,
@@ -1024,8 +1088,14 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                       width: 5.w,
                                                     ),
                                                     Text(
-                                                      btnStatus3[trip.status!]
-                                                          .toString(),
+                                                      LanguageCubit.get(context)
+                                                              .isEn
+                                                          ? btnStatus3["en"]![
+                                                                  trip.status!]
+                                                              .toString()
+                                                          : btnStatus3["ar"]![
+                                                                  trip.status!]
+                                                              .toString(),
                                                       style: TextStyle(
                                                           color: grey2,
                                                           fontSize: 14.sp),
@@ -1097,7 +1167,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                 children: [
                                                   Text(
                                                     LanguageCubit.get(context)
-                                                        .getTexts('PickedPoint')
+                                                        .getTexts('EndPoint')
                                                         .toString(),
                                                     style: TextStyle(
                                                         color: black,
@@ -1344,7 +1414,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       RequestDetailsCubit.get(context).indexTrips = 1;
                       RequestDetailsCubit.get(context)
                           .getTripsRequestDetails(1, widget.idRequest!);
-                    })
+                    },
+                    context: context)
             : state is TripsErrorState
                 ? RequestDetailsCubit.get(context).failureTrip.isNotEmpty
                     ? errorMessage2(
@@ -1355,7 +1426,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           RequestDetailsCubit.get(context).indexTrips = 1;
                           RequestDetailsCubit.get(context)
                               .getTripsRequestDetails(1, widget.idRequest!);
-                        })
+                        },
+                       context: context)
                     : Container()
                 : Container();
   }

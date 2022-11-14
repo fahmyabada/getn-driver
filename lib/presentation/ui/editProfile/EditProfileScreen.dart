@@ -175,7 +175,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             message: EditProfileCubit.get(context).failure,
                             press: () {
                               EditProfileCubit.get(context).getProfileDetails();
-                            })
+                            },
+                           context: context)
                         : RefreshIndicator(
                             onRefresh: () => Future.delayed(
                                 const Duration(seconds: 2),
@@ -692,7 +693,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                 press: () {
                                                   EditProfileCubit.get(context)
                                                       .getCountries();
-                                                })
+                                                },
+                                               context: context)
                                             : EditProfileCubit.get(context)
                                                     .countries
                                                     .isNotEmpty
@@ -852,7 +854,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                       .getCity(
                                                           dropDownValueCountries!
                                                               .id!);
-                                                })
+                                                },
+                                              context: context)
                                             : EditProfileCubit.get(context)
                                                     .city
                                                     .isNotEmpty
@@ -1015,7 +1018,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                           dropDownValueCountries!
                                                               .id!,
                                                           dropDownValueCity!.id!);
-                                                })
+                                                },
+                                               context: context)
                                             : EditProfileCubit.get(context)
                                                     .area
                                                     .isNotEmpty

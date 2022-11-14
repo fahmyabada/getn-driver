@@ -57,8 +57,8 @@ class WalletCubit extends Cubit<WalletState> {
       wallet.clear();
       wallet.addAll(data!.data!);
       indexWallet = indexWallet + 1;
-      walletValue = data.wallet!.toStringAsFixed(1);
-      walletHold = data.holdWallet.toString();
+      walletValue = data.wallet!.toStringAsFixed(2);
+      walletHold = data.holdWallet!.toStringAsFixed(2);
       loadingWallet = false;
 
       return WalletSuccessState(data);

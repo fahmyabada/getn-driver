@@ -263,14 +263,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   press: () {
                                     NotificationCubit.get(context)
                                         .getNotification(1);
-                                  })
+                                  },
+                               context: context)
                           : state is NotificationErrorState
                               ? errorMessage2(
                                   message: state.message,
                                   press: () {
                                     NotificationCubit.get(context)
                                         .getNotification(1);
-                                  })
+                                  },
+                               context: context)
                               : Container(),
                 ),
               ),

@@ -1075,7 +1075,8 @@ class _MyCarScreenState extends State<MyCarScreen> {
                                   message: MyCarScreenCubit.get(context).carFailure,
                                   press: () {
                                     MyCarScreenCubit.get(context).getCar();
-                                  }),
+                                  },
+                                  context: context),
                             )
                           : Container(),
             ),

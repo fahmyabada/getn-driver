@@ -59,11 +59,12 @@ class _PolicyDetailsScreenState extends State<PolicyDetailsScreen> {
                   ? loading()
                   : state is PoliciesErrorState
                       ? errorMessage2(
-                          message: 'Something went wrong, please try again',
+                          message: state.message,
                           press: () {
                             PoliciesCubit.get(context)
                                 .getPolicies(widget.title);
-                          })
+                          },
+                         context: context)
                       : SingleChildScrollView(
                           child: Html(
                             data: LanguageCubit.get(context).isEn

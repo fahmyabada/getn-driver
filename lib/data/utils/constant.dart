@@ -38,8 +38,8 @@ String handleError(dynamic error) {
         errorDescription = "Receive timeout in connection with API server";
         break;
       case DioErrorType.response:
-        errorDescription = "${dioError.response?.data["message"]}";
-        // errorDescription = dioError.response!.data["message"].toString();
+        Map<dynamic, dynamic> data = dioError.response?.data;
+        errorDescription = "${data.values}";
         break;
       case DioErrorType.sendTimeout:
         errorDescription = "Send timeout in connection with API server";
@@ -48,7 +48,8 @@ String handleError(dynamic error) {
   } else {
     errorDescription = "Unexpected error occurred : $error";
   }
-  print("handleError:: errorDescription >> $errorDescription");
+  print(
+      "handleError:: errorDescription >> ${errorDescription.replaceAll('(', '').replaceAll(')', '')}");
   return errorDescription;
 }
 

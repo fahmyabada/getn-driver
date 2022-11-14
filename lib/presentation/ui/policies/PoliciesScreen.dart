@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
@@ -5,8 +7,6 @@ import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:getn_driver/presentation/ui/policies/PolicyDetailsScreen.dart';
-import 'dart:ui' as ui;
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PoliciesScreen extends StatefulWidget {
@@ -17,7 +17,6 @@ class PoliciesScreen extends StatefulWidget {
 }
 
 class _PoliciesScreenState extends State<PoliciesScreen> {
-
   bodyWidget(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
@@ -35,8 +34,10 @@ class _PoliciesScreenState extends State<PoliciesScreen> {
               onClick: () {
                 navigateTo(
                     context,
-                    const PolicyDetailsScreen(
-                      title: 'Terms & Conditions',
+                    PolicyDetailsScreen(
+                      title: LanguageCubit.get(context)
+                          .getTexts('Terms&Condition')
+                          .toString(),
                     ));
               },
             ),
@@ -51,8 +52,10 @@ class _PoliciesScreenState extends State<PoliciesScreen> {
               onClick: () {
                 navigateTo(
                     context,
-                    const PolicyDetailsScreen(
-                      title: 'Privacy Policy',
+                    PolicyDetailsScreen(
+                      title: LanguageCubit.get(context)
+                          .getTexts('PrivacyPolicy')
+                          .toString(),
                     ));
               },
             ),
@@ -61,14 +64,14 @@ class _PoliciesScreenState extends State<PoliciesScreen> {
             ),
             buildSettingItem(
               context: context,
-              title: LanguageCubit.get(context)
-                  .getTexts('AboutUs')
-                  .toString(),
+              title: LanguageCubit.get(context).getTexts('AboutUs').toString(),
               onClick: () {
                 navigateTo(
                     context,
-                    const PolicyDetailsScreen(
-                      title: 'About Us',
+                    PolicyDetailsScreen(
+                      title: LanguageCubit.get(context)
+                          .getTexts('AboutUs')
+                          .toString(),
                     ));
               },
             ),
@@ -77,14 +80,15 @@ class _PoliciesScreenState extends State<PoliciesScreen> {
             ),
             buildSettingItem(
               context: context,
-              title:  LanguageCubit.get(context)
-                  .getTexts('ContactUs')
-                  .toString(),
+              title:
+                  LanguageCubit.get(context).getTexts('ContactUs').toString(),
               onClick: () {
                 navigateTo(
                     context,
-                    const PolicyDetailsScreen(
-                      title: 'Contact Us',
+                    PolicyDetailsScreen(
+                      title: LanguageCubit.get(context)
+                          .getTexts('ContactUs')
+                          .toString(),
                     ));
               },
             ),
@@ -93,14 +97,14 @@ class _PoliciesScreenState extends State<PoliciesScreen> {
             ),
             buildSettingItem(
               context: context,
-              title: LanguageCubit.get(context)
-                  .getTexts('FAQs')
-                  .toString(),
+              title: LanguageCubit.get(context).getTexts('FAQs').toString(),
               onClick: () {
                 navigateTo(
                     context,
-                    const PolicyDetailsScreen(
-                      title: 'FAQs',
+                    PolicyDetailsScreen(
+                      title: LanguageCubit.get(context)
+                          .getTexts('FAQs')
+                          .toString(),
                     ));
               },
             ),
@@ -138,7 +142,7 @@ class _PoliciesScreenState extends State<PoliciesScreen> {
 
     if (getIt<SharedPreferences>().getBool("isEn") != null) {
       LanguageCubit.get(context).isEn =
-      getIt<SharedPreferences>().getBool("isEn")!;
+          getIt<SharedPreferences>().getBool("isEn")!;
     }
   }
 
@@ -151,9 +155,7 @@ class _PoliciesScreenState extends State<PoliciesScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            LanguageCubit.get(context)
-                .getTexts('Policies')
-                .toString(),
+            LanguageCubit.get(context).getTexts('Policies').toString(),
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.w500,

@@ -4,6 +4,8 @@ import 'package:getn_driver/data/model/policies/PoliciesModel.dart';
 import 'package:getn_driver/data/repository/policies/PoliciesRemoteDataSource.dart';
 import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/domain/repository/PoliciesRepository.dart';
+import 'package:getn_driver/main.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 
 class PoliciesRepositoryImpl extends PoliciesRepository {
   final PoliciesRemoteDataSource policiesRemoteDataSource;
@@ -14,15 +16,16 @@ class PoliciesRepositoryImpl extends PoliciesRepository {
   @override
   Future<Either<String, PoliciesModel?>> getPolicies(String title) async {
     String body = "";
-    if (title == "Terms & Conditions") {
+    print("object111*************$title");
+    if (title == LanguageCubit.get(navigatorKey.currentContext).getTexts('Terms&Condition')) {
       body = "terms_&_conditions";
-    }else if (title == "Privacy Policy") {
+    }else if (title == LanguageCubit.get(navigatorKey.currentContext).getTexts('PrivacyPolicy')) {
       body = "privacy_policy";
-    }else if (title == "About Us") {
+    }else if (title == LanguageCubit.get(navigatorKey.currentContext).getTexts('AboutUs')) {
       body = "about_us";
-    }else if (title == "Contact Us") {
+    }else if (title == LanguageCubit.get(navigatorKey.currentContext).getTexts('ContactUs')) {
       body = "contact_us";
-    }else if (title == "FAQs") {
+    }else if (title == LanguageCubit.get(navigatorKey.currentContext).getTexts('FAQs')) {
       body = "faqs";
     }
     if (await networkInfo.isConnected) {

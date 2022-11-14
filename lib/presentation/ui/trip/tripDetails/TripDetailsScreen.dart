@@ -43,27 +43,54 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
   };
 
   var btnStatus2 = {
-    'pending': ['Accept', 'Reject'],
-    'accept': ['On My Way'],
-    'on_my_way': ['Arrive'],
-    'arrive': ['Start'],
-    'coming': ['Start'],
-    'start': ['End'],
-    'end': [],
-    'reject': [],
-    'cancel': []
+    'en': {
+      'pending': ['Accept', 'Reject'],
+      'accept': ['On My Way'],
+      'on_my_way': ['Arrive'],
+      'arrive': ['Start'],
+      'coming': ['Start'],
+      'start': ['End'],
+      'end': [],
+      'reject': [],
+      'cancel': []
+    },
+    'ar': {
+      'pending': ['ٌقبول', 'رفض'],
+      'accept': ['في الطريق'],
+      'on_my_way': ['وصلت'],
+      'arrive': ['إبدأ'],
+      'coming': ['إبدأ'],
+      'start': ['إنهاء'],
+      'end': [],
+      'reject': [],
+      'cancel': []
+    },
   };
 
   var txtStatusRunning = {
-    'pending': 'Pending',
-    'accept': 'Accept',
-    'on_my_way': 'On My Way',
-    'arrive': 'Arrive',
-    'coming': 'Coming',
-    'start': 'Start',
-    'end': 'End',
-    'reject': 'Reject',
-    'cancel': 'Cancel'
+    'en': {
+      'pending': 'Pending',
+      'accept': 'Accept',
+      'on_my_way': 'On My Way',
+      'arrive': 'Arrive',
+      'coming': 'Coming',
+      'start': 'Start',
+      'end': 'End',
+      'reject': 'Reject',
+      'cancel': 'Cancel'
+    },
+    'ar': {
+      'pending': 'قيد الإنتظار',
+      'accept': 'مقبول',
+      'on_my_way': 'في الطريق',
+      'arrive': 'تم الوصول',
+      'coming': 'في الطريق',
+      'start': 'بدأت',
+      'end': 'إنتهت',
+      'mid_pause': 'الغيت',
+      'reject': 'مرفوض',
+      'cancel': 'الغيت',
+    },
   };
 
   int? indexStatus;
@@ -183,7 +210,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
             }
             TripDetailsCubit.get(context).getTripDetails(widget.idTrip!);
           } else if (state is TripDetailsEditErrorState) {
-            if(state.type == "reject" || state.type == "end"){
+            if (state.type == "reject" || state.type == "end") {
               Navigator.pop(context);
             }
             // Navigator.of(context).pop(widget.idRequest);
@@ -281,9 +308,9 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                           message: state.message,
                                           press: () {
                                             TripDetailsCubit.get(context)
-                                                .getTripDetails(
-                                                    widget.idTrip!);
-                                          })),
+                                                .getTripDetails(widget.idTrip!);
+                                          },
+                                          context: context)),
                                 )
                               : Container(
                                   color: white,
@@ -319,8 +346,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                   SizedBox(
                                                     height: 5.h,
                                                   ),
-                                                  buttonStatus(
-                                                      context, state),
+                                                  buttonStatus(context, state),
                                                   // SizedBox(
                                                   //   height: 10.h,
                                                   // ),
@@ -367,11 +393,17 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                           TripDetailsCubit.get(context)
                                                       .tripDetails !=
                                                   null
-                                              ? txtStatusRunning[
-                                                  TripDetailsCubit.get(
-                                                          context)
-                                                      .tripDetails!
-                                                      .status!]!
+                                              ? LanguageCubit.get(context).isEn
+                                                  ? txtStatusRunning['en']![
+                                                      TripDetailsCubit.get(
+                                                              context)
+                                                          .tripDetails!
+                                                          .status!]!
+                                                  : txtStatusRunning['ar']![
+                                                      TripDetailsCubit.get(
+                                                              context)
+                                                          .tripDetails!
+                                                          .status!]!
                                               : LanguageCubit.get(context)
                                                   .getTexts('Running')
                                                   .toString(),
@@ -864,8 +896,12 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                           paddingVertical: 1,
                           paddingHorizontal: 10,
                           borderRadius: 10,
-                          text: btnStatus2[
-                              '${TripDetailsCubit.get(context).tripDetails!.status}']![0],
+                          text: LanguageCubit.get(context).isEn
+                              ? btnStatus2['en']![
+                                      '${TripDetailsCubit.get(context).tripDetails!.status}']![
+                                  0]
+                              : btnStatus2['ar']![
+                                  '${TripDetailsCubit.get(context).tripDetails!.status}']![0],
                           backColor: greenColor,
                           textColor: white),
                     )
@@ -904,8 +940,12 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                     paddingVertical: 1,
                     paddingHorizontal: 10,
                     borderRadius: 10,
-                    text: btnStatus2[
-                        '${TripDetailsCubit.get(context).tripDetails!.status}']![1],
+                    text: LanguageCubit.get(context).isEn
+                        ? btnStatus2['en']![
+                                '${TripDetailsCubit.get(context).tripDetails!.status}']![
+                            1]
+                        : btnStatus2['ar']![
+                            '${TripDetailsCubit.get(context).tripDetails!.status}']![1],
                     backColor: greenColor,
                     textColor: white),
               ),
@@ -915,13 +955,12 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
             child: state is TripDetailsEditInitial
                 ? loading()
                 : TripDetailsCubit.get(context).tripDetails!.status != null &&
-                        btnStatus[
-                                '${TripDetailsCubit.get(context).tripDetails!.status}']!
+                        btnStatus['${TripDetailsCubit.get(context).tripDetails!.status}']!
                             .isEmpty
                     ? Container()
                     : defaultButton2(
                         press: () {
-                          if (btnStatus2[
+                          if (btnStatus2['en']![
                                       '${TripDetailsCubit.get(context).tripDetails!.status}']![
                                   0] ==
                               "End") {
@@ -945,8 +984,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                 );
                               },
                             );
-                                // .then((value) {
-                              // Navigator.of(context).pop(widget.idRequest);
+                            // .then((value) {
+                            // Navigator.of(context).pop(widget.idRequest);
                             // });
                           } else {
                             TripDetailsCubit.get(context).editTrip(
@@ -960,18 +999,22 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                         paddingVertical: 1,
                         paddingHorizontal: 50,
                         borderRadius: 10,
-                        text: btnStatus2[
-                                '${TripDetailsCubit.get(context).tripDetails!.status}']![
-                            0],
-                        backColor:
-                            btnStatus2['${TripDetailsCubit.get(context).tripDetails!.status}']![
-                                            0] ==
-                                        "End" ||
-                                    btnStatus2['${TripDetailsCubit.get(context).tripDetails!.status}']![
-                                            0] ==
-                                        "Cancel"
-                                ? redColor
-                                : greenColor,
+                        text: LanguageCubit.get(context).isEn
+                            ? btnStatus2['en']![
+                                    '${TripDetailsCubit.get(context).tripDetails!.status}']![
+                                0]
+                            : btnStatus2['ar']![
+                                    '${TripDetailsCubit.get(context).tripDetails!.status}']![
+                                0],
+                        backColor: btnStatus2['en']![
+                                            '${TripDetailsCubit.get(context).tripDetails!.status}']![
+                                        0] ==
+                                    "End" ||
+                                btnStatus2['en']![
+                                        '${TripDetailsCubit.get(context).tripDetails!.status}']![0] ==
+                                    "Cancel"
+                            ? redColor
+                            : greenColor,
                         textColor: white),
           );
   }

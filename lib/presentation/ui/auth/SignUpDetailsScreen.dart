@@ -536,7 +536,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                 press: () {
                                   SignCubit.get(context)
                                       .getCity(widget.countryId);
-                                })
+                                },
+                                context: context)
                             : SignCubit.get(context).city.isNotEmpty
                                 ? Container(
                                     width: 1.sw,
@@ -655,7 +656,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                 press: () {
                                   SignCubit.get(context).getArea(
                                       widget.countryId, dropDownValueCity!.id!);
-                                })
+                                },
+                               context: context)
                             : SignCubit.get(context).area.isNotEmpty
                                 ? Container(
                                     width: 1.sw,

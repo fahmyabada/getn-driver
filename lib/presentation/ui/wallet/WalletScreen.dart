@@ -25,6 +25,11 @@ class _WalletScreenState extends State<WalletScreen> {
   int _currentIndex = 0;
   String typeScreen = "wallet";
 
+  var txtStatus = {
+    'en': {'active': 'active', 'reject': 'reject', 'hold': 'hold'},
+    'ar': {'active': 'نشط', 'reject': 'مرفوض', 'hold': 'قيد الانتظار'},
+  };
+
   @override
   void initState() {
     super.initState();
@@ -226,7 +231,8 @@ class _WalletScreenState extends State<WalletScreen> {
                                                 .indexWallet = 1;
                                             WalletCubit.get(context)
                                                 .getWallet(1);
-                                          }),
+                                          },
+                                          context: context),
                               SizedBox(
                                 height: 16.h,
                               ),
@@ -295,7 +301,14 @@ class _WalletScreenState extends State<WalletScreen> {
                                               children: [
                                                 ListTile(
                                                   title: Text(
-                                                    item.type!,
+                                                    LanguageCubit.get(context)
+                                                            .isEn
+                                                        ? txtStatus['en']![
+                                                                item.status!]
+                                                            .toString()
+                                                        : txtStatus['ar']![
+                                                                item.status!]
+                                                            .toString(),
                                                     style: TextStyle(
                                                       color: primaryColor,
                                                       fontWeight:
@@ -305,29 +318,15 @@ class _WalletScreenState extends State<WalletScreen> {
                                                   ),
                                                   subtitle:
                                                       Text(item.comment ?? ''),
-                                                  trailing: Column(
-                                                    children: [
-                                                      Text(
-                                                        item.status!,
-                                                        style: TextStyle(
-                                                          color: primaryColor,
-                                                          fontWeight:
+                                                  trailing: Text(
+                                                    item.amount!
+                                                        .toStringAsFixed(2),
+                                                    style: TextStyle(
+                                                      color: primaryColor,
+                                                      fontWeight:
                                                           FontWeight.bold,
-                                                          fontSize: 20.sp,
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 5.h,),
-                                                      Text(
-                                                        item.amount!
-                                                            .toStringAsFixed(2),
-                                                        style: TextStyle(
-                                                          color: primaryColor,
-                                                          fontWeight:
-                                                          FontWeight.bold,
-                                                          fontSize: 20.sp,
-                                                        ),
-                                                      ),
-                                                    ],
+                                                      fontSize: 20.sp,
+                                                    ),
                                                   ),
                                                   contentPadding:
                                                       const EdgeInsets.all(0),
@@ -361,14 +360,16 @@ class _WalletScreenState extends State<WalletScreen> {
                                           press: () {
                                             WalletCubit.get(context)
                                                 .getWallet(1);
-                                          })
+                                          },
+                                          context: context)
                                   : state is WalletErrorState
                                       ? errorMessage2(
                                           message: state.message,
                                           press: () {
                                             WalletCubit.get(context)
                                                 .getWallet(1);
-                                          })
+                                          },
+                                          context: context)
                                       : Container()
                           : _currentIndex == 1
                               ? state is RequestsLoading
@@ -448,14 +449,16 @@ class _WalletScreenState extends State<WalletScreen> {
                                               press: () {
                                                 WalletCubit.get(context)
                                                     .getRequests(1);
-                                              })
+                                              },
+                                              context: context)
                                       : state is WalletErrorState
                                           ? errorMessage2(
                                               message: state.message,
                                               press: () {
                                                 WalletCubit.get(context)
                                                     .getRequests(1);
-                                              })
+                                              },
+                                              context: context)
                                           : Container()
                               : Container(),
                     ],

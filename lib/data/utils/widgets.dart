@@ -345,6 +345,7 @@ Widget loading() {
 Widget errorMessage({
   required String message,
   required VoidCallback press,
+  required BuildContext context
 }) {
   return Center(
     child: Column(
@@ -387,7 +388,7 @@ Widget errorMessage({
                       padding: EdgeInsets.symmetric(
                           horizontal: 15.r, vertical: 10.r),
                       child: Text(
-                        "Refresh",
+                        LanguageCubit.get(context).getTexts('Refresh').toString(),
                         style: TextStyle(color: accentColor, fontSize: 20.sm),
                       ),
                     ),
@@ -408,6 +409,7 @@ Widget errorMessage({
 Widget errorMessage2({
   required String message,
   required VoidCallback press,
+  required BuildContext context
 }) {
   return Center(
     child: Padding(
@@ -427,7 +429,9 @@ Widget errorMessage2({
               ),
             ),
             onPressed: press,
-            child: const Text('Retry'),
+            child:  Text(
+                LanguageCubit.get(context).getTexts('Retry').toString(),
+                ),
           )
         ],
       ),
