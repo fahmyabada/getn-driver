@@ -634,7 +634,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                   children: [
                     Text(
                       LanguageCubit.get(context)
-                          .getTexts('PickedPoint')
+                          .getTexts('StartPoint')
                           .toString(),
                       style: TextStyle(
                           color: black,
@@ -715,7 +715,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                   children: [
                     Text(
                       LanguageCubit.get(context)
-                          .getTexts('PickedPoint')
+                          .getTexts('EndPoint')
                           .toString(),
                       style: TextStyle(
                           color: black,

@@ -99,8 +99,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     },
   };
 
-
-
   int? indexStatus;
   var formKeyRequest = GlobalKey<FormState>();
   var commentController = TextEditingController();
@@ -288,6 +286,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           message:
                               RequestDetailsCubit.get(context).failureRequest,
                           press: () {
+                            RequestDetailsCubit.get(context).failureRequest = "";
                             RequestDetailsCubit.get(context)
                                 .getRequestDetails(widget.idRequest!);
                           },
@@ -701,7 +700,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                LanguageCubit.get(context).getTexts('RequestStartDate').toString(),
+                LanguageCubit.get(context)
+                    .getTexts('RequestStartDate')
+                    .toString(),
                 style: TextStyle(
                   color: black,
                   fontSize: 15.sp,
@@ -840,7 +841,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                             .requestDetails
                                             ?.paymentStatus! ==
                                         "paid"
-                                    ? btnStatus2["en"]!['${RequestDetailsCubit.get(context).requestDetails!.status}']![
+                                    ? btnStatus2[
+                                                        "en"]![
+                                                    '${RequestDetailsCubit.get(context).requestDetails!.status}']![
                                                 0] ==
                                             "start"
                                         ? DateFormat("yyyy-MM-ddTHH:mm")
@@ -858,19 +861,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             paddingVertical: 1,
                             paddingHorizontal: 10,
                             borderRadius: 10,
-                            text: LanguageCubit
-                                .get(context)
-                                .isEn ? btnStatus2["en"]![
-                            '${RequestDetailsCubit
-                                .get(context)
-                                .requestDetails!
-                                .status}']![0] :
-                            btnStatus2["ar"]![
-                            '${RequestDetailsCubit
-                                .get(context)
-                                .requestDetails!
-                                .status}']![0]
-                            ,
+                            text: LanguageCubit.get(context).isEn
+                                ? btnStatus2["en"]![
+                                        '${RequestDetailsCubit.get(context).requestDetails!.status}']![
+                                    0]
+                                : btnStatus2["ar"]![
+                                    '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
                             backColor: greenColor,
                             textColor: white,
                           ),
@@ -972,18 +968,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         paddingVertical: 1,
                         paddingHorizontal: 10,
                         borderRadius: 10,
-                        text: LanguageCubit
-                            .get(context)
-                            .isEn ? btnStatus2["en"]![
-                        '${RequestDetailsCubit
-                            .get(context)
-                            .requestDetails!
-                            .status}']![1] :
-                        btnStatus2["ar"]![
-                        '${RequestDetailsCubit
-                            .get(context)
-                            .requestDetails!
-                            .status}']![1],
+                        text: LanguageCubit.get(context).isEn
+                            ? btnStatus2["en"]![
+                                    '${RequestDetailsCubit.get(context).requestDetails!.status}']![
+                                1]
+                            : btnStatus2["ar"]![
+                                '${RequestDetailsCubit.get(context).requestDetails!.status}']![1],
                         backColor: greenColor,
                         textColor: white),
                   ),
@@ -1186,6 +1176,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                               ),
                                             ),
                                           ),
+                                          trip.endDate!.isNotEmpty?
                                           Expanded(
                                             flex: 2,
                                             child: Column(
@@ -1193,32 +1184,36 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                   CrossAxisAlignment.end,
                                               children: [
                                                 Text(
-                                                  // trip.endDate != null
-                                                  //     ? DateFormat.jm().format(
-                                                  //         DateTime.parse(
-                                                  //             trip.endDate!))
-                                                  //     :
-                                                  "",
+                                                  LanguageCubit.get(context)
+                                                          .isEn
+                                                      ? DateFormat.jm().format(
+                                                          DateTime.parse(
+                                                              trip.endDate!))
+                                                      : DateFormat.jm("ar")
+                                                          .format(DateTime
+                                                              .parse(trip
+                                                                  .endDate!)),
                                                   style: TextStyle(
                                                     color: grey2,
                                                     fontSize: 14.sp,
                                                   ),
                                                 ),
                                                 Text(
-                                                  // trip.endDate != null
-                                                  //     ? DateFormat.yMEd()
-                                                  //         .format(DateTime
-                                                  //             .parse(trip
-                                                  //                 .endDate!))
-                                                  //     :
-                                                  "",
+                                                  LanguageCubit.get(context)
+                                                          .isEn
+                                                      ? DateFormat.yMEd()
+                                                          .format(DateTime
+                                                              .parse(trip.endDate!))
+                                                      : DateFormat.yMEd("ar")
+                                                          .format(DateTime
+                                                              .parse(trip.endDate!)),
                                                   style: TextStyle(
                                                       color: grey2,
                                                       fontSize: 13.sp),
                                                 ),
                                               ],
                                             ),
-                                          ),
+                                          ):Container(),
                                         ],
                                       ),
                                       SizedBox(
@@ -1423,11 +1418,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         press: () {
                           print(
                               "getTripsRequestDetails**********${widget.idRequest!}");
+                          RequestDetailsCubit.get(context).failureTrip = "";
                           RequestDetailsCubit.get(context).indexTrips = 1;
                           RequestDetailsCubit.get(context)
                               .getTripsRequestDetails(1, widget.idRequest!);
                         },
-                       context: context)
+                        context: context)
                     : Container()
                 : Container();
   }
