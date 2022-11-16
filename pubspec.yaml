@@ -36,7 +36,7 @@ dependencies:
   easy_splash_screen: ^1.0.3
   get_it: ^7.2.0
   flutter_bloc: ^8.0.1
-  shared_preferences: ^2.0.13
+  shared_preferences: ^2.0.15
   extended_image: ^6.3.0
   cached_network_image: ^3.2.2
   dio: ^4.0.6
