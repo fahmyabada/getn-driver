@@ -49,7 +49,7 @@ class RequestCubit extends Cubit<RequestState> {
 
   String typeRequest = "current";
 
-  Future<void> editFcmToken() async {
+  Future<void> editProfile() async {
     getProfileUseCase.execute();
   }
 

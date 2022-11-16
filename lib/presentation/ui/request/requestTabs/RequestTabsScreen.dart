@@ -86,7 +86,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
           getIt<SharedPreferences>().getBool("isEn")!;
     }
 
-    RequestCubit.get(context).editFcmToken();
+    RequestCubit.get(context).editProfile();
 
     RequestCubit.get(context).tabController =
         TabController(length: 4, vsync: this);
@@ -609,8 +609,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                   ),
                   Text(
                     LanguageCubit.get(context).isEn
-                        ? '${current.client2!.country?.title!.en!}, ${current.client2!.city?.title!.en!}, ${current.client2!.area?.title!.en!}'
-                        : '${current.client2!.country?.title!.ar!}, ${current.client2!.city?.title!.ar!}, ${current.client2!.area?.title!.ar!}',
+                        ? '${current.client2!.country?.title!.en ?? ""}, ${current.client2!.city?.title!.en ?? ""}, ${current.client2!.area?.title!.en ?? ""}'
+                        : '${current.client2!.country?.title!.ar ?? ""}, ${current.client2!.city?.title!.ar ?? ""}, ${current.client2!.area?.title!.ar ?? ""}',
                     style: TextStyle(fontSize: 15.sp, color: grey2),
                   ),
                   SizedBox(
@@ -1039,8 +1039,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                   ),
                   Text(
                     LanguageCubit.get(context).isEn
-                        ? '${upComing.client2!.country?.title!.en!}, ${upComing.client2!.city?.title!.en!}, ${upComing.client2!.area?.title!.en!}'
-                        : '${upComing.client2!.country?.title!.ar!}, ${upComing.client2!.city?.title!.ar!}, ${upComing.client2!.area?.title!.ar!}',
+                        ? '${upComing.client2!.country?.title!.en ?? ""}, ${upComing.client2!.city?.title!.en ?? ""}, ${upComing.client2!.area?.title!.en ?? ""}'
+                        : '${upComing.client2!.country?.title!.ar ?? ""}, ${upComing.client2!.city?.title!.ar ?? ""}, ${upComing.client2!.area?.title!.ar ?? ""}',
                     style: TextStyle(fontSize: 15.sp, color: grey2),
                   ),
                   SizedBox(
@@ -1472,8 +1472,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                   ),
                   Text(
                     LanguageCubit.get(context).isEn
-                        ? '${past.client2!.country?.title!.en!}, ${past.client2!.city?.title!.en!}, ${past.client2!.area?.title!.en!}'
-                        : '${past.client2!.country?.title!.ar!}, ${past.client2!.city?.title!.ar!}, ${past.client2!.area?.title!.ar!}',
+                        ? '${past.client2!.country?.title!.en ?? ""}, ${past.client2!.city?.title!.en ?? ""}, ${past.client2!.area?.title!.en ?? ""}'
+                        : '${past.client2!.country?.title!.ar ?? ""}, ${past.client2!.city?.title!.ar ?? ""}, ${past.client2!.area?.title!.ar ?? ""}',
                     style: TextStyle(fontSize: 15.sp, color: grey2),
                   ),
                   SizedBox(
@@ -1867,8 +1867,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                   ),
                   Text(
                     LanguageCubit.get(context).isEn
-                        ? '${pending.client2!.country?.title!.en!}, ${pending.client2!.city?.title!.en!}, ${pending.client2!.area?.title!.en!}'
-                        : '${pending.client2!.country?.title!.ar!}, ${pending.client2!.city?.title!.ar!}, ${pending.client2!.area?.title!.ar!}',
+                        ? '${pending.client2!.country?.title!.en ?? ""}, ${pending.client2!.city?.title!.en ?? ""}, ${pending.client2!.area?.title!.en ?? ""}'
+                        : '${pending.client2!.country?.title!.ar ?? ""}, ${pending.client2!.city?.title!.ar ?? ""}, ${pending.client2!.area?.title!.ar ?? ""}',
                     style: TextStyle(fontSize: 15.sp, color: grey2),
                   ),
                   SizedBox(

@@ -286,7 +286,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           message:
                               RequestDetailsCubit.get(context).failureRequest,
                           press: () {
-                            RequestDetailsCubit.get(context).failureRequest = "";
+                            RequestDetailsCubit.get(context).failureRequest =
+                                "";
                             RequestDetailsCubit.get(context)
                                 .getRequestDetails(widget.idRequest!);
                           },
@@ -480,8 +481,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             ),
                             Text(
                               LanguageCubit.get(context).isEn
-                                  ? '${RequestDetailsCubit.get(context).requestDetails!.client2!.country!.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.city?.title!.en!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.area?.title!.en!}'
-                                  : '${RequestDetailsCubit.get(context).requestDetails!.client2!.country!.title!.ar!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.city?.title!.ar!}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.area?.title!.ar!}',
+                                  ? '${RequestDetailsCubit.get(context).requestDetails!.client2!.country!.title!.en ?? ""}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.city?.title!.en ?? ""}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.area?.title!.en ?? ""}'
+                                  : '${RequestDetailsCubit.get(context).requestDetails!.client2!.country!.title!.ar ?? ""}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.city?.title!.ar ?? ""}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.area?.title!.ar ?? ""}',
                               style: TextStyle(fontSize: 18.sp, color: grey2),
                             ),
                           ],
@@ -505,7 +506,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               RequestDetailsCubit.get(context)
                                       .requestDetails!
                                       .status ==
-                                  "cancel"
+                                  "cancel" ||
+                              RequestDetailsCubit.get(context)
+                                      .requestDetails!
+                                      .paymentStatus! !=
+                                  "paid"
                           ? Container()
                           : IconButton(
                               onPressed: () {
@@ -537,7 +542,23 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           RequestDetailsCubit.get(context)
                                   .requestDetails!
                                   .status ==
-                              "pending"
+                              "pending" ||
+                          RequestDetailsCubit.get(context)
+                                  .requestDetails!
+                                  .status ==
+                              "end" ||
+                          RequestDetailsCubit.get(context)
+                                  .requestDetails!
+                                  .status ==
+                              "reject" ||
+                          RequestDetailsCubit.get(context)
+                                  .requestDetails!
+                                  .status ==
+                              "cancel" ||
+                          RequestDetailsCubit.get(context)
+                                  .requestDetails!
+                                  .paymentStatus! !=
+                              "paid"
                       ? Container()
                       : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -750,6 +771,55 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           ),
           SizedBox(height: 10.h),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                LanguageCubit.get(context)
+                    .getTexts('RequestEndDate')
+                    .toString(),
+                style: TextStyle(
+                  color: black,
+                  fontSize: 15.sp,
+                ),
+              ),
+              Row(
+                children: [
+                  Text(
+                    LanguageCubit.get(context).isEn
+                        ? DateFormat.yMEd().format(DateTime.parse(
+                        RequestDetailsCubit.get(context)
+                            .requestDetails!
+                            .to!))
+                        : DateFormat.yMEd("ar").format(DateTime.parse(
+                        RequestDetailsCubit.get(context)
+                            .requestDetails!
+                            .to!)),
+                    style: TextStyle(color: grey2, fontSize: 14.sp),
+                  ),
+                  SizedBox(
+                    width: 5.w,
+                  ),
+                  Text(
+                    LanguageCubit.get(context).isEn
+                        ? DateFormat.jm().format(DateTime.parse(
+                        RequestDetailsCubit.get(context)
+                            .requestDetails!
+                            .to!))
+                        : DateFormat.jm("ar").format(DateTime.parse(
+                        RequestDetailsCubit.get(context)
+                            .requestDetails!
+                            .to!)),
+                    style: TextStyle(
+                      color: grey2,
+                      fontSize: 14.sp,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          SizedBox(height: 10.h),
+          Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -931,7 +1001,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                         '${RequestDetailsCubit.get(context).requestDetails!.status}']![1]);
                               },
                             );
-                          } else {
+                          }
+                          else {
                             showDialog(
                               context: context,
                               barrierDismissible: true,
@@ -974,7 +1045,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                 1]
                             : btnStatus2["ar"]![
                                 '${RequestDetailsCubit.get(context).requestDetails!.status}']![1],
-                        backColor: greenColor,
+                        backColor: redColor,
                         textColor: white),
                   ),
                 ],
@@ -1176,44 +1247,52 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                               ),
                                             ),
                                           ),
-                                          trip.endDate!.isNotEmpty?
-                                          Expanded(
-                                            flex: 2,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                Text(
-                                                  LanguageCubit.get(context)
-                                                          .isEn
-                                                      ? DateFormat.jm().format(
-                                                          DateTime.parse(
-                                                              trip.endDate!))
-                                                      : DateFormat.jm("ar")
-                                                          .format(DateTime
-                                                              .parse(trip
-                                                                  .endDate!)),
-                                                  style: TextStyle(
-                                                    color: grey2,
-                                                    fontSize: 14.sp,
+                                          trip.endDate!.isNotEmpty
+                                              ? Expanded(
+                                                  flex: 2,
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.end,
+                                                    children: [
+                                                      Text(
+                                                        LanguageCubit.get(
+                                                                    context)
+                                                                .isEn
+                                                            ? DateFormat.jm()
+                                                                .format(DateTime
+                                                                    .parse(trip
+                                                                        .endDate!))
+                                                            : DateFormat.jm(
+                                                                    "ar")
+                                                                .format(DateTime
+                                                                    .parse(trip
+                                                                        .endDate!)),
+                                                        style: TextStyle(
+                                                          color: grey2,
+                                                          fontSize: 14.sp,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        LanguageCubit.get(
+                                                                    context)
+                                                                .isEn
+                                                            ? DateFormat.yMEd()
+                                                                .format(DateTime
+                                                                    .parse(trip
+                                                                        .endDate!))
+                                                            : DateFormat.yMEd(
+                                                                    "ar")
+                                                                .format(DateTime
+                                                                    .parse(trip
+                                                                        .endDate!)),
+                                                        style: TextStyle(
+                                                            color: grey2,
+                                                            fontSize: 13.sp),
+                                                      ),
+                                                    ],
                                                   ),
-                                                ),
-                                                Text(
-                                                  LanguageCubit.get(context)
-                                                          .isEn
-                                                      ? DateFormat.yMEd()
-                                                          .format(DateTime
-                                                              .parse(trip.endDate!))
-                                                      : DateFormat.yMEd("ar")
-                                                          .format(DateTime
-                                                              .parse(trip.endDate!)),
-                                                  style: TextStyle(
-                                                      color: grey2,
-                                                      fontSize: 13.sp),
-                                                ),
-                                              ],
-                                            ),
-                                          ):Container(),
+                                                )
+                                              : Container(),
                                         ],
                                       ),
                                       SizedBox(

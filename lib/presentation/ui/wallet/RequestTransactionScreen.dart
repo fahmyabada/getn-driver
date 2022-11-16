@@ -560,7 +560,7 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                                             phoneController!.text.toString(),
                                         "country": dropDownValueCountry!.id,
                                         "amount":
-                                            mountController!.text.toString(),
+                                            double.parse(mountController!.text.toString()),
                                       });
 
                                       WalletCubit.get(context)
@@ -596,7 +596,7 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                                           'iban':
                                               ibanController!.text.toString(),
                                           "amount":
-                                              mountController!.text.toString(),
+                                              double.parse(mountController!.text.toString()),
                                         }
                                       });
 

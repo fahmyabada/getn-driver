@@ -13,6 +13,7 @@ class LanguageCubit extends Cubit<LanguageState> {
   static LanguageCubit get(context) => BlocProvider.of(context);
 
   Map<String, Object> textAr = {
+    'lang': 'اللغة',
     'Arabic': 'عربي',
     'English': 'إنجليزي',
     'Refresh': 'تحديث',
@@ -104,6 +105,7 @@ class LanguageCubit extends Cubit<LanguageState> {
     'Status': 'الحالة :',
     'PaymentStatus': 'حالة الدفع :',
     'RequestStartDate': 'تاريخ بدء الطلب',
+    'RequestEndDate': 'تاريخ انهاء الطلب',
     'TripStartDate': 'تاريخ بدء الرحلة',
     'PickedLocation': 'نقطه الالتقاء',
     'PickedPoint': 'نقطه الالتقاء',
@@ -193,6 +195,7 @@ class LanguageCubit extends Cubit<LanguageState> {
   };
 
   Map<String, Object> textEn = {
+    'lang': 'Language',
     'Arabic': 'Arabic',
     'English': 'English',
     'Refresh': 'Refresh',
@@ -284,6 +287,7 @@ class LanguageCubit extends Cubit<LanguageState> {
     'Status': 'Status :',
     'PaymentStatus': 'Payment Status :',
     'RequestStartDate': 'Request Start Date',
+    'RequestEndDate': 'Request End Date',
     'TripStartDate': 'Trip Start Date',
     'PickedLocation': 'Picked Location',
     'PickedPoint': 'Picked Point',

@@ -58,7 +58,7 @@ class RequestRepositoryImpl extends RequestRepository {
         }, (data) async {
           if (data!.fcmToken != null &&
               data.fcmToken !=
-                  getIt<SharedPreferences>().getString("fcmToken")) {
+                  getIt<SharedPreferences>().getString("fcmToken").toString()) {
             var formData = FormData.fromMap({
               'fcmToken': getIt<SharedPreferences>().getString("fcmToken"),
             });
@@ -71,5 +71,4 @@ class RequestRepositoryImpl extends RequestRepository {
       return Left(networkFailureMessage);
     }
   }
-
 }

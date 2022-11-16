@@ -381,196 +381,204 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                           SizedBox(
                                             height: 16.h,
                                           ),
-                                          Row(
-                                            children: [
-                                              state is CountriesLoading
-                                                  ? Container(
-                                                      margin:
-                                                          EdgeInsetsDirectional
-                                                              .only(end: 10.w),
-                                                      child: loading(),
-                                                    )
-                                                  : EditProfileCubit.get(
-                                                              context)
-                                                          .countries
-                                                          .isNotEmpty
-                                                      ? Expanded(
-                                                          flex: 2,
-                                                          child:
-                                                              DropdownButtonHideUnderline(
+                                          Container(
+                                            padding: EdgeInsets.symmetric(horizontal: 15.r),
+                                            decoration: BoxDecoration(
+                                                color: white,
+                                                border: Border.all(color: black),
+                                                borderRadius: BorderRadius.circular(50.r)),
+                                            child: Row(
+                                              children: [
+                                                state is CountriesLoading
+                                                    ? Container(
+                                                        margin:
+                                                            EdgeInsetsDirectional
+                                                                .only(end: 10.w),
+                                                        child: loading(),
+                                                      )
+                                                    : EditProfileCubit.get(
+                                                                context)
+                                                            .countries
+                                                            .isNotEmpty
+                                                        ? Expanded(
+                                                            flex: 2,
                                                             child:
-                                                                DropdownButton2(
-                                                              //      value: controller.selectedCountry?.value,
-                                                              dropdownDecoration:
-                                                                  BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            14.r),
-                                                                border:
-                                                                    Border.all(
-                                                                  width: 1,
-                                                                  color: Colors
-                                                                              .grey[
-                                                                          400] ??
-                                                                      Colors
-                                                                          .black,
+                                                                DropdownButtonHideUnderline(
+                                                              child:
+                                                                  DropdownButton2(
+                                                                //      value: controller.selectedCountry?.value,
+                                                                dropdownDecoration:
+                                                                    BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              14.r),
+                                                                  border:
+                                                                      Border.all(
+                                                                    width: 1,
+                                                                    color: Colors
+                                                                                .grey[
+                                                                            400] ??
+                                                                        Colors
+                                                                            .black,
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                              isExpanded: true,
-                                                              iconSize: 0.0,
-                                                              dropdownWidth:
-                                                                  350.w,
-                                                              style: const TextStyle(
-                                                                  color: Colors
-                                                                      .grey),
-                                                              onChanged:
-                                                                  (Country?
-                                                                      value) {
-                                                                setState(() {
-                                                                  dropDownValueWhatsAppCountry =
-                                                                      value;
-                                                                });
-                                                              },
-                                                              hint: Center(
-                                                                child: Row(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .center,
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    ImageTools
-                                                                        .image(
-                                                                      fit: BoxFit
-                                                                          .contain,
-                                                                      url: dropDownValueWhatsAppCountry!
-                                                                              .icon!
-                                                                              .src ??
-                                                                          " ",
-                                                                      height:
-                                                                          35.w,
-                                                                      width:
-                                                                          35.w,
-                                                                    ),
-                                                                    const Icon(
-                                                                      Icons
-                                                                          .keyboard_arrow_down_sharp,
-                                                                      color: Color.fromARGB(
-                                                                          207,
-                                                                          204,
-                                                                          204,
-                                                                          213),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width:
-                                                                          2.w,
-                                                                    ),
-                                                                    Text(
-                                                                        dropDownValueWhatsAppCountry!.code ??
-                                                                            "",
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                Colors.black,
-                                                                            fontSize: 20.sp)),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              items: EditProfileCubit
-                                                                      .get(
-                                                                          context)
-                                                                  .countries
-                                                                  .map(
-                                                                      (selectedCountry) {
-                                                                return DropdownMenuItem<
-                                                                    Country>(
-                                                                  value:
-                                                                      selectedCountry,
+                                                                isExpanded: true,
+                                                                iconSize: 0.0,
+                                                                dropdownWidth:
+                                                                    350.w,
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .grey),
+                                                                onChanged:
+                                                                    (Country?
+                                                                        value) {
+                                                                  setState(() {
+                                                                    dropDownValueWhatsAppCountry =
+                                                                        value;
+                                                                  });
+                                                                },
+                                                                hint: Center(
                                                                   child: Row(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .center,
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .center,
                                                                     children: [
                                                                       ImageTools
                                                                           .image(
                                                                         fit: BoxFit
                                                                             .contain,
-                                                                        url: selectedCountry.icon?.src ??
+                                                                        url: dropDownValueWhatsAppCountry!
+                                                                                .icon!
+                                                                                .src ??
                                                                             " ",
                                                                         height:
-                                                                            30.w,
+                                                                            35.w,
                                                                         width:
-                                                                            30.w,
+                                                                            35.w,
+                                                                      ),
+                                                                      const Icon(
+                                                                        Icons
+                                                                            .keyboard_arrow_down_sharp,
+                                                                        color: Color.fromARGB(
+                                                                            207,
+                                                                            204,
+                                                                            204,
+                                                                            213),
                                                                       ),
                                                                       SizedBox(
                                                                         width:
-                                                                            10.w,
+                                                                            2.w,
                                                                       ),
                                                                       Text(
-                                                                          LanguageCubit.get(context).isEn
-                                                                              ? selectedCountry.title?.en ??
-                                                                                  " "
-                                                                              : selectedCountry.title?.ar ??
-                                                                                  " ",
-                                                                          style: TextStyle(
-                                                                              color: Colors.black,
-                                                                              fontSize: 20.sp)),
-                                                                      SizedBox(
-                                                                        width:
-                                                                            10.w,
-                                                                      ),
-                                                                      Text(
-                                                                          selectedCountry.code ??
+                                                                          dropDownValueWhatsAppCountry!.code ??
                                                                               "",
                                                                           style: TextStyle(
-                                                                              color: Colors.black,
+                                                                              color:
+                                                                                  Colors.black,
                                                                               fontSize: 20.sp)),
                                                                     ],
                                                                   ),
-                                                                );
-                                                              }).toList(),
-                                                            ),
-                                                          ),
-                                                        )
-                                                      : Expanded(
-                                                          child: IconButton(
-                                                              icon: const Icon(
-                                                                  Icons
-                                                                      .cloud_upload,
-                                                                  color:
-                                                                      redColor),
-                                                              onPressed: () {
-                                                                EditProfileCubit
+                                                                ),
+                                                                items: EditProfileCubit
                                                                         .get(
                                                                             context)
-                                                                    .getCountries();
-                                                              }),
-                                                        ),
-                                              Expanded(
-                                                flex: 4,
-                                                child: defaultFormField(
-                                                  controller:
-                                                      whatsAppController,
-                                                  type: TextInputType.number,
-                                                  label:
-                                                      LanguageCubit.get(context)
-                                                          .getTexts('WhatsApp')
-                                                          .toString(),
-                                                  textSize: 20,
-                                                  border: false,
-                                                  borderRadius: 50,
-                                                  validatorText:
-                                                      whatsAppController.text,
-                                                  validatorMessage:
-                                                      LanguageCubit.get(context)
-                                                          .getTexts(
-                                                              'EnterWhatsApp')
-                                                          .toString(),
-                                                  onEditingComplete: () {
-                                                    FocusScope.of(context)
-                                                        .nextFocus();
-                                                  },
+                                                                    .countries
+                                                                    .map(
+                                                                        (selectedCountry) {
+                                                                  return DropdownMenuItem<
+                                                                      Country>(
+                                                                    value:
+                                                                        selectedCountry,
+                                                                    child: Row(
+                                                                      children: [
+                                                                        ImageTools
+                                                                            .image(
+                                                                          fit: BoxFit
+                                                                              .contain,
+                                                                          url: selectedCountry.icon?.src ??
+                                                                              " ",
+                                                                          height:
+                                                                              30.w,
+                                                                          width:
+                                                                              30.w,
+                                                                        ),
+                                                                        SizedBox(
+                                                                          width:
+                                                                              10.w,
+                                                                        ),
+                                                                        Text(
+                                                                            LanguageCubit.get(context).isEn
+                                                                                ? selectedCountry.title?.en ??
+                                                                                    " "
+                                                                                : selectedCountry.title?.ar ??
+                                                                                    " ",
+                                                                            style: TextStyle(
+                                                                                color: Colors.black,
+                                                                                fontSize: 20.sp)),
+                                                                        SizedBox(
+                                                                          width:
+                                                                              10.w,
+                                                                        ),
+                                                                        Text(
+                                                                            selectedCountry.code ??
+                                                                                "",
+                                                                            style: TextStyle(
+                                                                                color: Colors.black,
+                                                                                fontSize: 20.sp)),
+                                                                      ],
+                                                                    ),
+                                                                  );
+                                                                }).toList(),
+                                                              ),
+                                                            ),
+                                                          )
+                                                        : Expanded(
+                                                            child: IconButton(
+                                                                icon: const Icon(
+                                                                    Icons
+                                                                        .cloud_upload,
+                                                                    color:
+                                                                        redColor),
+                                                                onPressed: () {
+                                                                  EditProfileCubit
+                                                                          .get(
+                                                                              context)
+                                                                      .getCountries();
+                                                                }),
+                                                          ),
+                                                Expanded(
+                                                  flex: 4,
+                                                  child: defaultFormField(
+                                                    controller:
+                                                        whatsAppController,
+                                                    type: TextInputType.number,
+                                                    label:
+                                                        LanguageCubit.get(context)
+                                                            .getTexts('WhatsApp')
+                                                            .toString(),
+                                                    textSize: 20,
+                                                    border: true,
+                                                    borderColor: white,
+                                                    borderRadius: 50,
+                                                    validatorText:
+                                                        whatsAppController.text,
+                                                    validatorMessage:
+                                                        LanguageCubit.get(context)
+                                                            .getTexts(
+                                                                'EnterWhatsApp')
+                                                            .toString(),
+                                                    onEditingComplete: () {
+                                                      FocusScope.of(context)
+                                                          .nextFocus();
+                                                    },
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                           SizedBox(
                                             height: 16.h,
@@ -618,40 +626,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                         .format(pickedDate);
                                               }
                                             },
-                                          ),
-                                          SizedBox(
-                                            height: 16.h,
-                                          ),
-                                          ListTile(
-                                            title: Row(
-                                              children: [
-                                                Text(
-                                                  LanguageCubit.get(context)
-                                                      .getTexts('Arabic')
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                      color: black,
-                                                      fontSize: 20.sp),
-                                                ),
-                                                Switch(
-                                                  activeColor: primaryColor,
-                                                  value: isEn,
-                                                  onChanged: (value) {
-                                                    setState((){
-                                                      isEn = value;
-                                                    });
-                                                  },
-                                                ),
-                                                Text(
-                                                  LanguageCubit.get(context)
-                                                      .getTexts('English')
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                      color: black,
-                                                      fontSize: 20.sp),
-                                                ),
-                                              ],
-                                            ),
                                           ),
                                           SizedBox(
                                             height: 32.h,
@@ -1200,6 +1174,63 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     ),
                                     Row(
                                       crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.language,
+                                          size: 25.sp,
+                                          color: grey2,
+                                        ),
+                                        SizedBox(
+                                          width: 10.w,
+                                        ),
+                                        Text(
+                                          LanguageCubit.get(context)
+                                              .getTexts('lang')
+                                              .toString(),
+                                          style: TextStyle(
+                                              fontSize: 18.sp,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 10.h,
+                                    ),
+                                    ListTile(
+                                      title: Row(
+                                        children: [
+                                          Text(
+                                            LanguageCubit.get(context)
+                                                .getTexts('Arabic')
+                                                .toString(),
+                                            style: TextStyle(
+                                                color: black, fontSize: 20.sp),
+                                          ),
+                                          Switch(
+                                            activeColor: primaryColor,
+                                            value: isEn,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                isEn = value;
+                                              });
+                                            },
+                                          ),
+                                          Text(
+                                            LanguageCubit.get(context)
+                                                .getTexts('English')
+                                                .toString(),
+                                            style: TextStyle(
+                                                color: black, fontSize: 20.sp),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 40.h,
+                                    ),
+                                    Row(
+                                      crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
                                         Icon(
@@ -1221,7 +1252,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       ],
                                     ),
                                     SizedBox(
-                                      height: 25.h,
+                                      height: 15.h,
                                     ),
                                     SfDateRangePicker(
                                       onSelectionChanged: _onSelectionChanged,
