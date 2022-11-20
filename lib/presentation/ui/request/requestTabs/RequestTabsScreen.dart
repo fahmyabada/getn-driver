@@ -306,7 +306,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                             : Container(),
                 RequestCubit.get(context).loadingPending
                     ? loading()
-                    : RequestCubit.get(context).successPending
+                    : state is RequestPendingSuccessState
                         ? RequestCubit.get(context).requestPending.isEmpty
                             ? errorMessage(
                                 message: LanguageCubit.get(context)
@@ -318,9 +318,9 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                 },
                                 context: context)
                             : pending()
-                        : RequestCubit.get(context).errorPendingStatus
+                        : state is RequestPendingErrorState
                             ? errorMessage(
-                                message: RequestCubit.get(context).errorPending,
+                                message: state.message,
                                 press: () {
                                   RequestCubit.get(context)
                                       .getRequestPending(1);
@@ -833,7 +833,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                       textAlign: TextAlign.start,
                                       style: TextStyle(
                                         color: black,
-                                        fontSize: 18.sp,
+                                        fontSize: 16.sp,
                                       ),
                                     ),
                                   ),
@@ -846,7 +846,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                       textAlign: TextAlign.end,
                                       style: TextStyle(
                                         color: black,
-                                        fontSize: 18.sp,
+                                        fontSize: 16.sp,
                                       ),
                                     ),
                                   ),
@@ -1264,7 +1264,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                       textAlign: TextAlign.start,
                                       style: TextStyle(
                                         color: black,
-                                        fontSize: 18.sp,
+                                        fontSize: 16.sp,
                                       ),
                                     ),
                                   ),
@@ -1277,7 +1277,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                       textAlign: TextAlign.end,
                                       style: TextStyle(
                                         color: black,
-                                        fontSize: 18.sp,
+                                        fontSize: 16.sp,
                                       ),
                                     ),
                                   ),

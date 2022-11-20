@@ -38,10 +38,7 @@ class RequestCubit extends Cubit<RequestState> {
 
   // pending
   bool loadingPending = false;
-  bool successPending = false;
-  bool errorPendingStatus = false;
   bool loadingEditPending = false;
-  String errorPending = "";
 
   bool tabControllerChanged = false;
 
@@ -200,13 +197,11 @@ class RequestCubit extends Cubit<RequestState> {
   RequestState eitherLoadedOrErrorStateRequestPending(
       Either<String, Request?> data) {
     return data.fold((failure1) {
-      errorPendingStatus = true;
       return RequestPendingErrorState(failure1);
     }, (data) {
       requestPending.clear();
       requestPending.addAll(data!.data!);
       indexPending = indexPending + 1;
-      successPending = true;
       return RequestPendingSuccessState(data.data);
     });
   }
@@ -214,14 +209,12 @@ class RequestCubit extends Cubit<RequestState> {
   RequestState eitherLoadedOrErrorStateRequestPending2(
       Either<String, Request?> data) {
     return data.fold((failure1) {
-      errorPendingStatus = true;
       return RequestPendingErrorState(failure1);
     }, (data) {
       if (data!.totalCount! > requestPending.length) {
         requestPending.addAll(data.data!);
         indexPending = indexPending + 1;
       }
-      successPending = true;
       return RequestPendingSuccessState(data.data);
     });
   }

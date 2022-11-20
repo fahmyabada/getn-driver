@@ -33,7 +33,7 @@ Future<void> launchInMap(String sLat, String sLon, String dLat, String dLon,
     await MapLauncher.showDirections(
       destination: Coords(
         double.parse(dLat),
-        double.parse(dLat),
+        double.parse(dLon),
       ),
       destinationTitle: " Trip From",
       mapType: MapType.google,

@@ -143,7 +143,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           if (state is RequestDetailsSuccessState) {
             RequestDetailsCubit.get(context)
                 .getTripsRequestDetails(1, widget.idRequest!);
-          } else if (state is RequestDetailsEditSuccessState) {
+          }
+          else if (state is RequestDetailsEditSuccessState) {
             if (state.type == "reject" ||
                 state.type == "mid_pause" ||
                 state.type == "end") {
@@ -152,7 +153,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
             RequestDetailsCubit.get(context)
                 .getRequestDetails(widget.idRequest!);
-          } else if (state is RequestDetailsEditErrorState) {
+          }
+          else if (state is RequestDetailsEditErrorState) {
             if (state.type == "reject" ||
                 state.type == "mid_pause" ||
                 state.type == "end") {
@@ -171,7 +173,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   state: ToastStates.error,
                   context: context);
             }
-          } else if (state is CurrentLocationSuccessState) {
+          }
+          else if (state is CurrentLocationSuccessState) {
             print('CurrentLocationSuccessState********* ');
             // this belong add trip
             /*String id = await navigateToWithRefreshPagePrevious(
@@ -204,7 +207,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
             RequestDetailsCubit.get(context)
                 .getRequestDetails(widget.idRequest!);
-          } else if (state is CurrentLocationErrorState) {
+          }
+          else if (state is CurrentLocationErrorState) {
             if (kDebugMode) {
               print('CurrentLocationErrorState********* ${state.error}');
             }
@@ -253,11 +257,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 },
               ).then((value) => Navigator.pop(context));
             }
-          } else if (state is TripsSuccessState) {
+          }
+          else if (state is TripsSuccessState) {
             setState(() {
               loadingMoreTrips = false;
             });
-          } else if (state is TripsErrorState) {
+          }
+          else if (state is TripsErrorState) {
             setState(() {
               loadingMoreTrips = false;
             });
