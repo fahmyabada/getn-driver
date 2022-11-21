@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
@@ -277,8 +278,7 @@ Widget defaultButton3(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30.r),
           ),
-          textStyle: TextStyle(
-              fontSize: 24.sp),
+          textStyle: TextStyle(fontSize: 24.sp),
         ),
         child: Text(
           text,
@@ -335,18 +335,22 @@ Widget defaultButtonWithIcon(
     );
 
 Widget loading() {
-  return const Center(
-    child: CircularProgressIndicator(
-      color: black,
-    ),
+  // return const Center(
+  //   child: CircularProgressIndicator(
+  //     color: black,
+  //   ),
+  // );
+
+  return SpinKitRotatingCircle(
+    color: Colors.blueAccent,
+    size: 50.w,
   );
 }
 
-Widget errorMessage({
-  required String message,
-  required VoidCallback press,
-  required BuildContext context
-}) {
+Widget errorMessage(
+    {required String message,
+    required VoidCallback press,
+    required BuildContext context}) {
   return Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -388,7 +392,9 @@ Widget errorMessage({
                       padding: EdgeInsets.symmetric(
                           horizontal: 15.r, vertical: 10.r),
                       child: Text(
-                        LanguageCubit.get(context).getTexts('Refresh').toString(),
+                        LanguageCubit.get(context)
+                            .getTexts('Refresh')
+                            .toString(),
                         style: TextStyle(color: accentColor, fontSize: 20.sm),
                       ),
                     ),
@@ -406,11 +412,10 @@ Widget errorMessage({
   );
 }
 
-Widget errorMessage2({
-  required String message,
-  required VoidCallback press,
-  required BuildContext context
-}) {
+Widget errorMessage2(
+    {required String message,
+    required VoidCallback press,
+    required BuildContext context}) {
   return Center(
     child: Padding(
       padding: EdgeInsets.all(18.r),
@@ -429,9 +434,9 @@ Widget errorMessage2({
               ),
             ),
             onPressed: press,
-            child:  Text(
-                LanguageCubit.get(context).getTexts('Retry').toString(),
-                ),
+            child: Text(
+              LanguageCubit.get(context).getTexts('Retry').toString(),
+            ),
           )
         ],
       ),

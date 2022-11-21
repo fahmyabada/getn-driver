@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui' as ui;
+import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:getn_driver/presentation/ui/trip/tripDetails/trip_details_cubit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:measured_size/measured_size.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TripDetailsScreen extends StatefulWidget {
@@ -94,7 +96,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
   };
 
   int? indexStatus;
-  bool btnStatusFound = false;
+  double tripDetailsHeight = 0.0;
   var formKeyRequest = GlobalKey<FormState>();
   var commentController = TextEditingController();
 
@@ -219,13 +221,6 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                 state: ToastStates.error,
                 context: context);
           } else if (state is TripDetailsSuccessState) {
-            setState(() {
-              if (btnStatus[state.data!.status!]!.isNotEmpty) {
-                btnStatusFound = true;
-              } else {
-                btnStatusFound = false;
-              }
-            });
 
             _addPolyLines(
                 context,
@@ -269,9 +264,11 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                 ),
                 body: Stack(
                   children: [
-                    Container(
-                      margin: EdgeInsets.only(
-                          bottom: btnStatusFound ? 440.h : 400.h),
+                    Positioned(
+                      right: 1,
+                      left: 1,
+                      top: 1,
+                      bottom: tripDetailsHeight,
                       child: GoogleMap(
                         mapType: MapType.normal,
                         rotateGesturesEnabled: true,
@@ -293,131 +290,138 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                         },
                       ),
                     ),
-                    Positioned(
-                      right: 1,
-                      left: 1,
-                      bottom: 1,
-                      child: Stack(
-                        children: [
-                          state is TripDetailsErrorState
-                              ? Align(
-                                  alignment: Alignment.topCenter,
-                                  child: SizedBox(
-                                      height: 300.h,
-                                      child: errorMessage2(
-                                          message: state.message,
-                                          press: () {
-                                            TripDetailsCubit.get(context)
-                                                .getTripDetails(widget.idTrip!);
-                                          },
-                                          context: context)),
-                                )
-                              : Container(
-                                  color: white,
-                                  padding: EdgeInsets.only(
-                                      top: 30.r, left: 16.r, right: 16.r),
-                                  margin: EdgeInsets.only(top: 70.r),
-                                  child: state is TripDetailsLoading
-                                      ? SizedBox(
-                                          height: 120.h,
-                                          child: loading(),
-                                        )
-                                      : Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            client(context),
-                                            SizedBox(
-                                              height: 10.h,
-                                            ),
-                                            // divider
-                                            Container(
-                                              width: 1.sw,
-                                              height: 1.h,
-                                              color: Colors.grey[400],
-                                            ),
-                                            SizedBox(
-                                              height: 10.h,
-                                            ),
-                                            Container(
-                                              color: white,
-                                              child: Column(
+                    MeasuredSize(
+                      onChange: (Size size) {
+                        setState(() {
+                          tripDetailsHeight = size.height - 70.r;
+                        });
+                      },
+                      child: Positioned(
+                        right: 1,
+                        left: 1,
+                        bottom: 1,
+                        child: Stack(
+                          children: [
+                            state is TripDetailsErrorState
+                                ? Align(
+                                    alignment: Alignment.topCenter,
+                                    child: SizedBox(
+                                        height: 300.h,
+                                        child: errorMessage2(
+                                            message: state.message,
+                                            press: () {
+                                              TripDetailsCubit.get(context)
+                                                  .getTripDetails(widget.idTrip!);
+                                            },
+                                            context: context)),
+                                  )
+                                : Container(
+                                        color: white,
+                                        padding: EdgeInsets.only(
+                                            top: 30.r, left: 16.r, right: 16.r),
+                                        margin: EdgeInsets.only(top: 70.r),
+                                        child: state is TripDetailsLoading
+                                            ? SizedBox(
+                                                height: 120.h,
+                                                child: loading(),
+                                              )
+                                            : Column(
+                                                mainAxisSize: MainAxisSize.min,
                                                 children: [
-                                                  tripInfo(context),
+                                                  client(context),
                                                   SizedBox(
-                                                    height: 5.h,
+                                                    height: 10.h,
                                                   ),
-                                                  buttonStatus(context, state),
-                                                  // SizedBox(
-                                                  //   height: 10.h,
-                                                  // ),
-                                                  // defaultButton3(
-                                                  //     press: () {},
-                                                  //     text: "Complete",
-                                                  //     backColor: accentColor,
-                                                  //     textColor: white),
+                                                  // divider
+                                                  Container(
+                                                    width: 1.sw,
+                                                    height: 1.h,
+                                                    color: Colors.grey[400],
+                                                  ),
                                                   SizedBox(
-                                                    height: 20.h,
+                                                    height: 10.h,
+                                                  ),
+                                                  Container(
+                                                    color: white,
+                                                    child: Column(
+                                                      children: [
+                                                        tripInfo(context),
+                                                        SizedBox(
+                                                          height: 5.h,
+                                                        ),
+                                                        buttonStatus(context, state),
+                                                        // SizedBox(
+                                                        //   height: 10.h,
+                                                        // ),
+                                                        // defaultButton3(
+                                                        //     press: () {},
+                                                        //     text: "Complete",
+                                                        //     backColor: accentColor,
+                                                        //     textColor: white),
+                                                        SizedBox(
+                                                          height: 20.h,
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ],
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                ),
-                          state is TripDetailsSuccessState
-                              ? Positioned(
-                                  left: 1,
-                                  right: 1,
-                                  top: 1,
-                                  child: Container(
-                                    padding: EdgeInsets.all(25.r),
-                                    decoration: BoxDecoration(
-                                      color: white,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                          color: greenColor, width: 2.w),
+                                      ),
+                            state is TripDetailsSuccessState
+                                ? Positioned(
+                                    left: 1,
+                                    right: 1,
+                                    top: 1,
+                                    child: Container(
+                                      padding: EdgeInsets.all(25.r),
+                                      decoration: BoxDecoration(
+                                        color: white,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                            color: greenColor, width: 2.w),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            LanguageCubit.get(context)
+                                                .getTexts('TripIs')
+                                                .toString(),
+                                            style: TextStyle(
+                                                color: black, fontSize: 15.sp),
+                                          ),
+                                          SizedBox(
+                                            height: 5.h,
+                                          ),
+                                          Text(
+                                            TripDetailsCubit.get(context)
+                                                        .tripDetails !=
+                                                    null
+                                                ? LanguageCubit.get(context).isEn
+                                                    ? txtStatusRunning['en']![
+                                                        TripDetailsCubit.get(
+                                                                context)
+                                                            .tripDetails!
+                                                            .status!]!
+                                                    : txtStatusRunning['ar']![
+                                                        TripDetailsCubit.get(
+                                                                context)
+                                                            .tripDetails!
+                                                            .status!]!
+                                                : LanguageCubit.get(context)
+                                                    .getTexts('Running')
+                                                    .toString(),
+                                            style: TextStyle(
+                                                color: greenColor,
+                                                fontSize: 17.sp,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          LanguageCubit.get(context)
-                                              .getTexts('TripIs')
-                                              .toString(),
-                                          style: TextStyle(
-                                              color: black, fontSize: 15.sp),
-                                        ),
-                                        SizedBox(
-                                          height: 5.h,
-                                        ),
-                                        Text(
-                                          TripDetailsCubit.get(context)
-                                                      .tripDetails !=
-                                                  null
-                                              ? LanguageCubit.get(context).isEn
-                                                  ? txtStatusRunning['en']![
-                                                      TripDetailsCubit.get(
-                                                              context)
-                                                          .tripDetails!
-                                                          .status!]!
-                                                  : txtStatusRunning['ar']![
-                                                      TripDetailsCubit.get(
-                                                              context)
-                                                          .tripDetails!
-                                                          .status!]!
-                                              : LanguageCubit.get(context)
-                                                  .getTexts('Running')
-                                                  .toString(),
-                                          style: TextStyle(
-                                              color: greenColor,
-                                              fontSize: 17.sp,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              : Container(),
-                        ],
+                                  )
+                                : Container(),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -474,8 +478,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                             ),
                             Text(
                               LanguageCubit.get(context).isEn
-                                  ? '${TripDetailsCubit.get(context).tripDetails!.client2!.country!.title!.en!}, ${TripDetailsCubit.get(context).tripDetails!.client2!.city?.title!.en!}, ${TripDetailsCubit.get(context).tripDetails!.client2!.area?.title!.en!}'
-                                  : '${TripDetailsCubit.get(context).tripDetails!.client2!.country!.title!.ar!}, ${TripDetailsCubit.get(context).tripDetails!.client2!.city?.title!.ar!}, ${TripDetailsCubit.get(context).tripDetails!.client2!.area?.title!.ar!}',
+                                  ? '${TripDetailsCubit.get(context).tripDetails!.client2!.country!.title!.en??""}, ${TripDetailsCubit.get(context).tripDetails!.client2!.city?.title!.en??""}, ${TripDetailsCubit.get(context).tripDetails!.client2!.area?.title!.en??""}'
+                                  : '${TripDetailsCubit.get(context).tripDetails!.client2!.country!.title!.ar??""}, ${TripDetailsCubit.get(context).tripDetails!.client2!.city?.title!.ar??""}, ${TripDetailsCubit.get(context).tripDetails!.client2!.area?.title!.ar??""}',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(fontSize: 14.sp, color: grey2),
@@ -882,8 +886,16 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
     return TripDetailsCubit.get(context).tripDetails!.status == "pending"
         ? Row(
             children: [
-              state is! TripDetailsEditInitial
+              state is TripDetailsEditInitial
                   ? Expanded(
+                      child: Center(
+                        child: SizedBox(
+                          width: 40.w,
+                          child: loading(),
+                        ),
+                      ),
+                    )
+                  : Expanded(
                       child: defaultButton2(
                           press: () {
                             TripDetailsCubit.get(context).editTrip(
@@ -904,14 +916,6 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                   '${TripDetailsCubit.get(context).tripDetails!.status}']![0],
                           backColor: greenColor,
                           textColor: white),
-                    )
-                  : Expanded(
-                      child: Center(
-                        child: SizedBox(
-                          width: 40.w,
-                          child: loading(),
-                        ),
-                      ),
                     ),
               SizedBox(
                 width: 15.w,

@@ -319,8 +319,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                                   subtitle:
                                                       Text(item.comment ?? ''),
                                                   trailing: Text(
-                                                    item.amount!
-                                                        .toStringAsFixed(2),
+                                                    '${item.type == "plus" ? '+' : item.type == "minus" ? '-' : ''}${item.amount!.toStringAsFixed(2)}',
                                                     style: TextStyle(
                                                       color: primaryColor,
                                                       fontWeight:
