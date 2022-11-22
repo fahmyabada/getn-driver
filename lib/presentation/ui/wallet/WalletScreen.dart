@@ -193,8 +193,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                                             context)
                                                         .walletValue
                                                         .isNotEmpty
-                                                    ? WalletCubit.get(context)
-                                                        .walletValue
+                                                    ? '${WalletCubit.get(context).walletValue}\$'
                                                     : "0.0",
                                               ),
                                             ),
@@ -213,8 +212,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                                             context)
                                                         .walletHold
                                                         .isNotEmpty
-                                                    ? WalletCubit.get(context)
-                                                        .walletHold
+                                                    ? '${WalletCubit.get(context).walletHold}\$'
                                                     : "0.0",
                                               ),
                                             ),
@@ -319,7 +317,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                                   subtitle:
                                                       Text(item.comment ?? ''),
                                                   trailing: Text(
-                                                    '${item.type == "plus" ? '+' : item.type == "minus" ? '-' : ''}${item.amount!.toStringAsFixed(2)}',
+                                                    '${item.type == "plus" ? '+' : item.type == "minus" ? '-' : ''}${item.amount!.toStringAsFixed(2)}\$',
                                                     style: TextStyle(
                                                       color: primaryColor,
                                                       fontWeight:
@@ -405,8 +403,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                                       subtitle:
                                                           Text(item.id ?? ''),
                                                       trailing: Text(
-                                                        item.amount!
-                                                            .toStringAsFixed(2),
+                                                        '${item.amount!.toStringAsFixed(2)}\$',
                                                         style: TextStyle(
                                                           color: primaryColor,
                                                           fontWeight:

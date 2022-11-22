@@ -156,6 +156,7 @@ class _OtpScreenState extends State<OtpScreen> {
       }
     }
     else {
+      load = false;
       showToastt(
           text: "wait OTP message please..",
           state: ToastStates.error,
@@ -179,9 +180,7 @@ class _OtpScreenState extends State<OtpScreen> {
           if (kDebugMode) {
             print('verifyPhone***********$phoneNumber');
           }
-          setState(() {
             authStatus = "Your account is successfully verified";
-          });
         },
 
         /// Called when the verification is failed
@@ -189,27 +188,21 @@ class _OtpScreenState extends State<OtpScreen> {
           if (kDebugMode) {
             print('verificationFailed***********${authException.message!}');
           }
-          setState(() {
             authStatus = "Authentication failed";
-          });
         },
 
         /// This is called after the OTP is sent. Gives a `verificationId` and `code`
         codeSent: (String verId, [int? forceResend]) {
           print('codeSent***********$verId');
-          // setState(() {
             verificationId = verId;
             authStatus = "OTP has been successfully send";
-          // });
         },
 
         /// After automatic code retrival `tmeout` this function is called
         codeAutoRetrievalTimeout: (String verId) {
           print('codeAutoRetrievalTimeout***********$verId');
-          // setState(() {
             verificationId = verId;
             authStatus = "TIMEOUT";
-          // });
         });
   }
 

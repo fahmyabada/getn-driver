@@ -1,5 +1,7 @@
 ﻿import 'dart:ui' as ui;
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +48,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
   int? indexPending;
 
   var btnStatus3 = {
-    'en':{
+    'en': {
       'pending': 'Pending',
       'accept': 'Accept',
       'on_my_way': 'On My Way',
@@ -60,7 +62,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
       'need_confirm': 'Need Confirm',
       'paid': 'Paid'
     },
-    'ar':{
+    'ar': {
       'pending': 'قيد الإنتظار',
       'accept': 'مقبول',
       'on_my_way': 'في الطريق',
@@ -74,7 +76,6 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
       'need_confirm': 'تحتاج للموافقة',
       'paid': 'مدفوعة'
     }
-
   };
 
   @override
@@ -152,6 +153,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
   void viewWillAppear() {
     print("onResume / viewWillAppear / onFocusGained    requestTabs");
     getIt<SharedPreferences>().setString('typeScreen', "request");
+    getIt<SharedPreferences>().setString('requestDetailsId', "");
+    getIt<SharedPreferences>().setString('tripDetailsId', "");
   }
 
   void viewWillDisappear() {
@@ -755,7 +758,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          current.totalPrice!.toStringAsFixed(2),
+                          '${current.totalPrice!.toStringAsFixed(2)}\$',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: black,
@@ -1185,7 +1188,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          upComing.totalPrice!.toStringAsFixed(2),
+                          '${upComing.totalPrice!.toStringAsFixed(2)}\$',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: black,
@@ -1618,7 +1621,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          past.totalPrice!.toStringAsFixed(2),
+                          '${past.totalPrice!.toStringAsFixed(2)}\$',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: black,
@@ -1836,7 +1839,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
             clipBehavior: Clip.antiAlias,
             child: ImageTools.image(
                 fit: BoxFit.fill,
-                url: pending.client2!.image!.src,
+                url: pending.client2?.image!.src,
                 height: 70.w,
                 width: 70.w),
           ),
@@ -1853,7 +1856,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                     children: [
                       Expanded(
                         child: Text(
-                          pending.client2!.name!,
+                          pending.client2?.name! ?? '',
                           style: TextStyle(
                               fontSize: 17.sp,
                               color: black,
@@ -1867,8 +1870,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                   ),
                   Text(
                     LanguageCubit.get(context).isEn
-                        ? '${pending.client2!.country?.title!.en ?? ""}, ${pending.client2!.city?.title!.en ?? ""}, ${pending.client2!.area?.title!.en ?? ""}'
-                        : '${pending.client2!.country?.title!.ar ?? ""}, ${pending.client2!.city?.title!.ar ?? ""}, ${pending.client2!.area?.title!.ar ?? ""}',
+                        ? '${pending.client2?.country?.title!.en ?? ""}, ${pending.client2?.city?.title!.en ?? ""}, ${pending.client2?.area?.title!.en ?? ""}'
+                        : '${pending.client2?.country?.title!.ar ?? ""}, ${pending.client2?.city?.title!.ar ?? ""}, ${pending.client2?.area?.title!.ar ?? ""}',
                     style: TextStyle(fontSize: 15.sp, color: grey2),
                   ),
                   SizedBox(
@@ -2013,7 +2016,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          pending.totalPrice!.toStringAsFixed(2),
+                          '${pending.totalPrice!.toStringAsFixed(2)}\$',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: black,
@@ -2045,7 +2048,9 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                 indexPending = i;
                               });
                             },
-                            text: LanguageCubit.get(context).getTexts('Accept').toString(),
+                            text: LanguageCubit.get(context)
+                                .getTexts('Accept')
+                                .toString(),
                             backColor: greenColor,
                             textColor: white)
                     : defaultButton2(
@@ -2056,7 +2061,9 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                             indexPending = i;
                           });
                         },
-                        text: LanguageCubit.get(context).getTexts('Accept').toString(),
+                        text: LanguageCubit.get(context)
+                            .getTexts('Accept')
+                            .toString(),
                         backColor: greenColor,
                         textColor: white),
                 defaultButton2(
@@ -2084,7 +2091,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                     );
                   },
                   colorBorder: true,
-                  text: LanguageCubit.get(context).getTexts('Reject').toString(),
+                  text:
+                      LanguageCubit.get(context).getTexts('Reject').toString(),
                   backColor: white,
                   textColor: grey2,
                 ),
@@ -2118,7 +2126,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                     );
                   },
                   colorBorder: true,
-                  text: LanguageCubit.get(context).getTexts('Reject').toString(),
+                  text:
+                      LanguageCubit.get(context).getTexts('Reject').toString(),
                   backColor: white,
                   textColor: grey2,
                 ),
@@ -2267,9 +2276,12 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               ),
               leading: const Icon(Icons.exit_to_app, color: grey2),
               onTap: () {
-                getIt<SharedPreferences>().clear().then((value) {
-                  navigateAndFinish(context, const SignInScreen());
-                });
+                FirebaseMessaging messaging = FirebaseMessaging.instance;
+                FirebaseAuth.instance.signOut().then((value) => messaging
+                    .deleteToken()
+                    .then((value) => getIt<SharedPreferences>().clear().then(
+                        (value) =>
+                            navigateAndFinish(context, const SignInScreen()))));
               },
             ),
           ],

@@ -34,9 +34,10 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
   Data? dropDownValueCarSubCategory;
   Data? dropDownValueColor;
   dynamic _pickImageError;
-  File? _imageFrontCar, _imageBackCar;
+  File? _imageFrontCar, _imageBackCar, _imageCarMain;
   final ImagePicker _picker = ImagePicker();
   String frontCarLicenseImage = "";
+  String carMain = "";
   String backCarLicenseImage = "";
   List<File> listGallery = [File("")];
   List<MultipartFile> listGalleryValue = [];
@@ -67,6 +68,14 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
           backCarLicenseImage = _imageBackCar!.path.toString();
           if (kDebugMode) {
             print('_imageBackCar***************** =${_imageBackCar!.path}');
+          }
+        });
+      } else if (type == "carMain") {
+        setState(() {
+          _imageCarMain = File(pickedFile.path);
+          carMain = _imageCarMain!.path.toString();
+          if (kDebugMode) {
+            print('_imageCarMain***************** =${_imageCarMain!.path}');
           }
         });
       } else if (type == "galley") {
@@ -157,9 +166,7 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                   state: ToastStates.success,
                   context: context);
 
-              navigateAndFinish(
-                  context,
-                  const RequestTabsScreen());
+              navigateAndFinish(context, const RequestTabsScreen());
             }
           } else if (state is CarCreateErrorState) {
             setState(() {
@@ -191,13 +198,11 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                 centerTitle: true,
               ),
               body: RefreshIndicator(
-                onRefresh: () => Future.delayed(
-                    const Duration(seconds: 2),
-                        () {
-                      SignCubit.get(context).getCarModel();
-                      SignCubit.get(context).getColor();
-                      SignCubit.get(context).getCarSubCategory();
-                    }),
+                onRefresh: () => Future.delayed(const Duration(seconds: 2), () {
+                  SignCubit.get(context).getCarModel();
+                  SignCubit.get(context).getColor();
+                  SignCubit.get(context).getCarSubCategory();
+                }),
                 child: SingleChildScrollView(
                   child: Padding(
                     padding:
@@ -261,22 +266,20 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                                     hint: Container(
                                       width: 1.sw,
                                       padding: EdgeInsets.symmetric(
-                                          horizontal: 10.r, vertical: 5.r),
-                                      child: Center(
-                                        child: Text(
-                                            LanguageCubit.get(context).isEn
-                                                ? dropDownValueCarSubCategory
-                                                        ?.title?.en! ??
-                                                    "Car Model"
-                                                : dropDownValueCarSubCategory
-                                                        ?.title?.ar! ??
-                                                    "نوع السيارة",
-                                            maxLines: 2,
-                                            style: TextStyle(
-                                                overflow: TextOverflow.ellipsis,
-                                                color: Colors.black,
-                                                fontSize: 20.sp)),
-                                      ),
+                                          horizontal: 25.r),
+                                      child: Text(
+                                          LanguageCubit.get(context).isEn
+                                              ? dropDownValueCarSubCategory
+                                                      ?.title?.en! ??
+                                                  "Car Model"
+                                              : dropDownValueCarSubCategory
+                                                      ?.title?.ar! ??
+                                                  "نوع السيارة",
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                              overflow: TextOverflow.ellipsis,
+                                              color: Colors.black,
+                                              fontSize: 20.sp)),
                                     ),
                                     items: SignCubit.get(context)
                                         .carSubCategory
@@ -289,17 +292,20 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                                           children: [
                                             Text(
                                                 LanguageCubit.get(context).isEn
-                                                    ? selectedCountry.title?.en ??
+                                                    ? selectedCountry
+                                                            .title?.en ??
                                                         ""
-                                                    : selectedCountry.title?.ar ??
+                                                    : selectedCountry
+                                                            .title?.ar ??
                                                         "",
                                                 textAlign: TextAlign.center,
                                                 maxLines: 1,
-                                                style: TextStyle(
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    color: Colors.black,
-                                                    fontSize: 20.sp)),
+                                                style:
+                                                    TextStyle(
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        color: Colors.black,
+                                                        fontSize: 20.sp)),
                                             SizedBox(
                                               height: 5.h,
                                             ),
@@ -361,22 +367,20 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                                     hint: Container(
                                       width: 1.sw,
                                       padding: EdgeInsets.symmetric(
-                                          horizontal: 10.r, vertical: 5.r),
-                                      child: Center(
-                                        child: Text(
-                                            LanguageCubit.get(context).isEn
-                                                ? dropDownValueCarModel
-                                                        ?.title?.en! ??
-                                                    "year"
-                                                : dropDownValueCarModel
-                                                        ?.title?.ar! ??
-                                                    "سنة",
-                                            maxLines: 2,
-                                            style: TextStyle(
-                                                overflow: TextOverflow.ellipsis,
-                                                color: Colors.black,
-                                                fontSize: 20.sp)),
-                                      ),
+                                          horizontal: 25.r),
+                                      child: Text(
+                                          LanguageCubit.get(context).isEn
+                                              ? dropDownValueCarModel
+                                                      ?.title?.en! ??
+                                                  "year"
+                                              : dropDownValueCarModel
+                                                      ?.title?.ar! ??
+                                                  "سنة",
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                              overflow: TextOverflow.ellipsis,
+                                              color: Colors.black,
+                                              fontSize: 20.sp)),
                                     ),
                                     items: SignCubit.get(context)
                                         .carModel
@@ -389,17 +393,20 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                                           children: [
                                             Text(
                                                 LanguageCubit.get(context).isEn
-                                                    ? selectedCountry.title?.en ??
+                                                    ? selectedCountry
+                                                            .title?.en ??
                                                         ""
-                                                    : selectedCountry.title?.ar ??
+                                                    : selectedCountry
+                                                            .title?.ar ??
                                                         "",
                                                 textAlign: TextAlign.center,
                                                 maxLines: 1,
-                                                style: TextStyle(
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    color: Colors.black,
-                                                    fontSize: 20.sp)),
+                                                style:
+                                                    TextStyle(
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        color: Colors.black,
+                                                        fontSize: 20.sp)),
                                             SizedBox(
                                               height: 5.h,
                                             ),
@@ -461,22 +468,20 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                                     hint: Container(
                                       width: 1.sw,
                                       padding: EdgeInsets.symmetric(
-                                          horizontal: 10.r, vertical: 5.r),
-                                      child: Center(
-                                        child: Text(
-                                            LanguageCubit.get(context).isEn
-                                                ? dropDownValueColor
-                                                        ?.title?.en! ??
-                                                    "Color"
-                                                : dropDownValueColor
-                                                        ?.title?.ar! ??
-                                                    "اللون",
-                                            maxLines: 2,
-                                            style: TextStyle(
-                                                overflow: TextOverflow.ellipsis,
-                                                color: Colors.black,
-                                                fontSize: 20.sp)),
-                                      ),
+                                          horizontal: 25.r),
+                                      child: Text(
+                                          LanguageCubit.get(context).isEn
+                                              ? dropDownValueColor
+                                                      ?.title?.en! ??
+                                                  "Color"
+                                              : dropDownValueColor
+                                                      ?.title?.ar! ??
+                                                  "اللون",
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                              overflow: TextOverflow.ellipsis,
+                                              color: Colors.black,
+                                              fontSize: 20.sp)),
                                     ),
                                     items: SignCubit.get(context)
                                         .colors
@@ -489,17 +494,20 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                                           children: [
                                             Text(
                                                 LanguageCubit.get(context).isEn
-                                                    ? selectedCountry.title?.en ??
+                                                    ? selectedCountry
+                                                            .title?.en ??
                                                         ""
-                                                    : selectedCountry.title?.ar ??
+                                                    : selectedCountry
+                                                            .title?.ar ??
                                                         "",
                                                 textAlign: TextAlign.center,
                                                 maxLines: 1,
-                                                style: TextStyle(
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    color: Colors.black,
-                                                    fontSize: 20.sp)),
+                                                style:
+                                                    TextStyle(
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        color: Colors.black,
+                                                        fontSize: 20.sp)),
                                             SizedBox(
                                               height: 5.h,
                                             ),
@@ -545,6 +553,52 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                               ),
                             ],
                           ),
+                        ),
+                        SizedBox(
+                          height: 30.h,
+                        ),
+                        Text(
+                          LanguageCubit.get(context)
+                              .getTexts('CarMain')
+                              .toString(),
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                              fontSize: 22.sp,
+                              fontWeight: FontWeight.bold,
+                              color: primaryColor),
+                        ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        InkWell(
+                          child: Container(
+                            height: 250.h,
+                            width: 300.w,
+                            decoration: BoxDecoration(
+                              color: white,
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(25.r),
+                              border: Border.all(color: Colors.black),
+                            ),
+                            child: carMain.isNotEmpty
+                                ? SizedBox(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(25.r),
+                                      child: Image.file(
+                                        _imageCarMain!,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                  )
+                                : Icon(
+                                    Icons.person_pin_outlined,
+                                    color: Colors.black87,
+                                    size: 115.sp,
+                                  ),
+                          ),
+                          onTap: () {
+                            selectImageSource(ImageSource.camera, "carMain");
+                          },
                         ),
                         SizedBox(
                           height: 30.h,
@@ -657,10 +711,11 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: listGallery.length,
                           shrinkWrap: true,
-                          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                              maxCrossAxisExtent: 150.sp,
-                              crossAxisSpacing: 20.w,
-                              mainAxisSpacing: 20.h),
+                          gridDelegate:
+                              SliverGridDelegateWithMaxCrossAxisExtent(
+                                  maxCrossAxisExtent: 150.sp,
+                                  crossAxisSpacing: 20.w,
+                                  mainAxisSpacing: 20.h),
                           itemBuilder: (context, i) {
                             if (i == listGallery.length - 1) {
                               return Padding(
@@ -691,7 +746,8 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                                     ),
                                     child: SizedBox(
                                       child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(25.r),
+                                        borderRadius:
+                                            BorderRadius.circular(25.r),
                                         child: Image.file(
                                           listGallery[i],
                                           fit: BoxFit.fill,
@@ -761,6 +817,11 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                                         'carNumber':
                                             carNumberController.text.toString(),
                                         'gallery': listGalleryValue,
+                                        'image': await MultipartFile.fromFile(
+                                            carMain,
+                                            filename: carMain,
+                                            contentType:
+                                                MediaType("image", "jpeg")),
                                         'frontCarLicenseImage':
                                             await MultipartFile.fromFile(
                                                 frontCarLicenseImage,
@@ -783,6 +844,11 @@ class _CarRegistrationScreenState extends State<CarRegistrationScreen> {
                                         'carColor': dropDownValueColor?.id!,
                                         'carNumber':
                                             carNumberController.text.toString(),
+                                        'image': await MultipartFile.fromFile(
+                                            carMain,
+                                            filename: carMain,
+                                            contentType:
+                                            MediaType("image", "jpeg")),
                                         'frontCarLicenseImage':
                                             await MultipartFile.fromFile(
                                                 frontCarLicenseImage,

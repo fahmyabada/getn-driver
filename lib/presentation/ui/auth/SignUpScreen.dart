@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,6 +38,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (getIt<SharedPreferences>().getBool("isEn") != null) {
       LanguageCubit.get(context).isEn =
           getIt<SharedPreferences>().getBool("isEn")!;
+    }
+
+    if(getIt<SharedPreferences>().getString("fcmToken") == null){
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+      // final idToken = await FirebaseAuth.instance.currentUser?.getIdToken();
+      // print('token=****************** $idToken');
+      messaging.getToken().then((token) {
+        print('token fcm=****************** $token');
+        getIt<SharedPreferences>().setString('fcmToken', token!);
+      });
     }
   }
 
@@ -305,7 +317,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 }
                                 if (phoneController.text.startsWith('0') &&
                                     phoneController.text.length > 1) {
-                                  if (phoneController.text.length >= 11) {
                                     final splitPhone =
                                         const TextEditingValue().copyWith(
                                       text: phoneController.text
@@ -326,17 +337,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     });
                                     SignCubit.get(context).sendOtp("register",
                                         splitPhone2, dropDownValueCountry!.id!);
-                                  } else {
-                                    showToastt(
-                                        text:
-                                        LanguageCubit.get(context)
-                                            .getTexts('MobileNumber12Digits')
-                                            .toString(),
-                                        state: ToastStates.error,
-                                        context: context);
-                                  }
+
                                 } else {
-                                  if (phoneController.text.length >= 10) {
                                     setState(() {
                                       signUpLoading = true;
                                     });
@@ -346,15 +348,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         "register",
                                         phoneController.text.toString(),
                                         dropDownValueCountry!.id!);
-                                  } else {
-                                    showToastt(
-                                        text:
-                                        LanguageCubit.get(context)
-                                            .getTexts('MobileNumber10Digits')
-                                            .toString() ,
-                                        state: ToastStates.error,
-                                        context: context);
-                                  }
                                 }
                               }
                             } else {

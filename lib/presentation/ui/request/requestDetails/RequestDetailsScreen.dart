@@ -8,10 +8,12 @@ import 'package:focus_detector/focus_detector.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/main.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
+import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
 import 'package:getn_driver/presentation/ui/trip/tripDetails/TripDetailsScreen.dart';
 import 'package:intl/intl.dart';
 import 'package:scroll_edge_listener/scroll_edge_listener.dart';
@@ -125,12 +127,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     print("onResume / viewWillAppear / onFocusGained     RequestDetailsScreen");
     getIt<SharedPreferences>().setString('typeScreen', "requestDetails");
     getIt<SharedPreferences>().setString('requestDetailsId', widget.idRequest!);
+    getIt<SharedPreferences>().setString('tripDetailsId', "");
   }
 
   void viewWillDisappear() {
     print("onPause / viewWillDisappear / onFocusLost    RequestDetailsScreen");
-    getIt<SharedPreferences>().setString('typeScreen', "");
-    getIt<SharedPreferences>().setString('requestDetailsId', "");
   }
 
   @override
@@ -143,18 +144,53 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           if (state is RequestDetailsSuccessState) {
             RequestDetailsCubit.get(context)
                 .getTripsRequestDetails(1, widget.idRequest!);
-          }
-          else if (state is RequestDetailsEditSuccessState) {
+          } else if (state is RequestDetailsEditSuccessState) {
             if (state.type == "reject" ||
                 state.type == "mid_pause" ||
                 state.type == "end") {
+              if (RequestCubit.get(navigatorKey.currentContext).typeRequest ==
+                  "past") {
+                RequestCubit.get(navigatorKey.currentContext)
+                    .tabControllerChanged = false;
+                RequestCubit.get(navigatorKey.currentContext)
+                    .tabController!
+                    .index = 2;
+                RequestCubit.get(navigatorKey.currentContext)
+                    .tabController!
+                    .notifyListeners();
+              } else {
+                RequestCubit.get(navigatorKey.currentContext)
+                    .tabControllerChanged = true;
+                RequestCubit.get(navigatorKey.currentContext)
+                    .tabController!
+                    .animateTo(2);
+              }
               Navigator.pop(context);
+            }
+
+            if (state.type == "on_my_way") {
+              if (RequestCubit.get(navigatorKey.currentContext).typeRequest ==
+                  "current") {
+                RequestCubit.get(navigatorKey.currentContext)
+                    .tabControllerChanged = false;
+                RequestCubit.get(navigatorKey.currentContext)
+                    .tabController!
+                    .index = 0;
+                RequestCubit.get(navigatorKey.currentContext)
+                    .tabController!
+                    .notifyListeners();
+              } else {
+                RequestCubit.get(navigatorKey.currentContext)
+                    .tabControllerChanged = true;
+                RequestCubit.get(navigatorKey.currentContext)
+                    .tabController!
+                    .animateTo(0);
+              }
             }
 
             RequestDetailsCubit.get(context)
                 .getRequestDetails(widget.idRequest!);
-          }
-          else if (state is RequestDetailsEditErrorState) {
+          } else if (state is RequestDetailsEditErrorState) {
             if (state.type == "reject" ||
                 state.type == "mid_pause" ||
                 state.type == "end") {
@@ -173,8 +209,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   state: ToastStates.error,
                   context: context);
             }
-          }
-          else if (state is CurrentLocationSuccessState) {
+          } else if (state is CurrentLocationSuccessState) {
             print('CurrentLocationSuccessState********* ');
             // this belong add trip
             /*String id = await navigateToWithRefreshPagePrevious(
@@ -207,8 +242,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
             RequestDetailsCubit.get(context)
                 .getRequestDetails(widget.idRequest!);
-          }
-          else if (state is CurrentLocationErrorState) {
+          } else if (state is CurrentLocationErrorState) {
             if (kDebugMode) {
               print('CurrentLocationErrorState********* ${state.error}');
             }
@@ -257,13 +291,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 },
               ).then((value) => Navigator.pop(context));
             }
-          }
-          else if (state is TripsSuccessState) {
+          } else if (state is TripsSuccessState) {
             setState(() {
               loadingMoreTrips = false;
             });
-          }
-          else if (state is TripsErrorState) {
+          } else if (state is TripsErrorState) {
             setState(() {
               loadingMoreTrips = false;
             });
@@ -355,17 +387,22 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                       ?.paymentStatus! ==
                                                   "paid"
                                               ? Container()
-                                              : Text(
-                                                  LanguageCubit.get(context)
-                                                      .getTexts(
-                                                          'clientNotPaidYet')
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                      color: accentColor,
-                                                      fontSize: 15.sp,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
+                                              : RequestDetailsCubit.get(context)
+                                                          .requestDetails
+                                                          ?.status ==
+                                                      "reject"
+                                                  ? Container()
+                                                  : Text(
+                                                      LanguageCubit.get(context)
+                                                          .getTexts(
+                                                              'clientNotPaidYet')
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                          color: accentColor,
+                                                          fontSize: 15.sp,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
 
                                       SizedBox(
                                         height: 15.h,
@@ -793,13 +830,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   Text(
                     LanguageCubit.get(context).isEn
                         ? DateFormat.yMEd().format(DateTime.parse(
-                        RequestDetailsCubit.get(context)
-                            .requestDetails!
-                            .to!))
+                            RequestDetailsCubit.get(context)
+                                .requestDetails!
+                                .to!))
                         : DateFormat.yMEd("ar").format(DateTime.parse(
-                        RequestDetailsCubit.get(context)
-                            .requestDetails!
-                            .to!)),
+                            RequestDetailsCubit.get(context)
+                                .requestDetails!
+                                .to!)),
                     style: TextStyle(color: grey2, fontSize: 14.sp),
                   ),
                   SizedBox(
@@ -808,13 +845,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   Text(
                     LanguageCubit.get(context).isEn
                         ? DateFormat.jm().format(DateTime.parse(
-                        RequestDetailsCubit.get(context)
-                            .requestDetails!
-                            .to!))
+                            RequestDetailsCubit.get(context)
+                                .requestDetails!
+                                .to!))
                         : DateFormat.jm("ar").format(DateTime.parse(
-                        RequestDetailsCubit.get(context)
-                            .requestDetails!
-                            .to!)),
+                            RequestDetailsCubit.get(context)
+                                .requestDetails!
+                                .to!)),
                     style: TextStyle(
                       color: grey2,
                       fontSize: 14.sp,
@@ -1007,8 +1044,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                         '${RequestDetailsCubit.get(context).requestDetails!.status}']![1]);
                               },
                             );
-                          }
-                          else {
+                          } else {
                             showDialog(
                               context: context,
                               barrierDismissible: true,
@@ -1038,9 +1074,14 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             : RequestDetailsCubit.get(context)
                                         .requestDetails
                                         ?.paymentStatus! ==
-                                    "paid"
+                                    "need_confirm"
                                 ? true
-                                : false,
+                                : RequestDetailsCubit.get(context)
+                                            .requestDetails
+                                            ?.paymentStatus! ==
+                                        "paid"
+                                    ? true
+                                    : false,
                         fontSize: 20,
                         paddingVertical: 1,
                         paddingHorizontal: 10,

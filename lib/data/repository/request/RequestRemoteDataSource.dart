@@ -102,7 +102,7 @@ class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
           .then((value) {
         if (value.statusCode == 200) {
           if (EditProfileModel.fromJson(value.data).id != null) {
-            // print('token fcm=editInformationUser****************** ${EditProfileModel.fromJson(value.data).fcmToken}');
+            print('token fcm=editInformationUser****************** ${EditProfileModel.fromJson(value.data).fcmToken}');
             return Right(EditProfileModel.fromJson(value.data));
           } else {
             return Left(EditProfileModel.fromJson(value.data).message!.toString());

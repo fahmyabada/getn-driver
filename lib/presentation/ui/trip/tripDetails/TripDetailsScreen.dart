@@ -191,12 +191,11 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
     print("onResume / viewWillAppear / onFocusGained   TripDetailsScreen");
     getIt<SharedPreferences>().setString('typeScreen', "tripDetails");
     getIt<SharedPreferences>().setString('tripDetailsId', widget.idTrip!);
+    getIt<SharedPreferences>().setString('requestDetailsId', "");
   }
 
   void viewWillDisappear() {
     print("onPause / viewWillDisappear / onFocusLost   TripDetailsScreen");
-    getIt<SharedPreferences>().setString('tripDetailsId', "");
-    getIt<SharedPreferences>().setString('typeScreen', "");
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,6 +39,17 @@ class _SignInScreenState extends State<SignInScreen> {
     if (getIt<SharedPreferences>().getBool("isEn") != null) {
       LanguageCubit.get(context).isEn =
           getIt<SharedPreferences>().getBool("isEn")!;
+    }
+
+    if(getIt<SharedPreferences>().getString("fcmToken") == null){
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+      // final idToken = await FirebaseAuth.instance.currentUser?.getIdToken();
+      // print('token=****************** $idToken');
+      messaging.getToken().then((token) {
+        print('token fcm=****************** $token');
+        getIt<SharedPreferences>().setString('fcmToken', token!);
+      });
     }
   }
 
@@ -85,7 +97,7 @@ class _SignInScreenState extends State<SignInScreen> {
           if (kDebugMode) {
             print('*******SendOtpSignInErrorState');
           }
-          if (state.message == "{phone:  phone or country incorrect}") {
+          if (state.message == "({phone:  phone or country incorrect})") {
             showToastt(
                 text: LanguageCubit.get(context)
                     .getTexts('RegisterFirstPlease')

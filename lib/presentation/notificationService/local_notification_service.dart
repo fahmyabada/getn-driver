@@ -208,7 +208,7 @@ class LocalNotificationService {
       navigatorKey.currentState!.pop(id);
     } else if (typeTransfer == "pushReplacement") {
       if (typeScreen == "requestDetails") {
-        // for refresh data only
+        // for refresh data only and set typeScreen = "" because usually equal past
         RequestDetailsCubit.get(navigatorKey.currentContext).typeScreen = "";
         RequestDetailsCubit.get(navigatorKey.currentContext).getRequestDetails(id);
 

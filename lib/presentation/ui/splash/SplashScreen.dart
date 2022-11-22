@@ -341,6 +341,86 @@ class _SplashScreenState extends State<SplashScreen> {
                     message.data['typeId'], "pop", "outRequestInTrip");
               }
             }
+
+            switch (message.data['page']) {
+              case "RequestCurrent":
+                if (RequestCubit.get(navigatorKey.currentContext).typeRequest ==
+                    "current") {
+                  RequestCubit.get(navigatorKey.currentContext)
+                      .tabControllerChanged = false;
+                  RequestCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .index = 0;
+                  RequestCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .notifyListeners();
+                } else {
+                  RequestCubit.get(navigatorKey.currentContext)
+                      .tabControllerChanged = true;
+                  RequestCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .animateTo(0);
+                }
+                break;
+              case "RequestUpComing":
+                if (RequestCubit.get(navigatorKey.currentContext).typeRequest ==
+                    "upComing") {
+                  RequestCubit.get(navigatorKey.currentContext)
+                      .tabControllerChanged = false;
+                  RequestCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .index = 1;
+                  RequestCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .notifyListeners();
+                } else {
+                  RequestCubit.get(navigatorKey.currentContext)
+                      .tabControllerChanged = true;
+                  RequestCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .animateTo(1);
+                }
+                break;
+              case "RequestPast":
+                if (RequestCubit.get(navigatorKey.currentContext).typeRequest ==
+                    "past") {
+                  RequestCubit.get(navigatorKey.currentContext)
+                      .tabControllerChanged = false;
+                  RequestCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .index = 2;
+                  RequestCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .notifyListeners();
+                } else {
+                  RequestCubit.get(navigatorKey.currentContext)
+                      .tabControllerChanged = true;
+                  RequestCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .animateTo(2);
+                }
+                break;
+              case "RequestPending":
+              // to listen change you should animate to another tab first time and return again
+                if (RequestCubit.get(navigatorKey.currentContext).typeRequest ==
+                    "pending") {
+                  RequestCubit.get(navigatorKey.currentContext)
+                      .tabControllerChanged = false;
+                  RequestCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .index = 3;
+                  RequestCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .notifyListeners();
+                } else {
+                  RequestCubit.get(navigatorKey.currentContext)
+                      .tabControllerChanged = true;
+                  RequestCubit.get(navigatorKey.currentContext)
+                      .tabController!
+                      .animateTo(3);
+                }
+                break;
+            }
           }
         },
       );

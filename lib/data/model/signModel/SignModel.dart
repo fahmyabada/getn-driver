@@ -1,7 +1,6 @@
 import 'package:getn_driver/data/model/sendOtp/Message.dart';
 
 import 'Country.dart';
-import 'Ratings.dart';
 import 'VerifyImage.dart';
 
 class SignModel {
@@ -13,10 +12,7 @@ class SignModel {
     VerifyImage? verifyImage,
     String? name,
     bool? hasCar,
-    Ratings? ratings,
-    int? ratingsCount,
     String? phone,
-    String? birthDate,
     Country? country,
     Message? message,
     String? token,
@@ -27,11 +23,8 @@ class SignModel {
     _backNationalImage = backNationalImage;
     _verifyImage = verifyImage;
     _name = name;
-    _ratings = ratings;
-    _ratingsCount = ratingsCount;
     _hasCar = hasCar;
     _phone = phone;
-    _birthDate = birthDate;
     _country = country;
     _token = token;
     _message = message;
@@ -52,12 +45,8 @@ class SignModel {
         ? VerifyImage.fromJson(json['verifyImage'])
         : null;
     _name = json['name'];
-    _ratings =
-        json['ratings'] != null ? Ratings.fromJson(json['ratings']) : null;
-    _ratingsCount = json['ratingsCount'];
     _phone = json['phone'];
     _hasCar = json['hasCar'];
-    _birthDate = json['birthDate'];
     _country =
         json['country'] != null ? Country.fromJson(json['country']) : null;
     _token = json['token'];
@@ -71,11 +60,8 @@ class SignModel {
   VerifyImage? _backNationalImage;
   VerifyImage? _verifyImage;
   String? _name;
-  Ratings? _ratings;
-  int? _ratingsCount;
   String? _phone;
   bool? _hasCar;
-  String? _birthDate;
   Country? _country;
   String? _token;
   Message? _message;
@@ -94,13 +80,7 @@ class SignModel {
 
   bool? get hasCar => _hasCar;
 
-  Ratings? get ratings => _ratings;
-
-  int? get ratingsCount => _ratingsCount;
-
   String? get phone => _phone;
-
-  String? get birthDate => _birthDate;
 
   Country? get country => _country;
 
@@ -126,12 +106,7 @@ class SignModel {
     }
     map['hasCar'] = _hasCar;
     map['name'] = _name;
-    if (_ratings != null) {
-      map['ratings'] = _ratings?.toJson();
-    }
-    map['ratingsCount'] = _ratingsCount;
     map['phone'] = _phone;
-    map['birthDate'] = _birthDate;
     if (_country != null) {
       map['country'] = _country?.toJson();
     }

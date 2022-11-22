@@ -742,32 +742,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                           padding: EdgeInsets
                                                               .symmetric(
                                                                   horizontal:
-                                                                      10.r,
-                                                                  vertical:
-                                                                      5.r),
-                                                          child: Center(
-                                                            child: Text(
-                                                                LanguageCubit.get(
-                                                                            context)
-                                                                        .isEn
-                                                                    ? dropDownValueCountries
-                                                                            ?.title
-                                                                            ?.en! ??
-                                                                        "Country"
-                                                                    : dropDownValueCountries
-                                                                            ?.title
-                                                                            ?.ar! ??
-                                                                        "دولة",
-                                                                maxLines: 2,
-                                                                style: TextStyle(
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    color: Colors
-                                                                        .black,
-                                                                    fontSize:
-                                                                        20.sp)),
-                                                          ),
+                                                                      25.r),
+                                                          child: Text(
+                                                              LanguageCubit.get(
+                                                                          context)
+                                                                      .isEn
+                                                                  ? dropDownValueCountries
+                                                                          ?.title
+                                                                          ?.en! ??
+                                                                      "Country"
+                                                                  : dropDownValueCountries
+                                                                          ?.title
+                                                                          ?.ar! ??
+                                                                      "دولة",
+                                                              maxLines: 2,
+                                                              style: TextStyle(
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize:
+                                                                      20.sp)),
                                                         ),
                                                         items: EditProfileCubit
                                                                 .get(context)
@@ -907,32 +903,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                           padding: EdgeInsets
                                                               .symmetric(
                                                                   horizontal:
-                                                                      10.r,
-                                                                  vertical:
-                                                                      5.r),
-                                                          child: Center(
-                                                            child: Text(
-                                                                LanguageCubit.get(
-                                                                            context)
-                                                                        .isEn
-                                                                    ? dropDownValueCity
-                                                                            ?.title
-                                                                            ?.en! ??
-                                                                        "Country"
-                                                                    : dropDownValueCity
-                                                                            ?.title
-                                                                            ?.ar! ??
-                                                                        "دولة",
-                                                                maxLines: 2,
-                                                                style: TextStyle(
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    color: Colors
-                                                                        .black,
-                                                                    fontSize:
-                                                                        20.sp)),
-                                                          ),
+                                                                      25.r),
+                                                          child: Text(
+                                                              LanguageCubit.get(
+                                                                          context)
+                                                                      .isEn
+                                                                  ? dropDownValueCity
+                                                                          ?.title
+                                                                          ?.en! ??
+                                                                      "Country"
+                                                                  : dropDownValueCity
+                                                                          ?.title
+                                                                          ?.ar! ??
+                                                                      "دولة",
+                                                              maxLines: 2,
+                                                              style: TextStyle(
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize:
+                                                                      20.sp)),
                                                         ),
                                                         items: EditProfileCubit
                                                                 .get(context)
@@ -1066,32 +1058,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                           padding: EdgeInsets
                                                               .symmetric(
                                                                   horizontal:
-                                                                      10.r,
-                                                                  vertical:
-                                                                      5.r),
-                                                          child: Center(
-                                                            child: Text(
-                                                                LanguageCubit.get(
-                                                                            context)
-                                                                        .isEn
-                                                                    ? dropDownValueArea
-                                                                            ?.title
-                                                                            ?.en! ??
-                                                                        "Country"
-                                                                    : dropDownValueArea
-                                                                            ?.title
-                                                                            ?.ar! ??
-                                                                        "دولة",
-                                                                maxLines: 2,
-                                                                style: TextStyle(
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    color: Colors
-                                                                        .black,
-                                                                    fontSize:
-                                                                        20.sp)),
-                                                          ),
+                                                                      25.r),
+                                                          child: Text(
+                                                              LanguageCubit.get(
+                                                                          context)
+                                                                      .isEn
+                                                                  ? dropDownValueArea
+                                                                          ?.title
+                                                                          ?.en! ??
+                                                                      "Country"
+                                                                  : dropDownValueArea
+                                                                          ?.title
+                                                                          ?.ar! ??
+                                                                      "دولة",
+                                                              maxLines: 2,
+                                                              style: TextStyle(
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize:
+                                                                      20.sp)),
                                                         ),
                                                         items: EditProfileCubit
                                                                 .get(context)
