@@ -1,6 +1,5 @@
 import 'package:getn_driver/data/model/country/Image.dart';
 import 'package:getn_driver/data/model/signModel/Country.dart';
-import 'package:getn_driver/data/model/signModel/Ratings.dart';
 
 import '../sendOtp/Message.dart';
 import 'Area.dart';
@@ -13,9 +12,6 @@ class EditProfileModel {
     Image? backNationalImage,
     Image? frontDriveImage,
     Image? backDriveImage,
-    Ratings? ratings,
-    int? wallet,
-    int? holdWallet,
     bool? status,
     bool? acceptTermsAndConditions,
     bool? acceptPermissions,
@@ -26,12 +22,6 @@ class EditProfileModel {
     bool? individual,
     bool? available,
     bool? verified,
-    int? ratingsCount,
-    int? totalRatings,
-    int? totalExpectedRatings,
-    int? ratingsAverage,
-    int? totalTrips,
-    int? totalRequests,
     List<String>? availabilities,
     String? id,
     String? fcmToken,
@@ -46,14 +36,12 @@ class EditProfileModel {
     String? brief,
     String? nationalId,
     Message? message,
-    int? v,
   }) {
     _image = image;
     _frontNationalImage = frontNationalImage;
     _backNationalImage = backNationalImage;
     _frontDriveImage = frontDriveImage;
     _backDriveImage = backDriveImage;
-    _ratings = ratings;
     _status = status;
     _acceptTermsAndConditions = acceptTermsAndConditions;
     _acceptPermissions = acceptPermissions;
@@ -63,12 +51,6 @@ class EditProfileModel {
     _individual = individual;
     _available = available;
     _verified = verified;
-    _ratingsCount = ratingsCount;
-    _totalRatings = totalRatings;
-    _totalExpectedRatings = totalExpectedRatings;
-    _ratingsAverage = ratingsAverage;
-    _totalTrips = totalTrips;
-    _totalRequests = totalRequests;
     _availabilities = availabilities;
     _id = id;
     _fcmToken = fcmToken;
@@ -83,7 +65,6 @@ class EditProfileModel {
     _whatsApp = whatsApp;
     _brief = brief;
     _nationalId = nationalId;
-    _v = v;
     _message = message;
   }
 
@@ -101,8 +82,6 @@ class EditProfileModel {
     _backDriveImage = json['backDriveImage'] != null
         ? Image.fromJson(json['backDriveImage'])
         : null;
-    _ratings =
-        json['ratings'] != null ? Ratings.fromJson(json['ratings']) : null;
     _status = json['status'];
     _acceptTermsAndConditions = json['acceptTermsAndConditions'];
     _acceptPermissions = json['acceptPermissions'];
@@ -112,12 +91,6 @@ class EditProfileModel {
     _individual = json['individual'];
     _available = json['available'];
     _verified = json['verified'];
-    _ratingsCount = json['ratingsCount'];
-    _totalRatings = json['totalRatings'];
-    _totalExpectedRatings = json['totalExpectedRatings'];
-    _ratingsAverage = json['ratingsAverage'];
-    _totalTrips = json['totalTrips'];
-    _totalRequests = json['totalRequests'];
     _availabilities = json['availabilities'] != null
         ? json['availabilities'].cast<String>()
         : [];
@@ -134,7 +107,6 @@ class EditProfileModel {
     _address = json['address'];
     _brief = json['brief'];
     _nationalId = json['nationalId'];
-    _v = json['__v'];
     _whatsApp = json['whatsapp'];
     _message =
     json['message'] != null ? Message.fromJson(json['message']) : null;
@@ -145,7 +117,6 @@ class EditProfileModel {
   Image? _backNationalImage;
   Image? _frontDriveImage;
   Image? _backDriveImage;
-  Ratings? _ratings;
   bool? _status;
   bool? _acceptTermsAndConditions;
   bool? _acceptPermissions;
@@ -156,12 +127,6 @@ class EditProfileModel {
   bool? _individual;
   bool? _available;
   bool? _verified;
-  int? _ratingsCount;
-  int? _totalRatings;
-  int? _totalExpectedRatings;
-  int? _ratingsAverage;
-  int? _totalTrips;
-  int? _totalRequests;
   List<String>? _availabilities;
   String? _id;
   String? _fcmToken;
@@ -175,7 +140,6 @@ class EditProfileModel {
   String? _address;
   String? _brief;
   String? _nationalId;
-  int? _v;
   Message? _message;
 
   Image? get image => _image;
@@ -188,7 +152,6 @@ class EditProfileModel {
 
   Image? get backDriveImage => _backDriveImage;
 
-  Ratings? get ratings => _ratings;
 
   bool? get status => _status;
 
@@ -207,18 +170,6 @@ class EditProfileModel {
   bool? get available => _available;
 
   bool? get verified => _verified;
-
-  int? get ratingsCount => _ratingsCount;
-
-  int? get totalRatings => _totalRatings;
-
-  int? get totalExpectedRatings => _totalExpectedRatings;
-
-  int? get ratingsAverage => _ratingsAverage;
-
-  int? get totalTrips => _totalTrips;
-
-  int? get totalRequests => _totalRequests;
 
   List<String>? get availabilities => _availabilities;
 
@@ -246,8 +197,6 @@ class EditProfileModel {
 
   String? get nationalId => _nationalId;
 
-  int? get v => _v;
-
   String? get whatsApp => _whatsApp;
 
   Message? get message => _message;
@@ -269,9 +218,6 @@ class EditProfileModel {
     if (_backDriveImage != null) {
       map['backDriveImage'] = _backDriveImage?.toJson();
     }
-    if (_ratings != null) {
-      map['ratings'] = _ratings?.toJson();
-    }
     map['status'] = _status;
     map['acceptTermsAndConditions'] = _acceptTermsAndConditions;
     map['acceptPermissions'] = _acceptPermissions;
@@ -281,12 +227,6 @@ class EditProfileModel {
     map['individual'] = _individual;
     map['available'] = _available;
     map['verified'] = _verified;
-    map['ratingsCount'] = _ratingsCount;
-    map['totalRatings'] = _totalRatings;
-    map['totalExpectedRatings'] = _totalExpectedRatings;
-    map['ratingsAverage'] = _ratingsAverage;
-    map['totalTrips'] = _totalTrips;
-    map['totalRequests'] = _totalRequests;
     map['availabilities'] = _availabilities;
     map['_id'] = _id;
     map['fcmToken'] = _fcmToken;
@@ -306,7 +246,6 @@ class EditProfileModel {
     map['address'] = _address;
     map['brief'] = _brief;
     map['nationalId'] = _nationalId;
-    map['__v'] = _v;
     return map;
   }
 }
