@@ -41,6 +41,11 @@
 
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCVy_LzCTaZn-MCwJF6qElGO3gc5K0JwI8"/>
+
+    <!--for show popup notification in background or terminate-->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="GetnDriverChannel" />
     </application>
 
 

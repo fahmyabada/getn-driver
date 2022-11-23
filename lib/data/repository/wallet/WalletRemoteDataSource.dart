@@ -23,7 +23,7 @@ abstract class WalletRemoteDataSource {
 class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
   @override
   Future<Either<String, WalletModel>> getWallet(int index) async {
-    try {
+    // try {
       var body = {
         "page": index,
       };
@@ -38,14 +38,14 @@ class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } catch (error) {
-      return Left(handleError(error));
-    }
+    // } catch (error) {
+    //   return Left(handleError(error));
+    // }
   }
 
   @override
   Future<Either<String, WalletModel?>> getRequests(int index) async {
-    try {
+    // try {
       var body = {
         "page": index,
       };
@@ -60,9 +60,9 @@ class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    } catch (error) {
-      return Left(handleError(error));
-    }
+    // } catch (error) {
+    //   return Left(handleError(error));
+    // }
   }
 
   @override

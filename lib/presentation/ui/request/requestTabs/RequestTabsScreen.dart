@@ -758,7 +758,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          '${current.totalPrice!.toStringAsFixed(2)}\$',
+                          '\$${current.totalPrice!.toStringAsFixed(2)}',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: black,
@@ -832,7 +832,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      'refId: ${upComing.referenceId}',
+                                      '${LanguageCubit.get(context).getTexts('refId').toString()} ${upComing.referenceId}',
                                       textAlign: TextAlign.start,
                                       style: TextStyle(
                                         color: black,
@@ -1098,7 +1098,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          '${upComing.days!.length} Days',
+                          '${upComing.days!.length} ${LanguageCubit.get(context).getTexts('Days').toString()}',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: black,
@@ -1188,7 +1188,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          '${upComing.totalPrice!.toStringAsFixed(2)}\$',
+                          '\$${upComing.totalPrice!.toStringAsFixed(2)}',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: black,
@@ -1263,7 +1263,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      'refId: ${past.referenceId}',
+                                      '${LanguageCubit.get(context).getTexts('refId').toString()} ${past.referenceId}',
                                       textAlign: TextAlign.start,
                                       style: TextStyle(
                                         color: black,
@@ -1531,7 +1531,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          '${past.days!.length} Days',
+                          '${past.days!.length} ${LanguageCubit.get(context).getTexts('Days').toString()}',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: black,
@@ -1621,7 +1621,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          '${past.totalPrice!.toStringAsFixed(2)}\$',
+                          '\$${past.totalPrice!.toStringAsFixed(2)}',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: black,
@@ -1863,6 +1863,29 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                               fontWeight: FontWeight.bold),
                         ),
                       ),
+                      // (pending.status == 'accept' ||
+                      //             pending.status == 'pending') &&
+                      //         pending.paymentStatus == 'need_confirm'
+                      //     ? Container()
+                      //     : IconButton(
+                      //     onPressed: () {
+                      //       launchInMap(
+                      //           sLat,
+                      //           sLon,
+                      //           RequestDetailsCubit.get(context)
+                      //               .requestDetails!
+                      //               .from!
+                      //               .placeLatitude!,
+                      //           RequestDetailsCubit.get(context)
+                      //               .requestDetails!
+                      //               .from!
+                      //               .placeLongitude!,
+                      //           context);
+                      //     },
+                      //     icon: Icon(
+                      //       Icons.wrong_location_sharp,
+                      //       size: 25.w,
+                      //     ))
                     ],
                   ),
                   SizedBox(
@@ -1877,26 +1900,6 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                   SizedBox(
                     height: 5.h,
                   ),
-                  /*RatingBar.builder(
-                                                        minRating: _userRating,
-                                                        itemBuilder:
-                                                            (context, index) =>
-                                                                const Icon(
-                                                          Icons.star,
-                                                          color: Colors.amber,
-                                                        ),
-                                                        itemCount: 5,
-                                                        itemSize: 17.w,
-                                                        updateOnDrag: true,
-                                                        onRatingUpdate: (rating) {
-                                                          setState(() {
-                                                            _userRating = rating;
-                                                          });
-                                                        },
-                                                        unratedColor: Colors.amber
-                                                            .withAlpha(50),
-                                                        direction: Axis.horizontal,
-                                                      ),*/
                 ],
               ),
             ),
@@ -1926,7 +1929,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          '${pending.days!.length} Days',
+                          '${pending.days!.length} ${LanguageCubit.get(context).getTexts('Days').toString()}',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: black,
@@ -2016,7 +2019,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          '${pending.totalPrice!.toStringAsFixed(2)}\$',
+                          '\$${pending.totalPrice!.toStringAsFixed(2)}',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: black,

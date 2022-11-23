@@ -35,7 +35,7 @@ class _TermsScreenState extends State<TermsScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            "Terms & Conditions",
+            LanguageCubit.get(context).getTexts('Terms&Condition').toString(),
             textAlign: TextAlign.start,
             style: TextStyle(
                 fontSize: 20.sp,
@@ -113,7 +113,7 @@ class _TermsScreenState extends State<TermsScreen> {
                   press: () {
                     Navigator.of(context).pop(true);
                   },
-                  text: "Accept",
+                  text: LanguageCubit.get(context).getTexts('Accept').toString(),
                   backColor: accentColor,
                   textColor: white),
             ],

@@ -32,7 +32,7 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
   var formMountKey = GlobalKey<FormState>();
   TextEditingController? phoneController;
   TextEditingController? mountController = TextEditingController();
-  TextEditingController? accountTypeController = TextEditingController();
+  TextEditingController? swiftCodeController = TextEditingController();
   TextEditingController? accountNameController = TextEditingController();
   TextEditingController? bankNameController = TextEditingController();
   TextEditingController? accountNumberController = TextEditingController();
@@ -334,41 +334,7 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                                   SizedBox(
                                     height: 20.h,
                                   ),
-                                  Container(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 15.r),
-                                    margin:
-                                        EdgeInsets.symmetric(horizontal: 20.r),
-                                    decoration: BoxDecoration(
-                                        color: white,
-                                        border: Border.all(
-                                            color:
-                                                Colors.black.withOpacity(0.1)),
-                                        borderRadius:
-                                            BorderRadius.circular(50.r)),
-                                    child: defaultFormField(
-                                        controller: accountTypeController,
-                                        type: TextInputType.text,
-                                        label: LanguageCubit.get(context)
-                                            .getTexts('AccountType')
-                                            .toString(),
-                                        textSize: 22,
-                                        borderRadius: 50,
-                                        border: true,
-                                        borderColor: white,
-                                        validatorText:
-                                            accountTypeController!.text,
-                                        validatorMessage:
-                                            LanguageCubit.get(context)
-                                                .getTexts('EnterAccountType')
-                                                .toString(),
-                                        onEditingComplete: () {
-                                          FocusScope.of(context).nextFocus();
-                                        }),
-                                  ),
-                                  SizedBox(
-                                    height: 20.h,
-                                  ),
+
                                   Container(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 15.r),
@@ -487,7 +453,7 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                                             BorderRadius.circular(50.r)),
                                     child: defaultFormField(
                                         controller: ibanController,
-                                        type: TextInputType.number,
+                                        type: TextInputType.text,
                                         label: LanguageCubit.get(context)
                                             .getTexts('iban')
                                             .toString(),
@@ -502,6 +468,35 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                                                 .toString(),
                                         onEditingComplete: () {
                                           FocusScope.of(context).unfocus();
+                                        }),
+                                  ),
+                                  SizedBox(
+                                    height: 20.h,
+                                  ),
+                                  Container(
+                                    padding:
+                                    EdgeInsets.symmetric(horizontal: 15.r),
+                                    margin:
+                                    EdgeInsets.symmetric(horizontal: 20.r),
+                                    decoration: BoxDecoration(
+                                        color: white,
+                                        border: Border.all(
+                                            color:
+                                            Colors.black.withOpacity(0.1)),
+                                        borderRadius:
+                                        BorderRadius.circular(50.r)),
+                                    child: defaultFormField(
+                                        controller: swiftCodeController,
+                                        type: TextInputType.number,
+                                        label: LanguageCubit.get(context)
+                                            .getTexts('swiftCode')
+                                            .toString(),
+                                        textSize: 22,
+                                        borderRadius: 50,
+                                        border: true,
+                                        borderColor: white,
+                                        onEditingComplete: () {
+                                          FocusScope.of(context).nextFocus();
                                         }),
                                   ),
                                   SizedBox(
@@ -581,7 +576,7 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                                       var body = jsonEncode({
                                         "paymentMethod": "visa",
                                         'paymentDetails': {
-                                          'accountType': accountTypeController!
+                                          'swiftCode': swiftCodeController!
                                               .text
                                               .toString(),
                                           'accountName': accountNameController!

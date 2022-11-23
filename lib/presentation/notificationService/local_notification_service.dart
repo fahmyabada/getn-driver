@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:getn_driver/main.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestDetails/RequestDetailsScreen.dart';
 import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
@@ -210,7 +211,8 @@ class LocalNotificationService {
       if (typeScreen == "requestDetails") {
         // for refresh data only and set typeScreen = "" because usually equal past
         RequestDetailsCubit.get(navigatorKey.currentContext).typeScreen = "";
-        RequestDetailsCubit.get(navigatorKey.currentContext).getRequestDetails(id);
+        RequestDetailsCubit.get(navigatorKey.currentContext)
+            .getRequestDetails(id);
 
         // for refresh page but have problem when back and you depend on refresh page
         // not refresh page because not have get id
@@ -241,12 +243,14 @@ class LocalNotificationService {
 
       } else if (typeScreen == "past") {
         // for refresh data only
-        RequestDetailsCubit.get(navigatorKey.currentContext).typeScreen = "past";
-        RequestDetailsCubit.get(navigatorKey.currentContext).getRequestDetails(id);
+        RequestDetailsCubit.get(navigatorKey.currentContext).typeScreen =
+            "past";
+        RequestDetailsCubit.get(navigatorKey.currentContext)
+            .getRequestDetails(id);
 
         // for refresh page but have problem when back and you depend on refresh page
         // not refresh page because not have get id
-       /* navigatorKey.currentState!.pushReplacement(
+        /* navigatorKey.currentState!.pushReplacement(
           MaterialPageRoute(
             builder: (context) => BlocProvider(
                 create: (context) => RequestCubit(),
@@ -278,6 +282,8 @@ class LocalNotificationService {
             "GetnDriverChannel",
             "GetnDriverChannel",
             playSound: true,
+            visibility: NotificationVisibility.public,
+            enableVibration: true,
             importance: Importance.max,
             priority: Priority.high,
           ),
@@ -300,8 +306,12 @@ class LocalNotificationService {
 
       await _notificationsPlugin.show(
         id,
-        message.notification!.title,
-        message.notification!.body,
+        LanguageCubit.get(navigatorKey.currentContext).isEn
+            ? message.data['title_en']
+            : message.data['title_ar'],
+        LanguageCubit.get(navigatorKey.currentContext).isEn
+            ? message.data['content_en']
+            : message.data['content_ar'],
         notificationDetails,
         //payload : holds the data that is passed through the notification when the notification is tapped
         payload: '$payloadValue,$type',
