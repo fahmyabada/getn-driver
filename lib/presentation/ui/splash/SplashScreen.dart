@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (getIt<SharedPreferences>().getBool("isEn") != null) {
       LanguageCubit.get(context).isEn =
-      getIt<SharedPreferences>().getBool("isEn")!;
+          getIt<SharedPreferences>().getBool("isEn")!;
     }
     LocalNotificationService.initialize(context);
     registerNotification();
@@ -80,6 +80,8 @@ class _SplashScreenState extends State<SplashScreen> {
               idRequest = message?.data['parentId'];
             }
           });
+
+          LocalNotificationService.createAndDisplayNotification(message!,'');
         }
       });
 
@@ -139,8 +141,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 LocalNotificationService.createAndDisplayNotification(
                     message, "outTripInRequest");
               }
-            }
-            else if (message.data['type'] == "request" ||
+            } else if (message.data['type'] == "request" ||
                 message.data['type'] == "payment") {
               if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails' &&
@@ -290,28 +291,41 @@ class _SplashScreenState extends State<SplashScreen> {
                       'tripDetails' &&
                   getIt<SharedPreferences>().getString('tripDetailsId') ==
                       message.data['typeId']) {
-                LocalNotificationService.goToNextScreen(
-                    message.data['typeId'], "pushReplacement", "tripDetails");
+                // here if i get same trip id i will refresh page and show notification
+                // without enable clickable
+                if (message.data['current_status'] == "cancel") {
+                  LocalNotificationService.goToNextScreen(
+                      message.data['parentId'], "pop", "tripDetails");
+                } else {
+                  LocalNotificationService.goToNextScreen(
+                      message.data['typeId'], "pushReplacement", "tripDetails");
+                }
+                LocalNotificationService.createAndDisplayNotification(
+                    message, "inSameTrip");
               } else if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'tripDetails' &&
                   getIt<SharedPreferences>().getString('tripDetailsId') !=
                       message.data['typeId']) {
-                LocalNotificationService.goToNextScreen(
-                    message.data['parentId'], "pop", "newTrip");
+                LocalNotificationService.createAndDisplayNotification(
+                    message, "newTrip");
               } else if (getIt<SharedPreferences>().getString('typeScreen') !=
                       'tripDetails' &&
                   getIt<SharedPreferences>().getString('typeScreen') !=
                       'requestDetails') {
-                LocalNotificationService.goToNextScreen(
-                    message.data['parentId'], "push", "outTrip");
+                LocalNotificationService.createAndDisplayNotification(
+                    message, "outTrip");
               } else if (getIt<SharedPreferences>().getString('typeScreen') !=
                       'tripDetails' &&
                   getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails') {
+                // for refresh page
                 LocalNotificationService.goToNextScreen(
                     message.data['parentId'],
                     "pushReplacement",
                     "requestDetails");
+                // for in click
+                LocalNotificationService.createAndDisplayNotification(
+                    message, "outTripInRequest");
               }
             } else if (message.data['type'] == "request" ||
                 message.data['type'] == "payment") {
@@ -319,26 +333,37 @@ class _SplashScreenState extends State<SplashScreen> {
                       'requestDetails' &&
                   getIt<SharedPreferences>().getString('requestDetailsId') ==
                       message.data['typeId']) {
-                LocalNotificationService.goToNextScreen(message.data['typeId'],
-                    "pushReplacement", "requestDetails");
+                // here if i get same request id i will refresh page and show notification
+                // without enable clickable
+                if (message.data['title_en'] == "Cancel Request") {
+                  LocalNotificationService.goToNextScreen(
+                      message.data['typeId'], "pushReplacement", "past");
+                } else {
+                  LocalNotificationService.goToNextScreen(
+                      message.data['typeId'],
+                      "pushReplacement",
+                      "requestDetails");
+                }
+                LocalNotificationService.createAndDisplayNotification(
+                    message, "inSameRequest");
               } else if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails' &&
                   getIt<SharedPreferences>().getString('requestDetailsId') !=
                       message.data['typeId']) {
-                LocalNotificationService.goToNextScreen(message.data['typeId'],
-                    "pushReplacement", "requestDetails");
+                LocalNotificationService.createAndDisplayNotification(
+                    message, "newRequest");
               } else if (getIt<SharedPreferences>().getString('typeScreen') !=
                       'requestDetails' &&
                   getIt<SharedPreferences>().getString('typeScreen') !=
                       'tripDetails') {
-                LocalNotificationService.goToNextScreen(
-                    message.data['typeId'], "push", "outRequest");
+                LocalNotificationService.createAndDisplayNotification(
+                    message, "outRequest");
               } else if (getIt<SharedPreferences>().getString('typeScreen') !=
                       'requestDetails' &&
                   getIt<SharedPreferences>().getString('typeScreen') ==
                       'tripDetails') {
-                LocalNotificationService.goToNextScreen(
-                    message.data['typeId'], "pop", "outRequestInTrip");
+                LocalNotificationService.createAndDisplayNotification(
+                    message, "outRequestInTrip");
               }
             }
 
@@ -401,7 +426,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 }
                 break;
               case "RequestPending":
-              // to listen change you should animate to another tab first time and return again
+                // to listen change you should animate to another tab first time and return again
                 if (RequestCubit.get(navigatorKey.currentContext).typeRequest ==
                     "pending") {
                   RequestCubit.get(navigatorKey.currentContext)
@@ -450,9 +475,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   LocalNotificationService.goToNextScreen(
                       idRequest, "pushAndRemoveUntil", "");
                 } else {
-                  navigateAndFinish(
-                      context,
-                      const RequestTabsScreen());
+                  navigateAndFinish(context, const RequestTabsScreen());
                 }
               } else {
                 navigateAndFinish(context, const LanguageScreen());

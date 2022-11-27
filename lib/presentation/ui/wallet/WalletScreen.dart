@@ -9,6 +9,7 @@ import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:getn_driver/presentation/ui/wallet/RequestTransactionScreen.dart';
 import 'package:getn_driver/presentation/ui/wallet/wallet_cubit.dart';
+import 'package:intl/intl.dart';
 import 'package:scroll_edge_listener/scroll_edge_listener.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,8 +27,8 @@ class _WalletScreenState extends State<WalletScreen> {
   String typeScreen = "wallet";
 
   var txtStatus = {
-    'en': {'active': 'active', 'reject': 'reject', 'hold': 'hold'},
-    'ar': {'active': 'نشط', 'reject': 'مرفوض', 'hold': 'قيد الانتظار'},
+    'en': {'active': 'active', 'reject': 'reject', 'hold': 'hold', 'pending': 'pending'},
+    'ar': {'active': 'نشط', 'reject': 'مرفوض', 'hold': 'قيد الانتظار', 'pending': 'قيد الإنتظار'},
   };
 
   @override
@@ -193,7 +194,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                                             context)
                                                         .walletValue
                                                         .isNotEmpty
-                                                    ? '${WalletCubit.get(context).walletValue}\$'
+                                                    ? '\$${WalletCubit.get(context).walletValue}'
                                                     : "0.0",
                                               ),
                                             ),
@@ -212,7 +213,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                                             context)
                                                         .walletHold
                                                         .isNotEmpty
-                                                    ? '${WalletCubit.get(context).walletHold}\$'
+                                                    ? '\$${WalletCubit.get(context).walletHold}'
                                                     : "0.0",
                                               ),
                                             ),
@@ -317,7 +318,10 @@ class _WalletScreenState extends State<WalletScreen> {
                                                   subtitle:
                                                       Text(item.comment ?? ''),
                                                   trailing: Text(
-                                                    '${item.type == "plus" ? '+' : item.type == "minus" ? '-' : ''}${item.amount!.toStringAsFixed(2)}\$',
+                                                    LanguageCubit.get(context)
+                                                            .isEn
+                                                        ? '\$${item.amount!.toStringAsFixed(2)}${item.type == "plus" ? '+' : item.type == "minus" ? '-' : ''}'
+                                                        : '${item.type == "plus" ? '+' : item.type == "minus" ? '-' : ''}\$${item.amount!.toStringAsFixed(2)}',
                                                     style: TextStyle(
                                                       color: primaryColor,
                                                       fontWeight:
@@ -388,11 +392,21 @@ class _WalletScreenState extends State<WalletScreen> {
                                                 var item =
                                                     WalletCubit.get(context)
                                                         .requests[index];
+                                                print('1111************* ');
+                                                print('2222************* ');
+
                                                 return Column(
                                                   children: [
                                                     ListTile(
                                                       title: Text(
-                                                        item.status!,
+                                                        LanguageCubit.get(context)
+                                                            .isEn
+                                                            ? txtStatus['en']![
+                                                        item.status!]
+                                                            .toString()
+                                                            : txtStatus['ar']![
+                                                        item.status!]
+                                                            .toString(),
                                                         style: TextStyle(
                                                           color: primaryColor,
                                                           fontWeight:
@@ -400,10 +414,16 @@ class _WalletScreenState extends State<WalletScreen> {
                                                           fontSize: 22.sp,
                                                         ),
                                                       ),
-                                                      subtitle:
-                                                          Text(item.id ?? ''),
+                                                      subtitle: Text(item
+                                                                  .paymentMethod ==
+                                                              'visa'
+                                                          ? '${item.paymentMethod} - ${DateFormat.yMEd().format(DateTime.parse(item.createdAt!))} ${DateFormat.jm().format(DateTime.parse(item.createdAt!))} - ${item.paymentDetails!.bankName!} - ${item.paymentDetails!.accountNumber!.toString().length > 4 ? item.paymentDetails!.accountNumber!.toString().substring(item.paymentDetails!.accountNumber!.toString().length - 4) : item.paymentDetails!.accountNumber!.toString()}'
+                                                          : item.paymentMethod ==
+                                                                  'phone'
+                                                              ? '${item.paymentMethod} - ${DateFormat.yMEd().format(DateTime.parse(item.createdAt!))} ${DateFormat.jm().format(DateTime.parse(item.createdAt!))} - ${item.phone!} - ${item.status}'
+                                                              : ''),
                                                       trailing: Text(
-                                                        '${item.amount!.toStringAsFixed(2)}\$',
+                                                        '\$${item.amount!.toStringAsFixed(2)}',
                                                         style: TextStyle(
                                                           color: primaryColor,
                                                           fontWeight:
