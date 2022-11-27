@@ -968,7 +968,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                 .isAfter(currentDate)
                                             ? true
                                             : false
-                                        : true
+                                        : RequestDetailsCubit.get(context)
+                                                    .requestDetails!
+                                                    .status ==
+                                                "arrive"
+                                            ? false
+                                            : true
                                     : false,
                             fontSize: 20,
                             paddingVertical: 1,
@@ -1080,7 +1085,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                             .requestDetails
                                             ?.paymentStatus! ==
                                         "paid"
-                                    ? true
+                                    ? RequestDetailsCubit.get(context)
+                                                .requestDetails!
+                                                .status ==
+                                            "arrive"
+                                        ? false
+                                        : true
                                     : false,
                         fontSize: 20,
                         paddingVertical: 1,
