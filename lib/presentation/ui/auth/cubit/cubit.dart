@@ -247,6 +247,7 @@ class SignCubit extends Cubit<SignState> {
     final body = jsonEncode(availabilities);
 
     var formData = FormData.fromMap({
+      'lang': getIt<SharedPreferences>().getBool('isEn')! ? 'en' : 'ar',
       'phone': phone,
       'name': fullName,
       'email': email,

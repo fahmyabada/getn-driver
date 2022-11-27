@@ -29,7 +29,6 @@ class Data {
     _id = id;
     _carType = carType;
     _code = code;
-    _user = user;
   }
 
   Data.fromJson(dynamic json) {
@@ -44,7 +43,6 @@ class Data {
     _id = json['_id'];
     _carType = json['carType'];
     _code = json['code'];
-    _user = json['user'] is! String ? "" : json['user'];
   }
 
   Title? _title;
@@ -58,7 +56,6 @@ class Data {
   String? _id;
   String? _carType;
   String? _code;
-  String? _user;
 
   Title? get title => _title;
 
@@ -82,12 +79,11 @@ class Data {
 
   String? get code => _code;
 
-  String? get user => _user;
 
 
   @override
   String toString() {
-    return 'Data{_title: $_title, _desc: $_desc, _brief: $_brief, _icon: $_icon, _priceType: $_priceType, _status: $_status, _createdAt: $_createdAt, _updatedAt: $_updatedAt, _id: $_id, _carType: $_carType, _code: $_code, _user: $_user}';
+    return 'Data{_title: $_title, _desc: $_desc, _brief: $_brief, _icon: $_icon, _priceType: $_priceType, _status: $_status, _createdAt: $_createdAt, _updatedAt: $_updatedAt, _id: $_id, _carType: $_carType, _code: $_code}';
   }
 
   Map<String, dynamic> toJson() {
@@ -111,7 +107,6 @@ class Data {
     map['_id'] = _id;
     map['carType'] = _carType;
     map['code'] = _code;
-    map['user'] = _user;
     return map;
   }
 }

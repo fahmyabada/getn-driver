@@ -581,7 +581,9 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
             clipBehavior: Clip.antiAlias,
             child: ImageTools.image(
                 fit: BoxFit.fill,
-                url: current.client2!.image!.src,
+                url: current.client2 != null
+                    ? current.client2!.image!.src
+                    : null,
                 height: 70.w,
                 width: 70.w),
           ),
@@ -598,7 +600,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                     children: [
                       Expanded(
                         child: Text(
-                          current.client2!.name!,
+                          current.client2 != null ? current.client2!.name! : '',
                           style: TextStyle(
                               fontSize: 17.sp,
                               color: black,
@@ -612,8 +614,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                   ),
                   Text(
                     LanguageCubit.get(context).isEn
-                        ? '${current.client2!.country?.title!.en ?? ""}, ${current.client2!.city?.title!.en ?? ""}, ${current.client2!.area?.title!.en ?? ""}'
-                        : '${current.client2!.country?.title!.ar ?? ""}, ${current.client2!.city?.title!.ar ?? ""}, ${current.client2!.area?.title!.ar ?? ""}',
+                        ? '${current.client2 != null ? current.client2!.country?.title!.en : ""}, ${current.client2 != null ? current.client2!.city?.title!.en : ""}, ${current.client2 != null ? current.client2!.area?.title!.en : ""}'
+                        : '${current.client2 != null ? current.client2!.country?.title!.ar : ""}, ${current.client2 != null ? current.client2!.city?.title!.ar : ""}, ${current.client2 != null ? current.client2!.area?.title!.ar : ""}',
                     style: TextStyle(fontSize: 15.sp, color: grey2),
                   ),
                   SizedBox(
@@ -1011,7 +1013,9 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
             clipBehavior: Clip.antiAlias,
             child: ImageTools.image(
                 fit: BoxFit.fill,
-                url: upComing.client2!.image!.src,
+                url: upComing.client2 != null
+                    ? upComing.client2!.image!.src
+                    : null,
                 height: 70.w,
                 width: 70.w),
           ),
@@ -1028,7 +1032,9 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                     children: [
                       Expanded(
                         child: Text(
-                          upComing.client2!.name!,
+                          upComing.client2 != null
+                              ? upComing.client2!.name!
+                              : '',
                           style: TextStyle(
                               fontSize: 17.sp,
                               color: black,
@@ -1042,8 +1048,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                   ),
                   Text(
                     LanguageCubit.get(context).isEn
-                        ? '${upComing.client2!.country?.title!.en ?? ""}, ${upComing.client2!.city?.title!.en ?? ""}, ${upComing.client2!.area?.title!.en ?? ""}'
-                        : '${upComing.client2!.country?.title!.ar ?? ""}, ${upComing.client2!.city?.title!.ar ?? ""}, ${upComing.client2!.area?.title!.ar ?? ""}',
+                        ? '${upComing.client2 != null ? upComing.client2!.country?.title!.en : ""}, ${upComing.client2 != null ? upComing.client2!.city?.title!.en : ""}, ${upComing.client2 != null ? upComing.client2!.area?.title!.en : ""}'
+                        : '${upComing.client2 != null ? upComing.client2!.country?.title!.ar : ""}, ${upComing.client2 != null ? upComing.client2!.city?.title!.ar : ""}, ${upComing.client2 != null ? upComing.client2!.area?.title!.ar : ""}',
                     style: TextStyle(fontSize: 15.sp, color: grey2),
                   ),
                   SizedBox(
@@ -1444,7 +1450,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
             clipBehavior: Clip.antiAlias,
             child: ImageTools.image(
                 fit: BoxFit.fill,
-                url: past.client2!.image!.src,
+                url: past.client2 != null ? past.client2!.image!.src : null,
                 height: 70.w,
                 width: 70.w),
           ),
@@ -1461,7 +1467,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                     children: [
                       Expanded(
                         child: Text(
-                          past.client2!.name!,
+                          past.client2 != null ? past.client2!.name! : '',
                           style: TextStyle(
                               fontSize: 17.sp,
                               color: black,
@@ -1475,8 +1481,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                   ),
                   Text(
                     LanguageCubit.get(context).isEn
-                        ? '${past.client2!.country?.title!.en ?? ""}, ${past.client2!.city?.title!.en ?? ""}, ${past.client2!.area?.title!.en ?? ""}'
-                        : '${past.client2!.country?.title!.ar ?? ""}, ${past.client2!.city?.title!.ar ?? ""}, ${past.client2!.area?.title!.ar ?? ""}',
+                        ? '${past.client2 != null ? past.client2!.country!.title!.en : ""}, ${past.client2 != null ? past.client2!.city?.title!.en : ""}, ${past.client2 != null ? past.client2!.area?.title!.en : ""}'
+                        : '${past.client2 != null ? past.client2!.country?.title!.ar : ""}, ${past.client2 != null ? past.client2!.city?.title!.ar : ""}, ${past.client2 != null ? past.client2!.area?.title!.ar : ""}',
                     style: TextStyle(fontSize: 15.sp, color: grey2),
                   ),
                   SizedBox(
@@ -1839,7 +1845,9 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
             clipBehavior: Clip.antiAlias,
             child: ImageTools.image(
                 fit: BoxFit.fill,
-                url: pending.client2?.image!.src,
+                url: pending.client2 != null
+                    ? pending.client2!.image!.src
+                    : null,
                 height: 70.w,
                 width: 70.w),
           ),
@@ -1856,7 +1864,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                     children: [
                       Expanded(
                         child: Text(
-                          pending.client2?.name! ?? '',
+                          pending.client2 != null ? pending.client2!.name! : '',
                           style: TextStyle(
                               fontSize: 17.sp,
                               color: black,
@@ -1870,8 +1878,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                   ),
                   Text(
                     LanguageCubit.get(context).isEn
-                        ? '${pending.client2?.country?.title!.en ?? ""}, ${pending.client2?.city?.title!.en ?? ""}, ${pending.client2?.area?.title!.en ?? ""}'
-                        : '${pending.client2?.country?.title!.ar ?? ""}, ${pending.client2?.city?.title!.ar ?? ""}, ${pending.client2?.area?.title!.ar ?? ""}',
+                        ? '${pending.client2 != null ? pending.client2!.country?.title!.en : ""}, ${pending.client2 != null ? pending.client2!.city?.title!.en : ""}, ${pending.client2 != null ? pending.client2!.area?.title!.en : ""}'
+                        : '${pending.client2 != null ? pending.client2!.country?.title!.ar : ""}, ${pending.client2 != null ? pending.client2!.city?.title!.ar : ""}, ${pending.client2 != null ? pending.client2!.area?.title!.ar : ""}',
                     style: TextStyle(fontSize: 15.sp, color: grey2),
                   ),
                   SizedBox(
@@ -2279,9 +2287,12 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                 FirebaseMessaging messaging = FirebaseMessaging.instance;
                 FirebaseAuth.instance.signOut().then((value) => messaging
                     .deleteToken()
-                    .then((value) => getIt<SharedPreferences>().clear().then(
-                        (value) =>
-                            navigateAndFinish(context, const SignInScreen()))));
+                    .then((value) =>
+                        getIt<SharedPreferences>().clear().then((value) {
+                          getIt<SharedPreferences>()
+                              .setBool("isEn", LanguageCubit.get(context).isEn);
+                          navigateAndFinish(context, const SignInScreen());
+                        })));
               },
             ),
           ],

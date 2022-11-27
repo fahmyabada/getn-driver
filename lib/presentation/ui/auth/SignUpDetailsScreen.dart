@@ -49,7 +49,6 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
   final addressController = TextEditingController();
   final whatsAppController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  final formKeyAddress = GlobalKey<FormState>();
   bool terms = false;
   File? _imageUser;
   final ImagePicker _picker = ImagePicker();
@@ -766,25 +765,22 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                     SizedBox(
                       height: 16.h,
                     ),
-                    Form(
-                      key: formKeyAddress,
-                      child: defaultFormField(
-                        controller: addressController,
-                        type: TextInputType.text,
-                        label: LanguageCubit.get(context)
-                            .getTexts('Address')
-                            .toString(),
-                        textSize: 20,
-                        border: false,
-                        borderRadius: 50,
-                        validatorText: addressController.text,
-                        validatorMessage: LanguageCubit.get(context)
-                            .getTexts('EnterAddress')
-                            .toString(),
-                        onEditingComplete: () {
-                          FocusScope.of(context).unfocus();
-                        },
-                      ),
+                    defaultFormField(
+                      controller: addressController,
+                      type: TextInputType.text,
+                      label: LanguageCubit.get(context)
+                          .getTexts('Address')
+                          .toString(),
+                      textSize: 20,
+                      border: false,
+                      borderRadius: 50,
+                      validatorText: addressController.text,
+                      validatorMessage: LanguageCubit.get(context)
+                          .getTexts('EnterAddress')
+                          .toString(),
+                      onEditingComplete: () {
+                        FocusScope.of(context).unfocus();
+                      },
                     ),
                     SizedBox(
                       height: 40.h,
@@ -919,7 +915,6 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                 dropDownValueCity != null &&
                                 dropDownValueArea != null &&
                                 userImage.isNotEmpty &&
-                                formKeyAddress.currentState!.validate() &&
                                 availabilitiesValues.isNotEmpty) {
                               if (terms) {
                                 String whatsApp = "";

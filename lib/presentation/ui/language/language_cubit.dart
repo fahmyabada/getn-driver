@@ -39,7 +39,7 @@ class LanguageCubit extends Cubit<LanguageState> {
     'Done': 'تم',
     'Enter6-digit': 'أدخل الرمز المكون من 6 أرقام المرسل إلى',
     'EnterCode': 'ادخل الكود اولا...',
-    'Next': 'Next',
+    'Next': 'التالي',
     'resend': 'إعادة إرسال ',
     'codeIn': 'كود في ',
     'pleaseFillAllData': 'يرجى ملء جميع البيانات أولا...',
@@ -193,6 +193,17 @@ class LanguageCubit extends Cubit<LanguageState> {
     'signUpWithMobileNumber': 'قم بالتسجيل باستخدام رقم الهاتف المحمول',
     'signIn': 'تسجيل الدخول باستخدام رقم الهاتف الهاتف',
     'clientNotPaidYet': 'العميل لم يقم بالدفع حتي الان',
+    'title1': 'تسجيل',
+    'subTitle1': 'أفضل تطبيق لحجز السيارات لرحلتك البحرية والمريحة',
+    'title2': 'البحث عن سيارة أجرة',
+    'subTitle2': 'أفضل تطبيق لحجز السيارات لرحلتك البحرية والمريحة',
+    'title3': 'تأجير سيارة',
+    'subTitle3': 'أفضل تطبيق لحجز السيارات لرحلتك البحرية والمريحة',
+    'title4': 'استمتع بالرحلة',
+    'subTitle4': 'أفضل تطبيق لحجز السيارات لرحلتك البحرية والمريحة',
+    'title5': 'اختر اللغة',
+    'ChooseLangFirst': 'اختر اللغة اولا',
+    'getStarted': 'ابدء',
   };
 
   Map<String, Object> textEn = {
@@ -383,8 +394,10 @@ class LanguageCubit extends Cubit<LanguageState> {
     'subTitle3': 'The Best car booking app for your seafty and comfortable trip',
     'title4': 'Enjoy Trip',
     'subTitle4': 'The Best car booking app for your seafty and comfortable trip',
+    'title5': 'Choose Language',
     'getStarted': 'Get Started',
     'clientNotPaidYet': 'client don\'t paid yet',
+    'ChooseLangFirst': 'Choose Language First..',
   };
 
   changeLan(bool lan) {

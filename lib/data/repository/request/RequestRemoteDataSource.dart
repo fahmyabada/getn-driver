@@ -105,6 +105,7 @@ class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
             print('token fcm=editInformationUser****************** ${EditProfileModel.fromJson(value.data).fcmToken}');
             return Right(EditProfileModel.fromJson(value.data));
           } else {
+            print('token fcm=editInformationUserError****************** ${EditProfileModel.fromJson(value.data).message!.toString()}');
             return Left(EditProfileModel.fromJson(value.data).message!.toString());
           }
         } else {

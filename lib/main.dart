@@ -93,7 +93,7 @@ class MyApp extends StatelessWidget {
                     statusBarIconBrightness: Brightness.light,
                   ),
                   iconTheme: IconThemeData(
-                    color: Colors.black, //change your color here
+                    color: black, //change your color here
                   ),
                   color: white,
                   elevation: 0.0,

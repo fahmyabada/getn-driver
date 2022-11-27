@@ -43,7 +43,6 @@ abstract class AuthRemoteDataSource {
       FormData data, String firebaseToken);
 
   Future<Either<String, EditProfileModel>> editInformationUser(FormData data);
-
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -55,11 +54,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       };
       return await DioHelper.getData(url: 'country', query: body).then((value) {
         if (value.statusCode == 200) {
-            if (CountryData.fromJson(value.data).data != null) {
-              return Right(CountryData.fromJson(value.data!).data!);
-            } else {
-              return const Left("Not Found Countries");
-            }
+          if (CountryData.fromJson(value.data).data != null) {
+            return Right(CountryData.fromJson(value.data!).data!);
+          } else {
+            return const Left("Not Found Countries");
+          }
         } else {
           return Left(serverFailureMessage);
         }
@@ -213,6 +212,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       String phone, String countryId, String firebaseToken) async {
     try {
       var formData = FormData.fromMap({
+        'lang': getIt<SharedPreferences>().getBool('isEn')! ? 'en' : 'ar',
         'phone': phone,
         'country': countryId,
         'fcmToken': getIt<SharedPreferences>().getString("fcmToken"),
@@ -252,10 +252,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           .then((value) {
         if (value.statusCode == 200) {
           if (EditProfileModel.fromJson(value.data).id != null) {
-            print('token fcm=****************** ${EditProfileModel.fromJson(value.data).fcmToken}');
+            print(
+                'token fcm=****************** ${EditProfileModel.fromJson(value.data).fcmToken}');
             return Right(EditProfileModel.fromJson(value.data));
           } else {
-            return Left(EditProfileModel.fromJson(value.data).message!.toString());
+            return Left(
+                EditProfileModel.fromJson(value.data).message!.toString());
           }
         } else {
           return Left(serverFailureMessage);
