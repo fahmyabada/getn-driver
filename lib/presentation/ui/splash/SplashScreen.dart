@@ -327,7 +327,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 LocalNotificationService.createAndDisplayNotification(
                     message, "outTripInRequest");
               }
-            } else if (message.data['type'] == "request" ||
+            }
+            else if (message.data['type'] == "request" ||
                 message.data['type'] == "payment") {
               if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails' &&

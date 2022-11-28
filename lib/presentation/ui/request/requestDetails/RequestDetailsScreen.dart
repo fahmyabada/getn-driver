@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:focus_detector/focus_detector.dart';
+import 'package:getn_driver/data/model/request/DataRequest.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
@@ -479,199 +480,149 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     );
   }
 
-  Widget client(BuildContext context) => Row(
-        children: [
-          ClipOval(
-            clipBehavior: Clip.antiAlias,
-            child: ImageTools.image(
-                fit: BoxFit.fill,
-                url: RequestDetailsCubit.get(context)
-                    .requestDetails!
-                    .client2!
-                    .image!
-                    .src,
-                height: 70.w,
-                width: 70.w),
-          ),
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 20.r),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 5.h,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              RequestDetailsCubit.get(context)
-                                  .requestDetails!
-                                  .client2!
-                                  .name!,
-                              style: TextStyle(
-                                  fontSize: 20.sp,
-                                  color: black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            Text(
-                              LanguageCubit.get(context).isEn
-                                  ? '${RequestDetailsCubit.get(context).requestDetails!.client2!.country!.title!.en ?? ""}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.city?.title!.en ?? ""}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.area?.title!.en ?? ""}'
-                                  : '${RequestDetailsCubit.get(context).requestDetails!.client2!.country!.title!.ar ?? ""}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.city?.title!.ar ?? ""}, ${RequestDetailsCubit.get(context).requestDetails!.client2!.area?.title!.ar ?? ""}',
-                              style: TextStyle(fontSize: 18.sp, color: grey2),
-                            ),
-                          ],
-                        ),
+  Widget client(BuildContext context) {
+    DataRequest data = RequestDetailsCubit.get(context).requestDetails!;
+    return Row(
+      children: [
+        ClipOval(
+          clipBehavior: Clip.antiAlias,
+          child: ImageTools.image(
+              fit: BoxFit.fill,
+              url: data.client2 != null ? data.client2!.image!.src : null,
+              height: 70.w,
+              width: 70.w),
+        ),
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 20.r),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 5.h,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            data.client2 != null ? data.client2!.name! : '',
+                            style: TextStyle(
+                                fontSize: 20.sp,
+                                color: black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          Text(
+                            LanguageCubit.get(context).isEn
+                                ? '${data.client2 != null ? data.client2!.country!.title!.en : ""}, ${data.client2 != null ? data.client2!.city?.title!.en : ""}, ${data.client2 != null ? data.client2!.area?.title!.en : ""}'
+                                : '${data.client2 != null ? data.client2!.country!.title!.ar : ""}, ${data.client2 != null ? data.client2!.city?.title!.ar : ""}, ${data.client2 != null ? data.client2!.area?.title!.ar : ""}',
+                            style: TextStyle(fontSize: 18.sp, color: grey2),
+                          ),
+                        ],
                       ),
-                      RequestDetailsCubit.get(context).typeScreen.isNotEmpty &&
-                                  RequestDetailsCubit.get(context).typeScreen ==
-                                      "past" ||
-                              RequestDetailsCubit.get(context)
-                                      .requestDetails!
-                                      .status ==
-                                  "end" ||
-                              RequestDetailsCubit.get(context)
-                                      .requestDetails!
-                                      .status ==
-                                  "mid_pause" ||
-                              RequestDetailsCubit.get(context)
-                                      .requestDetails!
-                                      .status ==
-                                  "reject" ||
-                              RequestDetailsCubit.get(context)
-                                      .requestDetails!
-                                      .status ==
-                                  "cancel" ||
-                              RequestDetailsCubit.get(context)
-                                      .requestDetails!
-                                      .paymentStatus! !=
-                                  "paid"
-                          ? Container()
-                          : IconButton(
-                              onPressed: () {
-                                launchInMap(
-                                    sLat,
-                                    sLon,
-                                    RequestDetailsCubit.get(context)
-                                        .requestDetails!
-                                        .from!
-                                        .placeLatitude!,
-                                    RequestDetailsCubit.get(context)
-                                        .requestDetails!
-                                        .from!
-                                        .placeLongitude!,
-                                    context);
-                              },
-                              icon: Icon(
-                                Icons.wrong_location_sharp,
-                                size: 25.w,
-                              ))
-                    ],
-                  ),
-                  SizedBox(
-                    height: 5.h,
-                  ),
-                  RequestDetailsCubit.get(context).typeScreen.isNotEmpty &&
-                              RequestDetailsCubit.get(context).typeScreen ==
-                                  "past" ||
-                          RequestDetailsCubit.get(context)
-                                  .requestDetails!
-                                  .status ==
-                              "pending" ||
-                          RequestDetailsCubit.get(context)
-                                  .requestDetails!
-                                  .status ==
-                              "end" ||
-                          RequestDetailsCubit.get(context)
-                                  .requestDetails!
-                                  .status ==
-                              "reject" ||
-                          RequestDetailsCubit.get(context)
-                                  .requestDetails!
-                                  .status ==
-                              "cancel" ||
-                          RequestDetailsCubit.get(context)
-                                  .requestDetails!
-                                  .paymentStatus! !=
-                              "paid"
-                      ? Container()
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: defaultButtonWithIcon(
-                                  press: () {
-                                    if (RequestDetailsCubit.get(context)
-                                            .requestDetails
-                                            ?.client2
-                                            ?.phone !=
-                                        null) {
-                                      print(
-                                          'phone*************** ${RequestDetailsCubit.get(context).requestDetails?.client2?.country?.code}${RequestDetailsCubit.get(context).requestDetails?.client2?.phone}');
-                                      makePhoneCall(
-                                          '${RequestDetailsCubit.get(context).requestDetails?.client2?.country?.code}${RequestDetailsCubit.get(context).requestDetails?.client2?.phone}');
-                                    } else {
-                                      showToastt(
-                                          text: LanguageCubit.get(context)
-                                              .getTexts('ClientNotHavePhone')
-                                              .toString(),
-                                          state: ToastStates.error,
-                                          context: context);
-                                    }
-                                  },
-                                  fontSize: 18,
-                                  paddingVertical: 1,
-                                  paddingHorizontal: 5,
-                                  borderRadius: 10,
-                                  text: LanguageCubit.get(context)
-                                      .getTexts('CallClient')
-                                      .toString(),
-                                  backColor: greenColor,
-                                  textColor: white,
-                                  icon: Icons.phone),
-                            ),
-                            SizedBox(
-                              width: 5.w,
-                            ),
-                            Expanded(
-                              child: defaultButtonWithIcon(
-                                  press: () {
-                                    if (RequestDetailsCubit.get(context)
-                                            .requestDetails
-                                            ?.client2
-                                            ?.whatsApp !=
-                                        null) {
-                                      openWhatsapp(
-                                          '${RequestDetailsCubit.get(context).requestDetails?.client2?.country?.code}${RequestDetailsCubit.get(context).requestDetails?.client2?.whatsApp}',
-                                          context);
-                                    } else {
-                                      openWhatsapp(
-                                          '${RequestDetailsCubit.get(context).requestDetails?.client2?.country?.code}${RequestDetailsCubit.get(context).requestDetails?.client2?.phone}',
-                                          context);
-                                    }
-                                  },
-                                  fontSize: 18,
-                                  paddingVertical: 1,
-                                  paddingHorizontal: 5,
-                                  borderRadius: 10,
-                                  text: LanguageCubit.get(context)
-                                      .getTexts('WhatsApp')
-                                      .toString(),
-                                  backColor: greenColor,
-                                  textColor: white,
-                                  icon: Icons.whatsapp),
-                            ),
-                          ],
-                        )
-                  /* RatingBar.builder(
+                    ),
+                    RequestDetailsCubit.get(context).typeScreen.isNotEmpty &&
+                                RequestDetailsCubit.get(context).typeScreen ==
+                                    "past" ||
+                            data.status == "end" ||
+                            data.status == "mid_pause" ||
+                            data.status == "reject" ||
+                            data.status == "cancel" ||
+                            data.paymentStatus! != "paid"
+                        ? Container()
+                        : IconButton(
+                            onPressed: () {
+                              launchInMap(sLat, sLon, data.from!.placeLatitude!,
+                                  data.from!.placeLongitude!, context);
+                            },
+                            icon: Icon(
+                              Icons.wrong_location_sharp,
+                              size: 25.w,
+                            ))
+                  ],
+                ),
+                SizedBox(
+                  height: 5.h,
+                ),
+                RequestDetailsCubit.get(context).typeScreen.isNotEmpty &&
+                            RequestDetailsCubit.get(context).typeScreen ==
+                                "past" ||
+                        data.status == "pending" ||
+                        data.status == "end" ||
+                        data.status == "reject" ||
+                        data.status == "mid_pause" ||
+                        data.status == "cancel" ||
+                        data.paymentStatus! != "paid"
+                    ? Container()
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: defaultButtonWithIcon(
+                                press: () {
+                                  if (data.client2 != null &&
+                                      data.client2!.phone != null) {
+                                    // print(
+                                    //     'phone*************** ${data.client2?.country?.code}${data.client2?.phone}');
+                                    makePhoneCall(
+                                        '${data.client2?.country?.code}${data.client2?.phone}');
+                                  } else {
+                                    showToastt(
+                                        text: LanguageCubit.get(context)
+                                            .getTexts('ClientNotHavePhone')
+                                            .toString(),
+                                        state: ToastStates.error,
+                                        context: context);
+                                  }
+                                },
+                                fontSize: 18,
+                                paddingVertical: 1,
+                                paddingHorizontal: 5,
+                                borderRadius: 10,
+                                text: LanguageCubit.get(context)
+                                    .getTexts('CallClient')
+                                    .toString(),
+                                backColor: greenColor,
+                                textColor: white,
+                                icon: Icons.phone),
+                          ),
+                          SizedBox(
+                            width: 5.w,
+                          ),
+                          Expanded(
+                            child: defaultButtonWithIcon(
+                                press: () {
+                                  if (data.client2 != null &&
+                                      data.client2!.whatsApp != null) {
+                                    openWhatsapp(
+                                        '${data.client2?.country?.code}${data.client2?.whatsApp}',
+                                        context);
+                                  } else {
+                                    openWhatsapp(
+                                        '${data.client2?.country?.code}${data.client2?.phone}',
+                                        context);
+                                  }
+                                },
+                                fontSize: 18,
+                                paddingVertical: 1,
+                                paddingHorizontal: 5,
+                                borderRadius: 10,
+                                text: LanguageCubit.get(context)
+                                    .getTexts('WhatsApp')
+                                    .toString(),
+                                backColor: greenColor,
+                                textColor: white,
+                                icon: Icons.whatsapp),
+                          ),
+                        ],
+                      )
+                /* RatingBar.builder(
                                                 minRating: _userRating,
                                                 itemBuilder: (context, index) =>
                                                     const Icon(
@@ -690,12 +641,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                     Colors.amber.withAlpha(50),
                                                 direction: Axis.horizontal,
                                               ),*/
-                ],
-              ),
+              ],
             ),
-          )
-        ],
-      );
+          ),
+        )
+      ],
+    );
+  }
 
   Widget requestInfo(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -1539,7 +1491,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   )
                 : errorMessage2(
                     message: LanguageCubit.get(context)
-                        .getTexts('NotFoundData')
+                        .getTexts('NotFoundTrip')
                         .toString(),
                     press: () {
                       RequestDetailsCubit.get(context).indexTrips = 1;

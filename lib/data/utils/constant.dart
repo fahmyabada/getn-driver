@@ -38,8 +38,9 @@ String handleError(dynamic error) {
         errorDescription = "Receive timeout in connection with API server";
         break;
       case DioErrorType.response:
-        Map<dynamic, dynamic> data = dioError.response?.data;
-        errorDescription = "${data.values}";
+        errorDescription = dioError.response?.data["message"] is Map
+            ? getMapValues(dioError.response?.data["message"])
+            : dioError.response?.data["message"];
         break;
       case DioErrorType.sendTimeout:
         errorDescription = "Send timeout in connection with API server";
@@ -53,8 +54,15 @@ String handleError(dynamic error) {
   return errorDescription;
 }
 
+getMapValues(map) {
+  String values = "";
+  map.forEach((key, value) {
+    values += "$value\n";
+  });
+  return values;
+}
+
 String handleErrorFirebase(String type, dynamic error) {
-  print("Exception222*************${error}");
   switch (error) {
     case "ERROR_EMAIL_ALREADY_IN_USE":
     case "account-exists-with-different-credential":
