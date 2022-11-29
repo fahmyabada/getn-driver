@@ -12,17 +12,10 @@ class DataRequest {
     String? updatedAt,
     String? status,
     String? to,
-    int? subtotalPoints,
-    int? subtotalPrice,
     double? consumptionPoints,
     double? consumptionKM,
-    int? packagesPoints,
-    int? totalPackagesPrice,
     double? consumptionPackagesPoints,
-    int? consumptionPackagesKM,
-    int? totalPoints,
-    int? refund,
-    int? totalPrice,
+    double? totalPrice,
     double? totalConsumptionPoints,
     double? totalConsumptionKM,
     String? paymentMethod,
@@ -36,23 +29,15 @@ class DataRequest {
     String? client,
     List<Days>? days,
     List<StatusHistory>? statusHistory,
-    int? v,
   }) {
     _from = from;
     _createdAt = createdAt;
     _updatedAt = updatedAt;
     _status = status;
     _to = to;
-    _subtotalPoints = subtotalPoints;
-    _subtotalPrice = subtotalPrice;
     _consumptionPoints = consumptionPoints;
     _consumptionKM = consumptionKM;
-    _packagesPoints = packagesPoints;
-    _totalPackagesPrice = totalPackagesPrice;
     _consumptionPackagesPoints = consumptionPackagesPoints;
-    _consumptionPackagesKM = consumptionPackagesKM;
-    _totalPoints = totalPoints;
-    _refund = refund;
     _totalPrice = totalPrice;
     _totalConsumptionPoints = totalConsumptionPoints;
     _totalConsumptionKM = totalConsumptionKM;
@@ -67,7 +52,6 @@ class DataRequest {
     _client = client;
     _days = days;
     _statusHistory = statusHistory;
-    _v = v;
   }
 
   DataRequest.fromJson(dynamic json) {
@@ -78,19 +62,12 @@ class DataRequest {
     _createdAt = json['createdAt'];
     _updatedAt = json['updatedAt'];
     _status = json['status'];
-    _subtotalPoints = json['subtotalPoints'];
-    _subtotalPrice = json['subtotalPrice'];
     _consumptionPoints = double.parse(json['consumptionPoints'].toString());
     _consumptionKM = json['consumptionKM'] is int ? 0.0 : json['consumptionKM'];
-    _packagesPoints = json['packagesPoints'];
-    _totalPackagesPrice = json['totalPackagesPrice'];
     _consumptionPackagesPoints = json['consumptionPackagesPoints'] is int
         ? 0.0
         : json['consumptionPackagesPoints'];
-    _consumptionPackagesKM = json['consumptionPackagesKM'];
-    _totalPoints = json['totalPoints'];
-    _refund = json['refund'];
-    _totalPrice = json['totalPrice'];
+    _totalPrice = json['totalPrice'] is int ? 0.0 : json['totalPrice'];
     _totalConsumptionPoints = json['totalConsumptionPoints'] is int
         ? 0.0
         : json['totalConsumptionPoints'];
@@ -120,7 +97,6 @@ class DataRequest {
         _statusHistory?.add(StatusHistory.fromJson(v));
       });
     }
-    _v = json['__v'];
   }
 
   From? _from;
@@ -129,17 +105,10 @@ class DataRequest {
   String? _status;
   String? _to;
   To? _to2;
-  int? _subtotalPoints;
-  int? _subtotalPrice;
   double? _consumptionPoints;
   double? _consumptionKM;
-  int? _packagesPoints;
-  int? _totalPackagesPrice;
   double? _consumptionPackagesPoints;
-  int? _consumptionPackagesKM;
-  int? _totalPoints;
-  int? _refund;
-  int? _totalPrice;
+  double? _totalPrice;
   double? _totalConsumptionPoints;
   double? _totalConsumptionKM;
   String? _paymentMethod;
@@ -154,7 +123,6 @@ class DataRequest {
   Client? _client2;
   List<Days>? _days;
   List<StatusHistory>? _statusHistory;
-  int? _v;
 
   From? get from => _from;
 
@@ -168,27 +136,13 @@ class DataRequest {
 
   String? get to => _to;
 
-  int? get subtotalPoints => _subtotalPoints;
-
-  int? get subtotalPrice => _subtotalPrice;
-
   double? get consumptionPoints => _consumptionPoints;
 
   double? get consumptionKM => _consumptionKM;
 
-  int? get packagesPoints => _packagesPoints;
-
-  int? get totalPackagesPrice => _totalPackagesPrice;
-
   double? get consumptionPackagesPoints => _consumptionPackagesPoints;
 
-  int? get consumptionPackagesKM => _consumptionPackagesKM;
-
-  int? get totalPoints => _totalPoints;
-
-  int? get refund => _refund;
-
-  int? get totalPrice => _totalPrice;
+  double? get totalPrice => _totalPrice;
 
   double? get totalConsumptionPoints => _totalConsumptionPoints;
 
@@ -218,8 +172,6 @@ class DataRequest {
 
   List<StatusHistory>? get statusHistory => _statusHistory;
 
-  int? get v => _v;
-
   @override
   String toString() {
     return 'DataRequest{_referenceId: $_referenceId}';
@@ -234,16 +186,9 @@ class DataRequest {
     map['updatedAt'] = _updatedAt;
     map['status'] = _status;
     map['to'] = _to;
-    map['subtotalPoints'] = _subtotalPoints;
-    map['subtotalPrice'] = _subtotalPrice;
     map['consumptionPoints'] = _consumptionPoints;
     map['consumptionKM'] = _consumptionKM;
-    map['packagesPoints'] = _packagesPoints;
-    map['totalPackagesPrice'] = _totalPackagesPrice;
     map['consumptionPackagesPoints'] = _consumptionPackagesPoints;
-    map['consumptionPackagesKM'] = _consumptionPackagesKM;
-    map['totalPoints'] = _totalPoints;
-    map['refund'] = _refund;
     map['totalPrice'] = _totalPrice;
     map['totalConsumptionPoints'] = _totalConsumptionPoints;
     map['totalConsumptionKM'] = _totalConsumptionKM;
@@ -263,7 +208,6 @@ class DataRequest {
       map['statusHistory'] = _statusHistory?.map((v) => v.toJson()).toList();
     }
 
-    map['__v'] = _v;
     return map;
   }
 }

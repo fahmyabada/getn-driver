@@ -1,9 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:getn_driver/data/model/api_result_model.dart';
 import 'package:getn_driver/data/model/request/DataRequest.dart';
 import 'package:getn_driver/data/model/trips/Data.dart';
+import 'package:getn_driver/domain/usecase/tripDetails/GetCurrentLocationTripUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripDetails/GetTripDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripDetails/PutTripDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripDetails/SetPolyLinesUseCase.dart';
@@ -21,8 +23,9 @@ class TripDetailsCubit extends Cubit<TripDetailsState> {
   var getTripDetailsUseCase = getIt<GetTripDetailsUseCase>();
   var putTripDetailsUseCase = getIt<PutTripDetailsUseCase>();
   var updateAllDataUseCase = getIt<SetPolyLinesUseCase>();
+  var getCurrentLocationTripUseCase = getIt<GetCurrentLocationTripUseCase>();
   APIResultModel? routeCoordinates;
-
+  bool loadingRequest = false;
   Data? tripDetails;
 
   void getTripDetails(String id) async {
@@ -42,12 +45,12 @@ class TripDetailsCubit extends Cubit<TripDetailsState> {
     });
   }
 
-  void editTrip(String id, String type, String comment) async {
+  void editTrip(String id, String type, String comment,double consumptionKM) async {
     if(type != "reject" && type != "end"){
       emit(TripDetailsEditInitial());
     }
 
-    putTripDetailsUseCase.execute(id, type, comment).then((value) {
+    putTripDetailsUseCase.execute(id, type, comment, consumptionKM).then((value) {
       emit(eitherLoadedOrErrorStateTripEdit(value,type));
     });
   }
@@ -71,6 +74,22 @@ class TripDetailsCubit extends Cubit<TripDetailsState> {
         GoogleMapSuccessState(data);
         return routeCoordinates = data;
       });
+    });
+  }
+
+  void getCurrentLocation() async {
+    loadingRequest = true;
+    emit(CurrentLocationTripLoading());
+    final data = await getCurrentLocationTripUseCase.execute();
+    emit(eitherLoadedOrErrorStateCurrentLocation(data));
+  }
+
+  TripDetailsState eitherLoadedOrErrorStateCurrentLocation(
+      Either<String, Position> data) {
+    return data.fold((failure) {
+      return CurrentLocationTripErrorState(failure);
+    }, (data) {
+      return CurrentLocationTripSuccessState(data);
     });
   }
 }

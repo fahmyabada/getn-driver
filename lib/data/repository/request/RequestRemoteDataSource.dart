@@ -22,7 +22,7 @@ abstract class RequestRemoteDataSource {
 class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
   @override
   Future<Either<String, Request?>> getRequest(Map<String, dynamic> body) async {
-    try {
+    // try {
       return await DioHelper.getData(
               url: 'request',
               query: body,
@@ -34,9 +34,9 @@ class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    }  catch (error) {
-      return Left(handleError(error));
-    }
+    // }  catch (error) {
+    //   return Left(handleError(error));
+    // }
   }
 
   @override

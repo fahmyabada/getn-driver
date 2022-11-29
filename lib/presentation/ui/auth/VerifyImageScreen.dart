@@ -34,7 +34,8 @@ class VerifyImageScreen extends StatefulWidget {
       this.availabilities,
       this.userImage,
       this.whatsApp,
-      this.whatsappCountry})
+      this.whatsappCountry,
+      this.brief})
       : super(key: key);
 
   final String? typeScreen;
@@ -48,6 +49,7 @@ class VerifyImageScreen extends StatefulWidget {
   final String? birthDate;
   final String? cityId;
   final String? areaId;
+  final String? brief;
   final String? address;
   final List<String>? availabilities;
   final String? userImage;
@@ -291,6 +293,7 @@ class _VerifyImageScreenState extends State<VerifyImageScreen> {
                                       widget.email!,
                                       widget.firebaseToken!,
                                       widget.fullName!,
+                                      widget.brief!,
                                       widget.role!,
                                       widget.terms!,
                                       _imageFileList!.path.toString(),

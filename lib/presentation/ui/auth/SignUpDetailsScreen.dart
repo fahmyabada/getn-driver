@@ -45,6 +45,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
   var groupValueId = "";
   final fullNameController = TextEditingController();
   final emailController = TextEditingController();
+  final briefController = TextEditingController();
   final birthDateController = TextEditingController();
   final addressController = TextEditingController();
   final whatsAppController = TextEditingController();
@@ -480,6 +481,22 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                     DateFormat("yyyy-MM-dd").format(pickedDate);
                               }
                             },
+                          ),
+                          SizedBox(
+                            height: 16.h,
+                          ),
+                          defaultFormField(
+                              controller: briefController,
+                              type: TextInputType.multiline,
+                              label: LanguageCubit.get(context)
+                                  .getTexts('brief')
+                                  .toString(),
+                              textSize: 20,
+                              border: false,
+                              borderRadius: 20,
+                              onEditingComplete: () {
+                                FocusScope.of(context).nextFocus();
+                              }
                           ),
                           SizedBox(
                             height: 32.h,
@@ -949,6 +966,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                       countryId: widget.countryId,
                                       cityId: dropDownValueCity!.id!,
                                       areaId: dropDownValueArea!.id!,
+                                      brief: briefController.text.toString(),
                                       address: addressController.text.toString(),
                                       availabilities: availabilitiesValues,
                                       firebaseToken: widget.firebaseToken,

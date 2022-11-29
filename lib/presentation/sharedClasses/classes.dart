@@ -1,8 +1,12 @@
+import 'dart:ui' as ui;
+
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:getn_driver/data/model/request/From.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
@@ -14,11 +18,11 @@ import 'package:getn_driver/presentation/ui/policies/PoliciesScreen.dart';
 import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
 import 'package:getn_driver/presentation/ui/setting/SettingScreen.dart';
+import 'package:getn_driver/presentation/ui/trip/tripDetails/TripDetailsScreen.dart';
 import 'package:getn_driver/presentation/ui/trip/tripDetails/trip_details_cubit.dart';
 import 'package:getn_driver/presentation/ui/wallet/WalletScreen.dart';
 import 'package:getn_driver/presentation/ui/wallet/wallet_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:ui' as ui;
 
 class CustomDialogRequestTabs extends StatefulWidget {
   final String? title, description, id;
@@ -27,7 +31,6 @@ class CustomDialogRequestTabs extends StatefulWidget {
       descColor,
       btnOkColor,
       btnCancelColor;
-
 
   const CustomDialogRequestTabs({
     Key? key,
@@ -42,7 +45,8 @@ class CustomDialogRequestTabs extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<CustomDialogRequestTabs> createState() => _CustomDialogRequestTabsState();
+  State<CustomDialogRequestTabs> createState() =>
+      _CustomDialogRequestTabsState();
 }
 
 class _CustomDialogRequestTabsState extends State<CustomDialogRequestTabs> {
@@ -51,7 +55,6 @@ class _CustomDialogRequestTabsState extends State<CustomDialogRequestTabs> {
   var formKeyRequest = GlobalKey<FormState>();
 
   bool loadingEditDialogPending = false;
-
 
   @override
   Widget build(BuildContext context) {
@@ -79,8 +82,8 @@ class _CustomDialogRequestTabsState extends State<CustomDialogRequestTabs> {
             elevation: 0,
             backgroundColor: Colors.transparent,
             child: Container(
-              padding:
-              EdgeInsets.only(top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+              padding: EdgeInsets.only(
+                  top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
               margin: EdgeInsets.only(top: 50.r),
               decoration: BoxDecoration(
                 color: widget.backgroundColor,
@@ -117,13 +120,17 @@ class _CustomDialogRequestTabsState extends State<CustomDialogRequestTabs> {
                     child: defaultFormField(
                         controller: commentController,
                         type: TextInputType.text,
-                        label: LanguageCubit.get(context).getTexts('comment').toString(),
+                        label: LanguageCubit.get(context)
+                            .getTexts('comment')
+                            .toString(),
                         textSize: 15,
                         borderRadius: 50,
                         border: false,
                         borderColor: white,
                         validatorText: commentController.text,
-                        validatorMessage: LanguageCubit.get(context).getTexts('EnterComment').toString(),
+                        validatorMessage: LanguageCubit.get(context)
+                            .getTexts('EnterComment')
+                            .toString(),
                         onEditingComplete: () {
                           FocusScope.of(context).unfocus();
                         }),
@@ -137,24 +144,28 @@ class _CustomDialogRequestTabsState extends State<CustomDialogRequestTabs> {
                       loadingEditDialogPending
                           ? loading()
                           : MaterialButton(
-                          height: 30.h,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.r)),
-                          color: widget.btnOkColor,
-                          minWidth: 80.w,
-                          onPressed: () {
-                            if (formKeyRequest.currentState!.validate()) {
-                              RequestCubit.get(context).editRequest(widget.id!, "reject",
-                                  commentController.text.toString());
-                              setState(() {
-                                loadingEditDialogPending = true;
-                              });
-                            }
-                          },
-                          child: Text(
-                            LanguageCubit.get(context).getTexts('Ok').toString(),
-                            style: TextStyle(color: white, fontSize: 15.sp),
-                          )),
+                              height: 30.h,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.r)),
+                              color: widget.btnOkColor,
+                              minWidth: 80.w,
+                              onPressed: () {
+                                if (formKeyRequest.currentState!.validate()) {
+                                  RequestCubit.get(context).editRequest(
+                                      widget.id!,
+                                      "reject",
+                                      commentController.text.toString());
+                                  setState(() {
+                                    loadingEditDialogPending = true;
+                                  });
+                                }
+                              },
+                              child: Text(
+                                LanguageCubit.get(context)
+                                    .getTexts('Ok')
+                                    .toString(),
+                                style: TextStyle(color: white, fontSize: 15.sp),
+                              )),
                       SizedBox(
                         width: 30.w,
                       ),
@@ -166,7 +177,9 @@ class _CustomDialogRequestTabsState extends State<CustomDialogRequestTabs> {
                           onPressed: () => Navigator.pop(context),
                           minWidth: 80.w,
                           child: Text(
-                            LanguageCubit.get(context).getTexts('Cancel').toString(),
+                            LanguageCubit.get(context)
+                                .getTexts('Cancel')
+                                .toString(),
                             style: TextStyle(color: black, fontSize: 15.sp),
                           )),
                     ],
@@ -188,7 +201,6 @@ class CustomDialogLocation extends StatefulWidget {
       descColor,
       btnOkColor,
       btnCancelColor;
-
 
   const CustomDialogLocation({
     Key? key,
@@ -265,8 +277,8 @@ class _CustomDialogLocationState extends State<CustomDialogLocation> {
                       color: widget.btnOkColor,
                       onPressed: () => Navigator.pop(context),
                       child: Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 8.r, horizontal: 8.r),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 8.r, horizontal: 8.r),
                         child: Text(
                           "ok",
                           style: TextStyle(color: white, fontSize: 15.sp),
@@ -285,7 +297,8 @@ class _CustomDialogLocationState extends State<CustomDialogLocation> {
                                 onPressed: () => Navigator.pop(context),
                                 child: Text(
                                   "ok",
-                                  style: TextStyle(color: white, fontSize: 15.sp),
+                                  style:
+                                      TextStyle(color: white, fontSize: 15.sp),
                                 )),
                             SizedBox(
                               width: 30.w,
@@ -300,7 +313,8 @@ class _CustomDialogLocationState extends State<CustomDialogLocation> {
                                 minWidth: 80.w,
                                 child: Text(
                                   "Setting",
-                                  style: TextStyle(color: black, fontSize: 15.sp),
+                                  style:
+                                      TextStyle(color: black, fontSize: 15.sp),
                                 )),
                           ],
                         )
@@ -320,7 +334,6 @@ class CustomDialogImage extends StatefulWidget {
       descColor,
       btnOkColor,
       btnCancelColor;
-
 
   const CustomDialogImage({
     Key? key,
@@ -343,7 +356,6 @@ class _CustomDialogImageState extends State<CustomDialogImage> {
   var commentController = TextEditingController();
 
   var formKeyRequest = GlobalKey<FormState>();
-
 
   @override
   Widget build(BuildContext context) {
@@ -398,8 +410,8 @@ class _CustomDialogImageState extends State<CustomDialogImage> {
                       color: widget.btnOkColor,
                       onPressed: () => Navigator.pop(context),
                       child: Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 8.r, horizontal: 8.r),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 8.r, horizontal: 8.r),
                         child: Text(
                           "ok",
                           style: TextStyle(color: white, fontSize: 15.sp),
@@ -418,7 +430,8 @@ class _CustomDialogImageState extends State<CustomDialogImage> {
                                 onPressed: () => Navigator.pop(context),
                                 child: Text(
                                   "ok",
-                                  style: TextStyle(color: white, fontSize: 15.sp),
+                                  style:
+                                      TextStyle(color: white, fontSize: 15.sp),
                                 )),
                             SizedBox(
                               width: 30.w,
@@ -432,7 +445,8 @@ class _CustomDialogImageState extends State<CustomDialogImage> {
                                 minWidth: 80.w,
                                 child: Text(
                                   "Setting",
-                                  style: TextStyle(color: black, fontSize: 15.sp),
+                                  style:
+                                      TextStyle(color: black, fontSize: 15.sp),
                                 )),
                           ],
                         )
@@ -448,7 +462,6 @@ class _CustomDialogImageState extends State<CustomDialogImage> {
 class CustomDialogRejectRequestDetails extends StatefulWidget {
   final String? title, description, id, type;
 
-
   const CustomDialogRejectRequestDetails({
     Key? key,
     this.title,
@@ -458,7 +471,8 @@ class CustomDialogRejectRequestDetails extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<CustomDialogRejectRequestDetails> createState() => _CustomDialogRejectRequestDetailsState();
+  State<CustomDialogRejectRequestDetails> createState() =>
+      _CustomDialogRejectRequestDetailsState();
 }
 
 class _CustomDialogRejectRequestDetailsState
@@ -533,13 +547,17 @@ class _CustomDialogRejectRequestDetailsState
                     child: defaultFormField(
                         controller: commentController,
                         type: TextInputType.text,
-                        label: LanguageCubit.get(context).getTexts('comment').toString(),
+                        label: LanguageCubit.get(context)
+                            .getTexts('comment')
+                            .toString(),
                         textSize: 15,
                         borderRadius: 50,
                         border: false,
                         borderColor: white,
                         validatorText: commentController.text,
-                        validatorMessage: LanguageCubit.get(context).getTexts('EnterComment').toString(),
+                        validatorMessage: LanguageCubit.get(context)
+                            .getTexts('EnterComment')
+                            .toString(),
                         onEditingComplete: () {
                           FocusScope.of(context).unfocus();
                         }),
@@ -571,7 +589,9 @@ class _CustomDialogRejectRequestDetailsState
                                 }
                               },
                               child: Text(
-                                LanguageCubit.get(context).getTexts('Ok').toString(),
+                                LanguageCubit.get(context)
+                                    .getTexts('Ok')
+                                    .toString(),
                                 style: TextStyle(color: white, fontSize: 15.sp),
                               )),
                       SizedBox(
@@ -585,7 +605,9 @@ class _CustomDialogRejectRequestDetailsState
                           onPressed: () => Navigator.pop(context),
                           minWidth: 80.w,
                           child: Text(
-                            LanguageCubit.get(context).getTexts('Cancel').toString(),
+                            LanguageCubit.get(context)
+                                .getTexts('Cancel')
+                                .toString(),
                             style: TextStyle(color: black, fontSize: 15.sp),
                           )),
                     ],
@@ -601,7 +623,7 @@ class _CustomDialogRejectRequestDetailsState
 }
 
 class CustomDialogEndRequestDetails extends StatefulWidget {
-  final String? title, description, id,  status;
+  final String? title, description, id, status;
 
   const CustomDialogEndRequestDetails({
     Key? key,
@@ -612,7 +634,8 @@ class CustomDialogEndRequestDetails extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<CustomDialogEndRequestDetails> createState() => _CustomDialogEndRequestDetailsState();
+  State<CustomDialogEndRequestDetails> createState() =>
+      _CustomDialogEndRequestDetailsState();
 }
 
 class _CustomDialogEndRequestDetailsState
@@ -684,23 +707,25 @@ class _CustomDialogEndRequestDetailsState
                       loadingEndRequestDetails
                           ? loading()
                           : MaterialButton(
-                              height: 30.h,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.r)),
-                              color: accentColor,
-                              minWidth: 80.w,
-                              onPressed: () {
-                                RequestDetailsCubit.get(context)
-                                    .editRequest(widget.id!, widget.status!, "");
+                          height: 30.h,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r)),
+                          color: accentColor,
+                          minWidth: 80.w,
+                          onPressed: () {
+                            RequestDetailsCubit.get(context).editRequest(
+                                widget.id!, widget.status!, "");
 
-                                setState(() {
-                                  loadingEndRequestDetails = true;
-                                });
-                              },
-                              child: Text(
-                                LanguageCubit.get(context).getTexts('Ok').toString(),
-                                style: TextStyle(color: white, fontSize: 15.sp),
-                              )),
+                            setState(() {
+                              loadingEndRequestDetails = true;
+                            });
+                          },
+                          child: Text(
+                            LanguageCubit.get(context)
+                                .getTexts('Ok')
+                                .toString(),
+                            style: TextStyle(color: white, fontSize: 15.sp),
+                          )),
                       SizedBox(
                         width: 30.w,
                       ),
@@ -712,7 +737,9 @@ class _CustomDialogEndRequestDetailsState
                           onPressed: () => Navigator.pop(context),
                           minWidth: 80.w,
                           child: Text(
-                            LanguageCubit.get(context).getTexts('Cancel').toString(),
+                            LanguageCubit.get(context)
+                                .getTexts('Cancel')
+                                .toString(),
                             style: TextStyle(color: black, fontSize: 15.sp),
                           )),
                     ],
@@ -727,19 +754,144 @@ class _CustomDialogEndRequestDetailsState
   }
 }
 
+class CustomDialogLastTrip extends StatefulWidget {
+  const CustomDialogLastTrip({Key? key, this.title, this.description, this.idTrip, this.status, this.idRequest}) : super(key: key);
+  final String? title, description, idTrip, idRequest, status;
+
+  @override
+  State<CustomDialogLastTrip> createState() => _CustomDialogLastTripState();
+}
+
+class _CustomDialogLastTripState extends State<CustomDialogLastTrip> {
+  @override
+  Widget build(BuildContext context) {
+    return Directionality(
+      textDirection: LanguageCubit.get(context).isEn
+          ? ui.TextDirection.ltr
+          : ui.TextDirection.rtl,
+      child: Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding: EdgeInsets.only(
+              top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+          margin: EdgeInsets.only(top: 50.r),
+          decoration: BoxDecoration(
+            color: white,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(10.r),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              SizedBox(
+                height: 10.r,
+              ),
+              Text(
+                widget.title!,
+                style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w700,
+                    color: accentColor),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 16.r,
+              ),
+              Text(
+                widget.description!,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16.sp, color: black),
+              ),
+              SizedBox(
+                height: 44.h,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  MaterialButton(
+                      height: 30.h,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.r)),
+                      color: accentColor,
+                      minWidth: 80.w,
+                      onPressed: () async {
+                        print(
+                            "CustomDialogRejectRequestDetails1************* ${widget.idTrip}   +++ ${widget.idRequest}");
+                        await navigateToWithRefreshPagePrevious(
+                            context,
+                            TripDetailsScreen(
+                              idTrip: widget.idTrip,
+                              idRequest: widget.idRequest,
+                            )).then((value) {
+                              setState(() {
+                                Navigator.pop(context);
+                                getIt<SharedPreferences>().setString(
+                                    'typeScreen', "requestDetails");
+                                RequestDetailsCubit.get(context).indexTrips =
+                                1;
+                                RequestDetailsCubit.get(context)
+                                    .loadingRequest = false;
+                                RequestDetailsCubit.get(context)
+                                    .failureRequest = "";
+                                RequestDetailsCubit.get(context).failureTrip =
+                                "";
+                                RequestDetailsCubit.get(context)
+                                    .getRequestDetails(widget.idRequest!);
+                              });
+                        });
+                      },
+                      child: Text(
+                        LanguageCubit.get(context)
+                            .getTexts('Ok')
+                            .toString(),
+                        style: TextStyle(color: white, fontSize: 15.sp),
+                      )),
+                  SizedBox(
+                    width: 30.w,
+                  ),
+                  MaterialButton(
+                      height: 30.h,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.r)),
+                      color: grey,
+                      onPressed: () => Navigator.pop(context),
+                      minWidth: 80.w,
+                      child: Text(
+                        LanguageCubit.get(context)
+                            .getTexts('Cancel')
+                            .toString(),
+                        style: TextStyle(color: black, fontSize: 15.sp),
+                      )),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+  }
+}
+
 class CustomDialogRejectTripDetails extends StatefulWidget {
   final String? title, description, id;
-
+  final From? location;
 
   const CustomDialogRejectTripDetails({
     Key? key,
     this.title,
     this.description,
     this.id,
+    this.location,
   }) : super(key: key);
 
   @override
-  State<CustomDialogRejectTripDetails> createState() => _CustomDialogRejectTripDetailsState();
+  State<CustomDialogRejectTripDetails> createState() =>
+      _CustomDialogRejectTripDetailsState();
 }
 
 class _CustomDialogRejectTripDetailsState
@@ -749,6 +901,7 @@ class _CustomDialogRejectTripDetailsState
   var formKeyRequest = GlobalKey<FormState>();
 
   bool loadingRejectTripDetails = false;
+  double sLat = 0.0, sLon = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -762,6 +915,69 @@ class _CustomDialogRejectTripDetailsState
           setState(() {
             loadingRejectTripDetails = false;
           });
+        } else if (state is CurrentLocationTripSuccessState) {
+
+          sLat = state.position.latitude;
+          sLon = state.position.longitude;
+          getDistanceKM(double.parse(widget.location!.placeLatitude!),
+                  double.parse(widget.location!.placeLongitude!), sLat, sLon)
+              .then((value) {
+            print('CurrentLocationTripSuccessState********* $value');
+            TripDetailsCubit.get(context).editTrip(
+                widget.id!, "reject", commentController.text.toString(), value);
+          });
+        } else if (state is CurrentLocationTripErrorState) {
+          if (kDebugMode) {
+            print('CurrentLocationTripErrorState********* ${state.error}');
+          }
+          setState(() {
+            loadingRejectTripDetails = false;
+          });
+          if (state.error == "denied") {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              // outside to dismiss
+              builder: (BuildContext context) {
+                return CustomDialogLocation(
+                  title: LanguageCubit.get(context)
+                      .getTexts('Location')
+                      .toString(),
+                  description: LanguageCubit.get(context)
+                      .getTexts('LocationPermissions')
+                      .toString(),
+                  type: "checkLocationDenied",
+                  backgroundColor: white,
+                  btnOkColor: accentColor,
+                  btnCancelColor: grey,
+                  titleColor: accentColor,
+                  descColor: black,
+                );
+              },
+            ).then((value) => Navigator.pop(context));
+          } else if (state.error == "deniedForever") {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              // outside to dismiss
+              builder: (BuildContext mContext) {
+                return CustomDialogLocation(
+                  title: LanguageCubit.get(context)
+                      .getTexts('Location')
+                      .toString(),
+                  description: LanguageCubit.get(context)
+                      .getTexts('LocationPermissionsPermanently')
+                      .toString(),
+                  type: "checkLocationDeniedForever",
+                  backgroundColor: white,
+                  btnOkColor: accentColor,
+                  btnCancelColor: grey,
+                  titleColor: accentColor,
+                  descColor: black,
+                );
+              },
+            ).then((value) => Navigator.pop(context));
+          }
         }
       },
       builder: (context, state) {
@@ -814,13 +1030,17 @@ class _CustomDialogRejectTripDetailsState
                     child: defaultFormField(
                         controller: commentController,
                         type: TextInputType.text,
-                        label: LanguageCubit.get(context).getTexts('comment').toString(),
+                        label: LanguageCubit.get(context)
+                            .getTexts('comment')
+                            .toString(),
                         textSize: 15,
                         borderRadius: 50,
                         border: false,
                         borderColor: white,
                         validatorText: commentController.text,
-                        validatorMessage: LanguageCubit.get(context).getTexts('EnterComment').toString(),
+                        validatorMessage: LanguageCubit.get(context)
+                            .getTexts('EnterComment')
+                            .toString(),
                         onEditingComplete: () {
                           FocusScope.of(context).unfocus();
                         }),
@@ -841,10 +1061,8 @@ class _CustomDialogRejectTripDetailsState
                               minWidth: 80.w,
                               onPressed: () {
                                 if (formKeyRequest.currentState!.validate()) {
-                                  TripDetailsCubit.get(context).editTrip(
-                                      widget.id!,
-                                      "reject",
-                                      commentController.text.toString());
+                                  TripDetailsCubit.get(context)
+                                      .getCurrentLocation();
 
                                   setState(() {
                                     loadingRejectTripDetails = true;
@@ -852,7 +1070,9 @@ class _CustomDialogRejectTripDetailsState
                                 }
                               },
                               child: Text(
-                                LanguageCubit.get(context).getTexts('Ok').toString(),
+                                LanguageCubit.get(context)
+                                    .getTexts('Ok')
+                                    .toString(),
                                 style: TextStyle(color: white, fontSize: 15.sp),
                               )),
                       SizedBox(
@@ -866,7 +1086,9 @@ class _CustomDialogRejectTripDetailsState
                           onPressed: () => Navigator.pop(context),
                           minWidth: 80.w,
                           child: Text(
-                            LanguageCubit.get(context).getTexts('Cancel').toString(),
+                            LanguageCubit.get(context)
+                                .getTexts('Cancel')
+                                .toString(),
                             style: TextStyle(color: black, fontSize: 15.sp),
                           )),
                     ],
@@ -883,22 +1105,25 @@ class _CustomDialogRejectTripDetailsState
 
 class CustomDialogEndTripDetails extends StatefulWidget {
   final String? title, description, id, status;
+  final From? location;
 
   const CustomDialogEndTripDetails({
     Key? key,
     this.title,
     this.description,
     this.id,
-    this.status,
+    this.status, this.location,
   }) : super(key: key);
 
   @override
-  State<CustomDialogEndTripDetails> createState() => _CustomDialogEndTripDetailsState();
+  State<CustomDialogEndTripDetails> createState() =>
+      _CustomDialogEndTripDetailsState();
 }
 
 class _CustomDialogEndTripDetailsState
     extends State<CustomDialogEndTripDetails> {
   bool loadingEndTripDetails = false;
+  double sLat = 0.0, sLon = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -912,6 +1137,72 @@ class _CustomDialogEndTripDetailsState
           setState(() {
             loadingEndTripDetails = false;
           });
+        } else if (state is CurrentLocationTripSuccessState) {
+
+          sLat = state.position.latitude;
+          sLon = state.position.longitude;
+          getDistanceKM(double.parse(widget.location!.placeLatitude!),
+              double.parse(widget.location!.placeLongitude!), sLat, sLon)
+              .then((value) {
+            print('CurrentLocationTripSuccessState********* ${widget.status!}');
+            print('CurrentLocationTripSuccessState1********* $value');
+
+            TripDetailsCubit.get(context).editTrip(
+                widget.id!, widget.status!, "comment",value);
+          });
+        }
+        else if (state is CurrentLocationTripErrorState) {
+          if (kDebugMode) {
+            print('CurrentLocationTripErrorState********* ${state.error}');
+          }
+          setState(() {
+            loadingEndTripDetails = false;
+          });
+          if (state.error == "denied") {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              // outside to dismiss
+              builder: (BuildContext context) {
+                return CustomDialogLocation(
+                  title: LanguageCubit.get(context)
+                      .getTexts('Location')
+                      .toString(),
+                  description: LanguageCubit.get(context)
+                      .getTexts('LocationPermissions')
+                      .toString(),
+                  type: "checkLocationDenied",
+                  backgroundColor: white,
+                  btnOkColor: accentColor,
+                  btnCancelColor: grey,
+                  titleColor: accentColor,
+                  descColor: black,
+                );
+              },
+            ).then((value) => Navigator.pop(context));
+          } else if (state.error == "deniedForever") {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              // outside to dismiss
+              builder: (BuildContext mContext) {
+                return CustomDialogLocation(
+                  title: LanguageCubit.get(context)
+                      .getTexts('Location')
+                      .toString(),
+                  description: LanguageCubit.get(context)
+                      .getTexts('LocationPermissionsPermanently')
+                      .toString(),
+                  type: "checkLocationDeniedForever",
+                  backgroundColor: white,
+                  btnOkColor: accentColor,
+                  btnCancelColor: grey,
+                  titleColor: accentColor,
+                  descColor: black,
+                );
+              },
+            ).then((value) => Navigator.pop(context));
+          }
         }
       },
       builder: (context, state) {
@@ -971,15 +1262,17 @@ class _CustomDialogEndTripDetailsState
                               color: accentColor,
                               minWidth: 80.w,
                               onPressed: () {
-                                TripDetailsCubit.get(context).editTrip(
-                                    widget.id!, widget.status!, "comment");
+                                TripDetailsCubit.get(context)
+                                    .getCurrentLocation();
 
                                 setState(() {
                                   loadingEndTripDetails = true;
                                 });
                               },
                               child: Text(
-                                LanguageCubit.get(context).getTexts('Ok').toString(),
+                                LanguageCubit.get(context)
+                                    .getTexts('Ok')
+                                    .toString(),
                                 style: TextStyle(color: white, fontSize: 15.sp),
                               )),
                       SizedBox(
@@ -993,7 +1286,9 @@ class _CustomDialogEndTripDetailsState
                           onPressed: () => Navigator.pop(context),
                           minWidth: 80.w,
                           child: Text(
-                            LanguageCubit.get(context).getTexts('Cancel').toString(),
+                            LanguageCubit.get(context)
+                                .getTexts('Cancel')
+                                .toString(),
                             style: TextStyle(color: black, fontSize: 15.sp),
                           )),
                     ],
@@ -1006,6 +1301,128 @@ class _CustomDialogEndTripDetailsState
       },
     );
   }
+}
+
+class CustomNotHaveNetwork extends StatelessWidget {
+  const CustomNotHaveNetwork({Key? key, this.idRequest}) : super(key: key);
+  final String? idRequest;
+
+  @override
+  Widget build(BuildContext context) {
+    return Directionality(
+      textDirection: LanguageCubit.get(context).isEn
+          ? ui.TextDirection.ltr
+          : ui.TextDirection.rtl,
+      child: Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding: EdgeInsets.only(
+              top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+          margin: EdgeInsets.only(top: 50.r),
+          decoration: BoxDecoration(
+            color: white,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(10.r),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              SizedBox(
+                height: 10.r,
+              ),
+              Text(
+                LanguageCubit.get(context)
+                    .getTexts('Warning')
+                    .toString(),
+                style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w700,
+                    color: accentColor),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 16.r,
+              ),
+              Text(
+                LanguageCubit.get(context)
+                    .getTexts('networkNotAvailable')
+                    .toString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16.sp, color: black),
+              ),
+              SizedBox(
+                height: 44.h,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                 MaterialButton(
+                      height: 30.h,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.r)),
+                      color: accentColor,
+                      minWidth: 80.w,
+                      onPressed: () {
+                        getIt<SharedPreferences>().setString(
+                            'typeScreen', "requestDetails");
+                        RequestDetailsCubit.get(context).indexTrips =
+                        1;
+                        RequestDetailsCubit.get(context)
+                            .loadingRequest = false;
+                        RequestDetailsCubit.get(context)
+                            .failureRequest = "";
+                        RequestDetailsCubit.get(context).failureTrip =
+                        "";
+                        RequestDetailsCubit.get(context)
+                            .getRequestDetails(idRequest!);
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        LanguageCubit.get(context)
+                            .getTexts('Ok')
+                            .toString(),
+                        style: TextStyle(color: white, fontSize: 15.sp),
+                      )),
+                  SizedBox(
+                    width: 30.w,
+                  ),
+                  MaterialButton(
+                      height: 30.h,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.r)),
+                      color: grey,
+                      onPressed: () => Navigator.pop(context),
+                      minWidth: 80.w,
+                      child: Text(
+                        LanguageCubit.get(context)
+                            .getTexts('Cancel')
+                            .toString(),
+                        style: TextStyle(color: black, fontSize: 15.sp),
+                      )),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+Future<double> getDistanceKM(double fromLatitude, double fromLongitude,
+    double toLatitude, double toLongitude) async {
+  return Geolocator.distanceBetween(
+        fromLatitude,
+        fromLongitude,
+        toLatitude,
+        toLongitude,
+      ) /
+      1000;
 }
 
 class DrawerMenu extends StatelessWidget {

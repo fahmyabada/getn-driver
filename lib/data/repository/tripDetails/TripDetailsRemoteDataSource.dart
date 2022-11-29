@@ -14,7 +14,7 @@ abstract class TripDetailsRemoteDataSource {
   Future<Either<String, Data?>> getTripDetails(String id);
 
   Future<Either<String, DataRequest?>> putTrip(
-      String id, String type, String comment);
+      String id, String type, String comment, double consumptionPoints);
 
   Future<Either<String, PredictionsPlaceSearch?>> searchLocation(String text);
 
@@ -24,7 +24,6 @@ abstract class TripDetailsRemoteDataSource {
 }
 
 class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
-
   @override
   Future<Either<String, Data?>> getTripDetails(String id) async {
     try {
@@ -47,22 +46,25 @@ class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    }  catch (error) {
+    } catch (error) {
       return Left(handleError(error));
     }
   }
 
   @override
   Future<Either<String, DataRequest?>> putTrip(
-      String id, String type, String comment) async {
+      String id, String type, String comment, double consumptionKM) async {
     try {
       FormData? formData;
-      if (type != "reject" && type != "end") {
-        formData = FormData.fromMap({"status": type});
+      if (type == "reject" || type == "end") {
+        formData = FormData.fromMap({
+          "status": type,
+          "comment": comment,
+          "consumptionKM": consumptionKM
+        });
       } else {
-        formData = FormData.fromMap({"status": type, "comment": comment});
+        formData = FormData.fromMap({"status": type});
       }
-
 
       return await DioHelper.putData(
               url: 'trip/$id',
@@ -79,7 +81,7 @@ class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    }  catch (error) {
+    } catch (error) {
       return Left(handleError(error));
     }
   }
@@ -110,7 +112,7 @@ class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    }  catch (error) {
+    } catch (error) {
       return Left(handleError(error));
     }
   }
@@ -142,7 +144,7 @@ class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    }  catch (error) {
+    } catch (error) {
       return Left(handleError(error));
     }
   }
@@ -151,8 +153,9 @@ class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
   Future<Either<String, APIResultModel>> setPolyLines(
       dynamic parameters) async {
     try {
-      return await Dio().post(
-           'https://maps.googleapis.com/maps/api/directions/json', queryParameters: parameters)
+      return await Dio()
+          .post('https://maps.googleapis.com/maps/api/directions/json',
+              queryParameters: parameters)
           .then((value) async {
         if (value.statusCode == 200) {
           try {
@@ -160,7 +163,7 @@ class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
             return Right(APIResultModel(
               success: value.statusCode == 200,
               message: responseBody['status'] ?? responseBody['error_message'],
-              data:  responseBody,
+              data: responseBody,
             ));
           } catch (error) {
             print('Error in getting result from response:\n $error');

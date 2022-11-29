@@ -8,7 +8,7 @@ class PutTripDetailsUseCase {
   PutTripDetailsUseCase(this.tripDetailsRepository);
 
   Future<Either<String, DataRequest?>> execute(
-      String id, String type, String comment) {
-    return tripDetailsRepository.putTrip(id, type, comment);
+      String id, String type, String comment, double consumptionKM) {
+    return tripDetailsRepository.putTrip(id, type, comment, consumptionKM);
   }
 }

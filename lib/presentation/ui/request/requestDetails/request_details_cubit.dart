@@ -4,10 +4,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:getn_driver/data/model/request/DataRequest.dart';
+import 'package:getn_driver/data/model/request/Request.dart';
 import 'package:getn_driver/data/model/trips/Data.dart';
 import 'package:getn_driver/data/model/trips/Trips.dart';
 import 'package:getn_driver/domain/usecase/request/PutRequestUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetCurrentLocationUseCase.dart';
+import 'package:getn_driver/domain/usecase/requestDetails/GetLastTripUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetRequestDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetTripsRequestDetailsUseCase.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
@@ -24,12 +26,14 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
   var getTripsRequestDetailsUseCase = getIt<GetTripsRequestDetailsUseCase>();
   var putRequestUseCase = getIt<PutRequestUseCase>();
   var getCurrentLocationUseCase = getIt<GetCurrentLocationUseCase>();
+  var getLastTripsUseCase = getIt<GetLastTripsUseCase>();
 
   DataRequest? requestDetails;
   List<Data> trips = [];
   int indexTrips = 1;
   bool loadingTrips = false;
   bool loadingRequest = false;
+  bool? tripsSuccess;
   String failureRequest = "";
   String failureTrip = "";
   String typeScreen = "";
@@ -84,6 +88,7 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
       failureTrip = failure1;
       loadingTrips = false;
       // trips.clear();
+      tripsSuccess = false;
       print("TripsErrorState*********** $failure1");
       return TripsErrorState(failure1);
     }, (data) {
@@ -94,6 +99,7 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
       trips.addAll(data!.data!);
       indexTrips = 2;
       loadingTrips = false;
+      tripsSuccess = true;
       return TripsSuccessState(data);
     });
   }
@@ -107,6 +113,7 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
         trips.addAll(data.data!);
         indexTrips = indexTrips + 1;
       }
+      tripsSuccess = true;
       return TripsSuccessState(data);
     });
   }
@@ -130,6 +137,28 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
     });
   }
 
+  void getLastTrip(String idRequest,String type) async {
+    if(type == 'end'){
+      emit(RequestDetailsEditInitial());
+    }else if(type == 'mid_pause'){
+      emit(RequestDetailsEditCancelInitial());
+    }
+    getLastTripsUseCase.execute(idRequest).then((value) {
+      emit(eitherLoadedOrErrorStateLastTrip(value,type));
+    });
+  }
+
+  RequestDetailsState eitherLoadedOrErrorStateLastTrip(
+      Either<String, Request?> data,String type) {
+    return data.fold((failure1) {
+      print("RequestDetailsLastTripErrorState*********** $failure1");
+      return RequestDetailsLastTripErrorState(failure1);
+    }, (data) {
+      print("RequestDetailsLastTripSuccessState*********** ${type}");
+      return RequestDetailsLastTripSuccessState(data,type);
+    });
+  }
+
   void getCurrentLocation() async {
     loadingRequest = true;
     emit(CurrentLocationLoading());
@@ -145,4 +174,7 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
       return CurrentLocationSuccessState(data);
     });
   }
+
+
+
 }

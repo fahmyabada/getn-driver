@@ -17,6 +17,21 @@ class RequestDetailsSuccessState extends RequestDetailsState {
   RequestDetailsSuccessState(this.data);
 }
 
+class RequestDetailsEditCancelInitial extends RequestDetailsState {}
+
+class RequestDetailsLastTripErrorState extends RequestDetailsState {
+  final String message;
+
+  RequestDetailsLastTripErrorState(this.message);
+}
+
+class RequestDetailsLastTripSuccessState extends RequestDetailsState {
+  final Request? data;
+  final String? type;
+
+  RequestDetailsLastTripSuccessState(this.data, this.type);
+}
+
 class TripsInitial extends RequestDetailsState {}
 
 class TripsErrorState extends RequestDetailsState {

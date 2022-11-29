@@ -75,12 +75,14 @@ import 'package:getn_driver/domain/usecase/request/GetProfileUseCase.dart';
 import 'package:getn_driver/domain/usecase/request/GetRequestUseCase.dart';
 import 'package:getn_driver/domain/usecase/request/PutRequestUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetCurrentLocationUseCase.dart';
+import 'package:getn_driver/domain/usecase/requestDetails/GetLastTripUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetRequestDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetTripsRequestDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/PutRequestDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripCreate/CreateTripUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripCreate/GetPlaceDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripCreate/GetSearchLocationUseCase.dart';
+import 'package:getn_driver/domain/usecase/tripDetails/GetCurrentLocationTripUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripDetails/GetTripDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripDetails/PutTripDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripDetails/SetPolyLinesUseCase.dart';
@@ -146,6 +148,8 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => GetMyColorUseCase(getIt()));
   getIt.registerLazySingleton(() => GetMyCarUseCase(getIt()));
   getIt.registerLazySingleton(() => CarEditUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetCurrentLocationTripUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetLastTripsUseCase(getIt()));
 
   // Repository
   getIt.registerLazySingleton<AuthRepository>(

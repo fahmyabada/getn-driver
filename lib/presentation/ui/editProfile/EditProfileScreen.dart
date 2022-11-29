@@ -40,6 +40,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final emailController = TextEditingController();
   final whatsAppController = TextEditingController();
   final birthDateController = TextEditingController();
+  final briefController = TextEditingController();
   final addressController = TextEditingController();
 
   Country? dropDownValueCountries;
@@ -99,6 +100,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             if (state.data!.name != null) {
               setState(() {
                 nameController.text = state.data!.name!;
+              });
+            }
+            if (state.data!.brief != null) {
+              setState(() {
+                briefController.text = state.data!.brief!;
               });
             }
             if (state.data!.address != null) {
@@ -382,18 +388,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                             height: 16.h,
                                           ),
                                           Container(
-                                            padding: EdgeInsets.symmetric(horizontal: 15.r),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 15.r),
                                             decoration: BoxDecoration(
                                                 color: white,
-                                                border: Border.all(color: black),
-                                                borderRadius: BorderRadius.circular(50.r)),
+                                                border:
+                                                    Border.all(color: black),
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        50.r)),
                                             child: Row(
                                               children: [
                                                 state is CountriesLoading
                                                     ? Container(
                                                         margin:
                                                             EdgeInsetsDirectional
-                                                                .only(end: 10.w),
+                                                                .only(
+                                                                    end: 10.w),
                                                         child: loading(),
                                                       )
                                                     : EditProfileCubit.get(
@@ -413,17 +424,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                                       BorderRadius
                                                                           .circular(
                                                                               14.r),
-                                                                  border:
-                                                                      Border.all(
+                                                                  border: Border
+                                                                      .all(
                                                                     width: 1,
-                                                                    color: Colors
-                                                                                .grey[
+                                                                    color: Colors.grey[
                                                                             400] ??
                                                                         Colors
                                                                             .black,
                                                                   ),
                                                                 ),
-                                                                isExpanded: true,
+                                                                isExpanded:
+                                                                    true,
                                                                 iconSize: 0.0,
                                                                 dropdownWidth:
                                                                     350.w,
@@ -451,9 +462,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                                           .image(
                                                                         fit: BoxFit
                                                                             .contain,
-                                                                        url: dropDownValueWhatsAppCountry!
-                                                                                .icon!
-                                                                                .src ??
+                                                                        url: dropDownValueWhatsAppCountry!.icon!.src ??
                                                                             " ",
                                                                         height:
                                                                             35.w,
@@ -477,8 +486,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                                           dropDownValueWhatsAppCountry!.code ??
                                                                               "",
                                                                           style: TextStyle(
-                                                                              color:
-                                                                                  Colors.black,
+                                                                              color: Colors.black,
                                                                               fontSize: 20.sp)),
                                                                     ],
                                                                   ),
@@ -512,13 +520,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                                         ),
                                                                         Text(
                                                                             LanguageCubit.get(context).isEn
-                                                                                ? selectedCountry.title?.en ??
-                                                                                    " "
-                                                                                : selectedCountry.title?.ar ??
-                                                                                    " ",
-                                                                            style: TextStyle(
-                                                                                color: Colors.black,
-                                                                                fontSize: 20.sp)),
+                                                                                ? selectedCountry.title?.en ?? " "
+                                                                                : selectedCountry.title?.ar ?? " ",
+                                                                            style: TextStyle(color: Colors.black, fontSize: 20.sp)),
                                                                         SizedBox(
                                                                           width:
                                                                               10.w,
@@ -526,9 +530,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                                         Text(
                                                                             selectedCountry.code ??
                                                                                 "",
-                                                                            style: TextStyle(
-                                                                                color: Colors.black,
-                                                                                fontSize: 20.sp)),
+                                                                            style:
+                                                                                TextStyle(color: Colors.black, fontSize: 20.sp)),
                                                                       ],
                                                                     ),
                                                                   );
@@ -556,10 +559,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                     controller:
                                                         whatsAppController,
                                                     type: TextInputType.number,
-                                                    label:
-                                                        LanguageCubit.get(context)
-                                                            .getTexts('WhatsApp')
-                                                            .toString(),
+                                                    label: LanguageCubit.get(
+                                                            context)
+                                                        .getTexts('WhatsApp')
+                                                        .toString(),
                                                     textSize: 20,
                                                     border: true,
                                                     borderColor: white,
@@ -567,7 +570,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                     validatorText:
                                                         whatsAppController.text,
                                                     validatorMessage:
-                                                        LanguageCubit.get(context)
+                                                        LanguageCubit.get(
+                                                                context)
                                                             .getTexts(
                                                                 'EnterWhatsApp')
                                                             .toString(),
@@ -605,7 +609,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                         .toString(),
                                                 onEditingComplete: () {
                                                   FocusScope.of(context)
-                                                      .unfocus();
+                                                      .nextFocus();
                                                 },
                                               ),
                                             ),
@@ -627,6 +631,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                               }
                                             },
                                           ),
+                                          SizedBox(
+                                            height: 16.h,
+                                          ),
+                                          defaultFormField(
+                                              controller: briefController,
+                                              type: TextInputType.multiline,
+                                              label: LanguageCubit.get(context)
+                                                  .getTexts('brief')
+                                                  .toString(),
+                                              textSize: 20,
+                                              border: false,
+                                              borderRadius: 20,
+                                              onEditingComplete: () {
+                                                FocusScope.of(context)
+                                                    .nextFocus();
+                                              }),
                                           SizedBox(
                                             height: 32.h,
                                           ),
@@ -744,8 +764,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                                   horizontal:
                                                                       25.r),
                                                           child: Text(
-                                                              LanguageCubit.get(
-                                                                          context)
+                                                              LanguageCubit.get(context)
                                                                       .isEn
                                                                   ? dropDownValueCountries
                                                                           ?.title
@@ -905,8 +924,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                                   horizontal:
                                                                       25.r),
                                                           child: Text(
-                                                              LanguageCubit.get(
-                                                                          context)
+                                                              LanguageCubit.get(context)
                                                                       .isEn
                                                                   ? dropDownValueCity
                                                                           ?.title
@@ -1060,8 +1078,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                                   horizontal:
                                                                       25.r),
                                                           child: Text(
-                                                              LanguageCubit.get(
-                                                                          context)
+                                                              LanguageCubit.get(context)
                                                                       .isEn
                                                                   ? dropDownValueArea
                                                                           ?.title
@@ -1162,7 +1179,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     ),
                                     Row(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                          CrossAxisAlignment.center,
                                       children: [
                                         Icon(
                                           Icons.language,
@@ -1314,6 +1331,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                         emailController.text
                                                             .toString(),
                                                         birthDateController.text
+                                                            .toString(),
+                                                        briefController.text
                                                             .toString(),
                                                         dropDownValueCountries!
                                                             .id!,

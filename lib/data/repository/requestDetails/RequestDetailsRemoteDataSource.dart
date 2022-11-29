@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:getn_driver/data/api/Dio_Helper.dart';
 import 'package:getn_driver/data/model/request/DataRequest.dart';
+import 'package:getn_driver/data/model/request/Request.dart';
 import 'package:getn_driver/data/model/trips/Trips.dart';
 import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
@@ -10,7 +11,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 abstract class RequestDetailsRemoteDataSource {
   Future<Either<String, DataRequest?>> getRequestDetails(String id);
 
-  Future<Either<String, Trips?>> getTripsRequestDetails(
+Future<Either<String, Request?>> getLastTrip(String idRequest);
+
+Future<Either<String, Trips?>> getTripsRequestDetails(
       Map<String, dynamic> body);
 
   Future<Either<String, DataRequest?>> putRequest(
@@ -97,4 +100,30 @@ class RequestDetailsRemoteDataSourceImpl
       return Left(handleError(error));
     }
   }
+
+
+  @override
+  Future<Either<String, Request?>> getLastTrip(String idRequest) async {
+    try {
+      var body = {
+        "status": ["arrive", "coming", "start", "on_my_way", "accept"],
+        "request": idRequest,
+      };
+
+      return await DioHelper.getData(
+          url: 'trip',
+          query: body,
+          token: getIt<SharedPreferences>().getString("token"))
+          .then((value) {
+        if (value.statusCode == 200) {
+          return Right(Request.fromJson(value.data!));
+        } else {
+          return Left(serverFailureMessage);
+        }
+      });
+    }  catch (error) {
+      return Left(handleError(error));
+    }
+  }
+
 }

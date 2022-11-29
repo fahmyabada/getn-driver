@@ -57,7 +57,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
       'cancel': []
     },
     'ar': {
-      'pending': ['ٌقبول', 'رفض'],
+      'pending': ['قبول', 'رفض'],
       'accept': ['في الطريق'],
       'on_my_way': ['وصلت'],
       'arrive': ['إبدأ'],
@@ -801,10 +801,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                     ),
                     Text(
                       // '20',
-                      TripDetailsCubit.get(context)
-                          .tripDetails!
-                          .consumptionKM!
-                          .toStringAsFixed(2),
+                      '${TripDetailsCubit.get(context).tripDetails!.consumptionKM!.toStringAsFixed(2)} ${LanguageCubit.get(context).getTexts('KM')}',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: black,
@@ -901,7 +898,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                 TripDetailsCubit.get(context).tripDetails!.id!,
                                 btnStatus[
                                     '${TripDetailsCubit.get(context).tripDetails!.status}']![0],
-                                "");
+                                "",0.0);
                           },
                           fontSize: 20,
                           paddingVertical: 1,
@@ -929,6 +926,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                         builder: (_) {
                           return CustomDialogRejectTripDetails(
                             id: TripDetailsCubit.get(context).tripDetails!.id!,
+                            location: TripDetailsCubit.get(context).tripDetails!.from!,
                             title: LanguageCubit.get(context)
                                 .getTexts('DoReject')
                                 .toString(),
@@ -949,7 +947,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                             1]
                         : btnStatus2['ar']![
                             '${TripDetailsCubit.get(context).tripDetails!.status}']![1],
-                    backColor: greenColor,
+                    backColor: redColor,
                     textColor: white),
               ),
             ],
@@ -976,6 +974,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                   id: TripDetailsCubit.get(context)
                                       .tripDetails!
                                       .id!,
+                                  location: TripDetailsCubit.get(context).tripDetails!.from!,
                                   title: LanguageCubit.get(context)
                                       .getTexts('Trip')
                                       .toString(),
@@ -995,7 +994,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                 TripDetailsCubit.get(context).tripDetails!.id!,
                                 btnStatus[
                                     '${TripDetailsCubit.get(context).tripDetails!.status}']![0],
-                                "");
+                                "",0.0);
                           }
                         },
                         fontSize: 22,

@@ -49,3 +49,17 @@ class GoogleMapSuccessState extends TripDetailsInitial {
 
   GoogleMapSuccessState(this.test);
 }
+
+class CurrentLocationTripLoading extends TripDetailsInitial {}
+
+class CurrentLocationTripSuccessState extends TripDetailsInitial {
+  final Position position;
+
+  CurrentLocationTripSuccessState(this.position);
+}
+
+class CurrentLocationTripErrorState extends TripDetailsInitial {
+  final String error;
+
+  CurrentLocationTripErrorState(this.error);
+}

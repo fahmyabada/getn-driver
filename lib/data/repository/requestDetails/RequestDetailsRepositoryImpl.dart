@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geolocator_platform_interface/src/models/position.dart';
 import 'package:getn_driver/data/api/network_info.dart';
 import 'package:getn_driver/data/model/request/DataRequest.dart';
+import 'package:getn_driver/data/model/request/Request.dart';
 import 'package:getn_driver/data/model/trips/Trips.dart';
 import 'package:getn_driver/data/repository/requestDetails/RequestDetailsRemoteDataSource.dart';
 import 'package:getn_driver/data/utils/constant.dart';
@@ -101,5 +102,22 @@ class RequestDetailsRepositoryImpl extends RequestDetailsRepository {
     // continue accessing the position of the device.
     return Right(await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high));
+  }
+
+  @override
+  Future<Either<String, Request>> getLastTrip(String idRequest) async{
+    if (await networkInfo.isConnected) {
+      return await requestDetailsRemoteDataSource
+          .getLastTrip(idRequest)
+          .then((value) {
+        return value.fold((failure) {
+          return Left(failure.toString());
+        }, (data) {
+          return Right(data!);
+        });
+      });
+    } else {
+      return Left(networkFailureMessage);
+    }
   }
 }

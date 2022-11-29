@@ -58,7 +58,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       'cancel': []
     },
     'ar': {
-      'pending': ['ٌقبول', 'رفض'],
+      'pending': ['قبول', 'رفض'],
       'accept': ['في الطريق', 'إلغاء'],
       'on_my_way': ['وصلت', 'إلغاء'],
       'arrive': ['إبدأ', 'إلغاء'],
@@ -106,7 +106,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   var formKeyRequest = GlobalKey<FormState>();
   var commentController = TextEditingController();
   bool loadingMoreTrips = false;
-  String sLat = "", sLon = "";
 
   void _loadMoreTrips(BuildContext context) {
     RequestDetailsCubit.get(context).getTripsRequestDetails(
@@ -116,7 +115,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    RequestDetailsCubit.get(context).getCurrentLocation();
+    RequestDetailsCubit.get(context)
+        .getRequestDetails(widget.idRequest!);
 
     if (getIt<SharedPreferences>().getBool("isEn") != null) {
       LanguageCubit.get(context).isEn =
@@ -145,7 +145,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           if (state is RequestDetailsSuccessState) {
             RequestDetailsCubit.get(context)
                 .getTripsRequestDetails(1, widget.idRequest!);
-          } else if (state is RequestDetailsEditSuccessState) {
+          }
+          else if (state is RequestDetailsEditSuccessState) {
             if (state.type == "reject" ||
                 state.type == "mid_pause" ||
                 state.type == "end") {
@@ -191,26 +192,40 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
             RequestDetailsCubit.get(context)
                 .getRequestDetails(widget.idRequest!);
-          } else if (state is RequestDetailsEditErrorState) {
+          }
+          else if (state is RequestDetailsEditErrorState) {
             if (state.type == "reject" ||
                 state.type == "mid_pause" ||
                 state.type == "end") {
               Navigator.pop(context);
             }
-            if (state.message == "{status:  you can't start request now}") {
+            if (state.message == "you can't start request now") {
               showToastt(
                   text: LanguageCubit.get(context)
                       .getTexts('journeyStartedYet')
                       .toString(),
                   state: ToastStates.error,
                   context: context);
+            } else if (state.message == 'network not available') {
+              showDialog(
+                context: context,
+                barrierDismissible: true,
+                // outside to dismiss
+                builder: (_) {
+                  return CustomNotHaveNetwork(
+                    idRequest:
+                    RequestDetailsCubit.get(context).requestDetails!.id!,
+                  );
+                },
+              );
             } else {
               showToastt(
                   text: state.message,
                   state: ToastStates.error,
                   context: context);
             }
-          } else if (state is CurrentLocationSuccessState) {
+          }
+          else if (state is CurrentLocationSuccessState) {
             print('CurrentLocationSuccessState********* ');
             // this belong add trip
             /*String id = await navigateToWithRefreshPagePrevious(
@@ -238,12 +253,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               }
             });*/
 
-            sLat = state.position.latitude.toString();
-            sLon = state.position.longitude.toString();
+            String sLat = state.position.latitude.toString();
+            String sLon = state.position.longitude.toString();
 
-            RequestDetailsCubit.get(context)
-                .getRequestDetails(widget.idRequest!);
-          } else if (state is CurrentLocationErrorState) {
+            launchInMap(sLat, sLon, RequestDetailsCubit.get(context).requestDetails!.from!.placeLatitude!,
+                RequestDetailsCubit.get(context).requestDetails!.from!.placeLongitude!, context);
+          } 
+          else if (state is CurrentLocationErrorState) {
             if (kDebugMode) {
               print('CurrentLocationErrorState********* ${state.error}');
             }
@@ -292,14 +308,163 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 },
               ).then((value) => Navigator.pop(context));
             }
-          } else if (state is TripsSuccessState) {
+          }
+          else if (state is TripsSuccessState) {
             setState(() {
               loadingMoreTrips = false;
             });
-          } else if (state is TripsErrorState) {
+          }
+          else if (state is TripsErrorState) {
             setState(() {
               loadingMoreTrips = false;
             });
+            if (state.message == 'network not available') {
+              showDialog(
+                context: context,
+                barrierDismissible: true,
+                // outside to dismiss
+                builder: (_) {
+                  return CustomNotHaveNetwork(
+                    idRequest:
+                    RequestDetailsCubit.get(context).requestDetails!.id!,
+                  );
+                },
+              );
+            }
+          }
+          else if (state is RequestDetailsLastTripSuccessState) {
+            if(state.data!.data!.isNotEmpty){
+              showDialog(
+                context: context,
+                barrierDismissible: true,
+                // outside to dismiss
+                builder: (_) {
+                  return CustomDialogLastTrip(
+                    idRequest:
+                        RequestDetailsCubit.get(context).requestDetails!.id!,
+                    idTrip: state.data!.data![0].id,
+                    title: LanguageCubit.get(context)
+                        .getTexts('Warning')
+                        .toString(),
+                    description: LanguageCubit.get(context)
+                        .getTexts('lastTripDescription')
+                        .toString(),
+                  );
+                },
+              );
+            }
+            else if(state.data!.data!.isEmpty && state.type == 'end'){
+              showDialog(
+                context: context,
+                barrierDismissible: true,
+                // outside to dismiss
+                builder: (_) {
+                  print(
+                      "CustomDialogRejectRequestDetails1************* ${btnStatus['${RequestDetailsCubit.get(context).requestDetails!.status}']![0]}");
+                  return CustomDialogEndRequestDetails(
+                    id: RequestDetailsCubit.get(context)
+                        .requestDetails!
+                        .id!,
+                    title: LanguageCubit.get(context)
+                        .getTexts('Requests')
+                        .toString(),
+                    description: LanguageCubit.get(context)
+                        .getTexts('EndRequest')
+                        .toString(),
+                    status: btnStatus[
+                    '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
+                  );
+                },
+              );
+            }
+            else if(state.data!.data!.isEmpty && state.type == 'mid_pause'){
+
+              final currentDate = DateTime.now();
+              final dateFrom = DateFormat("yyyy-MM-ddTHH:mm")
+                  .parse(RequestDetailsCubit.get(context)
+                  .requestDetails!
+                  .from!
+                  .date!)
+                  .difference(currentDate)
+                  .inHours;
+
+              final dateTo = DateFormat("yyyy-MM-ddTHH:mm")
+                  .parse(RequestDetailsCubit.get(context)
+                  .requestDetails!
+                  .from!
+                  .date!)
+                  .difference(DateFormat("yyyy-MM-ddTHH:mm").parse(
+                  RequestDetailsCubit.get(context)
+                      .requestDetails!
+                      .createdAt!))
+                  .inHours;
+              // print("dateFrom********$dateFrom");
+              // print("dateTo********$dateTo");
+              // from.date subtract  current now   / 1000 / 60 / 60
+              // if result less than 24 or equal
+              // from.date  subtract created at    /1000 / 60 / 60
+              // if result grater than or equal      48
+              // this condition on all reject
+              if (dateFrom <= 24 && dateTo >= 48) {
+                showDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  // outside to dismiss
+                  builder: (_) {
+                    return CustomDialogRejectRequestDetails(
+                        id: RequestDetailsCubit.get(context)
+                            .requestDetails!
+                            .id!,
+                        title: LanguageCubit.get(context)
+                            .getTexts('Warning')
+                            .toString(),
+                        description: LanguageCubit.get(context)
+                            .getTexts('CancelationFee')
+                            .toString(),
+                        type: btnStatus[
+                        '${RequestDetailsCubit.get(context).requestDetails!.status}']![1]);
+                  },
+                );
+              }
+              else {
+                showDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  // outside to dismiss
+                  builder: (_) {
+                    return CustomDialogRejectRequestDetails(
+                        id: RequestDetailsCubit.get(context)
+                            .requestDetails!
+                            .id!,
+                        title: LanguageCubit.get(context)
+                            .getTexts('DoReject')
+                            .toString(),
+                        description: LanguageCubit.get(context)
+                            .getTexts('IfRejected')
+                            .toString(),
+                        type: btnStatus[
+                        '${RequestDetailsCubit.get(context).requestDetails!.status}']![1]);
+                  },
+                );
+              }
+            }
+          }
+          else if (state is RequestDetailsLastTripErrorState) {
+            print(
+                "RequestDetailsLastTripErrorState************ ");
+            if (state.message == 'network not available') {
+              showDialog(
+                context: context,
+                barrierDismissible: true,
+                // outside to dismiss
+                builder: (_) {
+                  return CustomNotHaveNetwork(
+                    idRequest:
+                        RequestDetailsCubit.get(context).requestDetails!.id!,
+                  );
+                },
+              );
+            }
           }
         },
         builder: (context, state) {
@@ -538,8 +703,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         ? Container()
                         : IconButton(
                             onPressed: () {
-                              launchInMap(sLat, sLon, data.from!.placeLatitude!,
-                                  data.from!.placeLongitude!, context);
+                              RequestDetailsCubit.get(context).getCurrentLocation();
                             },
                             icon: Icon(
                               Icons.wrong_location_sharp,
@@ -865,28 +1029,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                           '${RequestDetailsCubit.get(context).requestDetails!.status}']![
                                       0] ==
                                   "End") {
-                                showDialog(
-                                  context: context,
-                                  barrierDismissible: true,
-                                  // outside to dismiss
-                                  builder: (_) {
-                                    print(
-                                        "CustomDialogRejectRequestDetails1************* ${btnStatus['${RequestDetailsCubit.get(context).requestDetails!.status}']![0]}");
-                                    return CustomDialogEndRequestDetails(
-                                      id: RequestDetailsCubit.get(context)
-                                          .requestDetails!
-                                          .id!,
-                                      title: LanguageCubit.get(context)
-                                          .getTexts('Requests')
-                                          .toString(),
-                                      description: LanguageCubit.get(context)
-                                          .getTexts('EndRequest')
-                                          .toString(),
-                                      status: btnStatus[
-                                          '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
-                                    );
-                                  },
-                                );
+                                RequestDetailsCubit.get(context).getLastTrip(
+                                    RequestDetailsCubit.get(context)
+                                        .requestDetails!
+                                        .id!,
+                                    btnStatus[
+                                        '${RequestDetailsCubit.get(context).requestDetails!.status}']![0]);
                               } else {
                                 RequestDetailsCubit.get(context).editRequest(
                                     RequestDetailsCubit.get(context)
@@ -952,111 +1100,59 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   SizedBox(
                     width: 20.w,
                   ),
-                  Expanded(
-                    child: defaultButton2(
-                        press: () {
-                          final currentDate = DateTime.now();
-                          final dateFrom = DateFormat("yyyy-MM-ddTHH:mm")
-                              .parse(RequestDetailsCubit.get(context)
-                                  .requestDetails!
-                                  .from!
-                                  .date!)
-                              .difference(currentDate)
-                              .inHours;
-
-                          final dateTo = DateFormat("yyyy-MM-ddTHH:mm")
-                              .parse(RequestDetailsCubit.get(context)
-                                  .requestDetails!
-                                  .from!
-                                  .date!)
-                              .difference(DateFormat("yyyy-MM-ddTHH:mm").parse(
-                                  RequestDetailsCubit.get(context)
-                                      .requestDetails!
-                                      .createdAt!))
-                              .inHours;
-                          // print("dateFrom********$dateFrom");
-                          // print("dateTo********$dateTo");
-                          // from.date subtract  current now   / 1000 / 60 / 60
-                          // if result less than 24 or equal
-                          // from.date  subtract created at    /1000 / 60 / 60
-                          // if result grater than or equal      48
-                          // this condition on all reject
-                          if (dateFrom <= 24 && dateTo >= 48) {
-                            showDialog(
-                              context: context,
-                              barrierDismissible: true,
-                              // outside to dismiss
-                              builder: (_) {
-                                return CustomDialogRejectRequestDetails(
-                                    id: RequestDetailsCubit.get(context)
+                  state is! RequestDetailsEditCancelInitial
+                      ? Expanded(
+                          child: defaultButton2(
+                              press: () {
+                                RequestDetailsCubit.get(context).getLastTrip(
+                                    RequestDetailsCubit.get(context)
                                         .requestDetails!
                                         .id!,
-                                    title: LanguageCubit.get(context)
-                                        .getTexts('Warning')
-                                        .toString(),
-                                    description: LanguageCubit.get(context)
-                                        .getTexts('CancelationFee')
-                                        .toString(),
-                                    type: btnStatus[
+                                    btnStatus[
                                         '${RequestDetailsCubit.get(context).requestDetails!.status}']![1]);
                               },
-                            );
-                          } else {
-                            showDialog(
-                              context: context,
-                              barrierDismissible: true,
-                              // outside to dismiss
-                              builder: (_) {
-                                return CustomDialogRejectRequestDetails(
-                                    id: RequestDetailsCubit.get(context)
-                                        .requestDetails!
-                                        .id!,
-                                    title: LanguageCubit.get(context)
-                                        .getTexts('DoReject')
-                                        .toString(),
-                                    description: LanguageCubit.get(context)
-                                        .getTexts('IfRejected')
-                                        .toString(),
-                                    type: btnStatus[
-                                        '${RequestDetailsCubit.get(context).requestDetails!.status}']![1]);
-                              },
-                            );
-                          }
-                        },
-                        disablePress: RequestDetailsCubit.get(context)
-                                    .requestDetails!
-                                    .status ==
-                                "pending"
-                            ? true
-                            : RequestDetailsCubit.get(context)
-                                        .requestDetails
-                                        ?.paymentStatus! ==
-                                    "need_confirm"
-                                ? true
-                                : RequestDetailsCubit.get(context)
-                                            .requestDetails
-                                            ?.paymentStatus! ==
-                                        "paid"
-                                    ? RequestDetailsCubit.get(context)
-                                                .requestDetails!
-                                                .status ==
-                                            "arrive"
-                                        ? false
-                                        : true
-                                    : false,
-                        fontSize: 20,
-                        paddingVertical: 1,
-                        paddingHorizontal: 10,
-                        borderRadius: 10,
-                        text: LanguageCubit.get(context).isEn
-                            ? btnStatus2["en"]![
-                                    '${RequestDetailsCubit.get(context).requestDetails!.status}']![
-                                1]
-                            : btnStatus2["ar"]![
-                                '${RequestDetailsCubit.get(context).requestDetails!.status}']![1],
-                        backColor: redColor,
-                        textColor: white),
-                  ),
+                              disablePress: RequestDetailsCubit.get(context)
+                                          .requestDetails!
+                                          .status ==
+                                      "pending"
+                                  ? true
+                                  : RequestDetailsCubit.get(context)
+                                              .requestDetails
+                                              ?.paymentStatus! ==
+                                          "need_confirm"
+                                      ? true
+                                      : RequestDetailsCubit.get(context)
+                                                  .requestDetails
+                                                  ?.paymentStatus! ==
+                                              "paid"
+                                          ? RequestDetailsCubit.get(context)
+                                                      .requestDetails!
+                                                      .status ==
+                                                  "arrive"
+                                              ? false
+                                              : true
+                                          : false,
+                              fontSize: 20,
+                              paddingVertical: 1,
+                              paddingHorizontal: 10,
+                              borderRadius: 10,
+                              text: LanguageCubit.get(context).isEn
+                                  ? btnStatus2["en"]![
+                                          '${RequestDetailsCubit.get(context).requestDetails!.status}']![
+                                      1]
+                                  : btnStatus2["ar"]![
+                                      '${RequestDetailsCubit.get(context).requestDetails!.status}']![1],
+                              backColor: redColor,
+                              textColor: white),
+                        )
+                      : Expanded(
+                          child: Center(
+                            child: SizedBox(
+                              width: 40.w,
+                              child: loading(),
+                            ),
+                          ),
+                        ),
                 ],
               ),
               SizedBox(
@@ -1070,7 +1166,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   Widget trips(BuildContext context, RequestDetailsState state) {
     return RequestDetailsCubit.get(context).loadingTrips
         ? loading()
-        : state is TripsSuccessState
+        : RequestDetailsCubit.get(context).tripsSuccess != null &&
+                RequestDetailsCubit.get(context).tripsSuccess == true
             ? RequestDetailsCubit.get(context).trips.isNotEmpty
                 ? ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
@@ -1350,8 +1447,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                       height: 5.r,
                                                     ),
                                                     Text(
-                                                      trip.consumptionKM!
-                                                          .toStringAsFixed(2),
+                                                      '${trip.consumptionKM!.toStringAsFixed(2)} ${LanguageCubit.get(context).getTexts('KM')}',
                                                       textAlign:
                                                           TextAlign.center,
                                                       style: TextStyle(
@@ -1499,7 +1595,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           .getTripsRequestDetails(1, widget.idRequest!);
                     },
                     context: context)
-            : state is TripsErrorState
+            : RequestDetailsCubit.get(context).tripsSuccess != null &&
+                    RequestDetailsCubit.get(context).tripsSuccess == false
                 ? RequestDetailsCubit.get(context).failureTrip.isNotEmpty
                     ? errorMessage2(
                         message: RequestDetailsCubit.get(context).failureTrip,

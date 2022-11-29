@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:getn_driver/data/model/request/DataRequest.dart';
+import 'package:getn_driver/data/model/request/Request.dart';
 import 'package:getn_driver/data/model/trips/Trips.dart';
 
 abstract class RequestDetailsRepository {
@@ -13,4 +14,6 @@ abstract class RequestDetailsRepository {
       String id, String type, String comment);
 
   Future<Either<String, Position>> getCurrentLocation();
+
+  Future<Either<String, Request>> getLastTrip(String idRequest);
 }
