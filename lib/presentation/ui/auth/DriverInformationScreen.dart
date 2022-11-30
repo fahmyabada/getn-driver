@@ -118,7 +118,7 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                             frontNationalId
                                 ? Icon(
                               Icons.done,
-                              color: greenColor,
+                              color: accentColor,
                               size: 25.w,
                             )
                                 : Text(
@@ -126,7 +126,7 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                                   .getTexts('Update')
                                   .toString(),
                               style: TextStyle(
-                                  fontSize: 20.sp, color: greenColor),
+                                  fontSize: 20.sp, color: accentColor),
                             )
                           ],
                         )),
@@ -174,7 +174,7 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                             backNationalId
                                 ? Icon(
                               Icons.done,
-                              color: greenColor,
+                              color: accentColor,
                               size: 25.w,
                             )
                                 : Text(
@@ -182,7 +182,7 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                                   .getTexts('Update')
                                   .toString(),
                               style: TextStyle(
-                                  fontSize: 20.sp, color: greenColor),
+                                  fontSize: 20.sp, color: accentColor),
                             )
                           ],
                         )),
@@ -228,13 +228,13 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                               SignCubit.get(context).frontPassport
                                   ? Icon(
                                       Icons.done,
-                                      color: greenColor,
+                                      color: accentColor,
                                       size: 25.w,
                                     )
                                   : Text(
                                       'Update',
                                       style: TextStyle(
-                                          fontSize: 20.sp, color: greenColor),
+                                          fontSize: 20.sp, color: accentColor),
                                     )
                             ],
                           )),
@@ -272,13 +272,13 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                               SignCubit.get(context).backPassport
                                   ? Icon(
                                       Icons.done,
-                                      color: greenColor,
+                                      color: accentColor,
                                       size: 25.w,
                                     )
                                   : Text(
                                       'Update',
                                       style: TextStyle(
-                                          fontSize: 20.sp, color: greenColor),
+                                          fontSize: 20.sp, color: accentColor),
                                     )
                             ],
                           )),
@@ -318,7 +318,7 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                             frontDriverLicence
                                 ? Icon(
                               Icons.done,
-                              color: greenColor,
+                              color: accentColor,
                               size: 25.w,
                             )
                                 : Text(
@@ -326,7 +326,7 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                                   .getTexts('Update')
                                   .toString(),
                               style: TextStyle(
-                                  fontSize: 20.sp, color: greenColor),
+                                  fontSize: 20.sp, color: accentColor),
                             )
                           ],
                         )),
@@ -374,7 +374,7 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                             backDriverLicence
                                 ? Icon(
                               Icons.done,
-                              color: greenColor,
+                              color: accentColor,
                               size: 25.w,
                             )
                                 : Text(
@@ -382,7 +382,7 @@ class _DriverInformationScreenState extends State<DriverInformationScreen> {
                                   .getTexts('Update')
                                   .toString(),
                               style: TextStyle(
-                                  fontSize: 20.sp, color: greenColor),
+                                  fontSize: 20.sp, color: accentColor),
                             )
                           ],
                         )),

@@ -106,18 +106,21 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   var formKeyRequest = GlobalKey<FormState>();
   var commentController = TextEditingController();
   bool loadingMoreTrips = false;
-
+  String idRequest = '';
+  
   void _loadMoreTrips(BuildContext context) {
     RequestDetailsCubit.get(context).getTripsRequestDetails(
-        RequestDetailsCubit.get(context).indexTrips, widget.idRequest!);
+        RequestDetailsCubit.get(context).indexTrips, idRequest);
   }
 
   @override
   void initState() {
     super.initState();
+    
+    idRequest = widget.idRequest!;
     RequestDetailsCubit.get(context)
-        .getRequestDetails(widget.idRequest!);
-
+        .getRequestDetails(idRequest);
+    
     if (getIt<SharedPreferences>().getBool("isEn") != null) {
       LanguageCubit.get(context).isEn =
           getIt<SharedPreferences>().getBool("isEn")!;
@@ -127,7 +130,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   void viewWillAppear() {
     print("onResume / viewWillAppear / onFocusGained     RequestDetailsScreen");
     getIt<SharedPreferences>().setString('typeScreen', "requestDetails");
-    getIt<SharedPreferences>().setString('requestDetailsId', widget.idRequest!);
+    getIt<SharedPreferences>().setString('requestDetailsId', idRequest);
     getIt<SharedPreferences>().setString('tripDetailsId', "");
   }
 
@@ -144,7 +147,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         listener: (context, state) async {
           if (state is RequestDetailsSuccessState) {
             RequestDetailsCubit.get(context)
-                .getTripsRequestDetails(1, widget.idRequest!);
+                .getTripsRequestDetails(1, idRequest);
           }
           else if (state is RequestDetailsEditSuccessState) {
             if (state.type == "reject" ||
@@ -191,7 +194,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             }
 
             RequestDetailsCubit.get(context)
-                .getRequestDetails(widget.idRequest!);
+                .getRequestDetails(idRequest);
           }
           else if (state is RequestDetailsEditErrorState) {
             if (state.type == "reject" ||
@@ -231,7 +234,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             /*String id = await navigateToWithRefreshPagePrevious(
               context,
               TripCreateScreen(
-                requestId: widget.idRequest!,
+                requestId: idRequestTrip,
                 fromLatitude: state.position.latitude,
                 fromLongitude: state.position.longitude,
               ),
@@ -493,7 +496,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             RequestDetailsCubit.get(context).failureRequest =
                                 "";
                             RequestDetailsCubit.get(context)
-                                .getRequestDetails(widget.idRequest!);
+                                .getRequestDetails(idRequest);
                           },
                           context: context)
                       : RequestDetailsCubit.get(context).requestDetails!.id !=
@@ -752,7 +755,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                 text: LanguageCubit.get(context)
                                     .getTexts('CallClient')
                                     .toString(),
-                                backColor: greenColor,
+                                backColor: accentColor,
                                 textColor: white,
                                 icon: Icons.phone),
                           ),
@@ -780,7 +783,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                 text: LanguageCubit.get(context)
                                     .getTexts('WhatsApp')
                                     .toString(),
-                                backColor: greenColor,
+                                backColor: accentColor,
                                 textColor: white,
                                 icon: Icons.whatsapp),
                           ),
@@ -988,7 +991,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       .getTexts('PickedLocation')
                       .toString(),
                   style: TextStyle(
-                      color: greenColor,
+                      color: accentColor,
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold),
                 ),
@@ -1085,7 +1088,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     0]
                                 : btnStatus2["ar"]![
                                     '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
-                            backColor: greenColor,
+                            backColor: accentColor,
                             textColor: white,
                           ),
                         )
@@ -1195,7 +1198,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                         children: [
                                           Icon(
                                             Icons.location_on,
-                                            color: greenColor,
+                                            color: accentColor,
                                             size: 20.w,
                                           ),
                                           SizedBox(
@@ -1534,17 +1537,17 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             ),
                             onTap: () async {
                               print(
-                                  "typeId44************ ${widget.idRequest!}");
+                                  "typeId44************ ${idRequest}");
                               await navigateToWithRefreshPagePrevious(
                                   context,
                                   TripDetailsScreen(
                                     idTrip: RequestDetailsCubit.get(context)
                                         .trips[i]
                                         .id,
-                                    idRequest: widget.idRequest!,
+                                    idRequest: idRequest,
                                   )).then((id) {
                                 print(
-                                    "typeId33************ ${widget.idRequest!}");
+                                    "typeId33************ ${id}");
                                 setState(() {
                                   loadingMoreTrips = false;
                                   getIt<SharedPreferences>().setString(
@@ -1557,8 +1560,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       .failureRequest = "";
                                   RequestDetailsCubit.get(context).failureTrip =
                                       "";
+                                  idRequest = id;
                                   RequestDetailsCubit.get(context)
-                                      .getRequestDetails(widget.idRequest!);
+                                      .getRequestDetails(id);
                                 });
                               });
                             },
@@ -1592,7 +1596,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     press: () {
                       RequestDetailsCubit.get(context).indexTrips = 1;
                       RequestDetailsCubit.get(context)
-                          .getTripsRequestDetails(1, widget.idRequest!);
+                          .getTripsRequestDetails(1, idRequest);
                     },
                     context: context)
             : RequestDetailsCubit.get(context).tripsSuccess != null &&
@@ -1602,11 +1606,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         message: RequestDetailsCubit.get(context).failureTrip,
                         press: () {
                           print(
-                              "getTripsRequestDetails**********${widget.idRequest!}");
+                              "getTripsRequestDetails**********${idRequest}");
                           RequestDetailsCubit.get(context).failureTrip = "";
                           RequestDetailsCubit.get(context).indexTrips = 1;
                           RequestDetailsCubit.get(context)
-                              .getTripsRequestDetails(1, widget.idRequest!);
+                              .getTripsRequestDetails(1, idRequest);
                         },
                         context: context)
                     : Container()

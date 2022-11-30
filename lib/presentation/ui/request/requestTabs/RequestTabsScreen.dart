@@ -456,7 +456,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                         children: [
                           Icon(
                             Icons.location_on,
-                            color: greenColor,
+                            color: accentColor,
                             size: 20.w,
                           ),
                           SizedBox(
@@ -867,7 +867,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                               children: [
                                 Icon(
                                   Icons.location_on,
-                                  color: greenColor,
+                                  color: accentColor,
                                   size: 20.w,
                                 ),
                                 SizedBox(
@@ -1302,7 +1302,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                               children: [
                                 Icon(
                                   Icons.location_on,
-                                  color: greenColor,
+                                  color: accentColor,
                                   size: 20.w,
                                 ),
                                 SizedBox(
@@ -1703,7 +1703,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                             children: [
                               Icon(
                                 Icons.location_on,
-                                color: greenColor,
+                                color: accentColor,
                                 size: 20.w,
                               ),
                               SizedBox(
@@ -2062,7 +2062,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                             text: LanguageCubit.get(context)
                                 .getTexts('Accept')
                                 .toString(),
-                            backColor: greenColor,
+                            backColor: accentColor,
                             textColor: white)
                     : defaultButton2(
                         press: () {
@@ -2075,7 +2075,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                         text: LanguageCubit.get(context)
                             .getTexts('Accept')
                             .toString(),
-                        backColor: greenColor,
+                        backColor: accentColor,
                         textColor: white),
                 defaultButton2(
                   press: () {

@@ -377,7 +377,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                         color: white,
                                         shape: BoxShape.circle,
                                         border: Border.all(
-                                            color: greenColor, width: 2.w),
+                                            color: accentColor, width: 2.w),
                                       ),
                                       child: Column(
                                         children: [
@@ -410,7 +410,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                                     .getTexts('Running')
                                                     .toString(),
                                             style: TextStyle(
-                                                color: greenColor,
+                                                color: accentColor,
                                                 fontSize: 17.sp,
                                                 fontWeight: FontWeight.bold),
                                           ),
@@ -570,7 +570,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                   text: LanguageCubit.get(context)
                                       .getTexts('CallClient')
                                       .toString(),
-                                  backColor: greenColor,
+                                  backColor: accentColor,
                                   textColor: white,
                                   icon: Icons.phone),
                             ),
@@ -601,7 +601,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                   text: LanguageCubit.get(context)
                                       .getTexts('WhatsApp')
                                       .toString(),
-                                  backColor: greenColor,
+                                  backColor: accentColor,
                                   textColor: white,
                                   icon: Icons.whatsapp),
                             ),
@@ -622,7 +622,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
           children: [
             Icon(
               Icons.location_on,
-              color: greenColor,
+              color: accentColor,
               size: 20.w,
             ),
             SizedBox(
@@ -910,7 +910,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                   0]
                               : btnStatus2['ar']![
                                   '${TripDetailsCubit.get(context).tripDetails!.status}']![0],
-                          backColor: greenColor,
+                          backColor: accentColor,
                           textColor: white),
                     ),
               SizedBox(
@@ -1016,7 +1016,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                         '${TripDetailsCubit.get(context).tripDetails!.status}']![0] ==
                                     "Cancel"
                             ? redColor
-                            : greenColor,
+                            : accentColor,
                         textColor: white),
           );
   }

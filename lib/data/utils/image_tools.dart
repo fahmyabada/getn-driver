@@ -56,7 +56,7 @@ class ImageTools {
     var ratioImage = 1.4;
 
     if (url?.isEmpty ?? true) {
-      print('image*****************111 =');
+      // print('image*****************111 =');
 
       return ExtendedImage.network(
         placeHolderImage,
@@ -91,7 +91,7 @@ class ImageTools {
         },
       );
     } else if (url!.contains("assets")) {
-      print('image*****************222 =');
+      // print('image*****************222 =');
       return Image.asset(
         url,
         width: width,
@@ -99,7 +99,7 @@ class ImageTools {
         fit: fit,
       );
     } else if (url.startsWith("http")) {
-      print('image*****************333 =');
+      // print('image*****************333 =');
       return ExtendedImage.network(
         url,
         width: width,
@@ -133,7 +133,7 @@ class ImageTools {
         },
       );
     } else {
-      print('image*****************444 =');
+      // print('image*****************444 =');
       return Image.file(
         File(url),
         height: height,

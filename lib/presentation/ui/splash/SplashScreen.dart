@@ -81,7 +81,7 @@ class _SplashScreenState extends State<SplashScreen> {
             }
           });
 
-          LocalNotificationService.createAndDisplayNotification(message!,'');
+          // LocalNotificationService.createAndDisplayNotification(message!,'');
         }
       });
 
@@ -300,20 +300,24 @@ class _SplashScreenState extends State<SplashScreen> {
                   LocalNotificationService.goToNextScreen(
                       message.data['typeId'], "pushReplacement", "tripDetails");
                 }
-                LocalNotificationService.createAndDisplayNotification(
-                    message, "inSameTrip");
+                // LocalNotificationService.createAndDisplayNotification(
+                //     message, "inSameTrip");
               } else if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'tripDetails' &&
                   getIt<SharedPreferences>().getString('tripDetailsId') !=
                       message.data['typeId']) {
-                LocalNotificationService.createAndDisplayNotification(
-                    message, "newTrip");
+                LocalNotificationService.goToNextScreen(
+                    message.data['parentId'], "pop", "newTrip");
+                // LocalNotificationService.createAndDisplayNotification(
+                //     message, "newTrip");
               } else if (getIt<SharedPreferences>().getString('typeScreen') !=
                       'tripDetails' &&
                   getIt<SharedPreferences>().getString('typeScreen') !=
                       'requestDetails') {
-                LocalNotificationService.createAndDisplayNotification(
-                    message, "outTrip");
+                LocalNotificationService.goToNextScreen(
+                    message.data['parentId'], "push", "outTrip");
+                // LocalNotificationService.createAndDisplayNotification(
+                //     message, "outTrip");
               } else if (getIt<SharedPreferences>().getString('typeScreen') !=
                       'tripDetails' &&
                   getIt<SharedPreferences>().getString('typeScreen') ==
@@ -324,8 +328,8 @@ class _SplashScreenState extends State<SplashScreen> {
                     "pushReplacement",
                     "requestDetails");
                 // for in click
-                LocalNotificationService.createAndDisplayNotification(
-                    message, "outTripInRequest");
+                // LocalNotificationService.createAndDisplayNotification(
+                //     message, "outTripInRequest");
               }
             }
             else if (message.data['type'] == "request" ||
@@ -345,26 +349,35 @@ class _SplashScreenState extends State<SplashScreen> {
                       "pushReplacement",
                       "requestDetails");
                 }
-                LocalNotificationService.createAndDisplayNotification(
-                    message, "inSameRequest");
-              } else if (getIt<SharedPreferences>().getString('typeScreen') ==
+                // LocalNotificationService.createAndDisplayNotification(
+                //     message, "inSameRequest");
+              }
+              else if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails' &&
                   getIt<SharedPreferences>().getString('requestDetailsId') !=
                       message.data['typeId']) {
-                LocalNotificationService.createAndDisplayNotification(
-                    message, "newRequest");
-              } else if (getIt<SharedPreferences>().getString('typeScreen') !=
+                LocalNotificationService.goToNextScreen(
+                    message.data['typeId'], "pushReplacement", "requestDetails");
+                // LocalNotificationService.createAndDisplayNotification(
+                //     message, "newRequest");
+              }
+              else if (getIt<SharedPreferences>().getString('typeScreen') !=
                       'requestDetails' &&
                   getIt<SharedPreferences>().getString('typeScreen') !=
                       'tripDetails') {
-                LocalNotificationService.createAndDisplayNotification(
-                    message, "outRequest");
-              } else if (getIt<SharedPreferences>().getString('typeScreen') !=
+                LocalNotificationService.goToNextScreen(
+                    message.data['typeId'], "push", "outRequest");
+                // LocalNotificationService.createAndDisplayNotification(
+                //     message, "outRequest");
+              }
+              else if (getIt<SharedPreferences>().getString('typeScreen') !=
                       'requestDetails' &&
                   getIt<SharedPreferences>().getString('typeScreen') ==
                       'tripDetails') {
-                LocalNotificationService.createAndDisplayNotification(
-                    message, "outRequestInTrip");
+                LocalNotificationService.goToNextScreen(
+                    message.data['typeId'], "pop", "outRequestInTrip");
+                // LocalNotificationService.createAndDisplayNotification(
+                //     message, "outRequestInTrip");
               }
             }
 
