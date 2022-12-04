@@ -234,9 +234,9 @@ class LanguageCubit extends Cubit<LanguageState> {
     'Gallery': 'Gallery',
     'Save': 'Save',
     'DriverInformation': 'Driver Information',
-    'FrontNationalId': 'Front NationalId',
+    'FrontNationalId': 'Front National Id',
     'Update': 'Update',
-    'BackNationalId': 'Back NationalId',
+    'BackNationalId': 'Back National Id',
     'FrontDriverLicence': 'Front Driver Licence',
     'BackDriverLicence': 'Back Driver Licence',
     'Done': 'Done',
@@ -279,9 +279,9 @@ class LanguageCubit extends Cubit<LanguageState> {
     'VerifyIdentityRegister':
         'Verify your identity by taking a selfie shot of your photo For the verification of something',
     'VerifyIdentityFrontNationalId':
-        'Verify your front NationalId by taking shot of your photo',
+        'Verify your front National Id by taking shot of your photo',
     'VerifyIdentityBackNationalId':
-        'Verify your back NationalId by taking shot of your photo',
+        'Verify your back National Id by taking shot of your photo',
     'VerifyIdentityFrontDriverLicence':
         'Verify your front driver licence by taking shot of your photo',
     'VerifyIdentityBackDriverLicence':
