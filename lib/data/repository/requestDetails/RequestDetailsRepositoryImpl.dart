@@ -79,7 +79,7 @@ class RequestDetailsRepositoryImpl extends RequestDetailsRepository {
       // Location services are not enabled don't continue
       // accessing the position and request users of the
       // App to enable the location services.
-      await Geolocator.openLocationSettings();
+      // await Geolocator.openLocationSettings();
       return const Left('Location services are denied');
     }
     permission = await Geolocator.checkPermission();

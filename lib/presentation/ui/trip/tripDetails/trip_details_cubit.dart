@@ -25,7 +25,6 @@ class TripDetailsCubit extends Cubit<TripDetailsState> {
   var updateAllDataUseCase = getIt<SetPolyLinesUseCase>();
   var getCurrentLocationTripUseCase = getIt<GetCurrentLocationTripUseCase>();
   APIResultModel? routeCoordinates;
-  bool loadingRequest = false;
   Data? tripDetails;
 
   void getTripDetails(String id) async {
@@ -78,7 +77,6 @@ class TripDetailsCubit extends Cubit<TripDetailsState> {
   }
 
   void getCurrentLocation() async {
-    loadingRequest = true;
     emit(CurrentLocationTripLoading());
     final data = await getCurrentLocationTripUseCase.execute();
     emit(eitherLoadedOrErrorStateCurrentLocation(data));

@@ -169,8 +169,10 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
   RequestDetailsState eitherLoadedOrErrorStateCurrentLocation(
       Either<String, Position> data) {
     return data.fold((failure) {
+      loadingRequest = false;
       return CurrentLocationErrorState(failure);
     }, (data) {
+      loadingRequest = false;
       return CurrentLocationSuccessState(data);
     });
   }

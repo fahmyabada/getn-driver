@@ -107,7 +107,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   var commentController = TextEditingController();
   bool loadingMoreTrips = false;
   String idRequest = '';
-  
+
   void _loadMoreTrips(BuildContext context) {
     RequestDetailsCubit.get(context).getTripsRequestDetails(
         RequestDetailsCubit.get(context).indexTrips, idRequest);
@@ -116,11 +116,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    
+
     idRequest = widget.idRequest!;
-    RequestDetailsCubit.get(context)
-        .getRequestDetails(idRequest);
-    
+    RequestDetailsCubit.get(context).getRequestDetails(idRequest);
+
     if (getIt<SharedPreferences>().getBool("isEn") != null) {
       LanguageCubit.get(context).isEn =
           getIt<SharedPreferences>().getBool("isEn")!;
@@ -148,8 +147,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           if (state is RequestDetailsSuccessState) {
             RequestDetailsCubit.get(context)
                 .getTripsRequestDetails(1, idRequest);
-          }
-          else if (state is RequestDetailsEditSuccessState) {
+          } else if (state is RequestDetailsEditSuccessState) {
             if (state.type == "reject" ||
                 state.type == "mid_pause" ||
                 state.type == "end") {
@@ -193,10 +191,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               }
             }
 
-            RequestDetailsCubit.get(context)
-                .getRequestDetails(idRequest);
-          }
-          else if (state is RequestDetailsEditErrorState) {
+            RequestDetailsCubit.get(context).getRequestDetails(idRequest);
+          } else if (state is RequestDetailsEditErrorState) {
             if (state.type == "reject" ||
                 state.type == "mid_pause" ||
                 state.type == "end") {
@@ -217,7 +213,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 builder: (_) {
                   return CustomNotHaveNetwork(
                     idRequest:
-                    RequestDetailsCubit.get(context).requestDetails!.id!,
+                        RequestDetailsCubit.get(context).requestDetails!.id!,
                   );
                 },
               );
@@ -227,8 +223,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   state: ToastStates.error,
                   context: context);
             }
-          }
-          else if (state is CurrentLocationSuccessState) {
+          } else if (state is CurrentLocationSuccessState) {
             print('CurrentLocationSuccessState********* ');
             // this belong add trip
             /*String id = await navigateToWithRefreshPagePrevious(
@@ -259,10 +254,19 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             String sLat = state.position.latitude.toString();
             String sLon = state.position.longitude.toString();
 
-            launchInMap(sLat, sLon, RequestDetailsCubit.get(context).requestDetails!.from!.placeLatitude!,
-                RequestDetailsCubit.get(context).requestDetails!.from!.placeLongitude!, context);
-          } 
-          else if (state is CurrentLocationErrorState) {
+            launchInMap(
+                sLat,
+                sLon,
+                RequestDetailsCubit.get(context)
+                    .requestDetails!
+                    .from!
+                    .placeLatitude!,
+                RequestDetailsCubit.get(context)
+                    .requestDetails!
+                    .from!
+                    .placeLongitude!,
+                context);
+          } else if (state is CurrentLocationErrorState) {
             if (kDebugMode) {
               print('CurrentLocationErrorState********* ${state.error}');
             }
@@ -272,52 +276,99 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 barrierDismissible: false,
                 // outside to dismiss
                 builder: (BuildContext context) {
-                  return CustomDialogLocation(
-                    title: LanguageCubit.get(context)
-                        .getTexts('Location')
-                        .toString(),
-                    description: LanguageCubit.get(context)
-                        .getTexts('LocationPermissions')
-                        .toString(),
-                    type: "checkLocationDenied",
-                    backgroundColor: white,
-                    btnOkColor: accentColor,
-                    btnCancelColor: grey,
-                    titleColor: accentColor,
-                    descColor: black,
+                  return WillPopScope(
+                    onWillPop: () async => false,
+                    child: CustomDialogLocation(
+                      title: LanguageCubit.get(context)
+                          .getTexts('Location')
+                          .toString(),
+                      description: LanguageCubit.get(context)
+                          .getTexts('LocationPermissions')
+                          .toString(),
+                      type: "checkLocationDenied",
+                      backgroundColor: white,
+                      btnOkColor: accentColor,
+                      btnCancelColor: grey,
+                      titleColor: accentColor,
+                      descColor: black,
+                      press: () {
+                        Navigator.of(context).pop(true);
+                      },
+                    ),
                   );
                 },
-              ).then((value) => Navigator.pop(context));
+              );
             } else if (state.error == "deniedForever") {
               showDialog(
                 context: context,
                 barrierDismissible: false,
                 // outside to dismiss
                 builder: (BuildContext mContext) {
-                  return CustomDialogLocation(
-                    title: LanguageCubit.get(context)
-                        .getTexts('Location')
-                        .toString(),
-                    description: LanguageCubit.get(context)
-                        .getTexts('LocationPermissionsPermanently')
-                        .toString(),
-                    type: "checkLocationDeniedForever",
-                    backgroundColor: white,
-                    btnOkColor: accentColor,
-                    btnCancelColor: grey,
-                    titleColor: accentColor,
-                    descColor: black,
+                  return WillPopScope(
+                    onWillPop: () async => false,
+                    child: CustomDialogLocation(
+                      title: LanguageCubit.get(context)
+                          .getTexts('Location')
+                          .toString(),
+                      description: LanguageCubit.get(context)
+                          .getTexts('LocationPermissionsPermanently')
+                          .toString(),
+                      type: "checkLocationDeniedForever",
+                      backgroundColor: white,
+                      btnOkColor: accentColor,
+                      btnCancelColor: grey,
+                      titleColor: accentColor,
+                      descColor: black,
+                      press: () {
+                        Navigator.of(context).pop(true);
+                      },
+                    ),
                   );
                 },
-              ).then((value) => Navigator.pop(context));
+              );
+            } else if (state.error == "Location services are denied") {
+              String denied;
+              if (getIt<SharedPreferences>().getBool("isEn") != null) {
+                if (getIt<SharedPreferences>().getBool("isEn") == true) {
+                  denied = 'Please enable location in status bar';
+                } else {
+                  denied = 'الرجاء تمكين الموقع في شريط الحالة';
+                }
+              } else {
+                denied = 'Please enable location in status bar';
+              }
+
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                // outside to dismiss
+                builder: (BuildContext mContext) {
+                  return WillPopScope(
+                    onWillPop: () async => false,
+                    child: CustomDialogLocation(
+                      title: LanguageCubit.get(context)
+                          .getTexts('Location')
+                          .toString(),
+                      description: denied,
+                      type: "checkLocationEnable",
+                      backgroundColor: white,
+                      btnOkColor: accentColor,
+                      btnCancelColor: grey,
+                      titleColor: accentColor,
+                      descColor: black,
+                      press: () {
+                        Navigator.of(context).pop(true);
+                      },
+                    ),
+                  );
+                },
+              );
             }
-          }
-          else if (state is TripsSuccessState) {
+          } else if (state is TripsSuccessState) {
             setState(() {
               loadingMoreTrips = false;
             });
-          }
-          else if (state is TripsErrorState) {
+          } else if (state is TripsErrorState) {
             setState(() {
               loadingMoreTrips = false;
             });
@@ -329,14 +380,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 builder: (_) {
                   return CustomNotHaveNetwork(
                     idRequest:
-                    RequestDetailsCubit.get(context).requestDetails!.id!,
+                        RequestDetailsCubit.get(context).requestDetails!.id!,
                   );
                 },
               );
             }
-          }
-          else if (state is RequestDetailsLastTripSuccessState) {
-            if(state.data!.data!.isNotEmpty){
+          } else if (state is RequestDetailsLastTripSuccessState) {
+            if (state.data!.data!.isNotEmpty) {
               showDialog(
                 context: context,
                 barrierDismissible: true,
@@ -355,8 +405,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   );
                 },
               );
-            }
-            else if(state.data!.data!.isEmpty && state.type == 'end'){
+            } else if (state.data!.data!.isEmpty && state.type == 'end') {
               showDialog(
                 context: context,
                 barrierDismissible: true,
@@ -365,9 +414,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   print(
                       "CustomDialogRejectRequestDetails1************* ${btnStatus['${RequestDetailsCubit.get(context).requestDetails!.status}']![0]}");
                   return CustomDialogEndRequestDetails(
-                    id: RequestDetailsCubit.get(context)
-                        .requestDetails!
-                        .id!,
+                    id: RequestDetailsCubit.get(context).requestDetails!.id!,
                     title: LanguageCubit.get(context)
                         .getTexts('Requests')
                         .toString(),
@@ -375,31 +422,29 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         .getTexts('EndRequest')
                         .toString(),
                     status: btnStatus[
-                    '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
+                        '${RequestDetailsCubit.get(context).requestDetails!.status}']![0],
                   );
                 },
               );
-            }
-            else if(state.data!.data!.isEmpty && state.type == 'mid_pause'){
-
+            } else if (state.data!.data!.isEmpty && state.type == 'mid_pause') {
               final currentDate = DateTime.now();
               final dateFrom = DateFormat("yyyy-MM-ddTHH:mm")
                   .parse(RequestDetailsCubit.get(context)
-                  .requestDetails!
-                  .from!
-                  .date!)
+                      .requestDetails!
+                      .from!
+                      .date!)
                   .difference(currentDate)
                   .inHours;
 
               final dateTo = DateFormat("yyyy-MM-ddTHH:mm")
                   .parse(RequestDetailsCubit.get(context)
-                  .requestDetails!
-                  .from!
-                  .date!)
-                  .difference(DateFormat("yyyy-MM-ddTHH:mm").parse(
-                  RequestDetailsCubit.get(context)
                       .requestDetails!
-                      .createdAt!))
+                      .from!
+                      .date!)
+                  .difference(DateFormat("yyyy-MM-ddTHH:mm").parse(
+                      RequestDetailsCubit.get(context)
+                          .requestDetails!
+                          .createdAt!))
                   .inHours;
               // print("dateFrom********$dateFrom");
               // print("dateTo********$dateTo");
@@ -425,11 +470,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             .getTexts('CancelationFee')
                             .toString(),
                         type: btnStatus[
-                        '${RequestDetailsCubit.get(context).requestDetails!.status}']![1]);
+                            '${RequestDetailsCubit.get(context).requestDetails!.status}']![1]);
                   },
                 );
-              }
-              else {
+              } else {
                 showDialog(
                   context: context,
                   barrierDismissible: true,
@@ -446,15 +490,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             .getTexts('IfRejected')
                             .toString(),
                         type: btnStatus[
-                        '${RequestDetailsCubit.get(context).requestDetails!.status}']![1]);
+                            '${RequestDetailsCubit.get(context).requestDetails!.status}']![1]);
                   },
                 );
               }
             }
-          }
-          else if (state is RequestDetailsLastTripErrorState) {
-            print(
-                "RequestDetailsLastTripErrorState************ ");
+          } else if (state is RequestDetailsLastTripErrorState) {
+            print("RequestDetailsLastTripErrorState************ ");
             if (state.message == 'network not available') {
               showDialog(
                 context: context,
@@ -706,7 +748,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         ? Container()
                         : IconButton(
                             onPressed: () {
-                              RequestDetailsCubit.get(context).getCurrentLocation();
+                              RequestDetailsCubit.get(context)
+                                  .getCurrentLocation();
                             },
                             icon: Icon(
                               Icons.wrong_location_sharp,
@@ -1536,8 +1579,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               ),
                             ),
                             onTap: () async {
-                              print(
-                                  "typeId44************ ${idRequest}");
+                              print("typeId44************ ${idRequest}");
                               await navigateToWithRefreshPagePrevious(
                                   context,
                                   TripDetailsScreen(
@@ -1546,8 +1588,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                         .id,
                                     idRequest: idRequest,
                                   )).then((id) {
-                                print(
-                                    "typeId33************ ${id}");
+                                print("typeId33************ ${id}");
                                 setState(() {
                                   loadingMoreTrips = false;
                                   getIt<SharedPreferences>().setString(
@@ -1605,8 +1646,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     ? errorMessage2(
                         message: RequestDetailsCubit.get(context).failureTrip,
                         press: () {
-                          print(
-                              "getTripsRequestDetails**********${idRequest}");
+                          print("getTripsRequestDetails**********${idRequest}");
                           RequestDetailsCubit.get(context).failureTrip = "";
                           RequestDetailsCubit.get(context).indexTrips = 1;
                           RequestDetailsCubit.get(context)

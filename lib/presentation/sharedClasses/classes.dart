@@ -201,6 +201,7 @@ class CustomDialogLocation extends StatefulWidget {
       descColor,
       btnOkColor,
       btnCancelColor;
+  final VoidCallback? press;
 
   const CustomDialogLocation({
     Key? key,
@@ -213,6 +214,7 @@ class CustomDialogLocation extends StatefulWidget {
     this.btnCancelColor,
     this.id,
     this.type,
+    this.press,
   }) : super(key: key);
 
   @override
@@ -275,7 +277,7 @@ class _CustomDialogLocationState extends State<CustomDialogLocation> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.r)),
                       color: widget.btnOkColor,
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: widget.press,
                       child: Padding(
                         padding: EdgeInsets.symmetric(
                             vertical: 8.r, horizontal: 8.r),
@@ -294,7 +296,7 @@ class _CustomDialogLocationState extends State<CustomDialogLocation> {
                                     borderRadius: BorderRadius.circular(10.r)),
                                 color: widget.btnOkColor,
                                 minWidth: 80.w,
-                                onPressed: () => Navigator.pop(context),
+                                onPressed: widget.press,
                                 child: Text(
                                   "ok",
                                   style:
@@ -318,7 +320,44 @@ class _CustomDialogLocationState extends State<CustomDialogLocation> {
                                 )),
                           ],
                         )
-                      : Container()
+                      : widget.type == "checkLocationEnable"
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                MaterialButton(
+                                    height: 30.h,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.r)),
+                                    color: widget.btnOkColor,
+                                    minWidth: 80.w,
+                                    onPressed: widget.press,
+                                    child: Text(
+                                      "ok",
+                                      style: TextStyle(
+                                          color: white, fontSize: 15.sp),
+                                    )),
+                                SizedBox(
+                                  width: 30.w,
+                                ),
+                                MaterialButton(
+                                    height: 30.h,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.r)),
+                                    color: widget.btnCancelColor,
+                                    onPressed: () async {
+                                      await Geolocator.openLocationSettings();
+                                    },
+                                    minWidth: 80.w,
+                                    child: Text(
+                                      "Setting",
+                                      style: TextStyle(
+                                          color: black, fontSize: 15.sp),
+                                    )),
+                              ],
+                            )
+                          : Container()
             ],
           ),
         ),
@@ -707,25 +746,25 @@ class _CustomDialogEndRequestDetailsState
                       loadingEndRequestDetails
                           ? loading()
                           : MaterialButton(
-                          height: 30.h,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.r)),
-                          color: accentColor,
-                          minWidth: 80.w,
-                          onPressed: () {
-                            RequestDetailsCubit.get(context).editRequest(
-                                widget.id!, widget.status!, "");
+                              height: 30.h,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.r)),
+                              color: accentColor,
+                              minWidth: 80.w,
+                              onPressed: () {
+                                RequestDetailsCubit.get(context).editRequest(
+                                    widget.id!, widget.status!, "");
 
-                            setState(() {
-                              loadingEndRequestDetails = true;
-                            });
-                          },
-                          child: Text(
-                            LanguageCubit.get(context)
-                                .getTexts('Ok')
-                                .toString(),
-                            style: TextStyle(color: white, fontSize: 15.sp),
-                          )),
+                                setState(() {
+                                  loadingEndRequestDetails = true;
+                                });
+                              },
+                              child: Text(
+                                LanguageCubit.get(context)
+                                    .getTexts('Ok')
+                                    .toString(),
+                                style: TextStyle(color: white, fontSize: 15.sp),
+                              )),
                       SizedBox(
                         width: 30.w,
                       ),
@@ -755,7 +794,14 @@ class _CustomDialogEndRequestDetailsState
 }
 
 class CustomDialogLastTrip extends StatefulWidget {
-  const CustomDialogLastTrip({Key? key, this.title, this.description, this.idTrip, this.status, this.idRequest}) : super(key: key);
+  const CustomDialogLastTrip(
+      {Key? key,
+      this.title,
+      this.description,
+      this.idTrip,
+      this.status,
+      this.idRequest})
+      : super(key: key);
   final String? title, description, idTrip, idRequest, status;
 
   @override
@@ -776,8 +822,8 @@ class _CustomDialogLastTripState extends State<CustomDialogLastTrip> {
         elevation: 0,
         backgroundColor: Colors.transparent,
         child: Container(
-          padding: EdgeInsets.only(
-              top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+          padding:
+              EdgeInsets.only(top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
           margin: EdgeInsets.only(top: 50.r),
           decoration: BoxDecoration(
             color: white,
@@ -827,27 +873,23 @@ class _CustomDialogLastTripState extends State<CustomDialogLastTrip> {
                               idTrip: widget.idTrip,
                               idRequest: widget.idRequest,
                             )).then((value) {
-                              setState(() {
-                                Navigator.pop(context);
-                                getIt<SharedPreferences>().setString(
-                                    'typeScreen', "requestDetails");
-                                RequestDetailsCubit.get(context).indexTrips =
-                                1;
-                                RequestDetailsCubit.get(context)
-                                    .loadingRequest = false;
-                                RequestDetailsCubit.get(context)
-                                    .failureRequest = "";
-                                RequestDetailsCubit.get(context).failureTrip =
+                          setState(() {
+                            Navigator.pop(context);
+                            getIt<SharedPreferences>()
+                                .setString('typeScreen', "requestDetails");
+                            RequestDetailsCubit.get(context).indexTrips = 1;
+                            RequestDetailsCubit.get(context).loadingRequest =
+                                false;
+                            RequestDetailsCubit.get(context).failureRequest =
                                 "";
-                                RequestDetailsCubit.get(context)
-                                    .getRequestDetails(widget.idRequest!);
-                              });
+                            RequestDetailsCubit.get(context).failureTrip = "";
+                            RequestDetailsCubit.get(context)
+                                .getRequestDetails(widget.idRequest!);
+                          });
                         });
                       },
                       child: Text(
-                        LanguageCubit.get(context)
-                            .getTexts('Ok')
-                            .toString(),
+                        LanguageCubit.get(context).getTexts('Ok').toString(),
                         style: TextStyle(color: white, fontSize: 15.sp),
                       )),
                   SizedBox(
@@ -873,7 +915,6 @@ class _CustomDialogLastTripState extends State<CustomDialogLastTrip> {
         ),
       ),
     );
-
   }
 }
 
@@ -916,7 +957,6 @@ class _CustomDialogRejectTripDetailsState
             loadingRejectTripDetails = false;
           });
         } else if (state is CurrentLocationTripSuccessState) {
-
           sLat = state.position.latitude;
           sLon = state.position.longitude;
           getDistanceKM(double.parse(widget.location!.placeLatitude!),
@@ -939,44 +979,98 @@ class _CustomDialogRejectTripDetailsState
               barrierDismissible: false,
               // outside to dismiss
               builder: (BuildContext context) {
-                return CustomDialogLocation(
-                  title: LanguageCubit.get(context)
-                      .getTexts('Location')
-                      .toString(),
-                  description: LanguageCubit.get(context)
-                      .getTexts('LocationPermissions')
-                      .toString(),
-                  type: "checkLocationDenied",
-                  backgroundColor: white,
-                  btnOkColor: accentColor,
-                  btnCancelColor: grey,
-                  titleColor: accentColor,
-                  descColor: black,
+                return WillPopScope(
+                  onWillPop: () async => false,
+                  child: CustomDialogLocation(
+                    title: LanguageCubit.get(context)
+                        .getTexts('Location')
+                        .toString(),
+                    description: LanguageCubit.get(context)
+                        .getTexts('LocationPermissions')
+                        .toString(),
+                    type: "checkLocationDenied",
+                    backgroundColor: white,
+                    btnOkColor: accentColor,
+                    btnCancelColor: grey,
+                    titleColor: accentColor,
+                    descColor: black,
+                    press: (){
+                      Navigator.of(context).pop(true);
+                    },
+                  ),
                 );
               },
-            ).then((value) => Navigator.pop(context));
-          } else if (state.error == "deniedForever") {
+            );
+          }
+          else if (state.error == "deniedForever") {
             showDialog(
               context: context,
               barrierDismissible: false,
               // outside to dismiss
               builder: (BuildContext mContext) {
-                return CustomDialogLocation(
-                  title: LanguageCubit.get(context)
-                      .getTexts('Location')
-                      .toString(),
-                  description: LanguageCubit.get(context)
-                      .getTexts('LocationPermissionsPermanently')
-                      .toString(),
-                  type: "checkLocationDeniedForever",
-                  backgroundColor: white,
-                  btnOkColor: accentColor,
-                  btnCancelColor: grey,
-                  titleColor: accentColor,
-                  descColor: black,
+                return WillPopScope(
+                  onWillPop: () async => false,
+                  child: CustomDialogLocation(
+                    title: LanguageCubit.get(context)
+                        .getTexts('Location')
+                        .toString(),
+                    description: LanguageCubit.get(context)
+                        .getTexts('LocationPermissionsPermanently')
+                        .toString(),
+                    type: "checkLocationDeniedForever",
+                    backgroundColor: white,
+                    btnOkColor: accentColor,
+                    btnCancelColor: grey,
+                    titleColor: accentColor,
+                    descColor: black,
+                    press: (){
+                      Navigator.of(context).pop(true);
+                    },
+                  ),
                 );
               },
-            ).then((value) => Navigator.pop(context));
+            );
+          }
+          else if (state.error == "Location services are denied") {
+            String denied;
+            if (getIt<SharedPreferences>().getBool("isEn") != null) {
+              if (getIt<SharedPreferences>().getBool("isEn") == true) {
+                denied =
+                'Please enable location in status bar';
+              } else {
+                denied =
+                'الرجاء تمكين الموقع في شريط الحالة';
+              }
+            } else {
+              denied =
+              'Please enable location in status bar';
+            }
+
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              // outside to dismiss
+              builder: (BuildContext mContext) {
+                return WillPopScope(
+                  onWillPop: () async => false,
+                  child: CustomDialogLocation(
+                    title: LanguageCubit.get(context)
+                        .getTexts('Location')
+                        .toString(),
+                    description: denied ,
+                    type: "checkLocationEnable",
+                    backgroundColor: white,
+                    btnOkColor: accentColor,
+                    btnCancelColor: grey,
+                    titleColor: accentColor,
+                    descColor: black,
+                    press: (){
+                      Navigator.of(context).pop(true);
+                    },
+                  ),
+                );
+              },
+            );
           }
         }
       },
@@ -1112,7 +1206,8 @@ class CustomDialogEndTripDetails extends StatefulWidget {
     this.title,
     this.description,
     this.id,
-    this.status, this.location,
+    this.status,
+    this.location,
   }) : super(key: key);
 
   @override
@@ -1138,20 +1233,18 @@ class _CustomDialogEndTripDetailsState
             loadingEndTripDetails = false;
           });
         } else if (state is CurrentLocationTripSuccessState) {
-
           sLat = state.position.latitude;
           sLon = state.position.longitude;
           getDistanceKM(double.parse(widget.location!.placeLatitude!),
-              double.parse(widget.location!.placeLongitude!), sLat, sLon)
+                  double.parse(widget.location!.placeLongitude!), sLat, sLon)
               .then((value) {
             print('CurrentLocationTripSuccessState********* ${widget.status!}');
             print('CurrentLocationTripSuccessState1********* $value');
 
-            TripDetailsCubit.get(context).editTrip(
-                widget.id!, widget.status!, "comment",value);
+            TripDetailsCubit.get(context)
+                .editTrip(widget.id!, widget.status!, "comment", value);
           });
-        }
-        else if (state is CurrentLocationTripErrorState) {
+        } else if (state is CurrentLocationTripErrorState) {
           if (kDebugMode) {
             print('CurrentLocationTripErrorState********* ${state.error}');
           }
@@ -1164,44 +1257,98 @@ class _CustomDialogEndTripDetailsState
               barrierDismissible: false,
               // outside to dismiss
               builder: (BuildContext context) {
-                return CustomDialogLocation(
-                  title: LanguageCubit.get(context)
-                      .getTexts('Location')
-                      .toString(),
-                  description: LanguageCubit.get(context)
-                      .getTexts('LocationPermissions')
-                      .toString(),
-                  type: "checkLocationDenied",
-                  backgroundColor: white,
-                  btnOkColor: accentColor,
-                  btnCancelColor: grey,
-                  titleColor: accentColor,
-                  descColor: black,
+                return  WillPopScope(
+                  onWillPop: () async => false,
+                  child: CustomDialogLocation(
+                    title: LanguageCubit.get(context)
+                        .getTexts('Location')
+                        .toString(),
+                    description: LanguageCubit.get(context)
+                        .getTexts('LocationPermissions')
+                        .toString(),
+                    type: "checkLocationDenied",
+                    backgroundColor: white,
+                    btnOkColor: accentColor,
+                    btnCancelColor: grey,
+                    titleColor: accentColor,
+                    descColor: black,
+                    press: (){
+                      Navigator.of(context).pop(true);
+                    },
+                  ),
                 );
               },
-            ).then((value) => Navigator.pop(context));
-          } else if (state.error == "deniedForever") {
+            );
+          }
+          else if (state.error == "deniedForever") {
             showDialog(
               context: context,
               barrierDismissible: false,
               // outside to dismiss
               builder: (BuildContext mContext) {
-                return CustomDialogLocation(
-                  title: LanguageCubit.get(context)
-                      .getTexts('Location')
-                      .toString(),
-                  description: LanguageCubit.get(context)
-                      .getTexts('LocationPermissionsPermanently')
-                      .toString(),
-                  type: "checkLocationDeniedForever",
-                  backgroundColor: white,
-                  btnOkColor: accentColor,
-                  btnCancelColor: grey,
-                  titleColor: accentColor,
-                  descColor: black,
+                return  WillPopScope(
+                  onWillPop: () async => false,
+                  child: CustomDialogLocation(
+                    title: LanguageCubit.get(context)
+                        .getTexts('Location')
+                        .toString(),
+                    description: LanguageCubit.get(context)
+                        .getTexts('LocationPermissionsPermanently')
+                        .toString(),
+                    type: "checkLocationDeniedForever",
+                    backgroundColor: white,
+                    btnOkColor: accentColor,
+                    btnCancelColor: grey,
+                    titleColor: accentColor,
+                    descColor: black,
+                    press: (){
+                      Navigator.of(context).pop(true);
+                    },
+                  ),
                 );
               },
-            ).then((value) => Navigator.pop(context));
+            );
+          }
+          else if (state.error == "Location services are denied") {
+            String denied;
+            if (getIt<SharedPreferences>().getBool("isEn") != null) {
+              if (getIt<SharedPreferences>().getBool("isEn") == true) {
+                denied =
+                'Please enable location in status bar';
+              } else {
+                denied =
+                'الرجاء تمكين الموقع في شريط الحالة';
+              }
+            } else {
+              denied =
+              'Please enable location in status bar';
+            }
+
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              // outside to dismiss
+              builder: (BuildContext mContext) {
+                return WillPopScope(
+                  onWillPop: () async => false,
+                  child: CustomDialogLocation(
+                    title: LanguageCubit.get(context)
+                        .getTexts('Location')
+                        .toString(),
+                    description: denied ,
+                    type: "checkLocationEnable",
+                    backgroundColor: white,
+                    btnOkColor: accentColor,
+                    btnCancelColor: grey,
+                    titleColor: accentColor,
+                    descColor: black,
+                    press: (){
+                      Navigator.of(context).pop(true);
+                    },
+                  ),
+                );
+              },
+            );
           }
         }
       },
@@ -1320,8 +1467,8 @@ class CustomNotHaveNetwork extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.transparent,
         child: Container(
-          padding: EdgeInsets.only(
-              top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+          padding:
+              EdgeInsets.only(top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
           margin: EdgeInsets.only(top: 50.r),
           decoration: BoxDecoration(
             color: white,
@@ -1335,9 +1482,7 @@ class CustomNotHaveNetwork extends StatelessWidget {
                 height: 10.r,
               ),
               Text(
-                LanguageCubit.get(context)
-                    .getTexts('Warning')
-                    .toString(),
+                LanguageCubit.get(context).getTexts('Warning').toString(),
                 style: TextStyle(
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w700,
@@ -1360,31 +1505,25 @@ class CustomNotHaveNetwork extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                 MaterialButton(
+                  MaterialButton(
                       height: 30.h,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.r)),
                       color: accentColor,
                       minWidth: 80.w,
                       onPressed: () {
-                        getIt<SharedPreferences>().setString(
-                            'typeScreen', "requestDetails");
-                        RequestDetailsCubit.get(context).indexTrips =
-                        1;
-                        RequestDetailsCubit.get(context)
-                            .loadingRequest = false;
-                        RequestDetailsCubit.get(context)
-                            .failureRequest = "";
-                        RequestDetailsCubit.get(context).failureTrip =
-                        "";
+                        getIt<SharedPreferences>()
+                            .setString('typeScreen', "requestDetails");
+                        RequestDetailsCubit.get(context).indexTrips = 1;
+                        RequestDetailsCubit.get(context).loadingRequest = false;
+                        RequestDetailsCubit.get(context).failureRequest = "";
+                        RequestDetailsCubit.get(context).failureTrip = "";
                         RequestDetailsCubit.get(context)
                             .getRequestDetails(idRequest!);
                         Navigator.pop(context);
                       },
                       child: Text(
-                        LanguageCubit.get(context)
-                            .getTexts('Ok')
-                            .toString(),
+                        LanguageCubit.get(context).getTexts('Ok').toString(),
                         style: TextStyle(color: white, fontSize: 15.sp),
                       )),
                   SizedBox(
@@ -1412,7 +1551,6 @@ class CustomNotHaveNetwork extends StatelessWidget {
     );
   }
 }
-
 
 Future<double> getDistanceKM(double fromLatitude, double fromLongitude,
     double toLatitude, double toLongitude) async {
