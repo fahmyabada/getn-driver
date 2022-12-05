@@ -75,7 +75,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => SignCubit()
-      ..getCountries()
+        ..getCountries()
         ..getRole()
         ..getCity(widget.countryId),
       child: BlocConsumer<SignCubit, SignState>(listener: (context, state) {
@@ -89,13 +89,13 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
           }
           showToastt(
               text: state.message, state: ToastStates.error, context: context);
-        }else if (state is CountriesSuccessState) {
+        } else if (state is CountriesSuccessState) {
           if (kDebugMode) {
             print(
                 'SignInScreen*******CountriesSuccessState${SignCubit.get(context).countries[0].icon!.src} ');
           }
           dropDownValueWhatsAppCountry = SignCubit.get(context).countries[0];
-        }else  if (state is RoleSuccessState) {
+        } else if (state is RoleSuccessState) {
           print("RoleSuccessState**************${state.data![0].id}");
           groupValueId = state.data![0].id!;
         } else if (state is CitySuccessState) {
@@ -130,22 +130,19 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                     .toString(),
                 textAlign: TextAlign.start,
                 style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.bold,
-                    color: white),
+                    fontSize: 20.sp, fontWeight: FontWeight.bold, color: white),
               ),
               centerTitle: true,
             ),
             body: RefreshIndicator(
-              onRefresh: () => Future.delayed(
-                  const Duration(seconds: 2),
-                      () {
-                    SignCubit.get(context).getCountries();
-                    SignCubit.get(context).getRole();
-                    SignCubit.get(context).getCity(widget.countryId);
-                  }),
+              onRefresh: () => Future.delayed(const Duration(seconds: 2), () {
+                SignCubit.get(context).getCountries();
+                SignCubit.get(context).getRole();
+                SignCubit.get(context).getCity(widget.countryId);
+              }),
               child: SingleChildScrollView(
-                padding: EdgeInsetsDirectional.only(start: 25.r,end: 25.r, top: 30.r,bottom: 30.r),
+                padding: EdgeInsetsDirectional.only(
+                    start: 25.r, end: 25.r, top: 30.r, bottom: 30.r),
                 child: Column(
                   children: [
                     Center(
@@ -162,7 +159,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                     alignment: Alignment.center,
                                     children: [
                                       ClipRRect(
-                                        borderRadius: BorderRadius.circular(20.r),
+                                        borderRadius:
+                                            BorderRadius.circular(20.r),
                                         child: Image.file(
                                           _imageUser!,
                                           width: 150.w,
@@ -193,7 +191,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                     borderRadius: BorderRadius.circular(20.r),
                                   ),
                                   child: Stack(
-                                    children:  [
+                                    children: [
                                       const Center(
                                         child: Text(
                                           'No image',
@@ -298,19 +296,23 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                               children: [
                                 state is CountriesLoading
                                     ? Container(
-                                        margin:
-                                            EdgeInsetsDirectional.only(end: 10.w),
+                                        margin: EdgeInsetsDirectional.only(
+                                            end: 10.w),
                                         child: loading(),
                                       )
-                                    : SignCubit.get(context).countries.isNotEmpty
+                                    : SignCubit.get(context)
+                                            .countries
+                                            .isNotEmpty
                                         ? Expanded(
                                             flex: 2,
                                             child: DropdownButtonHideUnderline(
                                               child: DropdownButton2(
                                                 //      value: controller.selectedCountry?.value,
-                                                dropdownDecoration: BoxDecoration(
+                                                dropdownDecoration:
+                                                    BoxDecoration(
                                                   borderRadius:
-                                                      BorderRadius.circular(14.r),
+                                                      BorderRadius.circular(
+                                                          14.r),
                                                   border: Border.all(
                                                     width: 1,
                                                     color: Colors.grey[400] ??
@@ -324,21 +326,26 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                                     color: Colors.grey),
                                                 onChanged: (Country? value) {
                                                   setState(() {
-                                                    dropDownValueWhatsAppCountry = value;
+                                                    dropDownValueWhatsAppCountry =
+                                                        value;
                                                   });
                                                 },
                                                 hint: Center(
                                                   child: Row(
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment.center,
+                                                        CrossAxisAlignment
+                                                            .center,
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment.center,
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
                                                       ImageTools.image(
                                                         fit: BoxFit.contain,
-                                                        url: dropDownValueWhatsAppCountry!
-                                                                .icon!.src ??
-                                                            " ",
+                                                        url:
+                                                            dropDownValueWhatsAppCountry!
+                                                                    .icon!
+                                                                    .src ??
+                                                                " ",
                                                         height: 35.w,
                                                         width: 35.w,
                                                       ),
@@ -356,7 +363,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                                                   .code ??
                                                               "",
                                                           style: TextStyle(
-                                                              color: Colors.black,
+                                                              color:
+                                                                  Colors.black,
                                                               fontSize: 20.sp)),
                                                     ],
                                                   ),
@@ -364,7 +372,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                                 items: SignCubit.get(context)
                                                     .countries
                                                     .map((selectedCountry) {
-                                                  return DropdownMenuItem<Country>(
+                                                  return DropdownMenuItem<
+                                                      Country>(
                                                     value: selectedCountry,
                                                     child: Row(
                                                       children: [
@@ -392,17 +401,22 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                                                         ?.ar ??
                                                                     " ",
                                                             style: TextStyle(
-                                                                color: Colors.black,
-                                                                fontSize: 20.sp)),
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize:
+                                                                    20.sp)),
                                                         SizedBox(
                                                           width: 10.w,
                                                         ),
                                                         Text(
-                                                            selectedCountry.code ??
+                                                            selectedCountry
+                                                                    .code ??
                                                                 "",
                                                             style: TextStyle(
-                                                                color: Colors.black,
-                                                                fontSize: 20.sp)),
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize:
+                                                                    20.sp)),
                                                       ],
                                                     ),
                                                   );
@@ -412,7 +426,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                           )
                                         : Expanded(
                                             child: IconButton(
-                                                icon: const Icon(Icons.cloud_upload,
+                                                icon: const Icon(
+                                                    Icons.cloud_upload,
                                                     color: redColor),
                                                 onPressed: () {
                                                   SignCubit.get(context)
@@ -496,8 +511,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                               borderRadius: 20,
                               onEditingComplete: () {
                                 FocusScope.of(context).nextFocus();
-                              }
-                          ),
+                              }),
                           SizedBox(
                             height: 32.h,
                           ),
@@ -533,7 +547,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                     ),
                     Container(
                       width: 1.sw,
-                      padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 25.r),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 15.r, horizontal: 25.r),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50.r),
                         border: Border.all(
@@ -632,7 +647,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                                   MainAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                    LanguageCubit.get(context)
+                                                    LanguageCubit.get(
+                                                                context)
                                                             .isEn
                                                         ? selectedCountry
                                                                 .title?.en ??
@@ -643,8 +659,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                                     textAlign: TextAlign.center,
                                                     maxLines: 1,
                                                     style: TextStyle(
-                                                        overflow:
-                                                            TextOverflow.ellipsis,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                         color: Colors.black,
                                                         fontSize: 20.sp)),
                                                 SizedBox(
@@ -678,7 +694,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                   SignCubit.get(context).getArea(
                                       widget.countryId, dropDownValueCity!.id!);
                                 },
-                               context: context)
+                                context: context)
                             : SignCubit.get(context).area.isNotEmpty
                                 ? Container(
                                     width: 1.sw,
@@ -747,7 +763,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                                   MainAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                    LanguageCubit.get(context)
+                                                    LanguageCubit.get(
+                                                                context)
                                                             .isEn
                                                         ? selectedCountry
                                                                 .title?.en ??
@@ -758,8 +775,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                                     textAlign: TextAlign.center,
                                                     maxLines: 1,
                                                     style: TextStyle(
-                                                        overflow:
-                                                            TextOverflow.ellipsis,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                         color: Colors.black,
                                                         fontSize: 20.sp)),
                                                 SizedBox(
@@ -835,7 +852,9 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                     Row(
                       children: [
                         Text(
-                          LanguageCubit.get(context).getTexts('Role').toString(),
+                          LanguageCubit.get(context)
+                              .getTexts('Role')
+                              .toString(),
                           textAlign: TextAlign.start,
                           style: TextStyle(
                               fontSize: 20.sp,
@@ -872,7 +891,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                     Row(
                       children: [
                         Checkbox(
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
                           focusColor: Theme.of(context).focusColor,
                           //   activeColor: Theme.of(context).colorScheme.secondary,
                           value: terms,
@@ -890,7 +910,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                 LanguageCubit.get(context)
                                     .getTexts('read&agree')
                                     .toString(),
-                                style: TextStyle(fontSize: 17.sp, color: black)),
+                                style:
+                                    TextStyle(fontSize: 17.sp, color: black)),
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -898,8 +919,13 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                   onTap: () async {
                                     bool value =
                                         await navigateToWithRefreshPagePrevious(
-                                            context, const TermsScreen());
-
+                                      context,
+                                      TermsScreen(
+                                        title: LanguageCubit.get(context)
+                                            .getTexts('Terms&Condition')
+                                            .toString(),
+                                      ),
+                                    );
                                     setState(() {
                                       terms = value;
                                     });
@@ -915,8 +941,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                     LanguageCubit.get(context)
                                         .getTexts('AndPrivacyPolicy')
                                         .toString(),
-                                    style:
-                                        TextStyle(fontSize: 17.sp, color: black)),
+                                    style: TextStyle(
+                                        fontSize: 17.sp, color: black)),
                               ],
                             )
                           ],
@@ -967,14 +993,16 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                       cityId: dropDownValueCity!.id!,
                                       areaId: dropDownValueArea!.id!,
                                       brief: briefController.text.toString(),
-                                      address: addressController.text.toString(),
+                                      address:
+                                          addressController.text.toString(),
                                       availabilities: availabilitiesValues,
                                       firebaseToken: widget.firebaseToken,
                                       role: groupValueId,
                                       terms: terms,
                                       userImage: userImage,
                                       whatsApp: whatsApp,
-                                      whatsappCountry : dropDownValueWhatsAppCountry!.id!),
+                                      whatsappCountry:
+                                          dropDownValueWhatsAppCountry!.id!),
                                 );
                               } else {
                                 showToastt(
@@ -1191,8 +1219,9 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
       if (args.value is List<DateTime>) {
         setState(() {
           availabilities = args.value;
-          availabilitiesValues =
-              availabilities.map((e) => DateFormat('yyyy-MM-dd').format(e).toString()).toList();
+          availabilitiesValues = availabilities
+              .map((e) => DateFormat('yyyy-MM-dd').format(e).toString())
+              .toList();
         });
       }
     });

@@ -688,8 +688,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           ),
                           Text(
                             LanguageCubit.get(context).isEn
-                                ? '${data.client2 != null ? data.client2!.country!.title!.en : ""}, ${data.client2 != null ? data.client2!.city?.title!.en : ""}, ${data.client2 != null ? data.client2!.area?.title!.en : ""}'
-                                : '${data.client2 != null ? data.client2!.country!.title!.ar : ""}, ${data.client2 != null ? data.client2!.city?.title!.ar : ""}, ${data.client2 != null ? data.client2!.area?.title!.ar : ""}',
+                                ? '${data.client2!.country != null ? data.client2!.country!.title!.en : ""}, ${data.client2!.city != null ? data.client2!.city!.title!.en : ""}, ${data.client2!.area != null ? data.client2!.area!.title!.en : ""}'
+                                : '${data.client2!.country != null ? data.client2!.country!.title!.ar : ""}, ${data.client2!.city != null ? data.client2!.city!.title!.ar : ""}, ${data.client2!.area != null ? data.client2!.area!.title!.ar : ""}',
                             style: TextStyle(fontSize: 18.sp, color: grey2),
                           ),
                         ],

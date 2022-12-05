@@ -21,6 +21,8 @@ import 'package:intl/intl.dart';
 import 'package:measured_size/measured_size.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../data/model/trips/Data.dart';
+
 class TripDetailsScreen extends StatefulWidget {
   const TripDetailsScreen({Key? key, this.idTrip, this.idRequest})
       : super(key: key);
@@ -220,7 +222,6 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                 state: ToastStates.error,
                 context: context);
           } else if (state is TripDetailsSuccessState) {
-
             _addPolyLines(
                 context,
                 state.data!.from!.placeLatitude!,
@@ -310,62 +311,64 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                             message: state.message,
                                             press: () {
                                               TripDetailsCubit.get(context)
-                                                  .getTripDetails(widget.idTrip!);
+                                                  .getTripDetails(
+                                                      widget.idTrip!);
                                             },
                                             context: context)),
                                   )
                                 : Container(
-                                        color: white,
-                                        padding: EdgeInsets.only(
-                                            top: 30.r, left: 16.r, right: 16.r),
-                                        margin: EdgeInsets.only(top: 70.r),
-                                        child: state is TripDetailsLoading
-                                            ? SizedBox(
-                                                height: 120.h,
-                                                child: loading(),
-                                              )
-                                            : Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  client(context),
-                                                  SizedBox(
-                                                    height: 10.h,
-                                                  ),
-                                                  // divider
-                                                  Container(
-                                                    width: 1.sw,
-                                                    height: 1.h,
-                                                    color: Colors.grey[400],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 10.h,
-                                                  ),
-                                                  Container(
-                                                    color: white,
-                                                    child: Column(
-                                                      children: [
-                                                        tripInfo(context),
-                                                        SizedBox(
-                                                          height: 5.h,
-                                                        ),
-                                                        buttonStatus(context, state),
-                                                        // SizedBox(
-                                                        //   height: 10.h,
-                                                        // ),
-                                                        // defaultButton3(
-                                                        //     press: () {},
-                                                        //     text: "Complete",
-                                                        //     backColor: accentColor,
-                                                        //     textColor: white),
-                                                        SizedBox(
-                                                          height: 20.h,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
+                                    color: white,
+                                    padding: EdgeInsets.only(
+                                        top: 30.r, left: 16.r, right: 16.r),
+                                    margin: EdgeInsets.only(top: 70.r),
+                                    child: state is TripDetailsLoading
+                                        ? SizedBox(
+                                            height: 120.h,
+                                            child: loading(),
+                                          )
+                                        : Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              client(context),
+                                              SizedBox(
+                                                height: 10.h,
                                               ),
-                                      ),
+                                              // divider
+                                              Container(
+                                                width: 1.sw,
+                                                height: 1.h,
+                                                color: Colors.grey[400],
+                                              ),
+                                              SizedBox(
+                                                height: 10.h,
+                                              ),
+                                              Container(
+                                                color: white,
+                                                child: Column(
+                                                  children: [
+                                                    tripInfo(context),
+                                                    SizedBox(
+                                                      height: 5.h,
+                                                    ),
+                                                    buttonStatus(
+                                                        context, state),
+                                                    // SizedBox(
+                                                    //   height: 10.h,
+                                                    // ),
+                                                    // defaultButton3(
+                                                    //     press: () {},
+                                                    //     text: "Complete",
+                                                    //     backColor: accentColor,
+                                                    //     textColor: white),
+                                                    SizedBox(
+                                                      height: 20.h,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                  ),
                             state is TripDetailsSuccessState
                                 ? Positioned(
                                     left: 1,
@@ -395,7 +398,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                             TripDetailsCubit.get(context)
                                                         .tripDetails !=
                                                     null
-                                                ? LanguageCubit.get(context).isEn
+                                                ? LanguageCubit.get(context)
+                                                        .isEn
                                                     ? txtStatusRunning['en']![
                                                         TripDetailsCubit.get(
                                                                 context)
@@ -433,188 +437,151 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
     );
   }
 
-  Widget client(BuildContext context) => Row(
-        children: [
-          ClipOval(
-            clipBehavior: Clip.antiAlias,
-            child: ImageTools.image(
-                fit: BoxFit.fill,
-                url: TripDetailsCubit.get(context)
-                    .tripDetails!
-                    .client2!
-                    .image!
-                    .src,
-                height: 50.w,
-                width: 50.w),
-          ),
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 20.r),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              TripDetailsCubit.get(context)
-                                  .tripDetails!
-                                  .client2!
-                                  .name!,
-                              style: TextStyle(
-                                  fontSize: 15.sp,
-                                  color: black,
-                                  fontWeight: FontWeight.bold),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            Text(
-                              LanguageCubit.get(context).isEn
-                                  ? '${TripDetailsCubit.get(context).tripDetails!.client2!.country!.title!.en??""}, ${TripDetailsCubit.get(context).tripDetails!.client2!.city?.title!.en??""}, ${TripDetailsCubit.get(context).tripDetails!.client2!.area?.title!.en??""}'
-                                  : '${TripDetailsCubit.get(context).tripDetails!.client2!.country!.title!.ar??""}, ${TripDetailsCubit.get(context).tripDetails!.client2!.city?.title!.ar??""}, ${TripDetailsCubit.get(context).tripDetails!.client2!.area?.title!.ar??""}',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 14.sp, color: grey2),
-                            ),
-                          ],
-                        ),
+  Widget client(BuildContext context) {
+    Data data = TripDetailsCubit.get(context).tripDetails!;
+
+    return Row(
+      children: [
+        ClipOval(
+          clipBehavior: Clip.antiAlias,
+          child: ImageTools.image(
+              fit: BoxFit.fill,
+              url: data.client2 != null ? data.client2!.image!.src : null,
+              height: 50.w,
+              width: 50.w),
+        ),
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 20.r),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            data.client2 != null ? data.client2!.name! : '',
+                            style: TextStyle(
+                                fontSize: 15.sp,
+                                color: black,
+                                fontWeight: FontWeight.bold),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          Text(
+                            LanguageCubit.get(context).isEn
+                                ? '${data.client2!.country != null ? data.client2!.country!.title!.en : ""}, ${data.client2!.city != null ? data.client2!.city!.title!.en : ""}, ${data.client2!.area != null ? data.client2!.area!.title!.en : ""}'
+                                : '${data.client2!.country != null ? data.client2!.country!.title!.ar : ""}, ${data.client2!.city != null ? data.client2!.city!.title!.ar : ""}, ${data.client2!.area != null ? data.client2!.area!.title!.ar : ""}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 14.sp, color: grey2),
+                          ),
+                        ],
                       ),
-                      TripDetailsCubit.get(context).tripDetails!.status ==
-                                  "pending" &&
-                              TripDetailsCubit.get(context)
-                                      .tripDetails!
-                                      .status ==
-                                  "end" &&
-                              TripDetailsCubit.get(context)
-                                      .tripDetails!
-                                      .status ==
-                                  "mid_pause" &&
-                              TripDetailsCubit.get(context)
-                                      .tripDetails!
-                                      .status ==
-                                  "reject" &&
-                              TripDetailsCubit.get(context)
-                                      .tripDetails!
-                                      .status ==
-                                  "cancel"
-                          ? Container()
-                          : IconButton(
-                              onPressed: () {
-                                launchInMap(
-                                    TripDetailsCubit.get(context)
-                                        .tripDetails!
-                                        .from!
-                                        .placeLatitude!,
-                                    TripDetailsCubit.get(context)
-                                        .tripDetails!
-                                        .from!
-                                        .placeLongitude!,
-                                    TripDetailsCubit.get(context)
-                                        .tripDetails!
-                                        .to!
-                                        .placeLatitude!,
-                                    TripDetailsCubit.get(context)
-                                        .tripDetails!
-                                        .to!
-                                        .placeLongitude!,
-                                    context);
-                              },
-                              icon: Icon(
-                                Icons.wrong_location_sharp,
-                                size: 25.w,
-                              ))
-                    ],
-                  ),
-                  SizedBox(
-                    height: 5.h,
-                  ),
-                  TripDetailsCubit.get(context).tripDetails!.status! == "end" ||
-                          TripDetailsCubit.get(context).tripDetails!.status! ==
-                              "reject" ||
-                          TripDetailsCubit.get(context).tripDetails!.status! ==
-                              "cancel"
-                      ? Container()
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: defaultButtonWithIcon(
-                                  press: () {
-                                    if (TripDetailsCubit.get(context)
-                                            .tripDetails
-                                            ?.client2
-                                            ?.phone !=
-                                        null) {
-                                      makePhoneCall(
-                                          '${TripDetailsCubit.get(context).tripDetails?.client2?.country?.code}${TripDetailsCubit.get(context).tripDetails?.client2?.phone}');
-                                    } else {
-                                      showToastt(
-                                          text: LanguageCubit.get(context)
-                                              .getTexts('ClientNotHavePhone')
-                                              .toString(),
-                                          state: ToastStates.error,
-                                          context: context);
-                                    }
-                                  },
-                                  fontSize: 18,
-                                  paddingVertical: 1,
-                                  paddingHorizontal: 5,
-                                  borderRadius: 10,
-                                  text: LanguageCubit.get(context)
-                                      .getTexts('CallClient')
-                                      .toString(),
-                                  backColor: accentColor,
-                                  textColor: white,
-                                  icon: Icons.phone),
-                            ),
-                            SizedBox(
-                              width: 5.w,
-                            ),
-                            Expanded(
-                              child: defaultButtonWithIcon(
-                                  press: () {
-                                    if (TripDetailsCubit.get(context)
-                                            .tripDetails
-                                            ?.client2
-                                            ?.whatsApp !=
-                                        null) {
-                                      openWhatsapp(
-                                          '${TripDetailsCubit.get(context).tripDetails?.client2?.country?.code}${TripDetailsCubit.get(context).tripDetails?.client2?.whatsApp}',
-                                          context);
-                                    } else {
-                                      openWhatsapp(
-                                          '${TripDetailsCubit.get(context).tripDetails?.client2?.country?.code}${TripDetailsCubit.get(context).tripDetails?.client2?.phone}',
-                                          context);
-                                    }
-                                  },
-                                  fontSize: 18,
-                                  paddingVertical: 1,
-                                  paddingHorizontal: 5,
-                                  borderRadius: 10,
-                                  text: LanguageCubit.get(context)
-                                      .getTexts('WhatsApp')
-                                      .toString(),
-                                  backColor: accentColor,
-                                  textColor: white,
-                                  icon: Icons.whatsapp),
-                            ),
-                          ],
-                        )
-                ],
-              ),
+                    ),
+                    data.status == "pending" ||
+                            data.status == "end" ||
+                            data.status == "mid_pause" ||
+                            data.status == "reject" ||
+                            data.status == "cancel"
+                        ? Container()
+                        : IconButton(
+                            onPressed: () {
+                              launchInMap(
+                                  data.from!.placeLatitude!,
+                                  data.from!.placeLongitude!,
+                                  data.to!.placeLatitude!,
+                                  data.to!.placeLongitude!,
+                                  context);
+                            },
+                            icon: Icon(
+                              Icons.wrong_location_sharp,
+                              size: 25.w,
+                            ))
+                  ],
+                ),
+                SizedBox(
+                  height: 5.h,
+                ),
+                data.status! == "end" ||
+                        data.status! == "reject" ||
+                        data.status! == "cancel"
+                    ? Container()
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: defaultButtonWithIcon(
+                                press: () {
+                                  if (data.client2?.phone != null) {
+                                    makePhoneCall(
+                                        '${data.client2?.country?.code}${data.client2?.phone}');
+                                  } else {
+                                    showToastt(
+                                        text: LanguageCubit.get(context)
+                                            .getTexts('ClientNotHavePhone')
+                                            .toString(),
+                                        state: ToastStates.error,
+                                        context: context);
+                                  }
+                                },
+                                fontSize: 18,
+                                paddingVertical: 1,
+                                paddingHorizontal: 5,
+                                borderRadius: 10,
+                                text: LanguageCubit.get(context)
+                                    .getTexts('CallClient')
+                                    .toString(),
+                                backColor: accentColor,
+                                textColor: white,
+                                icon: Icons.phone),
+                          ),
+                          SizedBox(
+                            width: 5.w,
+                          ),
+                          Expanded(
+                            child: defaultButtonWithIcon(
+                                press: () {
+                                  if (data.client2?.whatsApp != null) {
+                                    openWhatsapp(
+                                        '${data.client2?.country?.code}${data.client2?.whatsApp}',
+                                        context);
+                                  } else {
+                                    openWhatsapp(
+                                        '${data.client2?.country?.code}${data.client2?.phone}',
+                                        context);
+                                  }
+                                },
+                                fontSize: 18,
+                                paddingVertical: 1,
+                                paddingHorizontal: 5,
+                                borderRadius: 10,
+                                text: LanguageCubit.get(context)
+                                    .getTexts('WhatsApp')
+                                    .toString(),
+                                backColor: accentColor,
+                                textColor: white,
+                                icon: Icons.whatsapp),
+                          ),
+                        ],
+                      )
+              ],
             ),
-          )
-        ],
-      );
+          ),
+        )
+      ],
+    );
+  }
 
   Widget tripInfo(BuildContext context) {
+    Data data = TripDetailsCubit.get(context).tripDetails!;
     return Column(
       children: [
         Row(
@@ -646,10 +613,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                     ),
                     SizedBox(height: 5.h),
                     Text(
-                      TripDetailsCubit.get(context)
-                          .tripDetails!
-                          .from!
-                          .placeTitle!,
+                      data.from!.placeTitle!,
                       style: TextStyle(color: grey2, fontSize: 13.sp),
                     ),
                   ],
@@ -664,14 +628,10 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                   Text(
                     // '12:00 am',
                     LanguageCubit.get(context).isEn
-                        ? DateFormat.jm().format(DateTime.parse(
-                            TripDetailsCubit.get(context)
-                                .tripDetails!
-                                .startDate!))
-                        : DateFormat.jm("ar").format(DateTime.parse(
-                            TripDetailsCubit.get(context)
-                                .tripDetails!
-                                .startDate!)),
+                        ? DateFormat.jm()
+                            .format(DateTime.parse(data.startDate!))
+                        : DateFormat.jm("ar")
+                            .format(DateTime.parse(data.startDate!)),
                     style: TextStyle(
                       color: grey2,
                       fontSize: 14.sp,
@@ -680,14 +640,10 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                   Text(
                     // '12/2/20200',
                     LanguageCubit.get(context).isEn
-                        ? DateFormat.yMEd().format(DateTime.parse(
-                            TripDetailsCubit.get(context)
-                                .tripDetails!
-                                .startDate!))
-                        : DateFormat.yMEd("ar").format(DateTime.parse(
-                            TripDetailsCubit.get(context)
-                                .tripDetails!
-                                .startDate!)),
+                        ? DateFormat.yMEd()
+                            .format(DateTime.parse(data.startDate!))
+                        : DateFormat.yMEd("ar")
+                            .format(DateTime.parse(data.startDate!)),
                     style: TextStyle(color: grey2, fontSize: 13.sp),
                   ),
                 ],
@@ -727,17 +683,14 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                     ),
                     SizedBox(height: 5.h),
                     Text(
-                      TripDetailsCubit.get(context)
-                          .tripDetails!
-                          .to!
-                          .placeTitle!,
+                      data.to!.placeTitle!,
                       style: TextStyle(color: grey2, fontSize: 13.sp),
                     ),
                   ],
                 ),
               ),
             ),
-            TripDetailsCubit.get(context).tripDetails!.endDate!.isNotEmpty
+            data.endDate!.isNotEmpty
                 ? Expanded(
                     flex: 2,
                     child: Column(
@@ -746,14 +699,10 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                         Text(
                           // '12:00 am',
                           LanguageCubit.get(context).isEn
-                              ? DateFormat.jm().format(DateTime.parse(
-                                  TripDetailsCubit.get(context)
-                                      .tripDetails!
-                                      .endDate!))
-                              : DateFormat.jm("ar").format(DateTime.parse(
-                                  TripDetailsCubit.get(context)
-                                      .tripDetails!
-                                      .endDate!)),
+                              ? DateFormat.jm()
+                                  .format(DateTime.parse(data.endDate!))
+                              : DateFormat.jm("ar")
+                                  .format(DateTime.parse(data.endDate!)),
                           style: TextStyle(
                             color: grey2,
                             fontSize: 14.sp,
@@ -762,14 +711,10 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                         Text(
                           // '12/2/20200',
                           LanguageCubit.get(context).isEn
-                              ? DateFormat.yMEd().format(DateTime.parse(
-                                  TripDetailsCubit.get(context)
-                                      .tripDetails!
-                                      .endDate!))
-                              : DateFormat.yMEd("ar").format(DateTime.parse(
-                                  TripDetailsCubit.get(context)
-                                      .tripDetails!
-                                      .endDate!)),
+                              ? DateFormat.yMEd()
+                                  .format(DateTime.parse(data.endDate!))
+                              : DateFormat.yMEd("ar")
+                                  .format(DateTime.parse(data.endDate!)),
                           style: TextStyle(color: grey2, fontSize: 13.sp),
                         ),
                       ],
@@ -801,7 +746,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                     ),
                     Text(
                       // '20',
-                      '${TripDetailsCubit.get(context).tripDetails!.consumptionKM!.toStringAsFixed(2)} ${LanguageCubit.get(context).getTexts('KM')}',
+                      '${data.consumptionKM!.toStringAsFixed(2)} ${LanguageCubit.get(context).getTexts('KM')}',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: black,
@@ -827,10 +772,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                     ),
                     Text(
                       // '20',
-                      TripDetailsCubit.get(context)
-                          .tripDetails!
-                          .consumptionPoints!
-                          .toStringAsFixed(2),
+                      data.consumptionPoints!.toStringAsFixed(2),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: black,
@@ -858,10 +800,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                     ),
                     Text(
                       // '20',
-                      TripDetailsCubit.get(context)
-                          .tripDetails!
-                          .oneKMPoints
-                          .toString(),
+                      data.oneKMPoints.toString(),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: black,
@@ -879,7 +818,9 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
   }
 
   Widget buttonStatus(BuildContext context, TripDetailsState state) {
-    return TripDetailsCubit.get(context).tripDetails!.status == "pending"
+    Data data = TripDetailsCubit.get(context).tripDetails!;
+
+    return data.status == "pending"
         ? Row(
             children: [
               state is TripDetailsEditInitial
@@ -894,22 +835,16 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                   : Expanded(
                       child: defaultButton2(
                           press: () {
-                            TripDetailsCubit.get(context).editTrip(
-                                TripDetailsCubit.get(context).tripDetails!.id!,
-                                btnStatus[
-                                    '${TripDetailsCubit.get(context).tripDetails!.status}']![0],
-                                "",0.0);
+                            TripDetailsCubit.get(context).editTrip(data.id!,
+                                btnStatus['${data.status}']![0], "", 0.0);
                           },
                           fontSize: 20,
                           paddingVertical: 1,
                           paddingHorizontal: 10,
                           borderRadius: 10,
                           text: LanguageCubit.get(context).isEn
-                              ? btnStatus2['en']![
-                                      '${TripDetailsCubit.get(context).tripDetails!.status}']![
-                                  0]
-                              : btnStatus2['ar']![
-                                  '${TripDetailsCubit.get(context).tripDetails!.status}']![0],
+                              ? btnStatus2['en']!['${data.status}']![0]
+                              : btnStatus2['ar']!['${data.status}']![0],
                           backColor: accentColor,
                           textColor: white),
                     ),
@@ -925,8 +860,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                         // outside to dismiss
                         builder: (_) {
                           return CustomDialogRejectTripDetails(
-                            id: TripDetailsCubit.get(context).tripDetails!.id!,
-                            location: TripDetailsCubit.get(context).tripDetails!.from!,
+                            id: data.id!,
+                            location: data.from!,
                             title: LanguageCubit.get(context)
                                 .getTexts('DoReject')
                                 .toString(),
@@ -942,11 +877,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                     paddingHorizontal: 10,
                     borderRadius: 10,
                     text: LanguageCubit.get(context).isEn
-                        ? btnStatus2['en']![
-                                '${TripDetailsCubit.get(context).tripDetails!.status}']![
-                            1]
-                        : btnStatus2['ar']![
-                            '${TripDetailsCubit.get(context).tripDetails!.status}']![1],
+                        ? btnStatus2['en']!['${data.status}']![1]
+                        : btnStatus2['ar']!['${data.status}']![1],
                     backColor: redColor,
                     textColor: white),
               ),
@@ -955,15 +887,11 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
         : Center(
             child: state is TripDetailsEditInitial
                 ? loading()
-                : TripDetailsCubit.get(context).tripDetails!.status != null &&
-                        btnStatus['${TripDetailsCubit.get(context).tripDetails!.status}']!
-                            .isEmpty
+                : data.status != null && btnStatus['${data.status}']!.isEmpty
                     ? Container()
                     : defaultButton2(
                         press: () {
-                          if (btnStatus2['en']![
-                                      '${TripDetailsCubit.get(context).tripDetails!.status}']![
-                                  0] ==
+                          if (btnStatus2['en']!['${data.status}']![0] ==
                               "End") {
                             showDialog(
                               context: context,
@@ -971,18 +899,15 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                               // outside to dismiss
                               builder: (_) {
                                 return CustomDialogEndTripDetails(
-                                  id: TripDetailsCubit.get(context)
-                                      .tripDetails!
-                                      .id!,
-                                  location: TripDetailsCubit.get(context).tripDetails!.from!,
+                                  id: data.id!,
+                                  location: data.from!,
                                   title: LanguageCubit.get(context)
                                       .getTexts('Trip')
                                       .toString(),
                                   description: LanguageCubit.get(context)
                                       .getTexts('AreEndTrip')
                                       .toString(),
-                                  status: btnStatus[
-                                      '${TripDetailsCubit.get(context).tripDetails!.status}']![0],
+                                  status: btnStatus['${data.status}']![0],
                                 );
                               },
                             );
@@ -990,11 +915,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                             // Navigator.of(context).pop(widget.idRequest);
                             // });
                           } else {
-                            TripDetailsCubit.get(context).editTrip(
-                                TripDetailsCubit.get(context).tripDetails!.id!,
-                                btnStatus[
-                                    '${TripDetailsCubit.get(context).tripDetails!.status}']![0],
-                                "",0.0);
+                            TripDetailsCubit.get(context).editTrip(data.id!,
+                                btnStatus['${data.status}']![0], "", 0.0);
                           }
                         },
                         fontSize: 22,
@@ -1002,21 +924,14 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                         paddingHorizontal: 50,
                         borderRadius: 10,
                         text: LanguageCubit.get(context).isEn
-                            ? btnStatus2['en']![
-                                    '${TripDetailsCubit.get(context).tripDetails!.status}']![
-                                0]
-                            : btnStatus2['ar']![
-                                    '${TripDetailsCubit.get(context).tripDetails!.status}']![
-                                0],
-                        backColor: btnStatus2['en']![
-                                            '${TripDetailsCubit.get(context).tripDetails!.status}']![
-                                        0] ==
-                                    "End" ||
-                                btnStatus2['en']![
-                                        '${TripDetailsCubit.get(context).tripDetails!.status}']![0] ==
-                                    "Cancel"
-                            ? redColor
-                            : accentColor,
+                            ? btnStatus2['en']!['${data.status}']![0]
+                            : btnStatus2['ar']!['${data.status}']![0],
+                        backColor:
+                            btnStatus2['en']!['${data.status}']![0] == "End" ||
+                                    btnStatus2['en']!['${data.status}']![0] ==
+                                        "Cancel"
+                                ? redColor
+                                : accentColor,
                         textColor: white),
           );
   }
