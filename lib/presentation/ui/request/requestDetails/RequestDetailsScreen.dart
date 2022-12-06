@@ -106,19 +106,18 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   var formKeyRequest = GlobalKey<FormState>();
   var commentController = TextEditingController();
   bool loadingMoreTrips = false;
-  String idRequest = '';
 
   void _loadMoreTrips(BuildContext context) {
     RequestDetailsCubit.get(context).getTripsRequestDetails(
-        RequestDetailsCubit.get(context).indexTrips, idRequest);
+        RequestDetailsCubit.get(context).indexTrips, RequestDetailsCubit.get(context).idRequest);
   }
 
   @override
   void initState() {
     super.initState();
 
-    idRequest = widget.idRequest!;
-    RequestDetailsCubit.get(context).getRequestDetails(idRequest);
+    RequestDetailsCubit.get(context).idRequest = widget.idRequest!;
+    RequestDetailsCubit.get(context).getRequestDetails(RequestDetailsCubit.get(context).idRequest);
 
     if (getIt<SharedPreferences>().getBool("isEn") != null) {
       LanguageCubit.get(context).isEn =
@@ -129,7 +128,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   void viewWillAppear() {
     print("onResume / viewWillAppear / onFocusGained     RequestDetailsScreen");
     getIt<SharedPreferences>().setString('typeScreen', "requestDetails");
-    getIt<SharedPreferences>().setString('requestDetailsId', idRequest);
+    getIt<SharedPreferences>().setString('requestDetailsId', RequestDetailsCubit.get(context).idRequest);
     getIt<SharedPreferences>().setString('tripDetailsId', "");
   }
 
@@ -146,7 +145,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         listener: (context, state) async {
           if (state is RequestDetailsSuccessState) {
             RequestDetailsCubit.get(context)
-                .getTripsRequestDetails(1, idRequest);
+                .getTripsRequestDetails(1, RequestDetailsCubit.get(context).idRequest);
           } else if (state is RequestDetailsEditSuccessState) {
             if (state.type == "reject" ||
                 state.type == "mid_pause" ||
@@ -189,9 +188,27 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     .tabController!
                     .animateTo(0);
               }
+            }else if (state.type == "accept") {
+              if (RequestCubit.get(navigatorKey.currentContext).typeRequest ==
+                  "pending") {
+                RequestCubit.get(navigatorKey.currentContext)
+                    .tabControllerChanged = false;
+                RequestCubit.get(navigatorKey.currentContext)
+                    .tabController!
+                    .index = 3;
+                RequestCubit.get(navigatorKey.currentContext)
+                    .tabController!
+                    .notifyListeners();
+              } else {
+                RequestCubit.get(navigatorKey.currentContext)
+                    .tabControllerChanged = true;
+                RequestCubit.get(navigatorKey.currentContext)
+                    .tabController!
+                    .animateTo(3);
+              }
             }
 
-            RequestDetailsCubit.get(context).getRequestDetails(idRequest);
+            RequestDetailsCubit.get(context).getRequestDetails(RequestDetailsCubit.get(context).idRequest);
           } else if (state is RequestDetailsEditErrorState) {
             if (state.type == "reject" ||
                 state.type == "mid_pause" ||
@@ -405,7 +422,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   );
                 },
               );
-            } else if (state.data!.data!.isEmpty && state.type == 'end') {
+            }
+            else if (state.data!.data!.isEmpty && state.type == 'end') {
               showDialog(
                 context: context,
                 barrierDismissible: true,
@@ -426,7 +444,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   );
                 },
               );
-            } else if (state.data!.data!.isEmpty && state.type == 'mid_pause') {
+            }
+            else if (state.data!.data!.isEmpty && ( state.type == 'mid_pause' || state.type == 'reject')) {
               final currentDate = DateTime.now();
               final dateFrom = DateFormat("yyyy-MM-ddTHH:mm")
                   .parse(RequestDetailsCubit.get(context)
@@ -538,7 +557,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             RequestDetailsCubit.get(context).failureRequest =
                                 "";
                             RequestDetailsCubit.get(context)
-                                .getRequestDetails(idRequest);
+                                .getRequestDetails(RequestDetailsCubit.get(context).idRequest);
                           },
                           context: context)
                       : RequestDetailsCubit.get(context).requestDetails!.id !=
@@ -1150,6 +1169,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       ? Expanded(
                           child: defaultButton2(
                               press: () {
+
                                 RequestDetailsCubit.get(context).getLastTrip(
                                     RequestDetailsCubit.get(context)
                                         .requestDetails!
@@ -1579,14 +1599,14 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               ),
                             ),
                             onTap: () async {
-                              print("typeId44************ ${idRequest}");
+                              print("typeId44************ ${RequestDetailsCubit.get(context).idRequest}");
                               await navigateToWithRefreshPagePrevious(
                                   context,
                                   TripDetailsScreen(
                                     idTrip: RequestDetailsCubit.get(context)
                                         .trips[i]
                                         .id,
-                                    idRequest: idRequest,
+                                    idRequest: RequestDetailsCubit.get(context).idRequest,
                                   )).then((id) {
                                 print("typeId33************ ${id}");
                                 setState(() {
@@ -1601,7 +1621,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       .failureRequest = "";
                                   RequestDetailsCubit.get(context).failureTrip =
                                       "";
-                                  idRequest = id;
+                                  RequestDetailsCubit.get(context).idRequest = id;
                                   RequestDetailsCubit.get(context)
                                       .getRequestDetails(id);
                                 });
@@ -1637,7 +1657,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     press: () {
                       RequestDetailsCubit.get(context).indexTrips = 1;
                       RequestDetailsCubit.get(context)
-                          .getTripsRequestDetails(1, idRequest);
+                          .getTripsRequestDetails(1, RequestDetailsCubit.get(context).idRequest);
                     },
                     context: context)
             : RequestDetailsCubit.get(context).tripsSuccess != null &&
@@ -1646,11 +1666,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     ? errorMessage2(
                         message: RequestDetailsCubit.get(context).failureTrip,
                         press: () {
-                          print("getTripsRequestDetails**********${idRequest}");
+                          print("getTripsRequestDetails**********${RequestDetailsCubit.get(context).idRequest}");
                           RequestDetailsCubit.get(context).failureTrip = "";
                           RequestDetailsCubit.get(context).indexTrips = 1;
                           RequestDetailsCubit.get(context)
-                              .getTripsRequestDetails(1, idRequest);
+                              .getTripsRequestDetails(1, RequestDetailsCubit.get(context).idRequest);
                         },
                         context: context)
                     : Container()

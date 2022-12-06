@@ -37,8 +37,10 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
   String failureRequest = "";
   String failureTrip = "";
   String typeScreen = "";
+  String idRequest = '';
 
   void getRequestDetails(String id) async {
+    idRequest = id;
     emit(RequestDetailsInitial());
     loadingRequest = true;
     getRequestDetailsUseCase.execute(id).then((value) {
@@ -137,25 +139,25 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
     });
   }
 
-  void getLastTrip(String idRequest,String type) async {
-    if(type == 'end'){
+  void getLastTrip(String idRequest, String type) async {
+    if (type == 'end') {
       emit(RequestDetailsEditInitial());
-    }else if(type == 'mid_pause'){
+    } else if (type == 'mid_pause' || type == 'reject') {
       emit(RequestDetailsEditCancelInitial());
     }
     getLastTripsUseCase.execute(idRequest).then((value) {
-      emit(eitherLoadedOrErrorStateLastTrip(value,type));
+      emit(eitherLoadedOrErrorStateLastTrip(value, type));
     });
   }
 
   RequestDetailsState eitherLoadedOrErrorStateLastTrip(
-      Either<String, Request?> data,String type) {
+      Either<String, Request?> data, String type) {
     return data.fold((failure1) {
       print("RequestDetailsLastTripErrorState*********** $failure1");
       return RequestDetailsLastTripErrorState(failure1);
     }, (data) {
       print("RequestDetailsLastTripSuccessState*********** ${type}");
-      return RequestDetailsLastTripSuccessState(data,type);
+      return RequestDetailsLastTripSuccessState(data, type);
     });
   }
 
@@ -176,7 +178,4 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
       return CurrentLocationSuccessState(data);
     });
   }
-
-
-
 }

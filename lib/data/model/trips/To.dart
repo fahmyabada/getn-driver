@@ -21,6 +21,12 @@ class To {
   String? get placeLatitude => _placeLatitude;
   String? get placeLongitude => _placeLongitude;
 
+
+  @override
+  String toString() {
+    return 'To{_placeTitle: $_placeTitle, _placeLatitude: $_placeLatitude, _placeLongitude: $_placeLongitude}';
+  }
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['placeTitle'] = _placeTitle;

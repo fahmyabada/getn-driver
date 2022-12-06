@@ -172,9 +172,10 @@ class DataRequest {
 
   List<StatusHistory>? get statusHistory => _statusHistory;
 
+
   @override
   String toString() {
-    return 'DataRequest{_referenceId: $_referenceId}';
+    return 'DataRequest{_from: $_from, _to2: $_to2, _referenceId: $_referenceId}';
   }
 
   Map<String, dynamic> toJson() {
