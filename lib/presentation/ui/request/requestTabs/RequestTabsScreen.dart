@@ -24,7 +24,6 @@ import 'package:getn_driver/presentation/ui/request/requestDetails/request_detai
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
 import 'package:getn_driver/presentation/ui/setting/SettingScreen.dart';
 import 'package:getn_driver/presentation/ui/wallet/WalletScreen.dart';
-import 'package:getn_driver/presentation/ui/wallet/wallet_cubit.dart';
 import 'package:intl/intl.dart';
 import 'package:scroll_edge_listener/scroll_edge_listener.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -656,7 +655,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: yellowLightColor,
                 child: Padding(
-                  padding: EdgeInsets.all(15.r),
+                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -685,7 +684,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: rough,
                 child: Padding(
-                  padding: EdgeInsets.all(15.r),
+                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -715,7 +714,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: greenLightColor,
                 child: Padding(
-                  padding: EdgeInsets.all(15.r),
+                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -745,7 +744,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: blueLight,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 15.r),
+                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -760,7 +759,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          '\$${current.totalPrice!.toStringAsFixed(2)}',
+                          '${current.totalPrice!.toStringAsFixed(2)} ${LanguageCubit.get(context).getTexts('egp')}',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: black,
@@ -1090,7 +1089,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: yellowLightColor,
                 child: Padding(
-                  padding: EdgeInsets.all(15.r),
+                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -1119,7 +1118,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: rough,
                 child: Padding(
-                  padding: EdgeInsets.all(15.r),
+                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -1149,7 +1148,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: greenLightColor,
                 child: Padding(
-                  padding: EdgeInsets.all(15.r),
+                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -1179,7 +1178,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: blueLight,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 15.r),
+                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -1194,7 +1193,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          '\$${upComing.totalPrice!.toStringAsFixed(2)}',
+                          '${upComing.totalPrice!.toStringAsFixed(2)} ${LanguageCubit.get(context).getTexts('egp')}',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: black,
@@ -1523,7 +1522,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: yellowLightColor,
                 child: Padding(
-                  padding: EdgeInsets.all(15.r),
+                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -1552,7 +1551,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: rough,
                 child: Padding(
-                  padding: EdgeInsets.all(15.r),
+                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -1582,7 +1581,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: greenLightColor,
                 child: Padding(
-                  padding: EdgeInsets.all(15.r),
+                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -1612,7 +1611,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: blueLight,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 15.r),
+                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -1627,7 +1626,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          '\$${past.totalPrice!.toStringAsFixed(2)}',
+                          '${past.totalPrice!.toStringAsFixed(2)} ${LanguageCubit.get(context).getTexts('egp')}',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: black,
@@ -1923,7 +1922,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: yellowLightColor,
                 child: Padding(
-                  padding: EdgeInsets.all(15.r),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -1952,7 +1952,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: rough,
                 child: Padding(
-                  padding: EdgeInsets.all(15.r),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -1982,7 +1983,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: greenLightColor,
                 child: Padding(
-                  padding: EdgeInsets.all(15.r),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -2012,7 +2014,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: blueLight,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 15.r),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -2027,7 +2030,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          '\$${pending.totalPrice!.toStringAsFixed(2)}',
+                          '${pending.totalPrice!.toStringAsFixed(2)} ${LanguageCubit.get(context).getTexts('egp')}',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: black,
@@ -2062,6 +2065,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                             text: LanguageCubit.get(context)
                                 .getTexts('Accept')
                                 .toString(),
+                            borderRadius: 100,
                             backColor: accentColor,
                             textColor: white)
                     : defaultButton2(
@@ -2075,6 +2079,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                         text: LanguageCubit.get(context)
                             .getTexts('Accept')
                             .toString(),
+                        borderRadius: 100,
                         backColor: accentColor,
                         textColor: white),
                 defaultButton2(
@@ -2104,6 +2109,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                   colorBorder: true,
                   text:
                       LanguageCubit.get(context).getTexts('Reject').toString(),
+                  borderRadius: 100,
                   backColor: white,
                   textColor: grey2,
                 ),
@@ -2222,11 +2228,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                 color: grey2,
               ),
               onTap: () {
-                navigateTo(
-                    context,
-                    BlocProvider(
-                        create: (context) => WalletCubit(),
-                        child: const WalletScreen()));
+                navigateTo(context, const WalletScreen());
               },
             ),
             ListTile(

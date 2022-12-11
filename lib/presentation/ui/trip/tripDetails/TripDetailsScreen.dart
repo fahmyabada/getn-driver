@@ -38,8 +38,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
     'pending': ['accept', 'reject'],
     'accept': ['on_my_way'],
     'on_my_way': ['arrive'],
-    'arrive': ['start'],
-    'coming': ['start'],
+    'arrive': ['start', 'reject'],
+    'coming': ['start', 'reject'],
     'start': ['end'],
     'end': [],
     'reject': [],
@@ -51,8 +51,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
       'pending': ['Accept', 'Reject'],
       'accept': ['On My Way'],
       'on_my_way': ['Arrive'],
-      'arrive': ['Start'],
-      'coming': ['Start'],
+      'arrive': ['Start', 'Reject'],
+      'coming': ['Start', 'Reject'],
       'start': ['End'],
       'end': [],
       'reject': [],
@@ -62,8 +62,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
       'pending': ['قبول', 'رفض'],
       'accept': ['في الطريق'],
       'on_my_way': ['وصلت'],
-      'arrive': ['إبدأ'],
-      'coming': ['إبدأ'],
+      'arrive': ['إبدأ', 'رفض'],
+      'coming': ['إبدأ', 'رفض'],
       'start': ['إنهاء'],
       'end': [],
       'reject': [],
@@ -155,6 +155,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
     final result = await TripDetailsCubit()
         .getRouteCoordinates(initialLatLng, destinationLatLng);
     if (result.success) {
+      print('route************* ${result.data["routes"]}');
       final route = result.data["routes"][0]["overview_polyline"]["points"];
       setState(() {
         _polyline.add(Polyline(
@@ -535,7 +536,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                 fontSize: 18,
                                 paddingVertical: 1,
                                 paddingHorizontal: 5,
-                                borderRadius: 10,
+                                borderRadius: 100,
                                 text: LanguageCubit.get(context)
                                     .getTexts('CallClient')
                                     .toString(),
@@ -562,7 +563,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                 fontSize: 18,
                                 paddingVertical: 1,
                                 paddingHorizontal: 5,
-                                borderRadius: 10,
+                                borderRadius: 100,
                                 text: LanguageCubit.get(context)
                                     .getTexts('WhatsApp')
                                     .toString(),
@@ -820,7 +821,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
   Widget buttonStatus(BuildContext context, TripDetailsState state) {
     Data data = TripDetailsCubit.get(context).tripDetails!;
 
-    return data.status == "pending"
+    return data.status == "pending" || data.status == "arrive" || data.status == "coming"
         ? Row(
             children: [
               state is TripDetailsEditInitial
@@ -841,7 +842,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                           fontSize: 20,
                           paddingVertical: 1,
                           paddingHorizontal: 10,
-                          borderRadius: 10,
+                          borderRadius: 100,
                           text: LanguageCubit.get(context).isEn
                               ? btnStatus2['en']!['${data.status}']![0]
                               : btnStatus2['ar']!['${data.status}']![0],
@@ -875,7 +876,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                     fontSize: 20,
                     paddingVertical: 1,
                     paddingHorizontal: 10,
-                    borderRadius: 10,
+                    borderRadius: 100,
                     text: LanguageCubit.get(context).isEn
                         ? btnStatus2['en']!['${data.status}']![1]
                         : btnStatus2['ar']!['${data.status}']![1],
@@ -922,7 +923,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                         fontSize: 22,
                         paddingVertical: 1,
                         paddingHorizontal: 50,
-                        borderRadius: 10,
+                        borderRadius: 100,
                         text: LanguageCubit.get(context).isEn
                             ? btnStatus2['en']!['${data.status}']![0]
                             : btnStatus2['ar']!['${data.status}']![0],

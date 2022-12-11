@@ -23,7 +23,9 @@ class WalletCubit extends Cubit<WalletState> {
   var getRequestsWalletUseCase = getIt<GetRequestsWalletUseCase>();
   var getCountriesWalletUseCase = getIt<GetCountriesWalletUseCase>();
   var createRequestsTransactionUseCase = getIt<CreateRequestsTransactionUseCase>();
+  String typeScreen = "wallet";
 
+  int currentIndex = 0;
   List<Country> countries = [];
   List<Data> wallet = [];
   List<Data> requests = [];
@@ -33,6 +35,12 @@ class WalletCubit extends Cubit<WalletState> {
   String walletHold = "";
   String? walletFailure;
   bool loadingWallet = false;
+
+  void editTypeScreen(int type){
+    // typeScreen = type;
+    currentIndex = 0;
+    emit(EditTypeScreenWallet());
+  }
 
   void getWallet(int index) async {
     if (index > 1) {

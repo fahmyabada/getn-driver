@@ -13,6 +13,7 @@ class LanguageCubit extends Cubit<LanguageState> {
   static LanguageCubit get(context) => BlocProvider.of(context);
 
   Map<String, Object> textAr = {
+    'egp': 'ج.م',
     'lang': 'اللغة',
     'Arabic': 'عربي',
     'English': 'إنجليزي',
@@ -171,7 +172,7 @@ class LanguageCubit extends Cubit<LanguageState> {
     'MyWallet': 'محفظتي',
     'Balance': 'الرصيد',
     'Wallet': 'المحفظة',
-    'Hold': '"قيد الانتظار',
+    'Hold': 'قيد الانتظار',
     'LastTransactions': 'اخر التحويلات',
     'SuccessTransaction': 'صفقة ناجحة',
     'HaveNotMaps': 'ليس لديك خرائط ..',
@@ -213,6 +214,7 @@ class LanguageCubit extends Cubit<LanguageState> {
   };
 
   Map<String, Object> textEn = {
+    'egp': 'EGP',
     'lang': 'Language',
     'Arabic': 'Arabic',
     'English': 'English',

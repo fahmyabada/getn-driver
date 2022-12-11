@@ -16,6 +16,7 @@ import 'package:getn_driver/presentation/ui/request/requestDetails/request_detai
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
 import 'package:getn_driver/presentation/ui/splash/SplashScreen.dart';
 import 'package:getn_driver/presentation/ui/trip/tripDetails/trip_details_cubit.dart';
+import 'package:getn_driver/presentation/ui/wallet/wallet_cubit.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
@@ -66,6 +67,9 @@ class MyApp extends StatelessWidget {
       builder: (BuildContext context, child) =>
           MultiBlocProvider(
             providers: [
+              BlocProvider(
+                create: (context) => WalletCubit(),
+              ),
               BlocProvider(
                 create: (context) => LanguageCubit(),
               ),

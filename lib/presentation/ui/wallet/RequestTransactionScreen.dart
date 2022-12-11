@@ -609,7 +609,7 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                                   }
                                 },
                                 text: LanguageCubit.get(context)
-                                    .getTexts('Save')
+                                    .getTexts('Request')
                                     .toString(),
                                 backColor: accentColor,
                                 textColor: white),

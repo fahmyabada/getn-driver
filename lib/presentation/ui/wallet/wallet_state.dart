@@ -7,6 +7,8 @@ class WalletInitial extends WalletState {}
 
 class WalletLoading extends WalletState {}
 
+class EditTypeScreenWallet extends WalletState {}
+
 class WalletLoadingMore extends WalletState {}
 
 class WalletErrorState extends WalletState {

@@ -10,6 +10,8 @@ import 'package:getn_driver/presentation/ui/request/requestDetails/RequestDetail
 import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
 import 'package:getn_driver/presentation/ui/trip/tripDetails/trip_details_cubit.dart';
+import 'package:getn_driver/presentation/ui/wallet/WalletScreen.dart';
+import 'package:getn_driver/presentation/ui/wallet/wallet_cubit.dart';
 
 class LocalNotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
@@ -165,6 +167,10 @@ class LocalNotificationService {
               goToNextScreen(id!, "push", typeScreen!);
             } else if (typeScreen == "outRequestInTrip") {
               goToNextScreen(id!, "pop", typeScreen!);
+            } else if (typeScreen == "inWallet") {
+              goToNextScreen(id!, "pushReplacement", typeScreen!);
+            } else if (typeScreen == "outWallet") {
+              goToNextScreen(id!, "push", typeScreen!);
             }
 
             break;
@@ -186,7 +192,36 @@ class LocalNotificationService {
     print("goToNextScreen2************ $typeTransfer");
     print("goToNextScreen3************ $typeScreen");
     if (typeTransfer == "pushAndRemoveUntil") {
-      navigatorKey.currentState!.pushAndRemoveUntil(
+      if (typeScreen == 'wallet') {
+        navigatorKey.currentState!.pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) => BlocProvider(
+                  create: (context) => WalletCubit(),
+                  child: const WalletScreen()),
+            ),
+            (route) => false);
+      } else {
+        navigatorKey.currentState!.pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) => BlocProvider(
+                  create: (context) => RequestCubit(),
+                  child: RequestDetailsScreen(
+                    idRequest: id,
+                  )),
+            ),
+            (route) => false);
+      }
+    } else if (typeTransfer == "push") {
+      if (typeScreen == 'outWallet') {
+        navigatorKey.currentState!.push(
+          MaterialPageRoute(
+            builder: (context) => BlocProvider(
+                create: (context) => WalletCubit(),
+                child: const WalletScreen()),
+          ),
+        );
+      } else {
+        navigatorKey.currentState!.push(
           MaterialPageRoute(
             builder: (context) => BlocProvider(
                 create: (context) => RequestCubit(),
@@ -194,17 +229,8 @@ class LocalNotificationService {
                   idRequest: id,
                 )),
           ),
-          (route) => false);
-    } else if (typeTransfer == "push") {
-      navigatorKey.currentState!.push(
-        MaterialPageRoute(
-          builder: (context) => BlocProvider(
-              create: (context) => RequestCubit(),
-              child: RequestDetailsScreen(
-                idRequest: id,
-              )),
-        ),
-      );
+        );
+      }
     } else if (typeTransfer == "pop") {
       navigatorKey.currentState!.pop(id);
     } else if (typeTransfer == "pushReplacement") {
@@ -260,6 +286,11 @@ class LocalNotificationService {
                 )),
           ),
         );*/
+      } else if (typeScreen == "inWallet") {
+        // for refresh data only
+        WalletCubit.get(navigatorKey.currentContext).typeScreen = "wallet";
+        WalletCubit.get(navigatorKey.currentContext).indexWallet = 1;
+        WalletCubit.get(navigatorKey.currentContext).getWallet(1);
       }
     }
   }
@@ -302,6 +333,10 @@ class LocalNotificationService {
           type == "outRequest" ||
           type == "outRequestInTrip") {
         payloadValue = message.data['typeId'];
+      } else if (type == "inWallet") {
+        payloadValue = 'inWallet';
+      } else if (type == "outWallet") {
+        payloadValue = 'outWallet';
       }
 
       await _notificationsPlugin.show(

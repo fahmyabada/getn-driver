@@ -813,7 +813,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                 fontSize: 18,
                                 paddingVertical: 1,
                                 paddingHorizontal: 5,
-                                borderRadius: 10,
+                                borderRadius: 100,
                                 text: LanguageCubit.get(context)
                                     .getTexts('CallClient')
                                     .toString(),
@@ -841,7 +841,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                 fontSize: 18,
                                 paddingVertical: 1,
                                 paddingHorizontal: 5,
-                                borderRadius: 10,
+                                borderRadius: 100,
                                 text: LanguageCubit.get(context)
                                     .getTexts('WhatsApp')
                                     .toString(),
@@ -1143,7 +1143,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             fontSize: 20,
                             paddingVertical: 1,
                             paddingHorizontal: 10,
-                            borderRadius: 10,
+                            borderRadius: 100,
                             text: LanguageCubit.get(context).isEn
                                 ? btnStatus2["en"]![
                                         '${RequestDetailsCubit.get(context).requestDetails!.status}']![
@@ -1201,7 +1201,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               fontSize: 20,
                               paddingVertical: 1,
                               paddingHorizontal: 10,
-                              borderRadius: 10,
+                              borderRadius: 100,
                               text: LanguageCubit.get(context).isEn
                                   ? btnStatus2["en"]![
                                           '${RequestDetailsCubit.get(context).requestDetails!.status}']![

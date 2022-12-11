@@ -7,7 +7,10 @@ class DioHelper {
 
   static init() {
     dio = Dio(BaseOptions(
-      baseUrl: 'https://apis.getn.re-comparison.com/api/',
+      // for debug
+      // baseUrl: 'https://apis.getn.re-comparison.com/api/',
+      // for production
+      baseUrl: 'https://apis.getn.io/api/',
       receiveDataWhenStatusError: true,
     ));
   }
