@@ -166,19 +166,22 @@ class _SplashScreenState extends State<SplashScreen> {
                 }
                 LocalNotificationService.createAndDisplayNotification(
                     message, "inSameRequest");
-              } else if (getIt<SharedPreferences>().getString('typeScreen') ==
+              }
+              else if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails' &&
                   getIt<SharedPreferences>().getString('requestDetailsId') !=
                       message.data['typeId']) {
                 LocalNotificationService.createAndDisplayNotification(
                     message, "newRequest");
-              } else if (getIt<SharedPreferences>().getString('typeScreen') !=
+              }
+              else if (getIt<SharedPreferences>().getString('typeScreen') !=
                       'requestDetails' &&
                   getIt<SharedPreferences>().getString('typeScreen') !=
                       'tripDetails') {
                 LocalNotificationService.createAndDisplayNotification(
                     message, "outRequest");
-              } else if (getIt<SharedPreferences>().getString('typeScreen') !=
+              }
+              else if (getIt<SharedPreferences>().getString('typeScreen') !=
                       'requestDetails' &&
                   getIt<SharedPreferences>().getString('typeScreen') ==
                       'tripDetails') {
@@ -204,6 +207,8 @@ class _SplashScreenState extends State<SplashScreen> {
               }
             }
 
+            print('ssssssss11***************************${getIt<SharedPreferences>().getString('typeScreen')}');
+            print('ssssssss22***************************${getIt<SharedPreferences>().getString('requestDetailsId')}');
             // this comment for update tabs anyway because i may return request tabs after
             // i in request details that open from notification
 
@@ -526,6 +531,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   LocalNotificationService.goToNextScreen(
                       idRequest, "pushAndRemoveUntil", "");
                 } else {
+                  print('token******${getIt<SharedPreferences>().getString('token')}');
                   navigateAndFinish(context, const RequestTabsScreen());
                 }
               } else {

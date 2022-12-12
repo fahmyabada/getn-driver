@@ -180,8 +180,8 @@ class LanguageCubit extends Cubit<LanguageState> {
     'LoginSuccessfully': 'تم تسجيل الدخول بنجاح',
     'UncorrectCode': 'كود خطا',
     'RegisterFirstPlease':
-    'ليس لديك حساب سجل أولا من فضلك...',
-    'SignInPlease': 'لديك حساب بالفعل قم بتسجيل الدخول من فضلك..',
+    'ليس لديك حساب سجل أولا من فضلك',
+    'SignInPlease': 'لديك حساب بالفعل قم بتسجيل الدخول من فضلك',
     'SuccessfullyUpdate': 'تحديث بنجاح',
     'journeyStartedYet': 'الرحلة لم تبدأ بعد',
     'CreateSuccessfully': 'أنشئ بنجاح',

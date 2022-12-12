@@ -322,7 +322,7 @@ Widget defaultButtonWithIcon(
           Icon(
             icon,
             color: white,
-            size: 25.sp,
+            size: 23.sp,
           ),
           SizedBox(
             width: 5.w,

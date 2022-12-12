@@ -723,7 +723,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         ),
         Expanded(
           child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 20.r),
+            margin: EdgeInsetsDirectional.only(start: 20.r),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -810,7 +810,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                         context: context);
                                   }
                                 },
-                                fontSize: 18,
+                                fontSize: 15,
                                 paddingVertical: 1,
                                 paddingHorizontal: 5,
                                 borderRadius: 100,
@@ -838,7 +838,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                         context);
                                   }
                                 },
-                                fontSize: 18,
+                                fontSize: 15,
                                 paddingVertical: 1,
                                 paddingHorizontal: 5,
                                 borderRadius: 100,

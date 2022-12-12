@@ -97,7 +97,7 @@ class MyCarRemoteDataSourceImpl implements MyCarRemoteDataSource {
 
   @override
   Future<Either<String, Data?>> getCar() async{
-    // try {
+    try {
       var body = {
         "limit": 99999,
       };
@@ -109,9 +109,9 @@ class MyCarRemoteDataSourceImpl implements MyCarRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    // } catch (error) {
-    //   return Left(handleError(error));
-    // }
+    } catch (error) {
+      return Left(handleError(error));
+    }
   }
 
   @override

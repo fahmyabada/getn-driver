@@ -95,9 +95,9 @@ class _SignInScreenState extends State<SignInScreen> {
             signInLoading = false;
           });
           if (kDebugMode) {
-            print('*******SendOtpSignInErrorState');
+            print('SendOtpSignInErrorState*******${state.message}');
           }
-          if (state.message == "({phone:  phone or country incorrect})") {
+          if (state.message.contains(" phone or country incorrect")) {
             showToastt(
                 text: LanguageCubit.get(context)
                     .getTexts('RegisterFirstPlease')
