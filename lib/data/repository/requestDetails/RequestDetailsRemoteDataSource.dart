@@ -28,6 +28,7 @@ class RequestDetailsRemoteDataSourceImpl
     try {
       var body = {
         "select-client": "name image phone whatsapp",
+        "select-carCategory": 'oneKMPoints points',
       };
 
       return await DioHelper.getData(
@@ -81,9 +82,14 @@ class RequestDetailsRemoteDataSourceImpl
         formData = FormData.fromMap({"status": type, "comment": comment});
       }
 
+      var body = {
+        "select-carCategory": 'oneKMPoints points',
+      };
+
       return await DioHelper.putData(
               url: 'request/$id',
               data: formData,
+              query: body,
               token: getIt<SharedPreferences>().getString("token"))
           .then((value) {
         if (value.statusCode == 200) {

@@ -66,9 +66,14 @@ class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
         formData = FormData.fromMap({"status": type});
       }
 
+      var body = {
+        "select-carCategory": 'oneKMPoints points',
+      };
+
       return await DioHelper.putData(
               url: 'trip/$id',
               data: formData,
+              query: body,
               token: getIt<SharedPreferences>().getString("token"))
           .then((value) {
         if (value.statusCode == 200) {

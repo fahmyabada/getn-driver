@@ -647,132 +647,138 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
         ],
       );
 
-  Widget distanceCurrent(DataRequest current) => IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Card(
-                color: yellowLightColor,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          LanguageCubit.get(context)
-                              .getTexts('Days')
-                              .toString(),
-                          style: TextStyle(color: grey2, fontSize: 13.sp),
-                        ),
-                        SizedBox(
-                          height: 5.h,
-                        ),
-                        Text(
-                          '${current.days!.length} ${LanguageCubit.get(context).getTexts('Days').toString()}',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: black,
-                              fontSize: 13.sp,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ]),
-                ),
+  Widget distanceCurrent(DataRequest current) {
+    print('${current.subtotalPoints!}');
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Card(
+              color: yellowLightColor,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        LanguageCubit.get(context)
+                            .getTexts('Days')
+                            .toString(),
+                        style: TextStyle(color: grey2, fontSize: 13.sp),
+                      ),
+                      SizedBox(
+                        height: 5.h,
+                      ),
+                      Text(
+                        '${current.days!.length} ${LanguageCubit.get(context).getTexts('Days').toString()}',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: black,
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ]),
               ),
             ),
-            Expanded(
-              child: Card(
-                color: rough,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          LanguageCubit.get(context)
-                              .getTexts('UsedPoints')
-                              .toString(),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: grey2, fontSize: 12.sp),
-                        ),
-                        SizedBox(
-                          height: 5.h,
-                        ),
-                        Text(
-                          current.totalConsumptionPoints!.toStringAsFixed(2),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: black,
-                              fontSize: 13.sp,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ]),
-                ),
+          ),
+          Expanded(
+            child: Card(
+              color: rough,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        LanguageCubit.get(context)
+                            .getTexts('UsedPoints')
+                            .toString(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: grey2, fontSize: 12.sp),
+                      ),
+                      SizedBox(
+                        height: 5.h,
+                      ),
+                      Text(
+                        (current.subtotalPoints! / current.days!.length)
+                            .toStringAsFixed(2),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: black,
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ]),
               ),
             ),
-            Expanded(
-              child: Card(
-                color: greenLightColor,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          LanguageCubit.get(context)
-                              .getTexts('TotalDistance')
-                              .toString(),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: grey2, fontSize: 12.sp),
-                        ),
-                        SizedBox(
-                          height: 5.h,
-                        ),
-                        Text(
-                          current.consumptionKM!.toStringAsFixed(2),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: black,
-                              fontSize: 13.sp,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ]),
-                ),
+          ),
+          Expanded(
+            child: Card(
+              color: greenLightColor,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        LanguageCubit.get(context)
+                            .getTexts('TotalDistance')
+                            .toString(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: grey2, fontSize: 12.sp),
+                      ),
+                      SizedBox(
+                        height: 5.h,
+                      ),
+                      Text(
+                        ((current.subtotalPoints! / current.days!.length) *
+                            current.carCategory!.oneKMPoints!.toDouble())
+                            .toStringAsFixed(2),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: black,
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ]),
               ),
             ),
-            Expanded(
-              child: Card(
-                color: blueLight,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          LanguageCubit.get(context)
-                              .getTexts('TotalPrice')
-                              .toString(),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: grey2, fontSize: 13.sp),
-                        ),
-                        SizedBox(
-                          height: 5.h,
-                        ),
-                        Text(
-                          '${current.totalPrice!.toStringAsFixed(2)} ${LanguageCubit.get(context).getTexts('egp')}',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: black,
-                              fontSize: 13.sp,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ]),
-                ),
+          ),
+          Expanded(
+            child: Card(
+              color: blueLight,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        LanguageCubit.get(context)
+                            .getTexts('TotalPrice')
+                            .toString(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: grey2, fontSize: 13.sp),
+                      ),
+                      SizedBox(
+                        height: 5.h,
+                      ),
+                      Text(
+                        '${current.totalPrice!.toStringAsFixed(2)} ${LanguageCubit.get(context).getTexts('egp')}',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: black,
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ]),
               ),
             ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget upComing() => ScrollEdgeListener(
         edge: ScrollEdge.end,
@@ -1133,7 +1139,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          upComing.totalConsumptionPoints!.toStringAsFixed(2),
+                          (upComing.subtotalPoints! / upComing.days!.length)
+                              .toStringAsFixed(2),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: black,
@@ -1163,7 +1170,9 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          upComing.consumptionKM!.toStringAsFixed(2),
+                          ((upComing.subtotalPoints! / upComing.days!.length) *
+                                  upComing.carCategory!.oneKMPoints!.toDouble())
+                              .toStringAsFixed(2),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: black,
@@ -1566,7 +1575,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          past.totalConsumptionPoints!.toStringAsFixed(2),
+                          (past.subtotalPoints! / past.days!.length)
+                              .toStringAsFixed(2),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: black,
@@ -1596,7 +1606,9 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          past.consumptionKM!.toStringAsFixed(2),
+                          ((past.subtotalPoints! / past.days!.length) *
+                              past.carCategory!.oneKMPoints!.toDouble())
+                              .toStringAsFixed(2),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: black,
@@ -1968,7 +1980,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          pending.totalConsumptionPoints!.toStringAsFixed(2),
+                          (pending.subtotalPoints! / pending.days!.length)
+                              .toStringAsFixed(2),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: black,
@@ -1999,7 +2012,9 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          pending.consumptionKM!.toStringAsFixed(2),
+                          ((pending.subtotalPoints! / pending.days!.length) *
+                              pending.carCategory!.oneKMPoints!.toDouble())
+                              .toStringAsFixed(2),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: black,

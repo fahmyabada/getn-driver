@@ -1073,6 +1073,321 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               ),
             ],
           ),
+          SizedBox(height: 10.h),
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Card(
+                    color: yellowLightColor,
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              LanguageCubit.get(context)
+                                  .getTexts('Days')
+                                  .toString(),
+                              style: TextStyle(color: grey2, fontSize: 13.sp),
+                            ),
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            Text(
+                              '${RequestDetailsCubit.get(context).requestDetails!.days!.length} ${LanguageCubit.get(context).getTexts('Days').toString()}',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: black,
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ]),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Card(
+                    color: rough,
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              LanguageCubit.get(context)
+                                  .getTexts('UsedPoints')
+                                  .toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: grey2, fontSize: 12.sp),
+                            ),
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            Text(
+                              (RequestDetailsCubit.get(context)
+                                          .requestDetails!
+                                          .subtotalPoints! /
+                                      RequestDetailsCubit.get(context)
+                                          .requestDetails!
+                                          .days!
+                                          .length)
+                                  .toStringAsFixed(2),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: black,
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ]),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Card(
+                    color: greenLightColor,
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              LanguageCubit.get(context)
+                                  .getTexts('TotalDistance')
+                                  .toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: grey2, fontSize: 12.sp),
+                            ),
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            Text(
+                              ((RequestDetailsCubit.get(context)
+                                              .requestDetails!
+                                              .subtotalPoints! /
+                                          RequestDetailsCubit.get(context)
+                                              .requestDetails!
+                                              .days!
+                                              .length) *
+                                      RequestDetailsCubit.get(context)
+                                          .requestDetails!
+                                          .carCategory!
+                                          .oneKMPoints!
+                                          .toDouble())
+                                  .toStringAsFixed(2),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: black,
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ]),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Card(
+                    color: blueLight,
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              LanguageCubit.get(context)
+                                  .getTexts('TotalPrice')
+                                  .toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: grey2, fontSize: 13.sp),
+                            ),
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            Text(
+                              '${RequestDetailsCubit.get(context).requestDetails!.totalPrice!.toStringAsFixed(2)} ${LanguageCubit.get(context).getTexts('egp')}',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: black,
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ]),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          RequestDetailsCubit.get(context).requestDetails!.currentDay != null
+              ? Column(
+                  children: [
+                    SizedBox(height: 5.h),
+                    // divider
+                    Container(
+                      width: 1.sw,
+                      height: 1.h,
+                      color: Colors.grey[400],
+                    ),
+                    SizedBox(height: 5.h),
+                    IntrinsicHeight(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Card(
+                              color: yellowLightColor,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 15.r, horizontal: 3.r),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        LanguageCubit.get(context)
+                                            .getTexts('consumptionPoints')
+                                            .toString(),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: grey2, fontSize: 13.sp),
+                                      ),
+                                      SizedBox(
+                                        height: 5.h,
+                                      ),
+                                      Text(
+                                        RequestDetailsCubit.get(context)
+                                            .requestDetails!
+                                            .currentDay!
+                                            .consumptionPoints!
+                                            .toStringAsFixed(2),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: black,
+                                            fontSize: 13.sp,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ]),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Card(
+                              color: rough,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 15.r, horizontal: 3.r),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        LanguageCubit.get(context)
+                                            .getTexts('consumptionKM')
+                                            .toString(),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: grey2, fontSize: 12.sp),
+                                      ),
+                                      SizedBox(
+                                        height: 5.h,
+                                      ),
+                                      Text(
+                                        RequestDetailsCubit.get(context)
+                                            .requestDetails!
+                                            .currentDay!
+                                            .consumptionKM!
+                                            .toStringAsFixed(2),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: black,
+                                            fontSize: 13.sp,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ]),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Card(
+                              color: greenLightColor,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 15.r, horizontal: 3.r),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        LanguageCubit.get(context)
+                                            .getTexts('extraPoints')
+                                            .toString(),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: grey2, fontSize: 12.sp),
+                                      ),
+                                      SizedBox(
+                                        height: 5.h,
+                                      ),
+                                      Text(
+                                        RequestDetailsCubit.get(context)
+                                            .requestDetails!
+                                            .currentDay!
+                                            .extraPoints!
+                                            .toStringAsFixed(2),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: black,
+                                            fontSize: 13.sp,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ]),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Card(
+                              color: blueLight,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 15.r, horizontal: 3.r),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        LanguageCubit.get(context)
+                                            .getTexts('extraKM')
+                                            .toString(),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: grey2, fontSize: 13.sp),
+                                      ),
+                                      SizedBox(
+                                        height: 5.h,
+                                      ),
+                                      Text(
+                                        RequestDetailsCubit.get(context)
+                                            .requestDetails!
+                                            .currentDay!
+                                            .extraKM!
+                                            .toStringAsFixed(2),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: black,
+                                            fontSize: 13.sp,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ]),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                )
+              : Container(),
         ],
       );
 

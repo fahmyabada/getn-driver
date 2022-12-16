@@ -56,7 +56,8 @@ class RequestCubit extends Cubit<RequestState> {
     var body = {
       "status": ["arrive", "coming", "start", "on_my_way"],
       "page": index,
-      "select-client": 'name image'
+      "select-client": 'name image',
+      "select-carCategory": 'oneKMPoints points',
     };
     getRequestUseCase.execute(body).then((value) {
       loadingCurrent = false;
@@ -82,6 +83,7 @@ class RequestCubit extends Cubit<RequestState> {
       "sort": 'from.date:-1',
       "select-client": 'name image',
       "paymentStatus": "paid",
+      "select-carCategory": 'oneKMPoints points',
     };
     if (index > 1) {
       getRequestUseCase.execute(body).then((value) {
@@ -128,7 +130,8 @@ class RequestCubit extends Cubit<RequestState> {
       "status": ["end", "cancel", "reject", "mid_pause"],
       "page": index,
       "sort": 'from.date:-1',
-      "select-client": 'name image'
+      "select-client": 'name image',
+      "select-carCategory": 'oneKMPoints points',
     };
     print("getRequestPast************* $index");
     if (index > 1) {
@@ -179,6 +182,7 @@ class RequestCubit extends Cubit<RequestState> {
       "sort": 'createdAt:-1',
       "select-client": 'name image',
       "paymentStatus": ["pending", "need_confirm", "failed"],
+      "select-carCategory": 'oneKMPoints points',
     };
     if (index > 1) {
       getRequestUseCase.execute(body).then((value) {

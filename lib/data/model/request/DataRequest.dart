@@ -1,35 +1,35 @@
 import 'package:getn_driver/data/model/request/Client.dart';
+import 'package:getn_driver/data/model/request/CurrentDayRequest.dart';
 import 'package:getn_driver/data/model/trips/To.dart';
 
+import 'CarCategoryRequest.dart';
 import 'Days.dart';
 import 'From.dart';
-import 'StatusHistory.dart';
 
 class DataRequest {
-  DataRequest({
-    From? from,
-    String? createdAt,
-    String? updatedAt,
-    String? status,
-    String? to,
-    double? consumptionPoints,
-    double? consumptionKM,
-    double? consumptionPackagesPoints,
-    double? totalPrice,
-    double? totalConsumptionPoints,
-    double? totalConsumptionKM,
-    String? paymentMethod,
-    int? referenceId,
-    String? paymentStatus,
-    String? packagesPaymentStatus,
-    String? id,
-    String? driver,
-    String? car,
-    String? carCategory,
-    String? client,
-    List<Days>? days,
-    List<StatusHistory>? statusHistory,
-  }) {
+  DataRequest(
+      {From? from,
+      String? createdAt,
+      String? updatedAt,
+      String? status,
+      String? to,
+      double? consumptionPoints,
+      double? consumptionKM,
+      double? consumptionPackagesPoints,
+      double? totalPrice,
+      double? totalConsumptionPoints,
+      double? totalConsumptionKM,
+      String? paymentMethod,
+      int? referenceId,
+      String? paymentStatus,
+      String? packagesPaymentStatus,
+      String? id,
+      String? driver,
+      String? car,
+      String? client,
+      CarCategoryRequest? carCategory,
+      List<Days>? days,
+      CurrentDayRequest? currentDayRequest}) {
     _from = from;
     _createdAt = createdAt;
     _updatedAt = updatedAt;
@@ -48,10 +48,10 @@ class DataRequest {
     _id = id;
     _driver = driver;
     _car = car;
-    _carCategory = carCategory;
     _client = client;
     _days = days;
-    _statusHistory = statusHistory;
+    _carCategory = carCategory;
+    _currentDayRequest = currentDayRequest;
   }
 
   DataRequest.fromJson(dynamic json) {
@@ -62,6 +62,9 @@ class DataRequest {
     _createdAt = json['createdAt'];
     _updatedAt = json['updatedAt'];
     _status = json['status'];
+    _subtotalPoints = json['subtotalPoints'] != null
+        ? double.parse(json['subtotalPoints'].toString())
+        : 0.0;
     _consumptionPoints = double.parse(json['consumptionPoints'].toString());
     _consumptionKM = json['consumptionKM'] is int ? 0.0 : json['consumptionKM'];
     _consumptionPackagesPoints = json['consumptionPackagesPoints'] is int
@@ -80,21 +83,20 @@ class DataRequest {
     _id = json['_id'];
     _driver = json['driver'];
     _car = json['car'];
-    _carCategory = json['carCategory'];
     json['client'] is String
         ? _client = json['client']
         : _client2 =
             json['client'] != null ? Client.fromJson(json['client']) : null;
+    _currentDayRequest = json['currentDay'] != null
+        ? CurrentDayRequest.fromJson(json['currentDay'])
+        : null;
+    _carCategory = json['carCategory'] != null
+        ? CarCategoryRequest.fromJson(json['carCategory'])
+        : null;
     if (json['days'] != null) {
       _days = [];
       json['days'].forEach((v) {
         _days?.add(Days.fromJson(v));
-      });
-    }
-    if (json['statusHistory'] != null) {
-      _statusHistory = [];
-      json['statusHistory'].forEach((v) {
-        _statusHistory?.add(StatusHistory.fromJson(v));
       });
     }
   }
@@ -105,6 +107,7 @@ class DataRequest {
   String? _status;
   String? _to;
   To? _to2;
+  double? _subtotalPoints;
   double? _consumptionPoints;
   double? _consumptionKM;
   double? _consumptionPackagesPoints;
@@ -118,11 +121,11 @@ class DataRequest {
   String? _id;
   String? _driver;
   String? _car;
-  String? _carCategory;
   String? _client;
   Client? _client2;
+  CarCategoryRequest? _carCategory;
   List<Days>? _days;
-  List<StatusHistory>? _statusHistory;
+  CurrentDayRequest? _currentDayRequest;
 
   From? get from => _from;
 
@@ -135,6 +138,8 @@ class DataRequest {
   String? get status => _status;
 
   String? get to => _to;
+
+  double? get subtotalPoints => _subtotalPoints;
 
   double? get consumptionPoints => _consumptionPoints;
 
@@ -162,16 +167,15 @@ class DataRequest {
 
   String? get car => _car;
 
-  String? get carCategory => _carCategory;
-
   String? get client => _client;
+
+  CarCategoryRequest? get carCategory => _carCategory;
+
+  CurrentDayRequest? get currentDay => _currentDayRequest;
 
   Client? get client2 => _client2;
 
   List<Days>? get days => _days;
-
-  List<StatusHistory>? get statusHistory => _statusHistory;
-
 
   @override
   String toString() {
@@ -187,6 +191,7 @@ class DataRequest {
     map['updatedAt'] = _updatedAt;
     map['status'] = _status;
     map['to'] = _to;
+    map['subtotalPoints'] = _subtotalPoints;
     map['consumptionPoints'] = _consumptionPoints;
     map['consumptionKM'] = _consumptionKM;
     map['consumptionPackagesPoints'] = _consumptionPackagesPoints;
@@ -200,15 +205,16 @@ class DataRequest {
     map['_id'] = _id;
     map['driver'] = _driver;
     map['car'] = _car;
-    map['carCategory'] = _carCategory;
     map['client'] = _client;
+    if (_carCategory != null) {
+      map['carCategory'] = _carCategory?.toJson();
+    }
     if (_days != null) {
       map['days'] = _days?.map((v) => v.toJson()).toList();
     }
-    if (_statusHistory != null) {
-      map['statusHistory'] = _statusHistory?.map((v) => v.toJson()).toList();
+    if (_currentDayRequest != null) {
+      map['currentDay'] = _currentDayRequest?.toJson();
     }
-
     return map;
   }
 }
