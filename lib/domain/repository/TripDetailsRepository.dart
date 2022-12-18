@@ -9,7 +9,14 @@ abstract class TripDetailsRepository {
   Future<Either<String, Data?>> getTripDetails(String id);
 
   Future<Either<String, DataRequest?>> putTrip(
-      String id, String type, String comment, double consumptionKM);
+      String id,
+      String type,
+      String comment,
+      double consumptionKM,
+      String latitude,
+      String longitude,
+      String place,
+      String branch);
 
   Future<Either<String, APIResultModel>> setPolyLines(LatLng l1, LatLng l2);
 

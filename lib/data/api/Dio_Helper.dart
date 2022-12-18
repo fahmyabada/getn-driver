@@ -94,6 +94,18 @@ class DioHelper {
       data: data,
     );
   }
+
+  static Future<Response> putData3({
+    required String url,
+    Map<String, dynamic>? query,
+    String? data,
+    String? token,
+  }) async {
+    dio.options.headers = {
+      'Authorization': 'bearerAuth $token',
+    };
+    return await dio.put(url, queryParameters: query, data: data);
+  }
 }
 
 class MyHttpOverrides extends HttpOverrides {

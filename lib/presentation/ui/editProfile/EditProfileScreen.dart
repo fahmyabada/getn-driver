@@ -1328,7 +1328,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                     .editProfileDetails(
                                                         nameController.text
                                                             .toString(),
-                                                        emailController.text
+                                                        emailController.text.trim()
                                                             .toString(),
                                                         birthDateController.text
                                                             .toString(),

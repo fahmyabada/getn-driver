@@ -34,22 +34,14 @@ class _OnBoardScreenViewState extends State<OnBoardScreenView> {
       OnBoardingItem(
         title: LanguageCubit.get(context).getTexts('title1').toString(),
         subTitle: LanguageCubit.get(context).getTexts('subTitle1').toString(),
-        image: 'assets/onboard/1.png',
       ),
       OnBoardingItem(
         title: LanguageCubit.get(context).getTexts('title2').toString(),
         subTitle: LanguageCubit.get(context).getTexts('subTitle2').toString(),
-        image: 'assets/onboard/2.png',
       ),
       OnBoardingItem(
         title: LanguageCubit.get(context).getTexts('title3').toString(),
         subTitle: LanguageCubit.get(context).getTexts('subTitle3').toString(),
-        image: 'assets/onboard/3.png',
-      ),
-      OnBoardingItem(
-        title: LanguageCubit.get(context).getTexts('title4').toString(),
-        subTitle: LanguageCubit.get(context).getTexts('subTitle4').toString(),
-        image: 'assets/onboard/4.png',
       ),
     ];
   }
@@ -73,7 +65,7 @@ class _OnBoardScreenViewState extends State<OnBoardScreenView> {
             itemBuilder: (context, index) {
               OnBoardingItem oi = pages[index];
               return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.r),
+                padding: EdgeInsets.symmetric(horizontal: 15.r),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -82,7 +74,7 @@ class _OnBoardScreenViewState extends State<OnBoardScreenView> {
                       oi.title!,
                       style: TextStyle(
                           color: Colors.white,
-                          fontSize: 34.sp,
+                          fontSize: 30.sp,
                           fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
@@ -93,7 +85,7 @@ class _OnBoardScreenViewState extends State<OnBoardScreenView> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 24.sp,
+                        fontSize: 20.sp,
                       ),
                     ),
                     SizedBox(

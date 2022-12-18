@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:getn_driver/data/api/Dio_Helper.dart';
 import 'package:getn_driver/data/model/api_result_model.dart';
 import 'package:getn_driver/data/model/placeDetails/PlaceDetails.dart';
@@ -14,7 +18,14 @@ abstract class TripDetailsRemoteDataSource {
   Future<Either<String, Data?>> getTripDetails(String id);
 
   Future<Either<String, DataRequest?>> putTrip(
-      String id, String type, String comment, double consumptionPoints);
+      String id,
+      String type,
+      String comment,
+      double consumptionPoints,
+      String latitude,
+      String longitude,
+      String place,
+      String branch);
 
   Future<Either<String, PredictionsPlaceSearch?>> searchLocation(String text);
 
@@ -53,26 +64,90 @@ class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
 
   @override
   Future<Either<String, DataRequest?>> putTrip(
-      String id, String type, String comment, double consumptionKM) async {
+      String id,
+      String type,
+      String comment,
+      double consumptionKM,
+      String latitude,
+      String longitude,
+      String place2,
+      String branch) async {
     try {
-      FormData? formData;
+      String data = '';
       if (type == "reject" || type == "end") {
-        formData = FormData.fromMap({
-          "status": type,
-          "comment": comment,
-          "consumptionKM": consumptionKM
+        await placemarkFromCoordinates(
+                double.parse(latitude), double.parse(longitude))
+            .then((address) {
+          var place = address.first;
+          if (kDebugMode) {
+            print(
+                "addressNameEndTrip*******${place.street!}, ${place.administrativeArea!}, ${place.subAdministrativeArea!}, ${place.country!} , place : ${place2}");
+          }
+          String toAddress =
+              "${place.street!}, ${place.administrativeArea!}, ${place.subAdministrativeArea!}, ${place.country!}";
+          if (place2.isNotEmpty && branch.isNotEmpty) {
+            data = jsonEncode({
+              "status": type,
+              "comment": comment,
+              "consumptionKM": consumptionKM,
+              "to": {
+                "placeTitle": toAddress,
+                "placeLatitude": latitude,
+                "placeLongitude": longitude,
+                "place": place2,
+                "branch": branch,
+              }
+            });
+          } else if (place2.isNotEmpty && branch.isEmpty) {
+            data = jsonEncode({
+              "status": type,
+              "comment": comment,
+              "consumptionKM": consumptionKM,
+              "to": {
+                "placeTitle": toAddress,
+                "placeLatitude": latitude,
+                "placeLongitude": longitude,
+                "place": place2,
+              }
+            });
+          } else if (place2.isEmpty && branch.isNotEmpty) {
+            data = jsonEncode({
+              "status": type,
+              "comment": comment,
+              "consumptionKM": consumptionKM,
+              "to": {
+                "placeTitle": toAddress,
+                "placeLatitude": latitude,
+                "placeLongitude": longitude,
+                "branch": branch,
+              }
+            });
+          } else {
+            data = jsonEncode({
+              "status": type,
+              "comment": comment,
+              "consumptionKM": consumptionKM,
+              "to": {
+                "placeTitle": toAddress,
+                "placeLatitude": latitude,
+                "placeLongitude": longitude,
+              }
+            });
+          }
         });
       } else {
-        formData = FormData.fromMap({"status": type});
+        data = jsonEncode({
+          "status": type,
+        });
       }
 
       var body = {
         "select-carCategory": 'oneKMPoints points',
       };
 
-      return await DioHelper.putData(
+      return await DioHelper.putData3(
               url: 'trip/$id',
-              data: formData,
+              data: data,
               query: body,
               token: getIt<SharedPreferences>().getString("token"))
           .then((value) {

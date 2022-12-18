@@ -985,7 +985,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                       typeScreen: "register",
                                       fullName:
                                           fullNameController.text.toString(),
-                                      email: emailController.text.toString(),
+                                      email: emailController.text.trim().toString(),
                                       phone: widget.phone,
                                       birthDate:
                                           birthDateController.text.toString(),

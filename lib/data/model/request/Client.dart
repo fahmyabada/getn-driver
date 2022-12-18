@@ -1,4 +1,5 @@
 import 'package:getn_driver/data/model/country/Image.dart';
+import 'package:getn_driver/data/model/request/WhatsappCountryRequest.dart';
 import 'package:getn_driver/data/model/signModel/Country.dart';
 
 import '../request/Area.dart';
@@ -14,6 +15,7 @@ class Client {
     String? phone,
     String? whatsApp,
     City? city,
+    WhatsappCountryRequest? whatsappCountryRequest,
   }) {
     _image = image;
     _id = id;
@@ -23,6 +25,7 @@ class Client {
     _city = city;
     _phone = phone;
     _whatsApp = whatsApp;
+    _whatsappCountry = whatsappCountryRequest;
   }
 
   Client.fromJson(dynamic json) {
@@ -39,6 +42,9 @@ class Client {
     _name = json['name'];
     _area = json['area'] != null ? Area.fromJson(json['area']) : null;
     _city = json['city'] != null ? City.fromJson(json['city']) : null;
+    _whatsappCountry = json['whatsappCountry'] != null
+        ? WhatsappCountryRequest.fromJson(json['whatsappCountry'])
+        : null;
   }
 
   Image? _image;
@@ -49,6 +55,7 @@ class Client {
   City? _city;
   String? _phone;
   String? _whatsApp;
+  WhatsappCountryRequest? _whatsappCountry;
 
   Image? get image => _image;
 
@@ -66,6 +73,8 @@ class Client {
 
   String? get whatsApp => _whatsApp;
 
+  WhatsappCountryRequest? get whatsappCountry => _whatsappCountry;
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     if (_image != null) {
@@ -81,6 +90,9 @@ class Client {
     }
     if (_city != null) {
       map['city'] = _city?.toJson();
+    }
+    if (_whatsappCountry != null) {
+      map['whatsappCountry'] = _whatsappCountry?.toJson();
     }
     return map;
   }

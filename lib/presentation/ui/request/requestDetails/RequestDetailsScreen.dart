@@ -109,7 +109,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   void _loadMoreTrips(BuildContext context) {
     RequestDetailsCubit.get(context).getTripsRequestDetails(
-        RequestDetailsCubit.get(context).indexTrips, RequestDetailsCubit.get(context).idRequest);
+        RequestDetailsCubit.get(context).indexTrips,
+        RequestDetailsCubit.get(context).idRequest);
   }
 
   @override
@@ -117,7 +118,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     super.initState();
 
     RequestDetailsCubit.get(context).idRequest = widget.idRequest!;
-    RequestDetailsCubit.get(context).getRequestDetails(RequestDetailsCubit.get(context).idRequest);
+    RequestDetailsCubit.get(context)
+        .getRequestDetails(RequestDetailsCubit.get(context).idRequest);
 
     if (getIt<SharedPreferences>().getBool("isEn") != null) {
       LanguageCubit.get(context).isEn =
@@ -128,7 +130,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   void viewWillAppear() {
     print("onResume / viewWillAppear / onFocusGained     RequestDetailsScreen");
     getIt<SharedPreferences>().setString('typeScreen', "requestDetails");
-    getIt<SharedPreferences>().setString('requestDetailsId', RequestDetailsCubit.get(context).idRequest);
+    getIt<SharedPreferences>().setString(
+        'requestDetailsId', RequestDetailsCubit.get(context).idRequest);
     getIt<SharedPreferences>().setString('tripDetailsId', "");
   }
 
@@ -144,9 +147,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       child: BlocConsumer<RequestDetailsCubit, RequestDetailsState>(
         listener: (context, state) async {
           if (state is RequestDetailsSuccessState) {
-            RequestDetailsCubit.get(context)
-                .getTripsRequestDetails(1, RequestDetailsCubit.get(context).idRequest);
-          } else if (state is RequestDetailsEditSuccessState) {
+            RequestDetailsCubit.get(context).getTripsRequestDetails(
+                1, RequestDetailsCubit.get(context).idRequest);
+          }
+          else if (state is RequestDetailsEditSuccessState) {
             if (state.type == "reject" ||
                 state.type == "mid_pause" ||
                 state.type == "end") {
@@ -188,7 +192,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     .tabController!
                     .animateTo(0);
               }
-            }else if (state.type == "accept") {
+            } else if (state.type == "accept") {
               if (RequestCubit.get(navigatorKey.currentContext).typeRequest ==
                   "pending") {
                 RequestCubit.get(navigatorKey.currentContext)
@@ -208,8 +212,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               }
             }
 
-            RequestDetailsCubit.get(context).getRequestDetails(RequestDetailsCubit.get(context).idRequest);
-          } else if (state is RequestDetailsEditErrorState) {
+            RequestDetailsCubit.get(context)
+                .getRequestDetails(RequestDetailsCubit.get(context).idRequest);
+          }
+          else if (state is RequestDetailsEditErrorState) {
             if (state.type == "reject" ||
                 state.type == "mid_pause" ||
                 state.type == "end") {
@@ -240,7 +246,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   state: ToastStates.error,
                   context: context);
             }
-          } else if (state is CurrentLocationSuccessState) {
+          }
+          else if (state is CurrentLocationSuccessState) {
             print('CurrentLocationSuccessState********* ');
             // this belong add trip
             /*String id = await navigateToWithRefreshPagePrevious(
@@ -283,7 +290,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     .from!
                     .placeLongitude!,
                 context);
-          } else if (state is CurrentLocationErrorState) {
+          }
+          else if (state is CurrentLocationErrorState) {
             if (kDebugMode) {
               print('CurrentLocationErrorState********* ${state.error}');
             }
@@ -381,11 +389,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 },
               );
             }
-          } else if (state is TripsSuccessState) {
+          }
+          else if (state is TripsSuccessState) {
             setState(() {
               loadingMoreTrips = false;
             });
-          } else if (state is TripsErrorState) {
+          }
+          else if (state is TripsErrorState) {
             setState(() {
               loadingMoreTrips = false;
             });
@@ -402,7 +412,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 },
               );
             }
-          } else if (state is RequestDetailsLastTripSuccessState) {
+          }
+          else if (state is RequestDetailsLastTripSuccessState) {
             if (state.data!.data!.isNotEmpty) {
               showDialog(
                 context: context,
@@ -422,8 +433,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   );
                 },
               );
-            }
-            else if (state.data!.data!.isEmpty && state.type == 'end') {
+            } else if (state.data!.data!.isEmpty && state.type == 'end') {
               showDialog(
                 context: context,
                 barrierDismissible: true,
@@ -444,8 +454,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   );
                 },
               );
-            }
-            else if (state.data!.data!.isEmpty && ( state.type == 'mid_pause' || state.type == 'reject')) {
+            } else if (state.data!.data!.isEmpty &&
+                (state.type == 'mid_pause' || state.type == 'reject')) {
               final currentDate = DateTime.now();
               final dateFrom = DateFormat("yyyy-MM-ddTHH:mm")
                   .parse(RequestDetailsCubit.get(context)
@@ -514,7 +524,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 );
               }
             }
-          } else if (state is RequestDetailsLastTripErrorState) {
+          }
+          else if (state is RequestDetailsLastTripErrorState) {
             print("RequestDetailsLastTripErrorState************ ");
             if (state.message == 'network not available') {
               showDialog(
@@ -556,8 +567,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           press: () {
                             RequestDetailsCubit.get(context).failureRequest =
                                 "";
-                            RequestDetailsCubit.get(context)
-                                .getRequestDetails(RequestDetailsCubit.get(context).idRequest);
+                            RequestDetailsCubit.get(context).getRequestDetails(
+                                RequestDetailsCubit.get(context).idRequest);
                           },
                           context: context)
                       : RequestDetailsCubit.get(context).requestDetails!.id !=
@@ -579,116 +590,124 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                   });
                                   _loadMoreTrips(context);
                                 },
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.vertical,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      client(context),
-                                      SizedBox(
-                                        height: 15.h,
-                                      ),
-                                      // divider
-                                      Container(
-                                        width: 1.sw,
-                                        height: 1.h,
-                                        color: Colors.grey[400],
-                                      ),
-                                      SizedBox(
-                                        height: 15.h,
-                                      ),
+                                child: RefreshIndicator(
+                                  onRefresh: () => Future.delayed(const Duration(seconds: 2), () {
+                                    print('RefreshIndicator**************');
+                                    RequestDetailsCubit.get(context)
+                                        .getRequestDetails(RequestDetailsCubit.get(context).idRequest);
+                                  }),
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
+                                    physics: const AlwaysScrollableScrollPhysics(),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        client(context),
+                                        SizedBox(
+                                          height: 15.h,
+                                        ),
+                                        // divider
+                                        Container(
+                                          width: 1.sw,
+                                          height: 1.h,
+                                          color: Colors.grey[400],
+                                        ),
+                                        SizedBox(
+                                          height: 15.h,
+                                        ),
 
-                                      requestInfo(context),
-                                      SizedBox(
-                                        height: 15.h,
-                                      ),
-                                      buttonStatus(context, state),
+                                        requestInfo(context),
+                                        SizedBox(
+                                          height: 15.h,
+                                        ),
+                                        buttonStatus(context, state),
 
-                                      RequestDetailsCubit.get(context)
-                                                  .typeScreen
-                                                  .isNotEmpty &&
-                                              RequestDetailsCubit.get(context)
-                                                      .typeScreen ==
-                                                  "past"
-                                          ? Container()
-                                          : RequestDetailsCubit.get(context)
-                                                      .requestDetails
-                                                      ?.paymentStatus! ==
-                                                  "paid"
-                                              ? Container()
-                                              : RequestDetailsCubit.get(context)
-                                                          .requestDetails
-                                                          ?.status ==
-                                                      "reject"
-                                                  ? Container()
-                                                  : Text(
-                                                      LanguageCubit.get(context)
-                                                          .getTexts(
-                                                              'clientNotPaidYet')
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          color: accentColor,
-                                                          fontSize: 15.sp,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
+                                        RequestDetailsCubit.get(context)
+                                                    .typeScreen
+                                                    .isNotEmpty &&
+                                                RequestDetailsCubit.get(context)
+                                                        .typeScreen ==
+                                                    "past"
+                                            ? Container()
+                                            : RequestDetailsCubit.get(context)
+                                                        .requestDetails
+                                                        ?.paymentStatus! ==
+                                                    "paid"
+                                                ? Container()
+                                                : RequestDetailsCubit.get(context)
+                                                            .requestDetails
+                                                            ?.status ==
+                                                        "reject"
+                                                    ? Container()
+                                                    : Text(
+                                                        LanguageCubit.get(context)
+                                                            .getTexts(
+                                                                'clientNotPaidYet')
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            color: accentColor,
+                                                            fontSize: 15.sp,
+                                                            fontWeight:
+                                                                FontWeight.bold),
+                                                      ),
 
-                                      SizedBox(
-                                        height: 15.h,
-                                      ),
-                                      // divider
-                                      Container(
-                                        width: 1.sw,
-                                        height: 1.h,
-                                        color: Colors.grey[400],
-                                      ),
-                                      // add trip
-                                      /*  SizedBox(
-                                        height: 15.h,
-                                      ),
-                                      RequestDetailsCubit.get(context)
-                                                      .requestDetails!
-                                                      .status !=
-                                                  null &&
-                                              RequestDetailsCubit.get(context)
-                                                      .requestDetails!
-                                                      .status ==
-                                                  "start" &&
-                                              currentDate.isBefore(
-                                                DateFormat("yyyy-MM-ddTHH:mm")
-                                                    .parse(RequestDetailsCubit.get(
-                                                            context)
+                                        SizedBox(
+                                          height: 15.h,
+                                        ),
+                                        // divider
+                                        Container(
+                                          width: 1.sw,
+                                          height: 1.h,
+                                          color: Colors.grey[400],
+                                        ),
+                                        // add trip
+                                        /*  SizedBox(
+                                          height: 15.h,
+                                        ),
+                                        RequestDetailsCubit.get(context)
                                                         .requestDetails!
-                                                        .to!),
-                                              ) &&
-                                              currentDate.isAfter(
-                                                DateFormat("yyyy-MM-ddTHH:mm")
-                                                    .parse(RequestDetailsCubit.get(
-                                                            context)
+                                                        .status !=
+                                                    null &&
+                                                RequestDetailsCubit.get(context)
                                                         .requestDetails!
-                                                        .from!
-                                                        .date!),
-                                              )
-                                          ? state is CurrentLocationLoading
-                                              ? const Center(
-                                                  child: CircularProgressIndicator(
-                                                  color: black,
-                                                ))
-                                              : defaultButton2(
-                                                  text: 'Add Trip',
-                                                  press: () {
-                                                    RequestDetailsCubit.get(context)
-                                                        .getCurrentLocation();
-                                                  },
-                                                  textColor: white,
-                                                  backColor: accentColor)
-                                          : Container(),*/
-                                      SizedBox(
-                                        height: 15.h,
-                                      ),
-                                      trips(context, state),
-                                    ],
+                                                        .status ==
+                                                    "start" &&
+                                                currentDate.isBefore(
+                                                  DateFormat("yyyy-MM-ddTHH:mm")
+                                                      .parse(RequestDetailsCubit.get(
+                                                              context)
+                                                          .requestDetails!
+                                                          .to!),
+                                                ) &&
+                                                currentDate.isAfter(
+                                                  DateFormat("yyyy-MM-ddTHH:mm")
+                                                      .parse(RequestDetailsCubit.get(
+                                                              context)
+                                                          .requestDetails!
+                                                          .from!
+                                                          .date!),
+                                                )
+                                            ? state is CurrentLocationLoading
+                                                ? const Center(
+                                                    child: CircularProgressIndicator(
+                                                    color: black,
+                                                  ))
+                                                : defaultButton2(
+                                                    text: 'Add Trip',
+                                                    press: () {
+                                                      RequestDetailsCubit.get(context)
+                                                          .getCurrentLocation();
+                                                    },
+                                                    textColor: white,
+                                                    backColor: accentColor)
+                                            : Container(),*/
+                                        SizedBox(
+                                          height: 15.h,
+                                        ),
+                                        trips(context, state),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -824,31 +843,28 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           SizedBox(
                             width: 5.w,
                           ),
-                          Expanded(
-                            child: defaultButtonWithIcon(
-                                press: () {
-                                  if (data.client2 != null &&
-                                      data.client2!.whatsApp != null) {
-                                    openWhatsapp(
-                                        '${data.client2?.country?.code}${data.client2?.whatsApp}',
-                                        context);
-                                  } else {
-                                    openWhatsapp(
-                                        '${data.client2?.country?.code}${data.client2?.phone}',
-                                        context);
-                                  }
-                                },
-                                fontSize: 15,
-                                paddingVertical: 1,
-                                paddingHorizontal: 5,
-                                borderRadius: 100,
-                                text: LanguageCubit.get(context)
-                                    .getTexts('WhatsApp')
-                                    .toString(),
-                                backColor: accentColor,
-                                textColor: white,
-                                icon: Icons.whatsapp),
-                          ),
+                          data.client2 != null &&
+                                  data.client2!.whatsApp != null &&
+                                  data.client2!.whatsappCountry != null
+                              ? Expanded(
+                                  child: defaultButtonWithIcon(
+                                      press: () {
+                                        openWhatsapp(
+                                            '${data.client2?.whatsappCountry?.code}${data.client2?.whatsApp}',
+                                            context);
+                                      },
+                                      fontSize: 15,
+                                      paddingVertical: 1,
+                                      paddingHorizontal: 5,
+                                      borderRadius: 100,
+                                      text: LanguageCubit.get(context)
+                                          .getTexts('WhatsApp')
+                                          .toString(),
+                                      backColor: accentColor,
+                                      textColor: white,
+                                      icon: Icons.whatsapp),
+                                )
+                              : Container(),
                         ],
                       )
                 /* RatingBar.builder(
@@ -878,518 +894,516 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     );
   }
 
-  Widget requestInfo(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    LanguageCubit.get(context).getTexts('Status').toString(),
-                    style: TextStyle(
-                      color: black,
-                      fontSize: 15.sp,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 5.w,
-                  ),
-                  Text(
-                    LanguageCubit.get(context).isEn
-                        ? btnStatus3["en"]![RequestDetailsCubit.get(context)
-                                .requestDetails!
-                                .status!]
-                            .toString()
-                        : btnStatus3["ar"]![RequestDetailsCubit.get(context)
-                                .requestDetails!
-                                .status!]
-                            .toString(),
-                    style: TextStyle(color: grey2, fontSize: 14.sp),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Text(
-                    LanguageCubit.get(context)
-                        .getTexts('PaymentStatus')
-                        .toString(),
-                    style: TextStyle(
-                      color: black,
-                      fontSize: 15.sp,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 5.w,
-                  ),
-                  Text(
-                    LanguageCubit.get(context).isEn
-                        ? btnStatus3["en"]![RequestDetailsCubit.get(context)
-                                .requestDetails!
-                                .paymentStatus!]
-                            .toString()
-                        : btnStatus3["ar"]![RequestDetailsCubit.get(context)
-                                .requestDetails!
-                                .paymentStatus!]
-                            .toString(),
-                    style: TextStyle(color: grey2, fontSize: 14.sp),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 10.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                LanguageCubit.get(context)
-                    .getTexts('RequestStartDate')
-                    .toString(),
-                style: TextStyle(
-                  color: black,
-                  fontSize: 15.sp,
-                ),
-              ),
-              Row(
-                children: [
-                  Text(
-                    LanguageCubit.get(context).isEn
-                        ? DateFormat.yMEd().format(DateTime.parse(
-                            RequestDetailsCubit.get(context)
-                                .requestDetails!
-                                .from!
-                                .date!))
-                        : DateFormat.yMEd("ar").format(DateTime.parse(
-                            RequestDetailsCubit.get(context)
-                                .requestDetails!
-                                .from!
-                                .date!)),
-                    style: TextStyle(color: grey2, fontSize: 14.sp),
-                  ),
-                  SizedBox(
-                    width: 5.w,
-                  ),
-                  Text(
-                    LanguageCubit.get(context).isEn
-                        ? DateFormat.jm().format(DateTime.parse(
-                            RequestDetailsCubit.get(context)
-                                .requestDetails!
-                                .from!
-                                .date!))
-                        : DateFormat.jm("ar").format(DateTime.parse(
-                            RequestDetailsCubit.get(context)
-                                .requestDetails!
-                                .from!
-                                .date!)),
-                    style: TextStyle(
-                      color: grey2,
-                      fontSize: 14.sp,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 10.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                LanguageCubit.get(context)
-                    .getTexts('RequestEndDate')
-                    .toString(),
-                style: TextStyle(
-                  color: black,
-                  fontSize: 15.sp,
-                ),
-              ),
-              Row(
-                children: [
-                  Text(
-                    LanguageCubit.get(context).isEn
-                        ? DateFormat.yMEd().format(DateTime.parse(
-                            RequestDetailsCubit.get(context)
-                                .requestDetails!
-                                .to!))
-                        : DateFormat.yMEd("ar").format(DateTime.parse(
-                            RequestDetailsCubit.get(context)
-                                .requestDetails!
-                                .to!)),
-                    style: TextStyle(color: grey2, fontSize: 14.sp),
-                  ),
-                  SizedBox(
-                    width: 5.w,
-                  ),
-                  Text(
-                    LanguageCubit.get(context).isEn
-                        ? DateFormat.jm().format(DateTime.parse(
-                            RequestDetailsCubit.get(context)
-                                .requestDetails!
-                                .to!))
-                        : DateFormat.jm("ar").format(DateTime.parse(
-                            RequestDetailsCubit.get(context)
-                                .requestDetails!
-                                .to!)),
-                    style: TextStyle(
-                      color: grey2,
-                      fontSize: 14.sp,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 10.h),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  LanguageCubit.get(context)
-                      .getTexts('PickedLocation')
-                      .toString(),
+  Widget requestInfo(BuildContext context) {
+    print(
+        'totalPrice************** ${RequestDetailsCubit.get(context).requestDetails!.totalPrice!}');
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Text(
+                  LanguageCubit.get(context).getTexts('Status').toString(),
                   style: TextStyle(
-                      color: accentColor,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  RequestDetailsCubit.get(context)
-                      .requestDetails!
-                      .from!
-                      .placeTitle!,
-                  textAlign: TextAlign.end,
-                  style: TextStyle(
-                    color: grey2,
+                    color: black,
                     fontSize: 15.sp,
                   ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 10.h),
-          IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+                SizedBox(
+                  width: 5.w,
+                ),
+                Text(
+                  LanguageCubit.get(context).isEn
+                      ? btnStatus3["en"]![RequestDetailsCubit.get(context)
+                              .requestDetails!
+                              .status!]
+                          .toString()
+                      : btnStatus3["ar"]![RequestDetailsCubit.get(context)
+                              .requestDetails!
+                              .status!]
+                          .toString(),
+                  style: TextStyle(color: grey2, fontSize: 14.sp),
+                ),
+              ],
+            ),
+            Row(
               children: [
-                Expanded(
-                  child: Card(
-                    color: yellowLightColor,
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              LanguageCubit.get(context)
-                                  .getTexts('Days')
-                                  .toString(),
-                              style: TextStyle(color: grey2, fontSize: 13.sp),
-                            ),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            Text(
-                              '${RequestDetailsCubit.get(context).requestDetails!.days!.length} ${LanguageCubit.get(context).getTexts('Days').toString()}',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: black,
-                                  fontSize: 13.sp,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ]),
-                    ),
+                Text(
+                  LanguageCubit.get(context)
+                      .getTexts('PaymentStatus')
+                      .toString(),
+                  style: TextStyle(
+                    color: black,
+                    fontSize: 15.sp,
                   ),
                 ),
-                Expanded(
-                  child: Card(
-                    color: rough,
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              LanguageCubit.get(context)
-                                  .getTexts('UsedPoints')
-                                  .toString(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: grey2, fontSize: 12.sp),
-                            ),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            Text(
-                              (RequestDetailsCubit.get(context)
-                                          .requestDetails!
-                                          .subtotalPoints! /
-                                      RequestDetailsCubit.get(context)
-                                          .requestDetails!
-                                          .days!
-                                          .length)
-                                  .toStringAsFixed(2),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: black,
-                                  fontSize: 13.sp,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ]),
-                    ),
-                  ),
+                SizedBox(
+                  width: 5.w,
                 ),
-                Expanded(
-                  child: Card(
-                    color: greenLightColor,
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              LanguageCubit.get(context)
-                                  .getTexts('TotalDistance')
-                                  .toString(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: grey2, fontSize: 12.sp),
-                            ),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            Text(
-                              ((RequestDetailsCubit.get(context)
-                                              .requestDetails!
-                                              .subtotalPoints! /
-                                          RequestDetailsCubit.get(context)
-                                              .requestDetails!
-                                              .days!
-                                              .length) *
-                                      RequestDetailsCubit.get(context)
-                                          .requestDetails!
-                                          .carCategory!
-                                          .oneKMPoints!
-                                          .toDouble())
-                                  .toStringAsFixed(2),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: black,
-                                  fontSize: 13.sp,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ]),
-                    ),
-                  ),
+                Text(
+                  LanguageCubit.get(context).isEn
+                      ? btnStatus3["en"]![RequestDetailsCubit.get(context)
+                              .requestDetails!
+                              .paymentStatus!]
+                          .toString()
+                      : btnStatus3["ar"]![RequestDetailsCubit.get(context)
+                              .requestDetails!
+                              .paymentStatus!]
+                          .toString(),
+                  style: TextStyle(color: grey2, fontSize: 14.sp),
                 ),
-                Expanded(
-                  child: Card(
-                    color: blueLight,
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              LanguageCubit.get(context)
-                                  .getTexts('TotalPrice')
-                                  .toString(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: grey2, fontSize: 13.sp),
-                            ),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            Text(
-                              '${RequestDetailsCubit.get(context).requestDetails!.totalPrice!.toStringAsFixed(2)} ${LanguageCubit.get(context).getTexts('egp')}',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: black,
-                                  fontSize: 13.sp,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ]),
-                    ),
+              ],
+            ),
+          ],
+        ),
+        SizedBox(height: 10.h),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              LanguageCubit.get(context)
+                  .getTexts('RequestStartDate')
+                  .toString(),
+              style: TextStyle(
+                color: black,
+                fontSize: 15.sp,
+              ),
+            ),
+            Row(
+              children: [
+                Text(
+                  LanguageCubit.get(context).isEn
+                      ? DateFormat.yMEd().format(DateTime.parse(
+                          RequestDetailsCubit.get(context)
+                              .requestDetails!
+                              .from!
+                              .date!))
+                      : DateFormat.yMEd("ar").format(DateTime.parse(
+                          RequestDetailsCubit.get(context)
+                              .requestDetails!
+                              .from!
+                              .date!)),
+                  style: TextStyle(color: grey2, fontSize: 14.sp),
+                ),
+                SizedBox(
+                  width: 5.w,
+                ),
+                Text(
+                  LanguageCubit.get(context).isEn
+                      ? DateFormat.jm().format(DateTime.parse(
+                          RequestDetailsCubit.get(context)
+                              .requestDetails!
+                              .from!
+                              .date!))
+                      : DateFormat.jm("ar").format(DateTime.parse(
+                          RequestDetailsCubit.get(context)
+                              .requestDetails!
+                              .from!
+                              .date!)),
+                  style: TextStyle(
+                    color: grey2,
+                    fontSize: 14.sp,
                   ),
                 ),
               ],
             ),
-          ),
-          RequestDetailsCubit.get(context).requestDetails!.currentDay != null
-              ? Column(
-                  children: [
-                    SizedBox(height: 5.h),
-                    // divider
-                    Container(
-                      width: 1.sw,
-                      height: 1.h,
-                      color: Colors.grey[400],
-                    ),
-                    SizedBox(height: 5.h),
-                    IntrinsicHeight(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+          ],
+        ),
+        SizedBox(height: 10.h),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              LanguageCubit.get(context).getTexts('RequestEndDate').toString(),
+              style: TextStyle(
+                color: black,
+                fontSize: 15.sp,
+              ),
+            ),
+            Row(
+              children: [
+                Text(
+                  LanguageCubit.get(context).isEn
+                      ? DateFormat.yMEd().format(DateTime.parse(
+                          RequestDetailsCubit.get(context).requestDetails!.to!))
+                      : DateFormat.yMEd("ar").format(DateTime.parse(
+                          RequestDetailsCubit.get(context)
+                              .requestDetails!
+                              .to!)),
+                  style: TextStyle(color: grey2, fontSize: 14.sp),
+                ),
+                SizedBox(
+                  width: 5.w,
+                ),
+                Text(
+                  LanguageCubit.get(context).isEn
+                      ? DateFormat.jm().format(DateTime.parse(
+                          RequestDetailsCubit.get(context).requestDetails!.to!))
+                      : DateFormat.jm("ar").format(DateTime.parse(
+                          RequestDetailsCubit.get(context)
+                              .requestDetails!
+                              .to!)),
+                  style: TextStyle(
+                    color: grey2,
+                    fontSize: 14.sp,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        SizedBox(height: 10.h),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                LanguageCubit.get(context)
+                    .getTexts('PickedLocation')
+                    .toString(),
+                style: TextStyle(
+                    color: accentColor,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            Expanded(
+              child: Text(
+                RequestDetailsCubit.get(context)
+                    .requestDetails!
+                    .from!
+                    .placeTitle!,
+                textAlign: TextAlign.end,
+                style: TextStyle(
+                  color: grey2,
+                  fontSize: 15.sp,
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 10.h),
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Card(
+                  color: yellowLightColor,
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Expanded(
-                            child: Card(
-                              color: yellowLightColor,
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 15.r, horizontal: 3.r),
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        LanguageCubit.get(context)
-                                            .getTexts('consumptionPoints')
-                                            .toString(),
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: grey2, fontSize: 13.sp),
-                                      ),
-                                      SizedBox(
-                                        height: 5.h,
-                                      ),
-                                      Text(
+                          Text(
+                            LanguageCubit.get(context)
+                                .getTexts('Days')
+                                .toString(),
+                            style: TextStyle(color: grey2, fontSize: 13.sp),
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          Text(
+                            '${RequestDetailsCubit.get(context).requestDetails!.days!.length} ${LanguageCubit.get(context).getTexts('Days').toString()}',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: black,
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ]),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Card(
+                  color: rough,
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            LanguageCubit.get(context)
+                                .getTexts('UsedPoints')
+                                .toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: grey2, fontSize: 12.sp),
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          Text(
+                            (RequestDetailsCubit.get(context)
+                                        .requestDetails!
+                                        .subtotalPoints! /
+                                    RequestDetailsCubit.get(context)
+                                        .requestDetails!
+                                        .days!
+                                        .length)
+                                .toStringAsFixed(2),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: black,
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ]),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Card(
+                  color: greenLightColor,
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            LanguageCubit.get(context)
+                                .getTexts('TotalDistance')
+                                .toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: grey2, fontSize: 12.sp),
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          Text(
+                            ((RequestDetailsCubit.get(context)
+                                            .requestDetails!
+                                            .subtotalPoints! /
                                         RequestDetailsCubit.get(context)
                                             .requestDetails!
-                                            .currentDay!
-                                            .consumptionPoints!
-                                            .toStringAsFixed(2),
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: black,
-                                            fontSize: 13.sp,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ]),
-                              ),
+                                            .days!
+                                            .length) *
+                                    RequestDetailsCubit.get(context)
+                                        .requestDetails!
+                                        .carCategory!
+                                        .oneKMPoints!
+                                        .toDouble())
+                                .toStringAsFixed(2),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: black,
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ]),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Card(
+                  color: blueLight,
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            LanguageCubit.get(context)
+                                .getTexts('TotalPrice')
+                                .toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: grey2, fontSize: 13.sp),
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          Text(
+                            '${RequestDetailsCubit.get(context).requestDetails!.totalPrice!.toStringAsFixed(2)} ${LanguageCubit.get(context).getTexts('egp')}',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: black,
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ]),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        RequestDetailsCubit.get(context).requestDetails!.currentDay != null
+            ? Column(
+                children: [
+                  SizedBox(height: 5.h),
+                  // divider
+                  Container(
+                    width: 1.sw,
+                    height: 1.h,
+                    color: Colors.grey[400],
+                  ),
+                  SizedBox(height: 5.h),
+                  IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Card(
+                            color: yellowLightColor,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 15.r, horizontal: 3.r),
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      LanguageCubit.get(context)
+                                          .getTexts('consumptionPoints')
+                                          .toString(),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: grey2, fontSize: 13.sp),
+                                    ),
+                                    SizedBox(
+                                      height: 5.h,
+                                    ),
+                                    Text(
+                                      RequestDetailsCubit.get(context)
+                                          .requestDetails!
+                                          .currentDay!
+                                          .consumptionPoints!
+                                          .toStringAsFixed(2),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: black,
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ]),
                             ),
                           ),
-                          Expanded(
-                            child: Card(
-                              color: rough,
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 15.r, horizontal: 3.r),
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        LanguageCubit.get(context)
-                                            .getTexts('consumptionKM')
-                                            .toString(),
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: grey2, fontSize: 12.sp),
-                                      ),
-                                      SizedBox(
-                                        height: 5.h,
-                                      ),
-                                      Text(
-                                        RequestDetailsCubit.get(context)
-                                            .requestDetails!
-                                            .currentDay!
-                                            .consumptionKM!
-                                            .toStringAsFixed(2),
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: black,
-                                            fontSize: 13.sp,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ]),
-                              ),
+                        ),
+                        Expanded(
+                          child: Card(
+                            color: rough,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 15.r, horizontal: 3.r),
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      LanguageCubit.get(context)
+                                          .getTexts('consumptionKM')
+                                          .toString(),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: grey2, fontSize: 12.sp),
+                                    ),
+                                    SizedBox(
+                                      height: 5.h,
+                                    ),
+                                    Text(
+                                      RequestDetailsCubit.get(context)
+                                          .requestDetails!
+                                          .currentDay!
+                                          .consumptionKM!
+                                          .toStringAsFixed(2),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: black,
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ]),
                             ),
                           ),
-                          Expanded(
-                            child: Card(
-                              color: greenLightColor,
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 15.r, horizontal: 3.r),
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        LanguageCubit.get(context)
-                                            .getTexts('extraPoints')
-                                            .toString(),
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: grey2, fontSize: 12.sp),
-                                      ),
-                                      SizedBox(
-                                        height: 5.h,
-                                      ),
-                                      Text(
-                                        RequestDetailsCubit.get(context)
-                                            .requestDetails!
-                                            .currentDay!
-                                            .extraPoints!
-                                            .toStringAsFixed(2),
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: black,
-                                            fontSize: 13.sp,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ]),
-                              ),
+                        ),
+                        Expanded(
+                          child: Card(
+                            color: greenLightColor,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 15.r, horizontal: 3.r),
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      LanguageCubit.get(context)
+                                          .getTexts('extraPoints')
+                                          .toString(),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: grey2, fontSize: 12.sp),
+                                    ),
+                                    SizedBox(
+                                      height: 5.h,
+                                    ),
+                                    Text(
+                                      RequestDetailsCubit.get(context)
+                                          .requestDetails!
+                                          .currentDay!
+                                          .extraPoints!
+                                          .toStringAsFixed(2),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: black,
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ]),
                             ),
                           ),
-                          Expanded(
-                            child: Card(
-                              color: blueLight,
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 15.r, horizontal: 3.r),
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        LanguageCubit.get(context)
-                                            .getTexts('extraKM')
-                                            .toString(),
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: grey2, fontSize: 13.sp),
-                                      ),
-                                      SizedBox(
-                                        height: 5.h,
-                                      ),
-                                      Text(
-                                        RequestDetailsCubit.get(context)
-                                            .requestDetails!
-                                            .currentDay!
-                                            .extraKM!
-                                            .toStringAsFixed(2),
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: black,
-                                            fontSize: 13.sp,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ]),
-                              ),
+                        ),
+                        Expanded(
+                          child: Card(
+                            color: blueLight,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 15.r, horizontal: 3.r),
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      LanguageCubit.get(context)
+                                          .getTexts('extraKM')
+                                          .toString(),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: grey2, fontSize: 13.sp),
+                                    ),
+                                    SizedBox(
+                                      height: 5.h,
+                                    ),
+                                    Text(
+                                      RequestDetailsCubit.get(context)
+                                          .requestDetails!
+                                          .currentDay!
+                                          .extraKM!
+                                          .toStringAsFixed(2),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: black,
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ]),
                             ),
                           ),
-                        ],
-                      ),
-                    )
-                  ],
-                )
-              : Container(),
-        ],
-      );
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              )
+            : Container(),
+      ],
+    );
+  }
 
   Widget buttonStatus(BuildContext context, RequestDetailsState state) {
     final currentDate = DateTime.now();
@@ -1484,7 +1498,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       ? Expanded(
                           child: defaultButton2(
                               press: () {
-
                                 RequestDetailsCubit.get(context).getLastTrip(
                                     RequestDetailsCubit.get(context)
                                         .requestDetails!
@@ -1725,7 +1738,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                   ),
                                                   SizedBox(height: 5.h),
                                                   Text(
-                                                    trip.to!.placeTitle!,
+                                                    trip.to!.placeTitle ?? '',
                                                     style: TextStyle(
                                                         color: grey2,
                                                         fontSize: 14.sp),
@@ -1914,14 +1927,16 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               ),
                             ),
                             onTap: () async {
-                              print("typeId44************ ${RequestDetailsCubit.get(context).idRequest}");
+                              print(
+                                  "typeId44************ ${RequestDetailsCubit.get(context).idRequest}");
                               await navigateToWithRefreshPagePrevious(
                                   context,
                                   TripDetailsScreen(
                                     idTrip: RequestDetailsCubit.get(context)
                                         .trips[i]
                                         .id,
-                                    idRequest: RequestDetailsCubit.get(context).idRequest,
+                                    idRequest: RequestDetailsCubit.get(context)
+                                        .idRequest,
                                   )).then((id) {
                                 print("typeId33************ ${id}");
                                 setState(() {
@@ -1936,7 +1951,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       .failureRequest = "";
                                   RequestDetailsCubit.get(context).failureTrip =
                                       "";
-                                  RequestDetailsCubit.get(context).idRequest = id;
+                                  RequestDetailsCubit.get(context).idRequest =
+                                      id;
                                   RequestDetailsCubit.get(context)
                                       .getRequestDetails(id);
                                 });
@@ -1971,8 +1987,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         .toString(),
                     press: () {
                       RequestDetailsCubit.get(context).indexTrips = 1;
-                      RequestDetailsCubit.get(context)
-                          .getTripsRequestDetails(1, RequestDetailsCubit.get(context).idRequest);
+                      RequestDetailsCubit.get(context).getTripsRequestDetails(
+                          1, RequestDetailsCubit.get(context).idRequest);
                     },
                     context: context)
             : RequestDetailsCubit.get(context).tripsSuccess != null &&
@@ -1981,11 +1997,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     ? errorMessage2(
                         message: RequestDetailsCubit.get(context).failureTrip,
                         press: () {
-                          print("getTripsRequestDetails**********${RequestDetailsCubit.get(context).idRequest}");
+                          print(
+                              "getTripsRequestDetails**********${RequestDetailsCubit.get(context).idRequest}");
                           RequestDetailsCubit.get(context).failureTrip = "";
                           RequestDetailsCubit.get(context).indexTrips = 1;
                           RequestDetailsCubit.get(context)
-                              .getTripsRequestDetails(1, RequestDetailsCubit.get(context).idRequest);
+                              .getTripsRequestDetails(1,
+                                  RequestDetailsCubit.get(context).idRequest);
                         },
                         context: context)
                     : Container()

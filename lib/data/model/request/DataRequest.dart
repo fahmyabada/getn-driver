@@ -66,16 +66,22 @@ class DataRequest {
         ? double.parse(json['subtotalPoints'].toString())
         : 0.0;
     _consumptionPoints = double.parse(json['consumptionPoints'].toString());
-    _consumptionKM = json['consumptionKM'] is int ? 0.0 : json['consumptionKM'];
-    _consumptionPackagesPoints = json['consumptionPackagesPoints'] is int
-        ? 0.0
-        : json['consumptionPackagesPoints'];
-    _totalPrice = json['totalPrice'] is int ? 0.0 : json['totalPrice'];
-    _totalConsumptionPoints = json['totalConsumptionPoints'] is int
-        ? 0.0
-        : json['totalConsumptionPoints'];
-    _totalConsumptionKM =
-        json['totalConsumptionKM'] is int ? 0.0 : json['totalConsumptionKM'];
+    _consumptionKM = json['consumptionKM'] != null
+        ? double.parse(json['consumptionKM'].toString())
+        : 0.0;
+    _consumptionPackagesPoints = json['consumptionPackagesPoints'] != null
+        ? double.parse(json['consumptionPackagesPoints'].toString())
+        : 0.0;
+    _totalPrice = json['totalPrice'] != null
+        ? double.parse(json['totalPrice'].toString())
+        : 0.0;
+    _totalConsumptionPoints = json['totalConsumptionPoints'] != null
+        ? double.parse(json['totalConsumptionPoints'].toString())
+        : 0.0;
+
+    _totalConsumptionKM = json['totalConsumptionKM'] != null
+        ? double.parse(json['totalConsumptionKM'].toString())
+        : 0.0;
     _paymentMethod = json['paymentMethod'];
     _referenceId = json['referenceId'];
     _paymentStatus = json['paymentStatus'];

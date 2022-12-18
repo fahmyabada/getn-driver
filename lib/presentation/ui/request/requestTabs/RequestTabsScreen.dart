@@ -12,6 +12,7 @@ import 'package:getn_driver/data/model/request/DataRequest.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/image_tools.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
+import 'package:getn_driver/main.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/auth/SignInScreen.dart';
@@ -195,6 +196,10 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
           if (state.type == "reject") {
             Navigator.pop(context);
           }
+          print("object***********${state.message}");
+          RequestCubit.get(context).indexPending = 1;
+          RequestCubit.get(context).getRequestPending(1);
+          RequestCubit.get(context).typeRequest = "pending";
           showToastt(
               text: state.message, state: ToastStates.error, context: context);
         } else if (state is RequestPastSuccessState) {
@@ -563,12 +568,17 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
             ),
             onTap: () async {
               await navigateToWithRefreshPagePrevious(
-                      context,
-                      RequestDetailsScreen(
-                        idRequest: current.id,
-                      ))
-                  .then((value) =>
-                      RequestCubit.get(context).getRequestCurrent(1));
+                  context,
+                  RequestDetailsScreen(
+                    idRequest: current.id,
+                  )).then((value) {
+                if (RequestCubit.get(navigatorKey.currentContext)
+                        .tabController!
+                        .index ==
+                    0) {
+                  RequestCubit.get(context).getRequestCurrent(1);
+                }
+              });
             },
           );
         },
@@ -657,14 +667,12 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
             child: Card(
               color: yellowLightColor,
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
+                padding: EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        LanguageCubit.get(context)
-                            .getTexts('Days')
-                            .toString(),
+                        LanguageCubit.get(context).getTexts('Days').toString(),
                         style: TextStyle(color: grey2, fontSize: 13.sp),
                       ),
                       SizedBox(
@@ -686,7 +694,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
             child: Card(
               color: rough,
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
+                padding: EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -717,7 +725,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
             child: Card(
               color: greenLightColor,
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
+                padding: EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -733,7 +741,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                       ),
                       Text(
                         ((current.subtotalPoints! / current.days!.length) *
-                            current.carCategory!.oneKMPoints!.toDouble())
+                                current.carCategory!.oneKMPoints!.toDouble())
                             .toStringAsFixed(2),
                         textAlign: TextAlign.center,
                         style: TextStyle(
@@ -749,7 +757,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
             child: Card(
               color: blueLight,
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
+                padding: EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -984,12 +992,17 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                   ),
                   onTap: () async {
                     await navigateToWithRefreshPagePrevious(
-                            context,
-                            RequestDetailsScreen(
-                              idRequest: upComing.id,
-                            ))
-                        .then((value) =>
-                            RequestCubit.get(context).getRequestUpComing(1));
+                        context,
+                        RequestDetailsScreen(
+                          idRequest: upComing.id,
+                        )).then((value) {
+                      if (RequestCubit.get(navigatorKey.currentContext)
+                              .tabController!
+                              .index ==
+                          1) {
+                        RequestCubit.get(context).getRequestUpComing(1);
+                      }
+                    });
                   },
                 ),
                 i == RequestCubit.get(context).requestUpComing.length - 1 &&
@@ -1095,7 +1108,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: yellowLightColor,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -1124,7 +1138,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: rough,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -1155,7 +1170,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: greenLightColor,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -1187,7 +1203,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: blueLight,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -1424,12 +1441,17 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                     RequestDetailsCubit.get(context).typeScreen = "past";
 
                     await navigateToWithRefreshPagePrevious(
-                            context,
-                            RequestDetailsScreen(
-                              idRequest: past.id,
-                            ))
-                        .then((value) =>
-                            RequestCubit.get(context).getRequestPast(1));
+                        context,
+                        RequestDetailsScreen(
+                          idRequest: past.id,
+                        )).then((value) {
+                      if (RequestCubit.get(navigatorKey.currentContext)
+                              .tabController!
+                              .index ==
+                          2) {
+                        RequestCubit.get(context).getRequestPast(1);
+                      }
+                    });
                   },
                 ),
                 i == RequestCubit.get(context).requestPast.length - 1 &&
@@ -1531,7 +1553,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: yellowLightColor,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -1560,7 +1583,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: rough,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -1591,7 +1615,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: greenLightColor,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -1607,7 +1632,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                         ),
                         Text(
                           ((past.subtotalPoints! / past.days!.length) *
-                              past.carCategory!.oneKMPoints!.toDouble())
+                                  past.carCategory!.oneKMPoints!.toDouble())
                               .toStringAsFixed(2),
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -1623,7 +1648,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Card(
                 color: blueLight,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical:  15.r,horizontal: 3.r),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 15.r, horizontal: 3.r),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -1912,8 +1938,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                   ),
                   Text(
                     LanguageCubit.get(context).isEn
-                        ? '${pending.client2 != null ? pending.client2!.country != null ? pending.client2!.country!.title!.en : "": ""}, ${pending.client2 != null ? pending.client2!.city != null ? pending.client2!.city!.title!.en : "" : ""}, ${pending.client2 != null ? pending.client2!.area != null ? pending.client2!.area!.title!.en : "" : ""}'
-                        : '${pending.client2 != null ? pending.client2!.country != null ? pending.client2!.country!.title!.ar : "": ""}, ${pending.client2 != null ? pending.client2!.city != null ? pending.client2!.city!.title!.ar : "" : ""}, ${pending.client2 != null ? pending.client2!.area != null ? pending.client2!.area!.title!.ar : "" : ""}',
+                        ? '${pending.client2 != null ? pending.client2!.country != null ? pending.client2!.country!.title!.en : "" : ""}, ${pending.client2 != null ? pending.client2!.city != null ? pending.client2!.city!.title!.en : "" : ""}, ${pending.client2 != null ? pending.client2!.area != null ? pending.client2!.area!.title!.en : "" : ""}'
+                        : '${pending.client2 != null ? pending.client2!.country != null ? pending.client2!.country!.title!.ar : "" : ""}, ${pending.client2 != null ? pending.client2!.city != null ? pending.client2!.city!.title!.ar : "" : ""}, ${pending.client2 != null ? pending.client2!.area != null ? pending.client2!.area!.title!.ar : "" : ""}',
                     style: TextStyle(fontSize: 15.sp, color: grey2),
                   ),
                   SizedBox(
@@ -2013,7 +2039,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                         ),
                         Text(
                           ((pending.subtotalPoints! / pending.days!.length) *
-                              pending.carCategory!.oneKMPoints!.toDouble())
+                                  pending.carCategory!.oneKMPoints!.toDouble())
                               .toStringAsFixed(2),
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -2067,66 +2093,79 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               children: [
                 loadAcceptVisible
                     ? RequestCubit.get(context).loadingEditPending
-                        ? loading()
-                        : defaultButton2(
-                            press: () {
-                              RequestCubit.get(context)
-                                  .editRequest(pending.id!, "accept", "");
+                        ? Expanded(child: loading())
+                        : Expanded( 
+                          child: defaultButton2(
+                              press: () {
+                                RequestCubit.get(context)
+                                    .editRequest(pending.id!, "accept", "");
 
-                              setState(() {
-                                indexPending = i;
-                              });
-                            },
-                            text: LanguageCubit.get(context)
-                                .getTexts('Accept')
+                                setState(() {
+                                  indexPending = i;
+                                });
+                              },
+                              text: LanguageCubit.get(context)
+                                  .getTexts('Accept')
+                                  .toString(),
+                              paddingVertical: 1,
+                              fontSize: 20,
+                              borderRadius: 100,
+                              backColor: accentColor,
+                              textColor: white),
+                        )
+                    : Expanded(
+                      child: defaultButton2(
+                          press: () {
+                            RequestCubit.get(context)
+                                .editRequest(pending.id!, "accept", "");
+                            setState(() {
+                              indexPending = i;
+                            });
+                          },
+                          text: LanguageCubit.get(context)
+                              .getTexts('Accept')
+                              .toString(),
+                          paddingVertical: 1,
+                          paddingHorizontal: 10,
+                          fontSize: 20,
+                          borderRadius: 100,
+                          backColor: accentColor,
+                          textColor: white),
+                    ),
+                SizedBox(width: 15.w,),
+                Expanded(
+                  child: defaultButton2(
+                    press: () {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        // outside to dismiss
+                        builder: (BuildContext context) {
+                          return CustomDialogRequestTabs(
+                            title: LanguageCubit.get(context)
+                                .getTexts('DoReject')
                                 .toString(),
-                            borderRadius: 100,
-                            backColor: accentColor,
-                            textColor: white)
-                    : defaultButton2(
-                        press: () {
-                          RequestCubit.get(context)
-                              .editRequest(pending.id!, "accept", "");
-                          setState(() {
-                            indexPending = i;
-                          });
+                            description: LanguageCubit.get(context)
+                                .getTexts('IfRejected')
+                                .toString(),
+                            backgroundColor: white,
+                            btnOkColor: accentColor,
+                            btnCancelColor: grey,
+                            id: pending.id,
+                            titleColor: accentColor,
+                            descColor: black,
+                          );
                         },
-                        text: LanguageCubit.get(context)
-                            .getTexts('Accept')
-                            .toString(),
-                        borderRadius: 100,
-                        backColor: accentColor,
-                        textColor: white),
-                defaultButton2(
-                  press: () {
-                    showDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      // outside to dismiss
-                      builder: (BuildContext context) {
-                        return CustomDialogRequestTabs(
-                          title: LanguageCubit.get(context)
-                              .getTexts('DoReject')
-                              .toString(),
-                          description: LanguageCubit.get(context)
-                              .getTexts('IfRejected')
-                              .toString(),
-                          backgroundColor: white,
-                          btnOkColor: accentColor,
-                          btnCancelColor: grey,
-                          id: pending.id,
-                          titleColor: accentColor,
-                          descColor: black,
-                        );
-                      },
-                    );
-                  },
-                  colorBorder: true,
-                  text:
-                      LanguageCubit.get(context).getTexts('Reject').toString(),
-                  borderRadius: 100,
-                  backColor: white,
-                  textColor: grey2,
+                      );
+                    },
+                    text:
+                        LanguageCubit.get(context).getTexts('Reject').toString(),
+                    borderRadius: 100,
+                    paddingVertical: 1,
+                    fontSize: 20,
+                    backColor: redColor,
+                    textColor: white,
+                  ),
                 ),
               ],
             )
@@ -2157,11 +2196,14 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                       },
                     );
                   },
-                  colorBorder: true,
                   text:
                       LanguageCubit.get(context).getTexts('Reject').toString(),
-                  backColor: white,
-                  textColor: grey2,
+                  backColor: redColor,
+                  borderRadius: 100,
+                  paddingVertical: 1,
+                  fontSize: 20,
+                  paddingHorizontal: 100,
+                  textColor: white,
                 ),
                 SizedBox(
                   height: 5.h,

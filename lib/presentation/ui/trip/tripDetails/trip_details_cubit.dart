@@ -44,22 +44,25 @@ class TripDetailsCubit extends Cubit<TripDetailsState> {
     });
   }
 
-  void editTrip(String id, String type, String comment,double consumptionKM) async {
-    if(type != "reject" && type != "end"){
+  void editTrip(String id, String type, String comment, double consumptionKM,
+      String latitude, String longitude, String place, String branch) async {
+    if (type != "reject" && type != "end") {
       emit(TripDetailsEditInitial());
     }
 
-    putTripDetailsUseCase.execute(id, type, comment, consumptionKM).then((value) {
-      emit(eitherLoadedOrErrorStateTripEdit(value,type));
+    putTripDetailsUseCase
+        .execute(id, type, comment, consumptionKM, latitude, longitude, place, branch)
+        .then((value) {
+      emit(eitherLoadedOrErrorStateTripEdit(value, type));
     });
   }
 
   TripDetailsState eitherLoadedOrErrorStateTripEdit(
       Either<String, DataRequest?> data, String type) {
     return data.fold((failure1) {
-      return TripDetailsEditErrorState(failure1,type);
+      return TripDetailsEditErrorState(failure1, type);
     }, (data) {
-      return TripDetailsEditSuccessState(data,type);
+      return TripDetailsEditSuccessState(data, type);
     });
   }
 
@@ -68,7 +71,8 @@ class TripDetailsCubit extends Cubit<TripDetailsState> {
     return updateAllDataUseCase.execute(l1, l2).then((value) {
       return value.fold((failure) {
         GoogleMapErrorState(failure);
-        return routeCoordinates = APIResultModel(message: failure,success: false,data: null);
+        return routeCoordinates =
+            APIResultModel(message: failure, success: false, data: null);
       }, (data) {
         GoogleMapSuccessState(data);
         return routeCoordinates = data;

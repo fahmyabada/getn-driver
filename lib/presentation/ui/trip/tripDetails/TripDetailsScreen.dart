@@ -547,30 +547,28 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                           SizedBox(
                             width: 5.w,
                           ),
-                          Expanded(
-                            child: defaultButtonWithIcon(
-                                press: () {
-                                  if (data.client2?.whatsApp != null) {
-                                    openWhatsapp(
-                                        '${data.client2?.country?.code}${data.client2?.whatsApp}',
-                                        context);
-                                  } else {
-                                    openWhatsapp(
-                                        '${data.client2?.country?.code}${data.client2?.phone}',
-                                        context);
-                                  }
-                                },
-                                fontSize: 18,
-                                paddingVertical: 1,
-                                paddingHorizontal: 5,
-                                borderRadius: 100,
-                                text: LanguageCubit.get(context)
-                                    .getTexts('WhatsApp')
-                                    .toString(),
-                                backColor: accentColor,
-                                textColor: white,
-                                icon: Icons.whatsapp),
-                          ),
+                          data.client2 != null &&
+                                  data.client2!.whatsApp != null &&
+                                  data.client2!.whatsappCountry != null
+                              ? Expanded(
+                                  child: defaultButtonWithIcon(
+                                      press: () {
+                                        openWhatsapp(
+                                            '${data.client2?.whatsappCountry?.code}${data.client2?.whatsApp}',
+                                            context);
+                                      },
+                                      fontSize: 18,
+                                      paddingVertical: 1,
+                                      paddingHorizontal: 5,
+                                      borderRadius: 100,
+                                      text: LanguageCubit.get(context)
+                                          .getTexts('WhatsApp')
+                                          .toString(),
+                                      backColor: accentColor,
+                                      textColor: white,
+                                      icon: Icons.whatsapp),
+                                )
+                              : Container(),
                         ],
                       )
               ],
@@ -684,7 +682,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                     ),
                     SizedBox(height: 5.h),
                     Text(
-                      data.to!.placeTitle!,
+                      data.to!.placeTitle ?? '',
                       style: TextStyle(color: grey2, fontSize: 13.sp),
                     ),
                   ],
@@ -821,7 +819,9 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
   Widget buttonStatus(BuildContext context, TripDetailsState state) {
     Data data = TripDetailsCubit.get(context).tripDetails!;
 
-    return data.status == "pending" || data.status == "arrive" || data.status == "coming"
+    return data.status == "pending" ||
+            data.status == "arrive" ||
+            data.status == "coming"
         ? Row(
             children: [
               state is TripDetailsEditInitial
@@ -836,8 +836,15 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                   : Expanded(
                       child: defaultButton2(
                           press: () {
-                            TripDetailsCubit.get(context).editTrip(data.id!,
-                                btnStatus['${data.status}']![0], "", 0.0);
+                            TripDetailsCubit.get(context).editTrip(
+                                data.id!,
+                                btnStatus['${data.status}']![0],
+                                "",
+                                0.0,
+                                '',
+                                '',
+                                '',
+                                '');
                           },
                           fontSize: 20,
                           paddingVertical: 1,
@@ -869,6 +876,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                             description: LanguageCubit.get(context)
                                 .getTexts('IfRejected')
                                 .toString(),
+                            place: data.to!.place ?? '',
+                            branch: data.to!.branch ?? '',
                           );
                         },
                       );
@@ -909,6 +918,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                       .getTexts('AreEndTrip')
                                       .toString(),
                                   status: btnStatus['${data.status}']![0],
+                                  place: data.to!.place ?? '',
+                                  branch: data.to!.branch ?? '',
                                 );
                               },
                             );
@@ -916,8 +927,15 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                             // Navigator.of(context).pop(widget.idRequest);
                             // });
                           } else {
-                            TripDetailsCubit.get(context).editTrip(data.id!,
-                                btnStatus['${data.status}']![0], "", 0.0);
+                            TripDetailsCubit.get(context).editTrip(
+                                data.id!,
+                                btnStatus['${data.status}']![0],
+                                "",
+                                0.0,
+                                '',
+                                '',
+                                '',
+                                '');
                           }
                         },
                         fontSize: 22,

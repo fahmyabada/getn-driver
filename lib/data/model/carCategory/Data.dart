@@ -9,20 +9,17 @@ class Data {
     Desc? desc,
     Brief? brief,
     Icon? icon,
-    String? priceType,
     bool? status,
     String? createdAt,
     String? updatedAt,
     String? id,
     String? carType,
     String? code,
-    String? user,
   }) {
     _title = title;
     _desc = desc;
     _brief = brief;
     _icon = icon;
-    _priceType = priceType;
     _status = status;
     _createdAt = createdAt;
     _updatedAt = updatedAt;
@@ -36,7 +33,6 @@ class Data {
     _desc = json['desc'] != null ? Desc.fromJson(json['desc']) : null;
     _brief = json['brief'] != null ? Brief.fromJson(json['brief']) : null;
     _icon = json['icon'] != null ? Icon.fromJson(json['icon']) : null;
-    _priceType = json['priceType'];
     _status = json['status'];
     _createdAt = json['createdAt'];
     _updatedAt = json['updatedAt'];
@@ -49,7 +45,6 @@ class Data {
   Desc? _desc;
   Brief? _brief;
   Icon? _icon;
-  String? _priceType;
   bool? _status;
   String? _createdAt;
   String? _updatedAt;
@@ -64,8 +59,6 @@ class Data {
   Brief? get brief => _brief;
 
   Icon? get icon => _icon;
-
-  String? get priceType => _priceType;
 
   bool? get status => _status;
 
@@ -83,7 +76,7 @@ class Data {
 
   @override
   String toString() {
-    return 'Data{_title: $_title, _desc: $_desc, _brief: $_brief, _icon: $_icon, _priceType: $_priceType, _status: $_status, _createdAt: $_createdAt, _updatedAt: $_updatedAt, _id: $_id, _carType: $_carType, _code: $_code}';
+    return 'Data{_title: $_title, _desc: $_desc, _brief: $_brief, _icon: $_icon _status: $_status, _createdAt: $_createdAt, _updatedAt: $_updatedAt, _id: $_id, _carType: $_carType, _code: $_code}';
   }
 
   Map<String, dynamic> toJson() {
@@ -100,7 +93,6 @@ class Data {
     if (_icon != null) {
       map['icon'] = _icon?.toJson();
     }
-    map['priceType'] = _priceType;
     map['status'] = _status;
     map['createdAt'] = _createdAt;
     map['updatedAt'] = _updatedAt;

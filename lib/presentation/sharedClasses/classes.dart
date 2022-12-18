@@ -919,7 +919,7 @@ class _CustomDialogLastTripState extends State<CustomDialogLastTrip> {
 }
 
 class CustomDialogRejectTripDetails extends StatefulWidget {
-  final String? title, description, id;
+  final String? title, description, id, place, branch;
   final From? location;
 
   const CustomDialogRejectTripDetails({
@@ -928,6 +928,8 @@ class CustomDialogRejectTripDetails extends StatefulWidget {
     this.description,
     this.id,
     this.location,
+    this.place,
+    this.branch,
   }) : super(key: key);
 
   @override
@@ -942,7 +944,6 @@ class _CustomDialogRejectTripDetailsState
   var formKeyRequest = GlobalKey<FormState>();
 
   bool loadingRejectTripDetails = false;
-  double sLat = 0.0, sLon = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -957,14 +958,22 @@ class _CustomDialogRejectTripDetailsState
             loadingRejectTripDetails = false;
           });
         } else if (state is CurrentLocationTripSuccessState) {
-          sLat = state.position.latitude;
-          sLon = state.position.longitude;
-          getDistanceKM(double.parse(widget.location!.placeLatitude!),
-                  double.parse(widget.location!.placeLongitude!), sLat, sLon)
-              .then((value) {
-            print('CurrentLocationTripSuccessState********* $value');
+          getDistanceKM(
+                  double.parse(widget.location!.placeLatitude!),
+                  double.parse(widget.location!.placeLongitude!),
+                  state.position.latitude,
+                  state.position.longitude)
+              .then((distance) {
+            print('CurrentLocationTripSuccessState********* $distance');
             TripDetailsCubit.get(context).editTrip(
-                widget.id!, "reject", commentController.text.toString(), value);
+                widget.id!,
+                "reject",
+                commentController.text.toString(),
+                distance,
+                state.position.latitude.toString(),
+                state.position.longitude.toString(),
+                widget.place.toString(),
+                widget.branch.toString());
           });
         } else if (state is CurrentLocationTripErrorState) {
           if (kDebugMode) {
@@ -994,15 +1003,14 @@ class _CustomDialogRejectTripDetailsState
                     btnCancelColor: grey,
                     titleColor: accentColor,
                     descColor: black,
-                    press: (){
+                    press: () {
                       Navigator.of(context).pop(true);
                     },
                   ),
                 );
               },
             );
-          }
-          else if (state.error == "deniedForever") {
+          } else if (state.error == "deniedForever") {
             showDialog(
               context: context,
               barrierDismissible: false,
@@ -1023,27 +1031,23 @@ class _CustomDialogRejectTripDetailsState
                     btnCancelColor: grey,
                     titleColor: accentColor,
                     descColor: black,
-                    press: (){
+                    press: () {
                       Navigator.of(context).pop(true);
                     },
                   ),
                 );
               },
             );
-          }
-          else if (state.error == "Location services are denied") {
+          } else if (state.error == "Location services are denied") {
             String denied;
             if (getIt<SharedPreferences>().getBool("isEn") != null) {
               if (getIt<SharedPreferences>().getBool("isEn") == true) {
-                denied =
-                'Please enable location in status bar';
+                denied = 'Please enable location in status bar';
               } else {
-                denied =
-                'الرجاء تمكين الموقع في شريط الحالة';
+                denied = 'الرجاء تمكين الموقع في شريط الحالة';
               }
             } else {
-              denied =
-              'Please enable location in status bar';
+              denied = 'Please enable location in status bar';
             }
 
             showDialog(
@@ -1057,14 +1061,14 @@ class _CustomDialogRejectTripDetailsState
                     title: LanguageCubit.get(context)
                         .getTexts('Location')
                         .toString(),
-                    description: denied ,
+                    description: denied,
                     type: "checkLocationEnable",
                     backgroundColor: white,
                     btnOkColor: accentColor,
                     btnCancelColor: grey,
                     titleColor: accentColor,
                     descColor: black,
-                    press: (){
+                    press: () {
                       Navigator.of(context).pop(true);
                     },
                   ),
@@ -1198,7 +1202,7 @@ class _CustomDialogRejectTripDetailsState
 }
 
 class CustomDialogEndTripDetails extends StatefulWidget {
-  final String? title, description, id, status;
+  final String? title, description, id, status, place, branch;
   final From? location;
 
   const CustomDialogEndTripDetails({
@@ -1208,6 +1212,8 @@ class CustomDialogEndTripDetails extends StatefulWidget {
     this.id,
     this.status,
     this.location,
+    this.place,
+    this.branch,
   }) : super(key: key);
 
   @override
@@ -1218,7 +1224,6 @@ class CustomDialogEndTripDetails extends StatefulWidget {
 class _CustomDialogEndTripDetailsState
     extends State<CustomDialogEndTripDetails> {
   bool loadingEndTripDetails = false;
-  double sLat = 0.0, sLon = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -1233,16 +1238,28 @@ class _CustomDialogEndTripDetailsState
             loadingEndTripDetails = false;
           });
         } else if (state is CurrentLocationTripSuccessState) {
-          sLat = state.position.latitude;
-          sLon = state.position.longitude;
-          getDistanceKM(double.parse(widget.location!.placeLatitude!),
-                  double.parse(widget.location!.placeLongitude!), sLat, sLon)
+          getDistanceKM(
+                  double.parse(widget.location!.placeLatitude!),
+                  double.parse(widget.location!.placeLongitude!),
+                  state.position.latitude,
+                  state.position.longitude)
               .then((value) {
             print('CurrentLocationTripSuccessState********* ${widget.status!}');
             print('CurrentLocationTripSuccessState1********* $value');
+            print(
+                'CurrentLocationTripSuccessState2********* ${state.position.latitude}');
+            print(
+                'CurrentLocationTripSuccessState3********* ${state.position.longitude}');
 
-            TripDetailsCubit.get(context)
-                .editTrip(widget.id!, widget.status!, "comment", value);
+            TripDetailsCubit.get(context).editTrip(
+                widget.id!,
+                widget.status!,
+                "comment",
+                value,
+                state.position.latitude.toString(),
+                state.position.longitude.toString(),
+                widget.place.toString(),
+                widget.branch.toString());
           });
         } else if (state is CurrentLocationTripErrorState) {
           if (kDebugMode) {
@@ -1257,7 +1274,7 @@ class _CustomDialogEndTripDetailsState
               barrierDismissible: false,
               // outside to dismiss
               builder: (BuildContext context) {
-                return  WillPopScope(
+                return WillPopScope(
                   onWillPop: () async => false,
                   child: CustomDialogLocation(
                     title: LanguageCubit.get(context)
@@ -1272,21 +1289,20 @@ class _CustomDialogEndTripDetailsState
                     btnCancelColor: grey,
                     titleColor: accentColor,
                     descColor: black,
-                    press: (){
+                    press: () {
                       Navigator.of(context).pop(true);
                     },
                   ),
                 );
               },
             );
-          }
-          else if (state.error == "deniedForever") {
+          } else if (state.error == "deniedForever") {
             showDialog(
               context: context,
               barrierDismissible: false,
               // outside to dismiss
               builder: (BuildContext mContext) {
-                return  WillPopScope(
+                return WillPopScope(
                   onWillPop: () async => false,
                   child: CustomDialogLocation(
                     title: LanguageCubit.get(context)
@@ -1301,27 +1317,23 @@ class _CustomDialogEndTripDetailsState
                     btnCancelColor: grey,
                     titleColor: accentColor,
                     descColor: black,
-                    press: (){
+                    press: () {
                       Navigator.of(context).pop(true);
                     },
                   ),
                 );
               },
             );
-          }
-          else if (state.error == "Location services are denied") {
+          } else if (state.error == "Location services are denied") {
             String denied;
             if (getIt<SharedPreferences>().getBool("isEn") != null) {
               if (getIt<SharedPreferences>().getBool("isEn") == true) {
-                denied =
-                'Please enable location in status bar';
+                denied = 'Please enable location in status bar';
               } else {
-                denied =
-                'الرجاء تمكين الموقع في شريط الحالة';
+                denied = 'الرجاء تمكين الموقع في شريط الحالة';
               }
             } else {
-              denied =
-              'Please enable location in status bar';
+              denied = 'Please enable location in status bar';
             }
 
             showDialog(
@@ -1335,14 +1347,14 @@ class _CustomDialogEndTripDetailsState
                     title: LanguageCubit.get(context)
                         .getTexts('Location')
                         .toString(),
-                    description: denied ,
+                    description: denied,
                     type: "checkLocationEnable",
                     backgroundColor: white,
                     btnOkColor: accentColor,
                     btnCancelColor: grey,
                     titleColor: accentColor,
                     descColor: black,
-                    press: (){
+                    press: () {
                       Navigator.of(context).pop(true);
                     },
                   ),

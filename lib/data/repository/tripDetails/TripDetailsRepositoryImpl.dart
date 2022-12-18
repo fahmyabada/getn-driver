@@ -34,10 +34,18 @@ class TripDetailsRepositoryImpl extends TripDetailsRepository {
 
   @override
   Future<Either<String, DataRequest?>> putTrip(
-      String id, String type, String comment, double consumptionPoints) async {
+      String id,
+      String type,
+      String comment,
+      double consumptionPoints,
+      String latitude,
+      String longitude,
+      String place,
+      String branch) async {
     if (await networkInfo.isConnected) {
       return await tripDetailsRemoteDataSource
-          .putTrip(id, type, comment, consumptionPoints)
+          .putTrip(id, type, comment, consumptionPoints, latitude, longitude,
+              place, branch)
           .then((value) {
         return value.fold((failure) {
           return Left(failure.toString());
