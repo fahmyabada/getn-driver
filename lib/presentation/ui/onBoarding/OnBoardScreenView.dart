@@ -72,6 +72,7 @@ class _OnBoardScreenViewState extends State<OnBoardScreenView> {
                   children: [
                     Text(
                       oi.title!,
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 30.sp,

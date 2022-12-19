@@ -40,7 +40,6 @@ class OtpScreen extends StatefulWidget {
 }
 
 class _OtpScreenState extends State<OtpScreen> {
-  String signature = "{{ app signature }}";
   Duration duration = const Duration(minutes: 1);
   Timer? timer;
   bool openResend = false;
@@ -340,6 +339,7 @@ class _OtpScreenState extends State<OtpScreen> {
                           }
                         },
                         obscureText: false,
+                        errorTextSpace: 30.h,
                         pinTheme: PinTheme(
                             shape: PinCodeFieldShape.box,
                             borderRadius: BorderRadius.circular(5),
@@ -390,15 +390,6 @@ class _OtpScreenState extends State<OtpScreen> {
                       ),
                     ),
                     SizedBox(height: 30.h),
-                    // SelectableText("App Signature : $signature",
-                    //     enableInteractiveSelection: true),
-                    // ElevatedButton(
-                    //   child: const Text('Get app signature'),
-                    //   onPressed: () async {
-                    //     signature = await SmsAutoFill().getAppSignature;
-                    //     setState(() {});
-                    //   },
-                    // ),
                     SizedBox(height: 35.h),
                     buildTime(context),
                     SizedBox(height: 32.h),

@@ -501,38 +501,43 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                                       Country>(
                                                                     value:
                                                                         selectedCountry,
-                                                                    child: Row(
-                                                                      children: [
-                                                                        ImageTools
-                                                                            .image(
-                                                                          fit: BoxFit
-                                                                              .contain,
-                                                                          url: selectedCountry.icon?.src ??
-                                                                              " ",
-                                                                          height:
-                                                                              30.w,
-                                                                          width:
-                                                                              30.w,
-                                                                        ),
-                                                                        SizedBox(
-                                                                          width:
-                                                                              10.w,
-                                                                        ),
-                                                                        Text(
-                                                                            LanguageCubit.get(context).isEn
-                                                                                ? selectedCountry.title?.en ?? " "
-                                                                                : selectedCountry.title?.ar ?? " ",
-                                                                            style: TextStyle(color: Colors.black, fontSize: 20.sp)),
-                                                                        SizedBox(
-                                                                          width:
-                                                                              10.w,
-                                                                        ),
-                                                                        Text(
-                                                                            selectedCountry.code ??
-                                                                                "",
-                                                                            style:
-                                                                                TextStyle(color: Colors.black, fontSize: 20.sp)),
-                                                                      ],
+                                                                    child:
+                                                                        Directionality(
+                                                                      textDirection: LanguageCubit.get(context).isEn
+                                                                          ? ui.TextDirection
+                                                                              .ltr
+                                                                          : ui.TextDirection
+                                                                              .rtl,
+                                                                      child:
+                                                                          Row(
+                                                                        children: [
+                                                                          ImageTools
+                                                                              .image(
+                                                                            fit:
+                                                                                BoxFit.contain,
+                                                                            url:
+                                                                                selectedCountry.icon?.src ?? " ",
+                                                                            height:
+                                                                                30.w,
+                                                                            width:
+                                                                                30.w,
+                                                                          ),
+                                                                          SizedBox(
+                                                                            width:
+                                                                                10.w,
+                                                                          ),
+                                                                          Text(
+                                                                              LanguageCubit.get(context).isEn ? selectedCountry.title?.en ?? " " : selectedCountry.title?.ar ?? " ",
+                                                                              style: TextStyle(color: Colors.black, fontSize: 20.sp)),
+                                                                          SizedBox(
+                                                                            width:
+                                                                                10.w,
+                                                                          ),
+                                                                          Text(
+                                                                              selectedCountry.code ?? "",
+                                                                              style: TextStyle(color: Colors.black, fontSize: 20.sp)),
+                                                                        ],
+                                                                      ),
                                                                     ),
                                                                   );
                                                                 }).toList(),
@@ -1328,7 +1333,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                     .editProfileDetails(
                                                         nameController.text
                                                             .toString(),
-                                                        emailController.text.trim()
+                                                        emailController.text
+                                                            .trim()
                                                             .toString(),
                                                         birthDateController.text
                                                             .toString(),
@@ -1379,48 +1385,62 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (Platform.isIOS) {
       showCupertinoModalPopup(
         context: context,
-        builder: (context) => CupertinoActionSheet(
-          actions: [
-            CupertinoActionSheetAction(
-              child: const Text('Camera'),
-              onPressed: () {
-                Navigator.pop(context);
-                selectImageSource(ImageSource.camera);
-              },
-            ),
-            CupertinoActionSheetAction(
-              child: const Text('Gallery'),
-              onPressed: () {
-                Navigator.pop(context);
-                selectImageSource(ImageSource.gallery);
-              },
-            )
-          ],
+        builder: (context) => Directionality(
+          textDirection: LanguageCubit.get(context).isEn
+              ? ui.TextDirection.ltr
+              : ui.TextDirection.rtl,
+          child: CupertinoActionSheet(
+            actions: [
+              CupertinoActionSheetAction(
+                child: Text(
+                    LanguageCubit.get(context).getTexts('camera').toString()),
+                onPressed: () {
+                  Navigator.pop(context);
+                  selectImageSource(ImageSource.camera);
+                },
+              ),
+              CupertinoActionSheetAction(
+                child: Text(
+                    LanguageCubit.get(context).getTexts('Gallery').toString()),
+                onPressed: () {
+                  Navigator.pop(context);
+                  selectImageSource(ImageSource.gallery);
+                },
+              )
+            ],
+          ),
         ),
       );
     } else {
       showModalBottomSheet(
         context: context,
-        builder: (context) => Wrap(children: [
-          ListTile(
-            leading: const Icon(Icons.camera_alt),
-            title: const Text('Camera'),
-            tileColor: white,
-            onTap: () {
-              Navigator.pop(context);
-              selectImageSource(ImageSource.camera);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.photo_album),
-            title: const Text('Gallery'),
-            tileColor: white,
-            onTap: () {
-              Navigator.pop(context);
-              selectImageSource(ImageSource.gallery);
-            },
-          ),
-        ]),
+        builder: (context) => Directionality(
+          textDirection: LanguageCubit.get(context).isEn
+              ? ui.TextDirection.ltr
+              : ui.TextDirection.rtl,
+          child: Wrap(children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: Text(
+                  LanguageCubit.get(context).getTexts('camera').toString()),
+              tileColor: white,
+              onTap: () {
+                Navigator.pop(context);
+                selectImageSource(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_album),
+              title: Text(
+                  LanguageCubit.get(context).getTexts('Gallery').toString()),
+              tileColor: white,
+              onTap: () {
+                Navigator.pop(context);
+                selectImageSource(ImageSource.gallery);
+              },
+            ),
+          ]),
+        ),
       );
     }
   }

@@ -133,8 +133,8 @@ Widget defaultFormField(
         contentPadding: border
             ? null
             : EdgeInsets.symmetric(horizontal: 25.r, vertical: 20.r),
-        labelText: label,
-        labelStyle: TextStyle(
+        hintText: label,
+        hintStyle: TextStyle(
           fontSize: textSize.sp,
           color: Colors.black38,
         ),

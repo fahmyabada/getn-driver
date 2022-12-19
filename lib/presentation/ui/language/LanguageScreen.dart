@@ -33,7 +33,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.r),
             child: Text(
-              'Choose Language / اختيار اللغة',
+              'Choose Language \n اختيار اللغة',
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: Colors.white,
