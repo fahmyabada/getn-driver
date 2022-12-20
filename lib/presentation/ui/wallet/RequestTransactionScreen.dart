@@ -301,7 +301,7 @@ class _RequestTransactionScreenState extends State<RequestTransactionScreen> {
                                           flex: 4,
                                           child: defaultFormField(
                                               controller: phoneController,
-                                              type: TextInputType.phone,
+                                              type: TextInputType.number,
                                               label: "123456789",
                                               textSize: 22,
                                               borderRadius: 50,

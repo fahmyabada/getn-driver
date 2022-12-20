@@ -28,7 +28,7 @@ class SignUpDetailsScreen extends StatefulWidget {
       required this.countryId,
       required this.phone,
       required this.firebaseToken,
-      this.countryName})
+      required this.countryName})
       : super(key: key);
 
   final String phone;

@@ -280,7 +280,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           key: formKey,
                           child: defaultFormField(
                               controller: phoneController,
-                              type: TextInputType.phone,
+                              type: TextInputType.number,
                               label: "123456789",
                               textSize: 25,
                               borderRadius: 50,

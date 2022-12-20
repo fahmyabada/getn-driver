@@ -267,7 +267,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           key: formKey,
                           child: defaultFormField(
                               controller: phoneController,
-                              type: TextInputType.phone,
+                              type: TextInputType.number,
                               label: "123456789",
                               textSize: 25,
                               borderRadius: 50,
@@ -323,7 +323,8 @@ class _SignInScreenState extends State<SignInScreen> {
 
                                   SignCubit.get(context).sendOtp("login",
                                       splitPhone2, dropDownValueCountry!.id!);
-                                } else {
+                                }
+                                else {
                                   setState(() {
                                     signInLoading = true;
                                   });

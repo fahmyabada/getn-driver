@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
@@ -362,6 +363,7 @@ class _OtpScreenState extends State<OtpScreen> {
                         animationDuration: const Duration(milliseconds: 300),
                         enableActiveFill: true,
                         keyboardType: TextInputType.number,
+                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                         boxShadows: const [
                           BoxShadow(
                             offset: Offset(0, 1),
@@ -388,11 +390,17 @@ class _OtpScreenState extends State<OtpScreen> {
                           }
                         },
                         enablePinAutofill: true,
+
                         beforeTextPaste: (text) {
                           debugPrint("Allowing to paste $text");
                           //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
                           //but you can show anything you want here, like your pop up saying wrong paste format or etc
-                          return true;
+                          if(RegExp(r'^[0-9]+$').hasMatch(text!)){
+                            return true;
+
+                          }else {
+                            return false;
+                          }
                         },
                       ),
                     ),

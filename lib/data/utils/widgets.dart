@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
@@ -120,9 +121,12 @@ Widget defaultFormField(
       focusNode: foucsnode,
       autofocus: autoFocus,
       enabled: enabled,
-      enableInteractiveSelection: true,
+      enableInteractiveSelection: false,
       controller: controller,
       keyboardType: type,
+      inputFormatters: type == TextInputType.number
+          ? [FilteringTextInputFormatter.digitsOnly]
+          : null,
       obscureText: isPassword,
       maxLines: isPassword ? 1 : null,
       textAlign: TextAlign.start,
