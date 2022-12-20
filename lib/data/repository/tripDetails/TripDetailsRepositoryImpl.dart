@@ -38,14 +38,13 @@ class TripDetailsRepositoryImpl extends TripDetailsRepository {
       String id,
       String type,
       String comment,
-      double consumptionPoints,
       String latitude,
       String longitude,
       String place,
       String branch) async {
     if (await networkInfo.isConnected) {
       return await tripDetailsRemoteDataSource
-          .putTrip(id, type, comment, consumptionPoints, latitude, longitude,
+          .putTrip(id, type, comment, latitude, longitude,
               place, branch)
           .then((value) {
         return value.fold((failure) {

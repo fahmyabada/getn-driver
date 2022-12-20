@@ -565,7 +565,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                     controller:
                                                         whatsAppController,
                                                     type: TextInputType.number,
-                                                    label: LanguageCubit.get(
+                                                    hint: LanguageCubit.get(
                                                             context)
                                                         .getTexts('WhatsApp')
                                                         .toString(),

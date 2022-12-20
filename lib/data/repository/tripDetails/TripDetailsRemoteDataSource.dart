@@ -21,7 +21,6 @@ abstract class TripDetailsRemoteDataSource {
       String id,
       String type,
       String comment,
-      double consumptionPoints,
       String latitude,
       String longitude,
       String place,
@@ -67,7 +66,6 @@ class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
       String id,
       String type,
       String comment,
-      double consumptionKM,
       String latitude,
       String longitude,
       String place2,
@@ -89,7 +87,6 @@ class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
             data = jsonEncode({
               "status": type,
               "comment": comment,
-              "consumptionKM": consumptionKM,
               "to": {
                 "placeTitle": toAddress,
                 "placeLatitude": latitude,
@@ -102,7 +99,6 @@ class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
             data = jsonEncode({
               "status": type,
               "comment": comment,
-              "consumptionKM": consumptionKM,
               "to": {
                 "placeTitle": toAddress,
                 "placeLatitude": latitude,
@@ -114,7 +110,6 @@ class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
             data = jsonEncode({
               "status": type,
               "comment": comment,
-              "consumptionKM": consumptionKM,
               "to": {
                 "placeTitle": toAddress,
                 "placeLatitude": latitude,
@@ -126,7 +121,6 @@ class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
             data = jsonEncode({
               "status": type,
               "comment": comment,
-              "consumptionKM": consumptionKM,
               "to": {
                 "placeTitle": toAddress,
                 "placeLatitude": latitude,

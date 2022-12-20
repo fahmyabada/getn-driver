@@ -44,14 +44,14 @@ class TripDetailsCubit extends Cubit<TripDetailsState> {
     });
   }
 
-  void editTrip(String id, String type, String comment, double consumptionKM,
+  void editTrip(String id, String type, String comment,
       String latitude, String longitude, String place, String branch) async {
     if (type != "reject" && type != "end") {
       emit(TripDetailsEditInitial());
     }
 
     putTripDetailsUseCase
-        .execute(id, type, comment, consumptionKM, latitude, longitude, place, branch)
+        .execute(id, type, comment,  latitude, longitude, place, branch)
         .then((value) {
       emit(eitherLoadedOrErrorStateTripEdit(value, type));
     });

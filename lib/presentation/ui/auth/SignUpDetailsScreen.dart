@@ -450,7 +450,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                   child: defaultFormField(
                                     controller: whatsAppController,
                                     type: TextInputType.number,
-                                    label: LanguageCubit.get(context)
+                                    hint: LanguageCubit.get(context)
                                         .getTexts('WhatsApp')
                                         .toString(),
                                     textSize: 20,
@@ -1189,7 +1189,10 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                   });
                 },
               ),
-              Text(SignCubit.get(context).roles[0].title!,
+              Text(
+                  LanguageCubit.get(context).isEn
+                      ? SignCubit.get(context).roles[0].title!.en.toString()
+                      : SignCubit.get(context).roles[0].title!.ar.toString(),
                   style: TextStyle(fontSize: 18.sp)),
             ],
           ),
@@ -1219,7 +1222,9 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                 // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
               Text(
-                SignCubit.get(context).roles[1].title!,
+                LanguageCubit.get(context).isEn
+                    ? SignCubit.get(context).roles[1].title!.en.toString()
+                    : SignCubit.get(context).roles[1].title!.ar.toString(),
                 style: TextStyle(fontSize: 18.sp),
               ),
             ],

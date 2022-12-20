@@ -11,12 +11,11 @@ class PutTripDetailsUseCase {
       String id,
       String type,
       String comment,
-      double consumptionKM,
       String latitude,
       String longitude,
       String place,
       String branch) {
     return tripDetailsRepository.putTrip(
-        id, type, comment, consumptionKM, latitude, longitude, place, branch);
+        id, type, comment, latitude, longitude, place, branch);
   }
 }

@@ -958,23 +958,14 @@ class _CustomDialogRejectTripDetailsState
             loadingRejectTripDetails = false;
           });
         } else if (state is CurrentLocationTripSuccessState) {
-          getDistanceKM(
-                  double.parse(widget.location!.placeLatitude!),
-                  double.parse(widget.location!.placeLongitude!),
-                  state.position.latitude,
-                  state.position.longitude)
-              .then((distance) {
-            print('CurrentLocationTripSuccessState********* $distance');
-            TripDetailsCubit.get(context).editTrip(
-                widget.id!,
-                "reject",
-                commentController.text.toString(),
-                distance,
-                state.position.latitude.toString(),
-                state.position.longitude.toString(),
-                widget.place.toString(),
-                widget.branch.toString());
-          });
+          TripDetailsCubit.get(context).editTrip(
+              widget.id!,
+              "reject",
+              commentController.text.toString(),
+              state.position.latitude.toString(),
+              state.position.longitude.toString(),
+              widget.place.toString(),
+              widget.branch.toString());
         } else if (state is CurrentLocationTripErrorState) {
           if (kDebugMode) {
             print('CurrentLocationTripErrorState********* ${state.error}');
@@ -1238,29 +1229,14 @@ class _CustomDialogEndTripDetailsState
             loadingEndTripDetails = false;
           });
         } else if (state is CurrentLocationTripSuccessState) {
-          getDistanceKM(
-                  double.parse(widget.location!.placeLatitude!),
-                  double.parse(widget.location!.placeLongitude!),
-                  state.position.latitude,
-                  state.position.longitude)
-              .then((value) {
-            print('CurrentLocationTripSuccessState********* ${widget.status!}');
-            print('CurrentLocationTripSuccessState1********* $value');
-            print(
-                'CurrentLocationTripSuccessState2********* ${state.position.latitude}');
-            print(
-                'CurrentLocationTripSuccessState3********* ${state.position.longitude}');
-
-            TripDetailsCubit.get(context).editTrip(
-                widget.id!,
-                widget.status!,
-                "comment",
-                value,
-                state.position.latitude.toString(),
-                state.position.longitude.toString(),
-                widget.place.toString(),
-                widget.branch.toString());
-          });
+          TripDetailsCubit.get(context).editTrip(
+              widget.id!,
+              widget.status!,
+              "comment",
+              state.position.latitude.toString(),
+              state.position.longitude.toString(),
+              widget.place.toString(),
+              widget.branch.toString());
         } else if (state is CurrentLocationTripErrorState) {
           if (kDebugMode) {
             print('CurrentLocationTripErrorState********* ${state.error}');

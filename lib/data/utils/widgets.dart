@@ -98,6 +98,7 @@ Widget defaultFormField(
         {TextEditingController? controller,
         TextInputType? type,
         String? label,
+        String? hint,
         IconData? prefix,
         bool isPassword = false,
         String? validatorText,
@@ -133,8 +134,13 @@ Widget defaultFormField(
         contentPadding: border
             ? null
             : EdgeInsets.symmetric(horizontal: 25.r, vertical: 20.r),
-        hintText: label,
+        hintText: hint,
         hintStyle: TextStyle(
+          fontSize: textSize.sp,
+          color: Colors.black38,
+        ),
+        labelText: label,
+        labelStyle: TextStyle(
           fontSize: textSize.sp,
           color: Colors.black38,
         ),

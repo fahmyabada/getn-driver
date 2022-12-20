@@ -12,7 +12,6 @@ abstract class TripDetailsRepository {
       String id,
       String type,
       String comment,
-      double consumptionKM,
       String latitude,
       String longitude,
       String place,

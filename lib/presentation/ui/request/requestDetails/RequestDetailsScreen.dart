@@ -1113,7 +1113,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             width: 5.w,
                           ),
                           data.client2 != null &&
-                                  data.client2!.whatsApp != null &&
+                                  data.client2!.whatsApp != null && data.client2!.whatsApp!.isNotEmpty &&
                                   data.client2!.whatsappCountry != null
                               ? Expanded(
                                   child: defaultButtonWithIcon(
