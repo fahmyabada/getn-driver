@@ -74,6 +74,7 @@ import 'package:getn_driver/domain/usecase/recomendPlaces/GetRecomendPlacesUseCa
 import 'package:getn_driver/domain/usecase/request/GetProfileUseCase.dart';
 import 'package:getn_driver/domain/usecase/request/GetRequestUseCase.dart';
 import 'package:getn_driver/domain/usecase/request/PutRequestUseCase.dart';
+import 'package:getn_driver/domain/usecase/request/SignOutUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetCurrentLocationUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetLastTripUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetRequestDetailsUseCase.dart';
@@ -150,6 +151,7 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => CarEditUseCase(getIt()));
   getIt.registerLazySingleton(() => GetCurrentLocationTripUseCase(getIt()));
   getIt.registerLazySingleton(() => GetLastTripsUseCase(getIt()));
+  getIt.registerLazySingleton(() => SignOutUseCase(getIt()));
 
   // Repository
   getIt.registerLazySingleton<AuthRepository>(

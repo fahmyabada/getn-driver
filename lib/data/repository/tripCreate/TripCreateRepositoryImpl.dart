@@ -5,8 +5,9 @@ import 'package:getn_driver/data/model/placeDetails/PlaceDetails.dart';
 import 'package:getn_driver/data/model/predictionsPlaceSearch/PredictionsPlaceSearch.dart';
 import 'package:getn_driver/data/model/trips/Data.dart';
 import 'package:getn_driver/data/repository/tripCreate/TripCreateRemoteDataSource.dart';
-import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/domain/repository/TripCreateRepository.dart';
+import 'package:getn_driver/main.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 
 class TripCreateRepositoryImpl extends TripCreateRepository {
   final TripCreateRemoteDataSource addTripRemoteDataSource;
@@ -26,7 +27,7 @@ class TripCreateRepositoryImpl extends TripCreateRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 
@@ -41,7 +42,7 @@ class TripCreateRepositoryImpl extends TripCreateRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 
@@ -56,7 +57,7 @@ class TripCreateRepositoryImpl extends TripCreateRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 }

@@ -2,8 +2,9 @@ import 'package:dartz/dartz.dart';
 import 'package:getn_driver/data/api/network_info.dart';
 import 'package:getn_driver/data/model/recomendPlace/Data.dart';
 import 'package:getn_driver/data/repository/infoPlace/InfoPlaceRemoteDataSource.dart';
-import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/domain/repository/InfoPlaceRepository.dart';
+import 'package:getn_driver/main.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 
 class InfoPlaceRepositoryImpl extends InfoPlaceRepository {
   final InfoPlaceRemoteDataSource infoPlaceRemoteDataSource;
@@ -32,7 +33,7 @@ class InfoPlaceRepositoryImpl extends InfoPlaceRepository {
         });
       }
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 }

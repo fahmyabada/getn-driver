@@ -138,7 +138,7 @@ class _OtpScreenState extends State<OtpScreen> {
       } catch (error) {
         setState(() {
           load = false;
-          openResend = true;
+          // openResend = true;
         });
         print("Exception*************${error}");
         if (widget.type == "login") {
@@ -153,8 +153,7 @@ class _OtpScreenState extends State<OtpScreen> {
               context: context);
         }
       }
-    }
-    else {
+    } else {
       load = false;
       showToastt(
           text: "wait OTP message please..",
@@ -179,7 +178,7 @@ class _OtpScreenState extends State<OtpScreen> {
           if (kDebugMode) {
             print('verifyPhone***********$phoneNumber');
           }
-            authStatus = "Your account is successfully verified";
+          authStatus = "Your account is successfully verified";
         },
 
         /// Called when the verification is failed
@@ -187,21 +186,22 @@ class _OtpScreenState extends State<OtpScreen> {
           if (kDebugMode) {
             print('verificationFailed***********${authException.message!}');
           }
-            authStatus = "Authentication failed";
+          authStatus = "Authentication failed";
         },
 
         /// This is called after the OTP is sent. Gives a `verificationId` and `code`
         codeSent: (String verId, [int? forceResend]) {
           print('codeSent***********$verId');
-            verificationId = verId;
-            authStatus = "OTP has been successfully send";
+          verificationId = verId;
+          authStatus = "OTP has been successfully send";
+
         },
 
         /// After automatic code retrival `tmeout` this function is called
         codeAutoRetrievalTimeout: (String verId) {
           print('codeAutoRetrievalTimeout***********$verId');
-            verificationId = verId;
-            authStatus = "TIMEOUT";
+          verificationId = verId;
+          authStatus = "TIMEOUT";
         });
   }
 
@@ -307,15 +307,20 @@ class _OtpScreenState extends State<OtpScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 25.r),
-                      child: Text(
-                        "${LanguageCubit.get(context).getTexts('Enter6-digit').toString()} \n ${widget.phoneWithCountry}",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 30.sp,
-                            color: black),
+                    Directionality(
+                      textDirection: LanguageCubit.get(context).isEn
+                          ? ui.TextDirection.ltr
+                          : ui.TextDirection.ltr,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 25.r),
+                        child: Text(
+                          "${LanguageCubit.get(context).getTexts('Enter6-digit').toString()} \n ${widget.phoneWithCountry}",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 30.sp,
+                              color: black),
+                        ),
                       ),
                     ),
                     SizedBox(height: 30.h),
@@ -330,7 +335,12 @@ class _OtpScreenState extends State<OtpScreen> {
                         ),
                         animationType: AnimationType.fade,
                         validator: (v) {
-                          if (v!.length < 3) {
+                          if(v!.contains(' ')){
+                            return LanguageCubit.get(context)
+                                .getTexts('emptyOTP')
+                                .toString();
+                          }
+                          else if (v.length < 3) {
                             return LanguageCubit.get(context)
                                 .getTexts('EnterCode')
                                 .toString();
@@ -364,18 +374,15 @@ class _OtpScreenState extends State<OtpScreen> {
                         },
                         onChanged: (value) {
                           debugPrint(value);
-                          if (value.length == 6) {
+                           if (value.length == 6 && !value.contains(' ')) {
                             setState(() {
                               otp = value;
                               openResend = false;
                               openNext = true;
-                              if (timer!.isActive) {
-                                timer!.cancel();
-                              }
                             });
                           } else {
                             setState(() {
-                              openResend = true;
+                              // openResend = true;
                               openNext = false;
                             });
                           }
@@ -438,6 +445,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   });
                   startTimer();
                   verifyPhone(widget.phoneWithCountry);
+                  print('object********${timer!.isActive}');
                 },
                 child: Text(
                   LanguageCubit.get(context).getTexts('resend').toString(),

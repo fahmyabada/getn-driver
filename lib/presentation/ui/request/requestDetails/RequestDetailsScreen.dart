@@ -149,8 +149,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           if (state is RequestDetailsSuccessState) {
             RequestDetailsCubit.get(context).getTripsRequestDetails(
                 1, RequestDetailsCubit.get(context).idRequest);
-          }
-          else if (state is RequestDetailsEditSuccessState) {
+          } else if (state is RequestDetailsEditSuccessState) {
             if (state.type == "reject" ||
                 state.type == "mid_pause" ||
                 state.type == "end") {
@@ -214,8 +213,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
             RequestDetailsCubit.get(context)
                 .getRequestDetails(RequestDetailsCubit.get(context).idRequest);
-          }
-          else if (state is RequestDetailsEditErrorState) {
+          } else if (state is RequestDetailsEditErrorState) {
             if (state.type == "reject" ||
                 state.type == "mid_pause" ||
                 state.type == "end") {
@@ -246,8 +244,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   state: ToastStates.error,
                   context: context);
             }
-          }
-          else if (state is CurrentLocationSuccessState) {
+          } else if (state is CurrentLocationSuccessState) {
             print('CurrentLocationSuccessState********* ');
             // this belong add trip
             /*String id = await navigateToWithRefreshPagePrevious(
@@ -290,8 +287,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     .from!
                     .placeLongitude!,
                 context);
-          }
-          else if (state is CurrentLocationErrorState) {
+          } else if (state is CurrentLocationErrorState) {
             if (kDebugMode) {
               print('CurrentLocationErrorState********* ${state.error}');
             }
@@ -389,13 +385,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 },
               );
             }
-          }
-          else if (state is TripsSuccessState) {
+          } else if (state is TripsSuccessState) {
             setState(() {
               loadingMoreTrips = false;
             });
-          }
-          else if (state is TripsErrorState) {
+          } else if (state is TripsErrorState) {
             setState(() {
               loadingMoreTrips = false;
             });
@@ -412,8 +406,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 },
               );
             }
-          }
-          else if (state is RequestDetailsLastTripSuccessState) {
+          } else if (state is RequestDetailsLastTripSuccessState) {
             if (state.data!.data!.isNotEmpty) {
               showDialog(
                 context: context,
@@ -524,8 +517,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 );
               }
             }
-          }
-          else if (state is RequestDetailsLastTripErrorState) {
+          } else if (state is RequestDetailsLastTripErrorState) {
             print("RequestDetailsLastTripErrorState************ ");
             if (state.message == 'network not available') {
               showDialog(
@@ -591,14 +583,18 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                   _loadMoreTrips(context);
                                 },
                                 child: RefreshIndicator(
-                                  onRefresh: () => Future.delayed(const Duration(seconds: 2), () {
+                                  onRefresh: () => Future.delayed(
+                                      const Duration(seconds: 2), () {
                                     print('RefreshIndicator**************');
                                     RequestDetailsCubit.get(context)
-                                        .getRequestDetails(RequestDetailsCubit.get(context).idRequest);
+                                        .getRequestDetails(
+                                            RequestDetailsCubit.get(context)
+                                                .idRequest);
                                   }),
                                   child: SingleChildScrollView(
                                     scrollDirection: Axis.vertical,
-                                    physics: const AlwaysScrollableScrollPhysics(),
+                                    physics:
+                                        const AlwaysScrollableScrollPhysics(),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
@@ -624,6 +620,276 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                         buttonStatus(context, state),
 
                                         RequestDetailsCubit.get(context)
+                                                        .requestDetails!
+                                                        .currentDay !=
+                                                    null &&
+                                                RequestDetailsCubit.get(context)
+                                                    .trips
+                                                    .isNotEmpty
+                                            ? Column(
+                                                children: [
+                                                  SizedBox(height: 5.h),
+                                                  // divider
+                                                  Container(
+                                                    width: 1.sw,
+                                                    height: 1.h,
+                                                    color: Colors.grey[400],
+                                                  ),
+                                                  SizedBox(height: 15.h),
+                                                  Text(
+                                                    LanguageCubit.get(context)
+                                                        .getTexts('currentDay')
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        fontSize: 20.sp,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: black),
+                                                  ),
+                                                  SizedBox(height: 5.h),
+                                                  IntrinsicHeight(
+                                                    child: Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Expanded(
+                                                          child: Card(
+                                                            color:
+                                                                yellowLightColor,
+                                                            child: Padding(
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                      vertical:
+                                                                          15.r,
+                                                                      horizontal:
+                                                                          3.r),
+                                                              child: Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    Text(
+                                                                      LanguageCubit.get(
+                                                                              context)
+                                                                          .getTexts(
+                                                                              'consumptionPoints')
+                                                                          .toString(),
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .center,
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              grey2,
+                                                                          fontSize:
+                                                                              13.sp),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      height:
+                                                                          5.h,
+                                                                    ),
+                                                                    Text(
+                                                                      RequestDetailsCubit.get(
+                                                                              context)
+                                                                          .requestDetails!
+                                                                          .currentDay!
+                                                                          .consumptionPoints!
+                                                                          .toStringAsFixed(
+                                                                              2),
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .center,
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              black,
+                                                                          fontSize: 13
+                                                                              .sp,
+                                                                          fontWeight:
+                                                                              FontWeight.bold),
+                                                                    ),
+                                                                  ]),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Card(
+                                                            color: rough,
+                                                            child: Padding(
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                      vertical:
+                                                                          15.r,
+                                                                      horizontal:
+                                                                          3.r),
+                                                              child: Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    Text(
+                                                                      LanguageCubit.get(
+                                                                              context)
+                                                                          .getTexts(
+                                                                              'consumptionKM')
+                                                                          .toString(),
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .center,
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              grey2,
+                                                                          fontSize:
+                                                                              12.sp),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      height:
+                                                                          5.h,
+                                                                    ),
+                                                                    Text(
+                                                                      RequestDetailsCubit.get(
+                                                                              context)
+                                                                          .requestDetails!
+                                                                          .currentDay!
+                                                                          .consumptionKM!
+                                                                          .toStringAsFixed(
+                                                                              2),
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .center,
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              black,
+                                                                          fontSize: 13
+                                                                              .sp,
+                                                                          fontWeight:
+                                                                              FontWeight.bold),
+                                                                    ),
+                                                                  ]),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Card(
+                                                            color:
+                                                                greenLightColor,
+                                                            child: Padding(
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                      vertical:
+                                                                          15.r,
+                                                                      horizontal:
+                                                                          3.r),
+                                                              child: Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    Text(
+                                                                      LanguageCubit.get(
+                                                                              context)
+                                                                          .getTexts(
+                                                                              'extraPoints')
+                                                                          .toString(),
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .center,
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              grey2,
+                                                                          fontSize:
+                                                                              12.sp),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      height:
+                                                                          5.h,
+                                                                    ),
+                                                                    Text(
+                                                                      RequestDetailsCubit.get(
+                                                                              context)
+                                                                          .requestDetails!
+                                                                          .currentDay!
+                                                                          .extraPoints!
+                                                                          .toStringAsFixed(
+                                                                              2),
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .center,
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              black,
+                                                                          fontSize: 13
+                                                                              .sp,
+                                                                          fontWeight:
+                                                                              FontWeight.bold),
+                                                                    ),
+                                                                  ]),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Card(
+                                                            color: blueLight,
+                                                            child: Padding(
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                      vertical:
+                                                                          15.r,
+                                                                      horizontal:
+                                                                          3.r),
+                                                              child: Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    Text(
+                                                                      LanguageCubit.get(
+                                                                              context)
+                                                                          .getTexts(
+                                                                              'extraKM')
+                                                                          .toString(),
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .center,
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              grey2,
+                                                                          fontSize:
+                                                                              13.sp),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      height:
+                                                                          5.h,
+                                                                    ),
+                                                                    Text(
+                                                                      RequestDetailsCubit.get(
+                                                                              context)
+                                                                          .requestDetails!
+                                                                          .currentDay!
+                                                                          .extraKM!
+                                                                          .toStringAsFixed(
+                                                                              2),
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .center,
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              black,
+                                                                          fontSize: 13
+                                                                              .sp,
+                                                                          fontWeight:
+                                                                              FontWeight.bold),
+                                                                    ),
+                                                                  ]),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )
+                                                ],
+                                              )
+                                            : Container(),
+                                        RequestDetailsCubit.get(context)
                                                     .typeScreen
                                                     .isNotEmpty &&
                                                 RequestDetailsCubit.get(context)
@@ -635,13 +901,15 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                         ?.paymentStatus! ==
                                                     "paid"
                                                 ? Container()
-                                                : RequestDetailsCubit.get(context)
+                                                : RequestDetailsCubit.get(
+                                                                context)
                                                             .requestDetails
                                                             ?.status ==
                                                         "reject"
                                                     ? Container()
                                                     : Text(
-                                                        LanguageCubit.get(context)
+                                                        LanguageCubit.get(
+                                                                context)
                                                             .getTexts(
                                                                 'clientNotPaidYet')
                                                             .toString(),
@@ -649,7 +917,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                             color: accentColor,
                                                             fontSize: 15.sp,
                                                             fontWeight:
-                                                                FontWeight.bold),
+                                                                FontWeight
+                                                                    .bold),
                                                       ),
 
                                         SizedBox(
@@ -1236,171 +1505,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             ],
           ),
         ),
-        RequestDetailsCubit.get(context).requestDetails!.currentDay != null
-            ? Column(
-                children: [
-                  SizedBox(height: 5.h),
-                  // divider
-                  Container(
-                    width: 1.sw,
-                    height: 1.h,
-                    color: Colors.grey[400],
-                  ),
-                  SizedBox(height: 5.h),
-                  IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Card(
-                            color: yellowLightColor,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 15.r, horizontal: 3.r),
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      LanguageCubit.get(context)
-                                          .getTexts('consumptionPoints')
-                                          .toString(),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: grey2, fontSize: 13.sp),
-                                    ),
-                                    SizedBox(
-                                      height: 5.h,
-                                    ),
-                                    Text(
-                                      RequestDetailsCubit.get(context)
-                                          .requestDetails!
-                                          .currentDay!
-                                          .consumptionPoints!
-                                          .toStringAsFixed(2),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: black,
-                                          fontSize: 13.sp,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ]),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Card(
-                            color: rough,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 15.r, horizontal: 3.r),
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      LanguageCubit.get(context)
-                                          .getTexts('consumptionKM')
-                                          .toString(),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: grey2, fontSize: 12.sp),
-                                    ),
-                                    SizedBox(
-                                      height: 5.h,
-                                    ),
-                                    Text(
-                                      RequestDetailsCubit.get(context)
-                                          .requestDetails!
-                                          .currentDay!
-                                          .consumptionKM!
-                                          .toStringAsFixed(2),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: black,
-                                          fontSize: 13.sp,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ]),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Card(
-                            color: greenLightColor,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 15.r, horizontal: 3.r),
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      LanguageCubit.get(context)
-                                          .getTexts('extraPoints')
-                                          .toString(),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: grey2, fontSize: 12.sp),
-                                    ),
-                                    SizedBox(
-                                      height: 5.h,
-                                    ),
-                                    Text(
-                                      RequestDetailsCubit.get(context)
-                                          .requestDetails!
-                                          .currentDay!
-                                          .extraPoints!
-                                          .toStringAsFixed(2),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: black,
-                                          fontSize: 13.sp,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ]),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Card(
-                            color: blueLight,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 15.r, horizontal: 3.r),
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      LanguageCubit.get(context)
-                                          .getTexts('extraKM')
-                                          .toString(),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: grey2, fontSize: 13.sp),
-                                    ),
-                                    SizedBox(
-                                      height: 5.h,
-                                    ),
-                                    Text(
-                                      RequestDetailsCubit.get(context)
-                                          .requestDetails!
-                                          .currentDay!
-                                          .extraKM!
-                                          .toStringAsFixed(2),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: black,
-                                          fontSize: 13.sp,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ]),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              )
-            : Container(),
       ],
     );
   }
@@ -1430,6 +1534,22 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     btnStatus[
                                         '${RequestDetailsCubit.get(context).requestDetails!.status}']![0]);
                               } else {
+                                // DateTime now = DateTime.now();
+                                // // you should use package import 'package:intl/intl.dart';  for DateFormat
+                                // //2022-03-08 08:45:55
+                                // String currentDate = DateFormat('yyyy-MM-dd').format(now);
+                                // if(btnStatus[
+                                // '${RequestDetailsCubit.get(context).requestDetails!.status}']![0] == "accept" &&
+                                //     DateFormat('yyyy-MM-dd').parse(RequestDetailsCubit.get(context).requestDetails!.from!
+                                //         .date!).isBefore(
+                                //       DateFormat('yyyy-MM-dd').parse(currentDate).add(
+                                //         const Duration(
+                                //           hours: 5,
+                                //         ),
+                                //       ),
+                                //     )){
+                                //
+                                // }
                                 RequestDetailsCubit.get(context).editRequest(
                                     RequestDetailsCubit.get(context)
                                         .requestDetails!
@@ -1448,20 +1568,24 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                             .requestDetails
                                             ?.paymentStatus! ==
                                         "paid"
-                                    ? btnStatus2[
-                                                        "en"]![
-                                                    '${RequestDetailsCubit.get(context).requestDetails!.status}']![
+                                    ? btnStatus['${RequestDetailsCubit.get(context).requestDetails!.status}']![
                                                 0] ==
-                                            "start"
+                                            "accept"
                                         ? DateFormat("yyyy-MM-ddTHH:mm")
                                                 .parse(RequestDetailsCubit.get(
                                                         context)
                                                     .requestDetails!
                                                     .from!
                                                     .date!)
-                                                .isAfter(currentDate)
-                                            ? true
-                                            : false
+                                                .isAfter(
+                                                  currentDate.add(
+                                                    const Duration(
+                                                      hours: 5,
+                                                    ),
+                                                  ),
+                                                )
+                                            ? false
+                                            : true
                                         : RequestDetailsCubit.get(context)
                                                     .requestDetails!
                                                     .status ==

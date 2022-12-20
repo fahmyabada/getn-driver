@@ -7,6 +7,7 @@ import 'package:getn_driver/data/model/request/Request.dart';
 import 'package:getn_driver/domain/usecase/request/GetProfileUseCase.dart';
 import 'package:getn_driver/domain/usecase/request/GetRequestUseCase.dart';
 import 'package:getn_driver/domain/usecase/request/PutRequestUseCase.dart';
+import 'package:getn_driver/domain/usecase/request/SignOutUseCase.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:meta/meta.dart';
 
@@ -19,6 +20,7 @@ class RequestCubit extends Cubit<RequestState> {
 
   var getRequestUseCase = getIt<GetRequestUseCase>();
   var putRequestUseCase = getIt<PutRequestUseCase>();
+  var signOutUseCase = getIt<SignOutUseCase>();
   var getProfileUseCase = getIt<GetProfileUseCase>();
 
   List<DataRequest> requestCurrent = [];
@@ -241,6 +243,20 @@ class RequestCubit extends Cubit<RequestState> {
       return RequestEditErrorState(failure1, type);
     }, (data) {
       return RequestEditSuccessState(data);
+    });
+  }
+
+  void signOut() {
+    signOutUseCase.execute().then((value) {
+      emit(eitherLoadedOrErrorStateSignOut(value));
+    });
+  }
+
+  RequestState eitherLoadedOrErrorStateSignOut(Either<String, String?> data) {
+    return data.fold((failure1) {
+      return SignOutErrorState(failure1);
+    }, (data) {
+      return SignOutSuccessState(data);
     });
   }
 }

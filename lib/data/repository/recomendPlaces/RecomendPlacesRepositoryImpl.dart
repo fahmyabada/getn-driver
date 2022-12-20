@@ -2,8 +2,9 @@ import 'package:dartz/dartz.dart';
 import 'package:getn_driver/data/api/network_info.dart';
 import 'package:getn_driver/data/model/recomendPlace/RecomendPlaces.dart';
 import 'package:getn_driver/data/repository/recomendPlaces/RecomendPlacesRemoteDataSource.dart';
-import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/domain/repository/RecomendPlaceRepository.dart';
+import 'package:getn_driver/main.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 
 class RecomendPlacesRepositoryImpl extends RecomendPlaceRepository {
   final RecomendPlacesRemoteDataSource recomendPlacesRemoteDataSource;
@@ -24,7 +25,7 @@ class RecomendPlacesRepositoryImpl extends RecomendPlaceRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 }

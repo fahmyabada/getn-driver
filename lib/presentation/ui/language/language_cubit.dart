@@ -13,6 +13,7 @@ class LanguageCubit extends Cubit<LanguageState> {
   static LanguageCubit get(context) => BlocProvider.of(context);
 
   Map<String, Object> textAr = {
+    'networkFailureMessage' : 'لا يوجد انترنت',
     'egp': 'ج.م',
     'lang': 'اللغة',
     'Arabic': 'عربي',
@@ -76,7 +77,10 @@ class LanguageCubit extends Cubit<LanguageState> {
     'CheckTerms&Condition': 'اطع علي الشروط والاحكام اولا..',
     'FillAllData':
     'تأكد من اختيار الصورة وملء المعلومات الشخصية والعنوان واضافة تاريخ التواجد',
-    'CountryCodeMotFound': 'رمز الدولة غير موجود',
+    'CountryCodeMotFound': 'رمز الدولة غير موجود حاول مره ثانية',
+    'SmsVerificationInvalid': 'رمز التحقق من الرسائل القصيرة المستخدم غير صالح',
+    'SmsVerificationExpired': 'انتهت صلاحية رمز الرسائل القصيرة. يرجى إعادة إرسال رمز التحقق للمحاولة مرة أخرى',
+    'emptyOTP': 'لا يسمح بالمسافات يجب ادخال رقم',
     'VerifyIdentity': 'تحقق من هويتك',
     'VerifyIdentityRegister':
     'تحقق من هويتك من خلال التقاط صورة سيلفي لصورتك للتحقق من شيء ما',
@@ -132,6 +136,7 @@ class LanguageCubit extends Cubit<LanguageState> {
     'TotalDistance': 'إجمالي المسافة',
     'TotalPrice': 'إجمالي السعر',
     'current': 'الحالية',
+    'currentDay': 'اليوم الحالي',
     'upcoming': 'القادمة',
     'past': 'الماضية',
     'pending': 'قيد الإنتظار',
@@ -219,6 +224,7 @@ class LanguageCubit extends Cubit<LanguageState> {
   };
 
   Map<String, Object> textEn = {
+    'networkFailureMessage' : 'network not available',
     'egp': 'EGP',
     'lang': 'Language',
     'Arabic': 'Arabic',
@@ -282,7 +288,10 @@ class LanguageCubit extends Cubit<LanguageState> {
     'CheckTerms&Condition': 'check in Terms & condition first..',
     'FillAllData':
         'Be sure to choose image and fill personal information ,address and availability',
-    'CountryCodeMotFound': 'country code not found',
+    'CountryCodeMotFound': 'country code not found, try again',
+    'SmsVerificationInvalid': 'The sms verification code used is invalid',
+    'SmsVerificationExpired': 'The sms code has expired. Please re-send the verification code to try again',
+    'emptyOTP': 'Spaces are not allowed. You must enter a number',
     'VerifyIdentity': 'Verify your identity',
     'VerifyIdentityRegister':
         'Verify your identity by taking a selfie shot of your photo For the verification of something',
@@ -338,6 +347,7 @@ class LanguageCubit extends Cubit<LanguageState> {
     'KM': 'KM',
     'TotalPrice': 'Total Price',
     'current': 'current',
+    'currentDay': 'Current Day',
     'upcoming': 'upcoming',
     'past': 'past',
     'pending': 'pending',

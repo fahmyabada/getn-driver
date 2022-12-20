@@ -5,8 +5,9 @@ import 'package:getn_driver/data/model/carCategory/Data.dart' as category;
 import 'package:getn_driver/data/model/carRegisteration/CarRegisterationModel.dart';
 import 'package:getn_driver/data/model/myCar/Data.dart';
 import 'package:getn_driver/data/repository/myCar/MyCarRemoteDataSource.dart';
-import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/domain/repository/MyCarRepository.dart';
+import 'package:getn_driver/main.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 
 class MyCarRepositoryImpl extends MyCarRepository {
   final MyCarRemoteDataSource myCarRemoteDataSource;
@@ -25,7 +26,7 @@ class MyCarRepositoryImpl extends MyCarRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 
@@ -40,7 +41,7 @@ class MyCarRepositoryImpl extends MyCarRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 
@@ -55,7 +56,7 @@ class MyCarRepositoryImpl extends MyCarRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 
@@ -70,7 +71,7 @@ class MyCarRepositoryImpl extends MyCarRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 
@@ -86,7 +87,7 @@ class MyCarRepositoryImpl extends MyCarRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 }

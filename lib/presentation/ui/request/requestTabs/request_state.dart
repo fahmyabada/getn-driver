@@ -59,7 +59,6 @@ class RequestPendingSuccessState extends RequestState {
   RequestPendingSuccessState(this.data);
 }
 
-
 class RequestEditErrorState extends RequestState {
   final String message;
   final String type;
@@ -73,3 +72,14 @@ class RequestEditSuccessState extends RequestState {
   RequestEditSuccessState(this.data);
 }
 
+class SignOutErrorState extends RequestState {
+  final String message;
+
+  SignOutErrorState(this.message);
+}
+
+class SignOutSuccessState extends RequestState {
+  final String? data;
+
+  SignOutSuccessState(this.data);
+}

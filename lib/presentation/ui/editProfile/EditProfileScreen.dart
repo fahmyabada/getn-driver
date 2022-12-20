@@ -186,6 +186,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ? errorMessage2(
                             message: EditProfileCubit.get(context).failure,
                             press: () {
+                              EditProfileCubit.get(context).failure = "";
                               EditProfileCubit.get(context).getProfileDetails();
                             },
                             context: context)

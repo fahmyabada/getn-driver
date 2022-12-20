@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:getn_driver/main.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 
 const placeHolderImage =
     "https://www.escapeauthority.com/wp-content/uploads/2116/11/No-image-found.jpg";
@@ -7,7 +9,7 @@ const apiKey = "AIzaSyCVy_LzCTaZn-MCwJF6qElGO3gc5K0JwI8";
 
 String serverFailureMessage = 'Server Failure';
 String cashFailureMessage = 'Cache Failure';
-String networkFailureMessage = 'network not available';
+// String LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString() = 'network not available';
 
 String handleError(dynamic error) {
   String errorDescription = "";
@@ -75,9 +77,13 @@ String handleErrorFirebase(String type, dynamic error) {
     case "user-not-found":
       return "No user found with this email.";
     case "[firebase_auth/session-expired] The sms code has expired. Please re-send the verification code to try again.":
-      return "The sms code has expired. Please re-send the verification code to try again.";
+      return LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('SmsVerificationExpired')
+          .toString();
     case "[firebase_auth/invalid-verification-code] The sms verification code used to create the phone auth credential is invalid. Please resend the verification code sms and be sure use the verification code provided by the user.":
-      return "The sms verification code used is invalid";
+      return LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('SmsVerificationInvalid')
+          .toString();
     case "ERROR_USER_DISABLED":
     case "user-disabled":
       return "User disabled.";

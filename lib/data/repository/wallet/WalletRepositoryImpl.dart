@@ -4,8 +4,9 @@ import 'package:getn_driver/data/model/signModel/Country.dart';
 import 'package:getn_driver/data/model/wallet/Data.dart';
 import 'package:getn_driver/data/model/wallet/WalletModel.dart';
 import 'package:getn_driver/data/repository/wallet/WalletRemoteDataSource.dart';
-import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/domain/repository/WalletRepository.dart';
+import 'package:getn_driver/main.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 
 class WalletRepositoryImpl extends WalletRepository {
   final WalletRemoteDataSource walletRemoteDataSource;
@@ -24,7 +25,7 @@ class WalletRepositoryImpl extends WalletRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 
@@ -39,7 +40,7 @@ class WalletRepositoryImpl extends WalletRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 
@@ -54,7 +55,7 @@ class WalletRepositoryImpl extends WalletRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 
@@ -69,7 +70,7 @@ class WalletRepositoryImpl extends WalletRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 }

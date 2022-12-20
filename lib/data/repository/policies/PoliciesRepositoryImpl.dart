@@ -37,7 +37,7 @@ class PoliciesRepositoryImpl extends PoliciesRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 }

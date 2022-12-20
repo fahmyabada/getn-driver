@@ -3,10 +3,10 @@ import 'package:dio/dio.dart';
 import 'package:getn_driver/data/api/network_info.dart';
 import 'package:getn_driver/data/model/editProfile/EditProfileModel.dart';
 import 'package:getn_driver/data/model/signModel/Country.dart';
-import 'package:getn_driver/data/model/signModel/SignModel.dart';
 import 'package:getn_driver/data/repository/editProfile/EditProfileRemoteDataSource.dart';
-import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/domain/repository/EditProfileRepository.dart';
+import 'package:getn_driver/main.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 
 class EditProfileRepositoryImpl extends EditProfileRepository {
   final EditProfileRemoteDataSource editProfileRemoteDataSource;
@@ -27,7 +27,7 @@ class EditProfileRepositoryImpl extends EditProfileRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 
@@ -45,7 +45,7 @@ class EditProfileRepositoryImpl extends EditProfileRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 
@@ -62,7 +62,7 @@ class EditProfileRepositoryImpl extends EditProfileRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 
@@ -77,7 +77,7 @@ class EditProfileRepositoryImpl extends EditProfileRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 
@@ -94,7 +94,7 @@ class EditProfileRepositoryImpl extends EditProfileRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 }

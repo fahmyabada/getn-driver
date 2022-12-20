@@ -7,4 +7,5 @@ abstract class RequestRepository {
   Future<Either<String, Request?>> getRequest(Map<String, dynamic> body);
   Future<Either<String, DataRequest?>> putRequest(String id, String type, String comment);
   Future<Either<String, EditProfileModel?>> getProfileDetails();
+  Future<Either<String, String?>> signOut();
 }

@@ -2,8 +2,9 @@ import 'package:dartz/dartz.dart';
 import 'package:getn_driver/data/api/network_info.dart';
 import 'package:getn_driver/data/model/recomendPlace/RecomendPlaces.dart';
 import 'package:getn_driver/data/repository/branchesPlaces/BranchesPlacesRemoteDataSource.dart';
-import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/domain/repository/BranchesPlaceRepository.dart';
+import 'package:getn_driver/main.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 
 class BranchesPlacesRepositoryImpl extends BranchesPlaceRepository {
   final BranchesPlacesRemoteDataSource branchesPlacesRemoteDataSource;
@@ -26,7 +27,7 @@ class BranchesPlacesRepositoryImpl extends BranchesPlaceRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 }

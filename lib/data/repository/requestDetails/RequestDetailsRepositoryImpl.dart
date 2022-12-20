@@ -6,8 +6,9 @@ import 'package:getn_driver/data/model/request/DataRequest.dart';
 import 'package:getn_driver/data/model/request/Request.dart';
 import 'package:getn_driver/data/model/trips/Trips.dart';
 import 'package:getn_driver/data/repository/requestDetails/RequestDetailsRemoteDataSource.dart';
-import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/domain/repository/RequestDetailsRepository.dart';
+import 'package:getn_driver/main.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 
 class RequestDetailsRepositoryImpl extends RequestDetailsRepository {
   final RequestDetailsRemoteDataSource requestDetailsRemoteDataSource;
@@ -29,7 +30,7 @@ class RequestDetailsRepositoryImpl extends RequestDetailsRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 
@@ -47,7 +48,7 @@ class RequestDetailsRepositoryImpl extends RequestDetailsRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 
@@ -65,7 +66,7 @@ class RequestDetailsRepositoryImpl extends RequestDetailsRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 
@@ -117,7 +118,7 @@ class RequestDetailsRepositoryImpl extends RequestDetailsRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 }

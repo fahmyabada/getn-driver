@@ -1,7 +1,5 @@
 ﻿import 'dart:ui' as ui;
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -226,6 +224,21 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
           setState(() {
             loadingMorePending = false;
           });
+        } else if (state is SignOutSuccessState) {
+          getIt<SharedPreferences>().clear().then((value) {
+            getIt<SharedPreferences>()
+                .setBool("isEn", LanguageCubit.get(context).isEn);
+            navigateAndFinish(context, const SignInScreen());
+          });
+        } else if (state is SignOutErrorState) {
+          if (RequestCubit.get(context).tabController!.index == _currentIndex) {
+            RequestCubit.get(context).tabControllerChanged = false;
+            RequestCubit.get(context).tabController!.index = _currentIndex;
+            RequestCubit.get(context).tabController!.notifyListeners();
+          }
+
+          showToastt(
+              text: state.message, state: ToastStates.error, context: context);
         }
       }, builder: (context, state) {
         return Directionality(
@@ -2222,12 +2235,17 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               decoration: const BoxDecoration(color: blueColor),
               child: Row(
                 children: [
-                  CircleAvatar(
-                    radius: 40.r,
-                    backgroundColor: grey3,
-                    backgroundImage: NetworkImage(getIt<SharedPreferences>()
+                  ClipRRect(
+                    borderRadius:
+                    BorderRadius.circular(
+                        40.r),
+                    child: ImageTools.image(
+                        fit: BoxFit.fill,
+                        url: getIt<SharedPreferences>()
                             .getString('userImage') ??
-                        "https://www.pphfoundation.ca/wp-content/uploads/2018/05/default-avatar.png"), // for Network image
+                            "https://www.pphfoundation.ca/wp-content/uploads/2018/05/default-avatar.png",
+                        height: 75.w,
+                        width: 75.w),
                   ),
                   SizedBox(
                     width: 15.w,
@@ -2346,15 +2364,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               ),
               leading: const Icon(Icons.exit_to_app, color: grey2),
               onTap: () {
-                FirebaseMessaging messaging = FirebaseMessaging.instance;
-                FirebaseAuth.instance.signOut().then((value) => messaging
-                    .deleteToken()
-                    .then((value) =>
-                        getIt<SharedPreferences>().clear().then((value) {
-                          getIt<SharedPreferences>()
-                              .setBool("isEn", LanguageCubit.get(context).isEn);
-                          navigateAndFinish(context, const SignInScreen());
-                        })));
+                RequestCubit.get(context).signOut();
               },
             ),
           ],

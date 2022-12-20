@@ -3,8 +3,9 @@ import 'package:getn_driver/data/api/network_info.dart';
 import 'package:getn_driver/data/model/recomendPlace/Data.dart';
 import 'package:getn_driver/data/model/recomendPlace/RecomendPlaces.dart';
 import 'package:getn_driver/data/repository/infoBranch/InfoBranchRemoteDataSource.dart';
-import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/domain/repository/InfoBranchRepository.dart';
+import 'package:getn_driver/main.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 
 class InfoBranchRepositoryImpl extends InfoBranchRepository {
   final InfoBranchRemoteDataSource infoBranchRemoteDataSource;
@@ -23,7 +24,7 @@ class InfoBranchRepositoryImpl extends InfoBranchRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 
@@ -39,7 +40,7 @@ class InfoBranchRepositoryImpl extends InfoBranchRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 }

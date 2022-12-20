@@ -7,8 +7,9 @@ import 'package:getn_driver/data/model/predictionsPlaceSearch/PredictionsPlaceSe
 import 'package:getn_driver/data/model/request/DataRequest.dart';
 import 'package:getn_driver/data/model/trips/Data.dart';
 import 'package:getn_driver/data/repository/tripDetails/TripDetailsRemoteDataSource.dart';
-import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/domain/repository/TripDetailsRepository.dart';
+import 'package:getn_driver/main.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class TripDetailsRepositoryImpl extends TripDetailsRepository {
@@ -28,7 +29,7 @@ class TripDetailsRepositoryImpl extends TripDetailsRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 
@@ -54,7 +55,7 @@ class TripDetailsRepositoryImpl extends TripDetailsRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 
@@ -72,7 +73,7 @@ class TripDetailsRepositoryImpl extends TripDetailsRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 
@@ -89,7 +90,7 @@ class TripDetailsRepositoryImpl extends TripDetailsRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
     }
   }
 

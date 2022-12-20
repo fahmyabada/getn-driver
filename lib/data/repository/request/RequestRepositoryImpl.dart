@@ -1,13 +1,16 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:getn_driver/data/api/network_info.dart';
 import 'package:getn_driver/data/model/editProfile/EditProfileModel.dart';
 import 'package:getn_driver/data/model/request/DataRequest.dart';
 import 'package:getn_driver/data/model/request/Request.dart';
 import 'package:getn_driver/data/repository/request/RequestRemoteDataSource.dart';
-import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/domain/repository/RequestRepository.dart';
+import 'package:getn_driver/main.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RequestRepositoryImpl extends RequestRepository {
@@ -27,7 +30,9 @@ class RequestRepositoryImpl extends RequestRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 
@@ -45,7 +50,9 @@ class RequestRepositoryImpl extends RequestRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 
@@ -68,7 +75,22 @@ class RequestRepositoryImpl extends RequestRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
+    }
+  }
+
+  @override
+  Future<Either<String, String?>> signOut() async {
+    if (await networkInfo.isConnected) {
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
+      FirebaseAuth.instance.signOut().then((value) => messaging.deleteToken());
+      return const Right('success signOut');
+    } else {
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 }

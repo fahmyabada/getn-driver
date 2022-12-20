@@ -334,6 +334,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 }
                               }
                             } else {
+                              SignCubit.get(context).getCountries();
                               showToastt(
                                   text: LanguageCubit.get(context)
                                       .getTexts('CountryCodeMotFound')

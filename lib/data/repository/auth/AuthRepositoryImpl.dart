@@ -9,8 +9,9 @@ import 'package:getn_driver/data/model/sendOtp/SendOtpData.dart';
 import 'package:getn_driver/data/model/signModel/Country.dart';
 import 'package:getn_driver/data/model/signModel/SignModel.dart';
 import 'package:getn_driver/data/repository/auth/AuthRemoteDataSource.dart';
-import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/domain/repository/AuthRepository.dart';
+import 'package:getn_driver/main.dart';
+import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 
 class AuthRepositoryImpl extends AuthRepository {
   final AuthRemoteDataSource authRemoteDataSource;
@@ -29,7 +30,9 @@ class AuthRepositoryImpl extends AuthRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 
@@ -47,7 +50,9 @@ class AuthRepositoryImpl extends AuthRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 
@@ -62,7 +67,9 @@ class AuthRepositoryImpl extends AuthRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 
@@ -77,7 +84,9 @@ class AuthRepositoryImpl extends AuthRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 
@@ -92,7 +101,9 @@ class AuthRepositoryImpl extends AuthRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 
@@ -107,7 +118,9 @@ class AuthRepositoryImpl extends AuthRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 
@@ -122,7 +135,9 @@ class AuthRepositoryImpl extends AuthRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 
@@ -140,7 +155,9 @@ class AuthRepositoryImpl extends AuthRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 
@@ -158,7 +175,9 @@ class AuthRepositoryImpl extends AuthRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 
@@ -176,17 +195,17 @@ class AuthRepositoryImpl extends AuthRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 
-
   @override
-  Future<Either<String, EditProfileModel>> editInformationUser(FormData data) async {
+  Future<Either<String, EditProfileModel>> editInformationUser(
+      FormData data) async {
     if (await networkInfo.isConnected) {
-      return await authRemoteDataSource
-          .editInformationUser(data)
-          .then((value) {
+      return await authRemoteDataSource.editInformationUser(data).then((value) {
         return value.fold((failure) {
           return Left(failure.toString());
         }, (data) {
@@ -194,7 +213,9 @@ class AuthRepositoryImpl extends AuthRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 
@@ -210,7 +231,9 @@ class AuthRepositoryImpl extends AuthRepository {
         });
       });
     } else {
-      return Left(networkFailureMessage);
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 }
