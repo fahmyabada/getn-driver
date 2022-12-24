@@ -14,8 +14,9 @@ class PutTripDetailsUseCase {
       String latitude,
       String longitude,
       String place,
-      String branch) {
+      String branch,
+      String verifyCode) {
     return tripDetailsRepository.putTrip(
-        id, type, comment, latitude, longitude, place, branch);
+        id, type, comment, latitude, longitude, place, branch, verifyCode);
   }
 }

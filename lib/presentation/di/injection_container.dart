@@ -80,6 +80,7 @@ import 'package:getn_driver/domain/usecase/requestDetails/GetLastTripUseCase.dar
 import 'package:getn_driver/domain/usecase/requestDetails/GetRequestDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetTripsRequestDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/PutRequestDetailsUseCase.dart';
+import 'package:getn_driver/domain/usecase/tripCreate/CanCreateTripUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripCreate/CreateTripUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripCreate/GetPlaceDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripCreate/GetSearchLocationUseCase.dart';
@@ -152,6 +153,7 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => GetCurrentLocationTripUseCase(getIt()));
   getIt.registerLazySingleton(() => GetLastTripsUseCase(getIt()));
   getIt.registerLazySingleton(() => SignOutUseCase(getIt()));
+  getIt.registerLazySingleton(() => CanCreateTripUseCase(getIt()));
 
   // Repository
   getIt.registerLazySingleton<AuthRepository>(

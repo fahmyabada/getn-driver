@@ -24,7 +24,8 @@ abstract class TripDetailsRemoteDataSource {
       String latitude,
       String longitude,
       String place,
-      String branch);
+      String branch,
+      String verifyCode);
 
   Future<Either<String, PredictionsPlaceSearch?>> searchLocation(String text);
 
@@ -69,7 +70,7 @@ class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
       String latitude,
       String longitude,
       String place2,
-      String branch) async {
+      String branch, String verifyCode) async {
     try {
       String data = '';
       if (type == "reject" || type == "end") {
@@ -132,6 +133,7 @@ class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
       } else {
         data = jsonEncode({
           "status": type,
+          "verifyCode": verifyCode,
         });
       }
 

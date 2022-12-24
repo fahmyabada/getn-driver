@@ -14,8 +14,14 @@ class InfoBranchRemoteDataSourceImpl implements InfoBranchRemoteDataSource {
   @override
   Future<Either<String, Data?>> getInfoPlace(String id) async {
     try {
+      var body = {
+        "select-country": "title",
+        "select-city": "title",
+        "select-area": "title"
+      };
       return await DioHelper.getData(
         url: 'place/$id',
+        query: body
       ).then((value) {
         if (value.statusCode == 200) {
           if (Data.fromJson(value.data).id!.isNotEmpty) {
@@ -36,6 +42,11 @@ class InfoBranchRemoteDataSourceImpl implements InfoBranchRemoteDataSource {
   Future<Either<String, RecomendPlaces?>> getBranches(
       Map<String, dynamic> body) async {
     try {
+      var body = {
+        "select-country": "title",
+        "select-city": "title",
+        "select-area": "title"
+      };
       return await DioHelper.getData(
         url: 'branch',
         query: body,

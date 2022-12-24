@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:getn_driver/data/api/Dio_Helper.dart';
+import 'package:getn_driver/data/model/CanCreateTrip/CanCreateTrip.dart';
 import 'package:getn_driver/data/model/CreateTripModel.dart';
 import 'package:getn_driver/data/model/placeDetails/PlaceDetails.dart';
 import 'package:getn_driver/data/model/predictionsPlaceSearch/PredictionsPlaceSearch.dart';
@@ -16,6 +17,8 @@ abstract class TripCreateRemoteDataSource {
   Future<Either<String, PlaceDetails?>> placeDetails(String placeId);
 
   Future<Either<String, Data?>> createTrip(CreateTripModel data);
+
+  Future<Either<String, CanCreateTrip?>> canCreateTrip(CreateTripModel data);
 }
 
 class TripCreateRemoteDataSourceImpl implements TripCreateRemoteDataSource {
@@ -45,7 +48,7 @@ class TripCreateRemoteDataSourceImpl implements TripCreateRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    }  catch (error) {
+    } catch (error) {
       return Left(handleError(error));
     }
   }
@@ -77,7 +80,7 @@ class TripCreateRemoteDataSourceImpl implements TripCreateRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    }  catch (error) {
+    } catch (error) {
       return Left(handleError(error));
     }
   }
@@ -91,7 +94,7 @@ class TripCreateRemoteDataSourceImpl implements TripCreateRemoteDataSource {
           "placeLatitude": data.from?.placeLatitude,
           "placeLongitude": data.from?.placeLongitude
         },
-        "startDate": data.startDate,
+        // "startDate": data.startDate,
         "to": {
           "placeTitle": data.to?.placeTitle,
           "placeLatitude": data.to?.placeLatitude,
@@ -100,7 +103,7 @@ class TripCreateRemoteDataSourceImpl implements TripCreateRemoteDataSource {
           "branch": data.branchId!.isNotEmpty ? data.branchId : null
         },
         "request": data.request,
-        "consumptionKM": data.consumptionKM.toString()
+        // "consumptionKM": data.consumptionKM.toString()
       });
 
       print("trip****************** ${body.toString()}");
@@ -120,7 +123,45 @@ class TripCreateRemoteDataSourceImpl implements TripCreateRemoteDataSource {
           return Left(serverFailureMessage);
         }
       });
-    }  catch (error) {
+    } catch (error) {
+      return Left(handleError(error));
+    }
+  }
+
+  @override
+  Future<Either<String, CanCreateTrip?>> canCreateTrip(
+      CreateTripModel data) async {
+    try {
+      var body = jsonEncode({
+        "from": {
+          "placeTitle": data.from?.placeTitle,
+          "placeLatitude": data.from?.placeLatitude,
+          "placeLongitude": data.from?.placeLongitude
+        },
+        "to": {
+          "placeTitle": data.to?.placeTitle,
+          "placeLatitude": data.to?.placeLatitude,
+          "placeLongitude": data.to?.placeLongitude,
+          "place": data.placeId!.isNotEmpty ? data.placeId : null,
+          "branch": data.branchId!.isNotEmpty ? data.branchId : null
+        },
+        "request": data.request,
+      });
+
+      print("can_create_trip****************** ${body.toString()}");
+
+      return await DioHelper.postData(
+              url: 'trip/can_create_trip',
+              data: body,
+              token: getIt<SharedPreferences>().getString("token"))
+          .then((value) {
+        if (value.statusCode == 200) {
+          return Right(CanCreateTrip.fromJson(value.data!));
+        } else {
+          return Left(serverFailureMessage);
+        }
+      });
+    } catch (error) {
       return Left(handleError(error));
     }
   }

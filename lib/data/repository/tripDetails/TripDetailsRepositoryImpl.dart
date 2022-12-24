@@ -29,7 +29,9 @@ class TripDetailsRepositoryImpl extends TripDetailsRepository {
         });
       });
     } else {
-      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 
@@ -41,11 +43,12 @@ class TripDetailsRepositoryImpl extends TripDetailsRepository {
       String latitude,
       String longitude,
       String place,
-      String branch) async {
+      String branch,
+      String verifyCode) async {
     if (await networkInfo.isConnected) {
       return await tripDetailsRemoteDataSource
-          .putTrip(id, type, comment, latitude, longitude,
-              place, branch)
+          .putTrip(
+              id, type, comment, latitude, longitude, place, branch, verifyCode)
           .then((value) {
         return value.fold((failure) {
           return Left(failure.toString());
@@ -54,7 +57,9 @@ class TripDetailsRepositoryImpl extends TripDetailsRepository {
         });
       });
     } else {
-      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 
@@ -72,7 +77,9 @@ class TripDetailsRepositoryImpl extends TripDetailsRepository {
         });
       });
     } else {
-      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 
@@ -89,7 +96,9 @@ class TripDetailsRepositoryImpl extends TripDetailsRepository {
         });
       });
     } else {
-      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 

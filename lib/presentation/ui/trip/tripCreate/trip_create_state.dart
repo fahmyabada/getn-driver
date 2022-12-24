@@ -42,3 +42,15 @@ class CreateTripSuccessState extends TripCreateState {
 
   CreateTripSuccessState(this.data);
 }
+
+class CanCreateTripErrorState extends TripCreateState {
+  final String message;
+
+  CanCreateTripErrorState(this.message);
+}
+
+class CanCreateTripSuccessState extends TripCreateState {
+  final CanCreateTrip? data;
+
+  CanCreateTripSuccessState(this.data);
+}

@@ -2,11 +2,13 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:getn_driver/data/model/CanCreateTrip/CanCreateTrip.dart';
 import 'package:getn_driver/data/model/CreateTripModel.dart';
 import 'package:getn_driver/data/model/placeDetails/Location.dart';
 import 'package:getn_driver/data/model/placeDetails/PlaceDetails.dart';
 import 'package:getn_driver/data/model/predictionsPlaceSearch/Predictions.dart';
 import 'package:getn_driver/data/model/trips/Data.dart';
+import 'package:getn_driver/domain/usecase/tripCreate/CanCreateTripUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripCreate/CreateTripUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripCreate/GetPlaceDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripCreate/GetSearchLocationUseCase.dart';
@@ -23,6 +25,7 @@ class TripCreateCubit extends Cubit<TripCreateState> {
   var getSearchLocationUseCase = getIt<GetSearchLocationUseCase>();
   var getPlaceDetailsUseCase = getIt<GetPlaceDetailsUseCase>();
   var createTripUseCase = getIt<CreateTripUseCase>();
+  var canCreateTripUseCase = getIt<CanCreateTripUseCase>();
 
   List<Predictions>? listPredictions = [];
 
@@ -53,7 +56,6 @@ class TripCreateCubit extends Cubit<TripCreateState> {
   }
 
   void createTrip(CreateTripModel data) async {
-    emit(CreateTripInitial());
     createTripUseCase.execute(data).then((value) {
       emit(eitherLoadedOrErrorStateCreateTrip(value));
     });
@@ -65,6 +67,22 @@ class TripCreateCubit extends Cubit<TripCreateState> {
       return CreateTripErrorState(failure1);
     }, (data) {
       return CreateTripSuccessState(data);
+    });
+  }
+
+  void canCreateTrip(CreateTripModel data) async {
+    emit(CreateTripInitial());
+    canCreateTripUseCase.execute(data).then((value) {
+      emit(eitherLoadedOrErrorStateCanCreateTrip(value));
+    });
+  }
+
+  TripCreateState eitherLoadedOrErrorStateCanCreateTrip(
+      Either<String, CanCreateTrip?> data) {
+    return data.fold((failure1) {
+      return CanCreateTripErrorState(failure1);
+    }, (data) {
+      return CanCreateTripSuccessState(data);
     });
   }
 }

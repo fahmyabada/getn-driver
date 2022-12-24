@@ -20,7 +20,13 @@ class BranchesPlacesCubit extends Cubit<BranchesPlacesState> {
   bool loadingBranches = false;
 
   void getBranches(int index, String placeId) async {
-    var body = {"page": index, "place": placeId};
+    var body = {
+      "page": index,
+      "place": placeId,
+      "select-country": "title",
+      "select-city": "title",
+      "select-area": "title"
+    };
     if (index > 1) {
       getBranchesPlacesUseCase.execute(body).then((value) {
         emit(eitherLoadedOrErrorStatePlaces2(value));

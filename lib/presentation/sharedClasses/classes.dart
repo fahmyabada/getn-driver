@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
@@ -22,6 +23,7 @@ import 'package:getn_driver/presentation/ui/trip/tripDetails/TripDetailsScreen.d
 import 'package:getn_driver/presentation/ui/trip/tripDetails/trip_details_cubit.dart';
 import 'package:getn_driver/presentation/ui/wallet/WalletScreen.dart';
 import 'package:getn_driver/presentation/ui/wallet/wallet_cubit.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomDialogRequestTabs extends StatefulWidget {
@@ -965,7 +967,8 @@ class _CustomDialogRejectTripDetailsState
               state.position.latitude.toString(),
               state.position.longitude.toString(),
               widget.place.toString(),
-              widget.branch.toString());
+              widget.branch.toString(),
+              '');
         } else if (state is CurrentLocationTripErrorState) {
           if (kDebugMode) {
             print('CurrentLocationTripErrorState********* ${state.error}');
@@ -1236,7 +1239,8 @@ class _CustomDialogEndTripDetailsState
               state.position.latitude.toString(),
               state.position.longitude.toString(),
               widget.place.toString(),
-              widget.branch.toString());
+              widget.branch.toString(),
+              '');
         } else if (state is CurrentLocationTripErrorState) {
           if (kDebugMode) {
             print('CurrentLocationTripErrorState********* ${state.error}');
@@ -1434,6 +1438,256 @@ class _CustomDialogEndTripDetailsState
           ),
         );
       },
+    );
+  }
+}
+
+class CustomDialogCanCreateTrip extends StatefulWidget {
+  final String? title, description;
+
+  const CustomDialogCanCreateTrip({
+    Key? key,
+    this.title,
+    this.description,
+  }) : super(key: key);
+
+  @override
+  State<CustomDialogCanCreateTrip> createState() =>
+      _CustomDialogCanCreateTripState();
+}
+
+class _CustomDialogCanCreateTripState extends State<CustomDialogCanCreateTrip> {
+  @override
+  Widget build(BuildContext context) {
+    return Directionality(
+      textDirection: LanguageCubit.get(context).isEn
+          ? ui.TextDirection.ltr
+          : ui.TextDirection.rtl,
+      child: Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding:
+              EdgeInsets.only(top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+          margin: EdgeInsets.only(top: 50.r),
+          decoration: BoxDecoration(
+            color: white,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(10.r),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              SizedBox(
+                height: 10.r,
+              ),
+              Text(
+                widget.title!,
+                style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w700,
+                    color: accentColor),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 16.r,
+              ),
+              Text(
+                widget.description!,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 19.sp, color: black),
+              ),
+              SizedBox(
+                height: 44.h,
+              ),
+              MaterialButton(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.r)),
+                  color: accentColor,
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    LanguageCubit.get(context).getTexts('Ok').toString(),
+                    style: TextStyle(color: white, fontSize: 20.sp),
+                  )),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CustomDialogOtpTrip extends StatefulWidget {
+  const CustomDialogOtpTrip({Key? key}) : super(key: key);
+
+  @override
+  State<CustomDialogOtpTrip> createState() => _CustomDialogOtpTripState();
+}
+
+class _CustomDialogOtpTripState extends State<CustomDialogOtpTrip> {
+  String otp = '';
+  bool openOk = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Directionality(
+      textDirection: LanguageCubit.get(context).isEn
+          ? ui.TextDirection.ltr
+          : ui.TextDirection.rtl,
+      child: Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding:
+              EdgeInsets.all(40.r),
+          margin: EdgeInsets.only(top: 50.r),
+          decoration: BoxDecoration(
+            color: white,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(10.r),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                LanguageCubit.get(context).getTexts('optTrip').toString(),
+                style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w700,
+                    color: black),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 35.h,
+              ),
+              PinCodeTextField(
+                appContext: context,
+                length: 4,
+                pastedTextStyle: TextStyle(
+                  color: Colors.green.shade600,
+                  fontWeight: FontWeight.bold,
+                ),
+                animationType: AnimationType.fade,
+                validator: (v) {
+                  if (v!.contains(' ')) {
+                    return LanguageCubit.get(context)
+                        .getTexts('emptyOTP')
+                        .toString();
+                  } else if (v.length < 3) {
+                    return LanguageCubit.get(context)
+                        .getTexts('EnterCode')
+                        .toString();
+                  } else {
+                    return null;
+                  }
+                },
+                obscureText: false,
+                errorTextSpace: 30.h,
+                pinTheme: PinTheme(
+                    shape: PinCodeFieldShape.box,
+                    borderRadius: BorderRadius.circular(5),
+                    fieldHeight: 50,
+                    fieldWidth: 40,
+                    activeFillColor: Colors.white,
+                    inactiveFillColor: Colors.white,
+                    inactiveColor: blueLight),
+                cursorColor: Colors.black,
+                animationDuration: const Duration(milliseconds: 300),
+                enableActiveFill: true,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                boxShadows: const [
+                  BoxShadow(
+                    offset: Offset(0, 1),
+                    color: Colors.black12,
+                    blurRadius: 10,
+                  )
+                ],
+                onCompleted: (v) {
+                  debugPrint("Completed");
+                },
+                onChanged: (value) {
+                  debugPrint(value);
+                  if (value.length == 4 && !value.contains(' ')) {
+                    setState(() {
+                      otp = value;
+                      openOk = true;
+                    });
+                  } else {
+                    setState(() {
+                      openOk = false;
+                    });
+                  }
+                },
+                enablePinAutofill: true,
+                beforeTextPaste: (text) {
+                  debugPrint("Allowing to paste $text");
+                  //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
+                  //but you can show anything you want here, like your pop up saying wrong paste format or etc
+                  if (RegExp(r'^[0-9]+$').hasMatch(text!)) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                },
+              ),
+              SizedBox(
+                height: 25.h,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                 
+                  Expanded(
+                    child: SizedBox(
+                      child: ElevatedButton(
+                        onPressed: openOk ? () {
+                          Navigator.of(context).pop(otp);
+                        } : null,
+                        style: TextButton.styleFrom(
+                          backgroundColor: accentColor,
+                          foregroundColor: white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.r),
+                          ),
+                          textStyle: TextStyle(fontSize: 20.sp),
+                        ),
+                        child: Text(
+                          LanguageCubit.get(context)
+                              .getTexts('Ok')
+                              .toString(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 30.w,
+                  ),
+                  Expanded(
+                    child: MaterialButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.r)),
+                        color: grey,
+                        onPressed: () => Navigator.of(context).pop(''),
+                        child: Text(
+                          LanguageCubit.get(context)
+                              .getTexts('Cancel')
+                              .toString(),
+                          style: TextStyle(color: black, fontSize: 19.sp),
+                        )),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

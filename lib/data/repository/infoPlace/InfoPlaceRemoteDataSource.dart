@@ -13,8 +13,14 @@ class InfoPlaceRemoteDataSourceImpl implements InfoPlaceRemoteDataSource {
   @override
   Future<Either<String, Data?>> getInfoPlace(String id) async {
     try {
+      var body = {
+        "select-country": "title",
+        "select-city": "title",
+        "select-area": "title"
+      };
       return await DioHelper.getData(
         url: 'place/$id',
+        query: body
       ).then((value) {
         if (value.statusCode == 200) {
           if (Data.fromJson(value.data).id!.isNotEmpty) {
@@ -34,8 +40,15 @@ class InfoPlaceRemoteDataSourceImpl implements InfoPlaceRemoteDataSource {
   @override
   Future<Either<String, Data?>> getInfoBranch(String id) async {
     try {
+      var body = {
+        "select-country": "title",
+        "select-city": "title",
+        "select-area": "title"
+      };
+
       return await DioHelper.getData(
         url: 'branch/$id',
+        query: body
       ).then((value) {
         if (value.statusCode == 200) {
           if (Data.fromJson(value.data).id!.isNotEmpty) {

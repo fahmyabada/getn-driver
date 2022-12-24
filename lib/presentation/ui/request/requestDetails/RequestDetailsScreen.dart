@@ -15,6 +15,7 @@ import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
+import 'package:getn_driver/presentation/ui/trip/tripCreate/TripCreateScreen.dart';
 import 'package:getn_driver/presentation/ui/trip/tripDetails/TripDetailsScreen.dart';
 import 'package:intl/intl.dart';
 import 'package:scroll_edge_listener/scroll_edge_listener.dart';
@@ -246,47 +247,43 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             }
           } else if (state is CurrentLocationSuccessState) {
             print('CurrentLocationSuccessState********* ');
+
             // this belong add trip
-            /*String id = await navigateToWithRefreshPagePrevious(
-              context,
-              TripCreateScreen(
-                requestId: idRequestTrip,
-                fromLatitude: state.position.latitude,
-                fromLongitude: state.position.longitude,
-              ),
-            );
-            setState(() {
-              print("CurrentLocationSuccessState************ ${id}");
-              if (id.isNotEmpty) {
-                getIt<SharedPreferences>()
-                    .setString('typeScreen', "requestDetails");
-                RequestDetailsCubit.get(context).indexTrips = 1;
-                RequestDetailsCubit.get(context).trips = [];
-                loadingMoreTrips = false;
-                RequestDetailsCubit.get(context).loadingTrips = false;
-                RequestDetailsCubit.get(context).loadingRequest = false;
-                RequestDetailsCubit.get(context).failureRequest = "";
-                RequestDetailsCubit.get(context).failureTrip = "";
-                RequestDetailsCubit.get(context).getRequestDetails(id);
-                RequestDetailsCubit.get(context).getTripsRequestDetails(1, id);
-              }
-            });*/
-
-            String sLat = state.position.latitude.toString();
-            String sLon = state.position.longitude.toString();
-
-            launchInMap(
-                sLat,
-                sLon,
-                RequestDetailsCubit.get(context)
-                    .requestDetails!
-                    .from!
-                    .placeLatitude!,
-                RequestDetailsCubit.get(context)
-                    .requestDetails!
-                    .from!
-                    .placeLongitude!,
-                context);
+            if (state.type == 'AddTrip') {
+              await navigateToWithRefreshPagePrevious(
+                context,
+                TripCreateScreen(
+                  requestId: RequestDetailsCubit.get(context).idRequest,
+                  fromLatitude: state.position.latitude,
+                  fromLongitude: state.position.longitude,
+                ),
+              ).then((id) {
+                setState(() {
+                  loadingMoreTrips = false;
+                  getIt<SharedPreferences>()
+                      .setString('typeScreen', "requestDetails");
+                  RequestDetailsCubit.get(context).indexTrips = 1;
+                  RequestDetailsCubit.get(context).loadingRequest = false;
+                  RequestDetailsCubit.get(context).failureRequest = "";
+                  RequestDetailsCubit.get(context).failureTrip = "";
+                  RequestDetailsCubit.get(context).idRequest = id;
+                  RequestDetailsCubit.get(context).getRequestDetails(id);
+                });
+              });
+            } else {
+              launchInMap(
+                  state.position.latitude.toString(),
+                  state.position.longitude.toString(),
+                  RequestDetailsCubit.get(context)
+                      .requestDetails!
+                      .from!
+                      .placeLatitude!,
+                  RequestDetailsCubit.get(context)
+                      .requestDetails!
+                      .from!
+                      .placeLongitude!,
+                  context);
+            }
           } else if (state is CurrentLocationErrorState) {
             if (kDebugMode) {
               print('CurrentLocationErrorState********* ${state.error}');
@@ -535,6 +532,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           }
         },
         builder: (context, state) {
+          final currentDate = DateTime.now();
           return Directionality(
             textDirection: LanguageCubit.get(context).isEn
                 ? ui.TextDirection.ltr
@@ -931,7 +929,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                           color: Colors.grey[400],
                                         ),
                                         // add trip
-                                        /*  SizedBox(
+                                        SizedBox(
                                           height: 15.h,
                                         ),
                                         RequestDetailsCubit.get(context)
@@ -944,33 +942,36 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                     "start" &&
                                                 currentDate.isBefore(
                                                   DateFormat("yyyy-MM-ddTHH:mm")
-                                                      .parse(RequestDetailsCubit.get(
-                                                              context)
+                                                      .parse(RequestDetailsCubit
+                                                              .get(context)
                                                           .requestDetails!
                                                           .to!),
                                                 ) &&
                                                 currentDate.isAfter(
                                                   DateFormat("yyyy-MM-ddTHH:mm")
-                                                      .parse(RequestDetailsCubit.get(
-                                                              context)
+                                                      .parse(RequestDetailsCubit
+                                                              .get(context)
                                                           .requestDetails!
                                                           .from!
                                                           .date!),
                                                 )
                                             ? state is CurrentLocationLoading
                                                 ? const Center(
-                                                    child: CircularProgressIndicator(
+                                                    child:
+                                                        CircularProgressIndicator(
                                                     color: black,
                                                   ))
                                                 : defaultButton2(
                                                     text: 'Add Trip',
                                                     press: () {
-                                                      RequestDetailsCubit.get(context)
-                                                          .getCurrentLocation();
+                                                      RequestDetailsCubit.get(
+                                                              context)
+                                                          .getCurrentLocation(
+                                                              'AddTrip');
                                                     },
                                                     textColor: white,
                                                     backColor: accentColor)
-                                            : Container(),*/
+                                            : Container(),
                                         SizedBox(
                                           height: 15.h,
                                         ),
@@ -1056,7 +1057,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         : IconButton(
                             onPressed: () {
                               RequestDetailsCubit.get(context)
-                                  .getCurrentLocation();
+                                  .getCurrentLocation('OpenMap');
                             },
                             icon: Icon(
                               Icons.wrong_location_sharp,
@@ -1113,7 +1114,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             width: 5.w,
                           ),
                           data.client2 != null &&
-                                  data.client2!.whatsApp != null && data.client2!.whatsApp!.isNotEmpty &&
+                                  data.client2!.whatsApp != null &&
+                                  data.client2!.whatsApp!.isNotEmpty &&
                                   data.client2!.whatsappCountry != null
                               ? Expanded(
                                   child: defaultButtonWithIcon(
@@ -1534,22 +1536,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     btnStatus[
                                         '${RequestDetailsCubit.get(context).requestDetails!.status}']![0]);
                               } else {
-                                // DateTime now = DateTime.now();
-                                // // you should use package import 'package:intl/intl.dart';  for DateFormat
-                                // //2022-03-08 08:45:55
-                                // String currentDate = DateFormat('yyyy-MM-dd').format(now);
-                                // if(btnStatus[
-                                // '${RequestDetailsCubit.get(context).requestDetails!.status}']![0] == "accept" &&
-                                //     DateFormat('yyyy-MM-dd').parse(RequestDetailsCubit.get(context).requestDetails!.from!
-                                //         .date!).isBefore(
-                                //       DateFormat('yyyy-MM-dd').parse(currentDate).add(
-                                //         const Duration(
-                                //           hours: 5,
-                                //         ),
-                                //       ),
-                                //     )){
-                                //
-                                // }
                                 RequestDetailsCubit.get(context).editRequest(
                                     RequestDetailsCubit.get(context)
                                         .requestDetails!
@@ -1579,8 +1565,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                     .date!)
                                                 .isAfter(
                                                   currentDate.add(
-                                                    const Duration(
-                                                      hours: 5,
+                                                    Duration(
+                                                      hours: RequestDetailsCubit
+                                                                  .get(context)
+                                                              .requestDetails!
+                                                              .hoursToTakeAction ??
+                                                          5,
                                                     ),
                                                   ),
                                                 )

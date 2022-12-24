@@ -20,7 +20,12 @@ class RecomendPlacesCubit extends Cubit<RecomendPlacesState> {
   bool loadingPlaces = false;
 
   void getPlaces(int index) async {
-    var body = {"page": index};
+    var body = {
+      "page": index,
+      "select-country": "title",
+      "select-city": "title",
+      "select-area": "title"
+    };
     if (index > 1) {
       getRecomendPlacesUseCase.execute(body).then((value) {
         emit(eitherLoadedOrErrorStatePlaces2(value));

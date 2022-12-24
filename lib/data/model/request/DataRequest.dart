@@ -21,6 +21,7 @@ class DataRequest {
       double? totalConsumptionKM,
       String? paymentMethod,
       int? referenceId,
+      int? hoursToTakeAction,
       String? paymentStatus,
       String? packagesPaymentStatus,
       String? id,
@@ -43,6 +44,7 @@ class DataRequest {
     _totalConsumptionKM = totalConsumptionKM;
     _paymentMethod = paymentMethod;
     _referenceId = referenceId;
+    _hoursToTakeAction = hoursToTakeAction;
     _paymentStatus = paymentStatus;
     _packagesPaymentStatus = packagesPaymentStatus;
     _id = id;
@@ -84,6 +86,7 @@ class DataRequest {
         : 0.0;
     _paymentMethod = json['paymentMethod'];
     _referenceId = json['referenceId'];
+    _hoursToTakeAction = json['hoursToTakeAction'];
     _paymentStatus = json['paymentStatus'];
     _packagesPaymentStatus = json['packagesPaymentStatus'];
     _id = json['_id'];
@@ -120,6 +123,7 @@ class DataRequest {
   double? _totalPrice;
   double? _totalConsumptionPoints;
   double? _totalConsumptionKM;
+  int? _hoursToTakeAction;
   String? _paymentMethod;
   int? _referenceId;
   String? _paymentStatus;
@@ -162,6 +166,8 @@ class DataRequest {
   String? get paymentMethod => _paymentMethod;
 
   int? get referenceId => _referenceId;
+
+  int? get hoursToTakeAction => _hoursToTakeAction;
 
   String? get paymentStatus => _paymentStatus;
 
@@ -206,6 +212,7 @@ class DataRequest {
     map['totalConsumptionKM'] = _totalConsumptionKM;
     map['paymentMethod'] = _paymentMethod;
     map['referenceId'] = _referenceId;
+    map['hoursToTakeAction'] = _hoursToTakeAction;
     map['paymentStatus'] = _paymentStatus;
     map['packagesPaymentStatus'] = _packagesPaymentStatus;
     map['_id'] = _id;

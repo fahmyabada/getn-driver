@@ -161,21 +161,21 @@ class RequestDetailsCubit extends Cubit<RequestDetailsState> {
     });
   }
 
-  void getCurrentLocation() async {
+  void getCurrentLocation(String type) async {
     loadingRequest = true;
     emit(CurrentLocationLoading());
     final data = await getCurrentLocationUseCase.execute();
-    emit(eitherLoadedOrErrorStateCurrentLocation(data));
+    emit(eitherLoadedOrErrorStateCurrentLocation(data, type));
   }
 
   RequestDetailsState eitherLoadedOrErrorStateCurrentLocation(
-      Either<String, Position> data) {
+      Either<String, Position> data, String type) {
     return data.fold((failure) {
       loadingRequest = false;
       return CurrentLocationErrorState(failure);
     }, (data) {
       loadingRequest = false;
-      return CurrentLocationSuccessState(data);
+      return CurrentLocationSuccessState(data,type);
     });
   }
 }

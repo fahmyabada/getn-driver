@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:getn_driver/data/api/network_info.dart';
+import 'package:getn_driver/data/model/CanCreateTrip/CanCreateTrip.dart';
 import 'package:getn_driver/data/model/CreateTripModel.dart';
 import 'package:getn_driver/data/model/placeDetails/PlaceDetails.dart';
 import 'package:getn_driver/data/model/predictionsPlaceSearch/PredictionsPlaceSearch.dart';
@@ -27,7 +28,9 @@ class TripCreateRepositoryImpl extends TripCreateRepository {
         });
       });
     } else {
-      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 
@@ -42,7 +45,9 @@ class TripCreateRepositoryImpl extends TripCreateRepository {
         });
       });
     } else {
-      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 
@@ -57,7 +62,27 @@ class TripCreateRepositoryImpl extends TripCreateRepository {
         });
       });
     } else {
-      return Left(LanguageCubit.get(navigatorKey.currentContext).getTexts('networkFailureMessage').toString());
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
+    }
+  }
+
+  @override
+  Future<Either<String, CanCreateTrip?>> canCreateTrip(
+      CreateTripModel data) async {
+    if (await networkInfo.isConnected) {
+      return await addTripRemoteDataSource.canCreateTrip(data).then((value) {
+        return value.fold((failure) {
+          return Left(failure.toString());
+        }, (data) {
+          return Right(data);
+        });
+      });
+    } else {
+      return Left(LanguageCubit.get(navigatorKey.currentContext)
+          .getTexts('networkFailureMessage')
+          .toString());
     }
   }
 }

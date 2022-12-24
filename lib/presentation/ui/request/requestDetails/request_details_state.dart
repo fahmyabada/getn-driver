@@ -70,8 +70,8 @@ class CurrentLocationLoading extends RequestDetailsState {}
 
 class CurrentLocationSuccessState extends RequestDetailsState {
   final Position position;
-
-  CurrentLocationSuccessState(this.position);
+  final String type;
+  CurrentLocationSuccessState(this.position, this.type);
 }
 
 class CurrentLocationErrorState extends RequestDetailsState {

@@ -549,6 +549,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                           ),
                           data.client2 != null &&
                                   data.client2!.whatsApp != null &&
+                                  data.client2!.whatsApp!.isNotEmpty &&
                                   data.client2!.whatsappCountry != null
                               ? Expanded(
                                   child: defaultButtonWithIcon(
@@ -835,15 +836,39 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                     )
                   : Expanded(
                       child: defaultButton2(
-                          press: () {
-                            TripDetailsCubit.get(context).editTrip(
-                                data.id!,
-                                btnStatus['${data.status}']![0],
-                                "",
-                                '',
-                                '',
-                                '',
-                                '');
+                          press: () async {
+                            if (data.createdBy == 'driver' && !data.verified!) {
+                              await showDialog(
+                                context: context,
+                                barrierDismissible: true,
+                                // outside to dismiss
+                                builder: (_) {
+                                  return const CustomDialogOtpTrip();
+                                },
+                              ).then((value) {
+                                if (value is String && value.isNotEmpty) {
+                                  TripDetailsCubit.get(context).editTrip(
+                                      data.id!,
+                                      btnStatus['${data.status}']![0],
+                                      "",
+                                      '',
+                                      '',
+                                      '',
+                                      '',
+                                      value);
+                                }
+                              });
+                            } else {
+                              TripDetailsCubit.get(context).editTrip(
+                                  data.id!,
+                                  btnStatus['${data.status}']![0],
+                                  "",
+                                  '',
+                                  '',
+                                  '',
+                                  '',
+                                  '');
+                            }
                           },
                           fontSize: 20,
                           paddingVertical: 1,
@@ -930,6 +955,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                 data.id!,
                                 btnStatus['${data.status}']![0],
                                 "",
+                                '',
                                 '',
                                 '',
                                 '',

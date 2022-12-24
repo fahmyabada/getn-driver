@@ -16,13 +16,14 @@ class Data {
     double? consumptionPoints,
     int? oneKMPoints,
     int? referenceId,
+    bool? verified,
+    String? createdBy,
     String? id,
     String? request,
     double? consumptionKM,
     String? driver,
     String? client,
     List<StatusHistory>? statusHistory,
-    int? v,
   }) {
     _from = from;
     _to = to;
@@ -34,13 +35,14 @@ class Data {
     _consumptionPoints = consumptionPoints;
     _oneKMPoints = oneKMPoints;
     _referenceId = referenceId;
+    _verified = verified;
+    _createdBy = createdBy;
     _id = id;
     _request = request;
     _consumptionKM = consumptionKM;
     _driver = driver;
     _client = client;
     _statusHistory = statusHistory;
-    _v = v;
   }
 
   Data.fromJson(dynamic json) {
@@ -55,6 +57,8 @@ class Data {
     _consumptionPoints = double.parse(json['consumptionPoints'].toString());
     _oneKMPoints = json['oneKMPoints'];
     _referenceId = json['referenceId'];
+    _verified = json['verified'];
+    _createdBy = json['createdBy'];
     _id = json['_id'];
     _request = json['request'];
     _consumptionKM = double.parse(json['consumptionKM'].toString());
@@ -69,7 +73,6 @@ class Data {
         _statusHistory?.add(StatusHistory.fromJson(v));
       });
     }
-    _v = json['__v'];
   }
 
   From? _from;
@@ -83,6 +86,8 @@ class Data {
   double? _consumptionPoints;
   int? _oneKMPoints;
   int? _referenceId;
+  bool? _verified;
+  String? _createdBy;
   String? _id;
   String? _request;
   double? _consumptionKM;
@@ -90,7 +95,6 @@ class Data {
   String? _client;
   Client? _client2;
   List<StatusHistory>? _statusHistory;
-  int? _v;
 
   From? get from => _from;
 
@@ -114,6 +118,10 @@ class Data {
 
   int? get referenceId => _referenceId;
 
+  bool? get verified => _verified;
+
+  String? get createdBy => _createdBy;
+
   String? get id => _id;
 
   String? get request => _request;
@@ -127,8 +135,6 @@ class Data {
   Client? get client2 => _client2;
 
   List<StatusHistory>? get statusHistory => _statusHistory;
-
-  int? get v => _v;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -146,6 +152,8 @@ class Data {
     map['consumptionPoints'] = _consumptionPoints;
     map['oneKMPoints'] = _oneKMPoints;
     map['referenceId'] = _referenceId;
+    map['verified'] = _verified;
+    map['createdBy'] = _createdBy;
     map['_id'] = _id;
     map['request'] = _request;
     map['consumptionKM'] = _consumptionKM;
@@ -154,7 +162,6 @@ class Data {
     if (_statusHistory != null) {
       map['statusHistory'] = _statusHistory?.map((v) => v.toJson()).toList();
     }
-    map['__v'] = _v;
     return map;
   }
 }

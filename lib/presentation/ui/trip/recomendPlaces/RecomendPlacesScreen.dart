@@ -99,7 +99,7 @@ class _RecomendPlacesScreenState extends State<RecomendPlacesScreen> {
                                         clipBehavior: Clip.antiAlias,
                                         child: ImageTools.image(
                                             fit: BoxFit.fill,
-                                            url: data.logo!.src,
+                                            url: data.logo != null ? data.logo!.src : null,
                                             height: 70.w,
                                             width: 70.w),
                                       ),
@@ -136,8 +136,8 @@ class _RecomendPlacesScreenState extends State<RecomendPlacesScreen> {
                                               ),
                                               Text(
                                                 LanguageCubit.get(context).isEn
-                                                    ? data.address!.en!
-                                                    : data.address!.ar!,
+                                                    ? '${data.country!.title!.en!}, ${data.city!.title!.en!}, ${data.area!.title!.en!}, ${data.address!.en!}'
+                                                    : '${data.country!.title!.ar!}, ${data.city!.title!.ar!}, ${data.area!.title!.ar!}, ${data.address!.ar!}',
                                                 style: TextStyle(
                                                     fontSize: 15.sp,
                                                     color: grey2),
@@ -177,89 +177,101 @@ class _RecomendPlacesScreenState extends State<RecomendPlacesScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      defaultButton2(
-                                          press: () async {
-                                            if (data.branchesCount! >= 1) {
-                                              CurrentLocation location =
-                                                  await navigateToWithRefreshPagePrevious(
-                                                          context,
-                                                          InfoBranchScreen(
-                                                              id: data.id))
-                                                      as CurrentLocation;
-                                              setState(() {
-                                                if (location.description !=
-                                                    null) {
-                                                  Navigator.of(context)
-                                                      .pop(location);
-                                                }
-                                              });
-                                            } else {
-                                              CurrentLocation location =
-                                                  await navigateToWithRefreshPagePrevious(
-                                                      context,
-                                                      InfoPlaceScreen(
-                                                        id: data.id,
-                                                        type: "Place",
-                                                      )) as CurrentLocation;
-                                              setState(() {
-                                                if (location.description !=
-                                                    null) {
-                                                  Navigator.of(context)
-                                                      .pop(location);
-                                                }
-                                              });
-                                            }
-                                          },
-                                          text: LanguageCubit.get(context)
-                                              .getTexts('Info')
-                                              .toString(),
-                                          backColor: accentColor,
-                                          textColor: white),
-                                      data.branchesCount! >= 1
-                                          ? defaultButton2(
-                                              press: () async {
+                                      Expanded(
+                                        child: defaultButton2(
+                                            press: () async {
+                                              if (data.branchesCount! >= 1) {
                                                 CurrentLocation location =
                                                     await navigateToWithRefreshPagePrevious(
                                                             context,
-                                                            BranchesPlacesScreen(
-                                                                placeId:
-                                                                    data.id!))
+                                                            InfoBranchScreen(
+                                                                id: data.id))
                                                         as CurrentLocation;
-                                                print(
-                                                    "RecomendPlacesScreen********* ${location.toString()}");
+                                                setState(() {
+                                                  if (location.description !=
+                                                      null) {
+                                                    Navigator.of(context)
+                                                        .pop(location);
+                                                  }
+                                                });
+                                              } else {
+                                                CurrentLocation location =
+                                                    await navigateToWithRefreshPagePrevious(
+                                                        context,
+                                                        InfoPlaceScreen(
+                                                          id: data.id,
+                                                          type: "Place",
+                                                        )) as CurrentLocation;
+                                                setState(() {
+                                                  if (location.description !=
+                                                      null) {
+                                                    Navigator.of(context)
+                                                        .pop(location);
+                                                  }
+                                                });
+                                              }
+                                            },
+                                            text: LanguageCubit.get(context)
+                                                .getTexts('Info')
+                                                .toString(),
+                                        fontSize: 20,
+                                            paddingVertical: 3,
+                                            backColor: accentColor,
+                                            textColor: white),
+                                      ),
+                                      SizedBox(width: 20.w,),
+                                      data.branchesCount! >= 1
+                                          ? Expanded(
+                                            child: defaultButton2(
+                                                press: () async {
+                                                  CurrentLocation location =
+                                                      await navigateToWithRefreshPagePrevious(
+                                                              context,
+                                                              BranchesPlacesScreen(
+                                                                  placeId:
+                                                                      data.id!))
+                                                          as CurrentLocation;
+                                                  print(
+                                                      "RecomendPlacesScreen********* ${location.toString()}");
 
-                                                Navigator.of(context)
-                                                    .pop(location);
-                                              },
-                                              text: LanguageCubit.get(context)
-                                                  .getTexts('Branches')
-                                                  .toString(),
-                                              backColor: blueColor,
-                                              textColor: white)
-                                          : defaultButton2(
-                                              press: () {
-                                                Navigator.of(context).pop(
-                                                    CurrentLocation(
-                                                        placeId: data.id,
-                                                        description:
-                                                            LanguageCubit.get(
-                                                                        context)
-                                                                    .isEn
-                                                                ? data
-                                                                    .title!.en!
-                                                                : data
-                                                                    .title!.ar!,
-                                                        latitude: double.parse(data
-                                                            .placeLatitude!),
-                                                        longitude: double.parse(
-                                                            data.placeLongitude!),
-                                                        firstTime: true));
-                                              },
-                                              text: LanguageCubit.get(context)
-                                                  .getTexts('Select')
-                                                  .toString(),
-                                              backColor: blueColor,
-                                              textColor: white),
+                                                  Navigator.of(context)
+                                                      .pop(location);
+                                                },
+                                                text: LanguageCubit.get(context)
+                                                    .getTexts('Branches')
+                                                    .toString(),
+                                                paddingVertical: 3,
+                                                backColor: blueColor,
+                                                textColor: white),
+                                          )
+                                          : Expanded(
+                                            child: defaultButton2(
+                                                press: () {
+                                                  Navigator.of(context).pop(
+                                                      CurrentLocation(
+                                                          placeId: data.id,
+                                                          description:
+                                                              LanguageCubit.get(
+                                                                          context)
+                                                                      .isEn
+                                                                  ? data
+                                                                      .title!.en!
+                                                                  : data
+                                                                      .title!.ar!,
+                                                          latitude:
+                                                              data.placeLatitude!,
+                                                          longitude: data
+                                                              .placeLongitude!,
+                                                          firstTime: true));
+                                                },
+                                                text: LanguageCubit.get(context)
+                                                    .getTexts('Select')
+                                                    .toString(),
+                                                fontSize: 20,
+                                                backColor: blueColor,
+                                                paddingVertical: 3,
+                                                textColor: white),
+                                          ),
                                     ],
                                   )
                                 ],

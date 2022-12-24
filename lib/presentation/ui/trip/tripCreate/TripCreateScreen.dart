@@ -12,12 +12,12 @@ import 'package:getn_driver/data/model/trips/To.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
+import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:getn_driver/presentation/ui/trip/recomendPlaces/RecomendPlacesScreen.dart';
 import 'package:getn_driver/presentation/ui/trip/tripCreate/SearchMapScreen.dart';
 import 'package:getn_driver/presentation/ui/trip/tripCreate/trip_create_cubit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TripCreateScreen extends StatefulWidget {
@@ -98,6 +98,86 @@ class _TripCreateScreenState extends State<TripCreateScreen> {
                 state: ToastStates.error,
                 context: context);
           }
+          if (state is CanCreateTripSuccessState) {
+            if (state.data!.activatedTrips! > 0) {
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                // outside to dismiss
+                builder: (BuildContext context) {
+                  return WillPopScope(
+                    onWillPop: () async => false,
+                    child: CustomDialogCanCreateTrip(
+                      title: LanguageCubit.get(context)
+                          .getTexts('Warning')
+                          .toString(),
+                      description: LanguageCubit.get(context)
+                          .getTexts('haveActivatedTrips')
+                          .toString(),
+                    ),
+                  );
+                },
+              );
+            }
+            else {
+              if (state.data!.canCreateTrip!) {
+                /*getDistance(toLatitude!, toLongitude!).then((value) {
+                DateTime now = DateTime.now();
+                // you should use package import 'package:intl/intl.dart';  for DateFormat
+                //2022-03-08 08:45:55
+                String currentDate =
+                    DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
+                print("toLatitude********* ${currentDate}");
+
+
+              });*/
+
+                TripCreateCubit.get(context).createTrip(
+                  CreateTripModel(
+                    from: From(
+                      placeTitle: fromAddress,
+                      placeLatitude: widget.fromLatitude.toString(),
+                      placeLongitude: widget.fromLongitude.toString(),
+                    ),
+                    // startDate: currentDate,
+                    to: To(
+                      placeTitle: toAddress,
+                      placeLatitude: toLatitude.toString(),
+                      placeLongitude: toLongitude.toString(),
+                    ),
+                    placeId: placeId,
+                    branchId: branchId,
+                    request: widget.requestId,
+                    // consumptionKM: double.parse(value.toStringAsFixed(2))
+                  ),
+                );
+              }
+              else {
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  // outside to dismiss
+                  builder: (BuildContext context) {
+                    return WillPopScope(
+                      onWillPop: () async => false,
+                      child: CustomDialogCanCreateTrip(
+                        title: LanguageCubit.get(context)
+                            .getTexts('Warning')
+                            .toString(),
+                        description:
+                            '${LanguageCubit.get(context).getTexts('needPoints1')}${state.data!.neededPoints!.toStringAsFixed(2)}${LanguageCubit.get(context).getTexts('needPoints2')}',
+                      ),
+                    );
+                  },
+                );
+              }
+            }
+          } else if (state is CanCreateTripErrorState) {
+            showToastt(
+                text: state.message,
+                state: ToastStates.error,
+                context: context);
+          }
         },
         builder: (context, state) {
           return Directionality(
@@ -107,9 +187,7 @@ class _TripCreateScreenState extends State<TripCreateScreen> {
             child: Scaffold(
               appBar: AppBar(
                 title: Text(
-                  LanguageCubit.get(context)
-                      .getTexts('TripDetails')
-                      .toString(),
+                  LanguageCubit.get(context).getTexts('TripDetails').toString(),
                   style: TextStyle(color: primaryColor, fontSize: 20.sp),
                 ),
                 actions: [
@@ -231,8 +309,8 @@ class _TripCreateScreenState extends State<TripCreateScreen> {
                                     toAddress.isNotEmpty
                                         ? toAddress
                                         : LanguageCubit.get(context)
-                                        .getTexts('SetOnMap')
-                                        .toString(),
+                                            .getTexts('SetOnMap')
+                                            .toString(),
                                     style: TextStyle(fontSize: 18.sp),
                                   ),
                                 ),
@@ -305,50 +383,35 @@ class _TripCreateScreenState extends State<TripCreateScreen> {
                                           .toString(),
                                       press: () {
                                         if (toAddress.isNotEmpty) {
-                                          getDistance(toLatitude!, toLongitude!)
-                                              .then((value) {
-                                            DateTime now = DateTime.now();
-                                            // you should use package import 'package:intl/intl.dart';  for DateFormat
-                                            //2022-03-08 08:45:55
-                                            String currentDate = DateFormat(
-                                                    'yyyy-MM-dd HH:mm:ss')
-                                                .format(now);
-                                            print(
-                                                "toLatitude********* ${currentDate}");
-
-                                            TripCreateCubit.get(context)
-                                                .createTrip(
-                                              CreateTripModel(
-                                                  from: From(
-                                                    placeTitle: fromAddress,
-                                                    placeLatitude: widget
-                                                        .fromLatitude
-                                                        .toString(),
-                                                    placeLongitude: widget
-                                                        .fromLongitude
-                                                        .toString(),
-                                                  ),
-                                                  startDate: currentDate,
-                                                  to: To(
-                                                    placeTitle: toAddress,
-                                                    placeLatitude:
-                                                        toLatitude.toString(),
-                                                    placeLongitude:
-                                                        toLongitude.toString(),
-                                                  ),
-                                                  placeId: placeId,
-                                                  branchId: branchId,
-                                                  request: widget.requestId,
-                                                  consumptionKM: double.parse(
-                                                      value
-                                                          .toStringAsFixed(2))),
-                                            );
-                                          });
+                                          TripCreateCubit.get(context)
+                                              .canCreateTrip(
+                                            CreateTripModel(
+                                              from: From(
+                                                placeTitle: fromAddress,
+                                                placeLatitude: widget
+                                                    .fromLatitude
+                                                    .toString(),
+                                                placeLongitude: widget
+                                                    .fromLongitude
+                                                    .toString(),
+                                              ),
+                                              to: To(
+                                                placeTitle: toAddress,
+                                                placeLatitude:
+                                                    toLatitude.toString(),
+                                                placeLongitude:
+                                                    toLongitude.toString(),
+                                              ),
+                                              placeId: placeId,
+                                              branchId: branchId,
+                                              request: widget.requestId,
+                                            ),
+                                          );
                                         } else {
                                           showToastt(
-                                              text:
-                                              LanguageCubit.get(context)
-                                                  .getTexts('ChooseDestinationFirst')
+                                              text: LanguageCubit.get(context)
+                                                  .getTexts(
+                                                      'ChooseDestinationFirst')
                                                   .toString(),
                                               state: ToastStates.error,
                                               context: context);

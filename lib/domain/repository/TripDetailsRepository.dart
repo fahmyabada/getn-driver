@@ -15,7 +15,8 @@ abstract class TripDetailsRepository {
       String latitude,
       String longitude,
       String place,
-      String branch);
+      String branch,
+      String verifyCode);
 
   Future<Either<String, APIResultModel>> setPolyLines(LatLng l1, LatLng l2);
 

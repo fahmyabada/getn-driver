@@ -45,13 +45,13 @@ class TripDetailsCubit extends Cubit<TripDetailsState> {
   }
 
   void editTrip(String id, String type, String comment,
-      String latitude, String longitude, String place, String branch) async {
+      String latitude, String longitude, String place, String branch, String verifyCode) async {
     if (type != "reject" && type != "end") {
       emit(TripDetailsEditInitial());
     }
 
     putTripDetailsUseCase
-        .execute(id, type, comment,  latitude, longitude, place, branch)
+        .execute(id, type, comment,  latitude, longitude, place, branch, verifyCode)
         .then((value) {
       emit(eitherLoadedOrErrorStateTripEdit(value, type));
     });
