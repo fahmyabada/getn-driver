@@ -19,9 +19,10 @@ class RecomendPlacesCubit extends Cubit<RecomendPlacesState> {
   int indexPlaces = 1;
   bool loadingPlaces = false;
 
-  void getPlaces(int index) async {
+  void getPlaces(int index,String categories) async {
     var body = {
       "page": index,
+      "categories": categories,
       "select-country": "title",
       "select-city": "title",
       "select-area": "title"

@@ -116,15 +116,17 @@ class _InfoBranchScreenState extends State<InfoBranchScreen> {
                                                   LanguageCubit.get(context)
                                                           .isEn
                                                       ? InfoBranchCubit.get(
-                                                              context)
-                                                          .info!
-                                                          .title!
-                                                          .en!
+                                                                  context)
+                                                              .info!
+                                                              .title!
+                                                              .en ??
+                                                          ''
                                                       : InfoBranchCubit.get(
-                                                              context)
-                                                          .info!
-                                                          .title!
-                                                          .ar!,
+                                                                  context)
+                                                              .info!
+                                                              .title!
+                                                              .ar ??
+                                                          '',
                                                   style: TextStyle(
                                                       fontSize: 20.sp,
                                                       color: black,
