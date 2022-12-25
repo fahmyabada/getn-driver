@@ -4,6 +4,8 @@ import 'package:getn_driver/data/repository/auth/AuthRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/auth/AuthRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/branchesPlaces/BranchesPlacesRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/branchesPlaces/BranchesPlacesRepositoryImpl.dart';
+import 'package:getn_driver/data/repository/categoryPlaceTrip/CategoryPlaceTripRemoteDataSource.dart';
+import 'package:getn_driver/data/repository/categoryPlaceTrip/CategoryPlaceTripRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/editProfile/EditProfileRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/editProfile/EditProfileRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/infoBranch/InfoBranchRemoteDataSource.dart';
@@ -30,6 +32,7 @@ import 'package:getn_driver/data/repository/wallet/WalletRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/wallet/WalletRepositoryImpl.dart';
 import 'package:getn_driver/domain/repository/AuthRepository.dart';
 import 'package:getn_driver/domain/repository/BranchesPlaceRepository.dart';
+import 'package:getn_driver/domain/repository/CategoryPlaceTripRepository.dart';
 import 'package:getn_driver/domain/repository/EditProfileRepository.dart';
 import 'package:getn_driver/domain/repository/InfoBranchRepository.dart';
 import 'package:getn_driver/domain/repository/InfoPlaceRepository.dart';
@@ -55,6 +58,7 @@ import 'package:getn_driver/domain/usecase/auth/LoginUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/RegisterUseCase.dart';
 import 'package:getn_driver/domain/usecase/auth/SendOtpUseCase.dart';
 import 'package:getn_driver/domain/usecase/branchesPlaces/GetBranchesPlacesUseCase.dart';
+import 'package:getn_driver/domain/usecase/categoryPlaceTripUseCase/GetCategoryPlaceTripUseCase.dart';
 import 'package:getn_driver/domain/usecase/editProfile/EditProfileUserUseCase.dart';
 import 'package:getn_driver/domain/usecase/editProfile/GetAreaEditProfileUseCase.dart';
 import 'package:getn_driver/domain/usecase/editProfile/GetCitiesEditProfileUseCase.dart';
@@ -154,10 +158,18 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => GetLastTripsUseCase(getIt()));
   getIt.registerLazySingleton(() => SignOutUseCase(getIt()));
   getIt.registerLazySingleton(() => CanCreateTripUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetCategoryPlaceTripUseCase(getIt()));
 
   // Repository
   getIt.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
+      getIt(),
+      getIt(),
+    ),
+  );
+
+  getIt.registerLazySingleton<CategoryPlaceTripRepository>(
+        () => CategoryPlaceTripRepositoryImpl(
       getIt(),
       getIt(),
     ),
@@ -261,6 +273,9 @@ Future<void> init() async {
 
   getIt.registerLazySingleton<RequestRemoteDataSource>(
       () => RequestRemoteDataSourceImpl());
+
+  getIt.registerLazySingleton<CategoryPlaceTripRemoteDataSource>(
+          () => CategoryPlaceTripRemoteDataSourceImpl());
 
   getIt.registerLazySingleton<RequestDetailsRemoteDataSource>(
       () => RequestDetailsRemoteDataSourceImpl());

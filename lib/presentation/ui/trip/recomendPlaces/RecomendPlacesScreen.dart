@@ -17,7 +17,8 @@ import 'package:scroll_edge_listener/scroll_edge_listener.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RecomendPlacesScreen extends StatefulWidget {
-  const RecomendPlacesScreen({Key? key}) : super(key: key);
+  const RecomendPlacesScreen({Key? key, required this.id}) : super(key: key);
+  final String id;
 
   @override
   State<RecomendPlacesScreen> createState() => _RecomendPlacesScreenState();

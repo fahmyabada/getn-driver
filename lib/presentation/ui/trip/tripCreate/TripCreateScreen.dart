@@ -14,6 +14,7 @@ import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
+import 'package:getn_driver/presentation/ui/trip/categoryPlaceTrip/CategoryPlaceTripScreen.dart';
 import 'package:getn_driver/presentation/ui/trip/recomendPlaces/RecomendPlacesScreen.dart';
 import 'package:getn_driver/presentation/ui/trip/tripCreate/SearchMapScreen.dart';
 import 'package:getn_driver/presentation/ui/trip/tripCreate/trip_create_cubit.dart';
@@ -346,7 +347,7 @@ class _TripCreateScreenState extends State<TripCreateScreen> {
                                     CurrentLocation data =
                                         await navigateToWithRefreshPagePrevious(
                                                 context,
-                                                const RecomendPlacesScreen())
+                                                const CategoryPlaceTripScreen())
                                             as CurrentLocation;
 
                                     print(
