@@ -413,7 +413,7 @@ class _InfoBranchScreenState extends State<InfoBranchScreen> {
                                                                                 height: 5.h,
                                                                               ),
                                                                               Text(
-                                                                                LanguageCubit.get(context).isEn ? '${data.area!.title!.en!}, ${data.city!.title!.en!}, ${data.country!.title!.en!}, ${InfoBranchCubit.get(context).info!.address!.en!}' : '${data.area!.title!.ar!}, ${data.city!.title!.ar!}, ${data.country!.title!.ar!}, ${InfoBranchCubit.get(context).info!.address!.ar!}',
+                                                                                LanguageCubit.get(context).isEn ? '${data.country!.title!.en!}, ${data.city!.title!.en!}, ${data.area!.title!.en!}, ${InfoBranchCubit.get(context).info!.address!.en!}' : '${data.country!.title!.ar!}, ${data.city!.title!.ar!}, ${data.area!.title!.ar!}, ${InfoBranchCubit.get(context).info!.address!.ar!}',
                                                                                 style: TextStyle(fontSize: 15.sp, color: grey2),
                                                                               ),
                                                                               SizedBox(
