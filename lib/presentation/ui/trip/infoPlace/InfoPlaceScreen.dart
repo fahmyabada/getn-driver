@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/model/CurrentLocation.dart';
 import 'package:getn_driver/data/utils/colors.dart';
@@ -33,6 +34,8 @@ class _InfoPlaceScreenState extends State<InfoPlaceScreen> {
       LanguageCubit.get(context).isEn =
           getIt<SharedPreferences>().getBool("isEn")!;
     }
+    print('type********** ${widget.type}');
+    print('id********** ${widget.id}');
   }
 
   @override
@@ -53,7 +56,9 @@ class _InfoPlaceScreenState extends State<InfoPlaceScreen> {
             child: Scaffold(
               appBar: AppBar(
                 title: Text(
-                  '${LanguageCubit.get(context).getTexts('Details').toString()} ${widget.type == 'Branch' ? LanguageCubit.get(context).getTexts('Branch').toString() : LanguageCubit.get(context).getTexts('Place').toString()}',
+                  LanguageCubit.get(context).isEn
+                      ? '${widget.type == 'Branch' ? LanguageCubit.get(context).getTexts('Branch').toString() : LanguageCubit.get(context).getTexts('Place').toString()} ${LanguageCubit.get(context).getTexts('Details').toString()}'
+                      : '${LanguageCubit.get(context).getTexts('Details').toString()} ${widget.type == 'Branch' ? LanguageCubit.get(context).getTexts('Branch').toString() : LanguageCubit.get(context).getTexts('Place').toString()} ',
                   style: TextStyle(color: primaryColor, fontSize: 20.sp),
                 ),
                 centerTitle: true,
@@ -114,18 +119,17 @@ class _InfoPlaceScreenState extends State<InfoPlaceScreen> {
                                           children: [
                                             Expanded(
                                               child: Text(
-                                             LanguageCubit.get(context)
-                                                            .isEn
-                                                        ? InfoPlaceCubit.get(
-                                                                context)
-                                                            .info!
-                                                            .title!
-                                                            .en!
-                                                        : InfoPlaceCubit.get(
-                                                                context)
-                                                            .info!
-                                                            .title!
-                                                            .ar!,
+                                                LanguageCubit.get(context).isEn
+                                                    ? InfoPlaceCubit.get(
+                                                            context)
+                                                        .info!
+                                                        .title!
+                                                        .en!
+                                                    : InfoPlaceCubit.get(
+                                                            context)
+                                                        .info!
+                                                        .title!
+                                                        .ar!,
                                                 style: TextStyle(
                                                     fontSize: 20.sp,
                                                     color: black,
@@ -140,8 +144,8 @@ class _InfoPlaceScreenState extends State<InfoPlaceScreen> {
                                         ),
                                         Text(
                                           LanguageCubit.get(context).isEn
-                                              ? '${InfoPlaceCubit.get(context).info!.area!.title!.en!}, ${InfoPlaceCubit.get(context).info!.city!.title!.en!}, ${InfoPlaceCubit.get(context).info!.country!.title!.en!}, ${InfoPlaceCubit.get(context).info!.address!.en!}'
-                                              : '${InfoPlaceCubit.get(context).info!.area!.title!.ar!}, ${InfoPlaceCubit.get(context).info!.city!.title!.ar!}, ${InfoPlaceCubit.get(context).info!.country!.title!.ar!}, ${InfoPlaceCubit.get(context).info!.address!.ar!}',
+                                              ? '${InfoPlaceCubit.get(context).info!.country!.title!.en!}, ${InfoPlaceCubit.get(context).info!.city!.title!.en!}, ${InfoPlaceCubit.get(context).info!.area!.title!.en!}, ${InfoPlaceCubit.get(context).info!.address!.en!}'
+                                              : '${InfoPlaceCubit.get(context).info!.country!.title!.ar!}, ${InfoPlaceCubit.get(context).info!.city!.title!.ar!}, ${InfoPlaceCubit.get(context).info!.area!.title!.ar!}, ${InfoPlaceCubit.get(context).info!.address!.ar!}',
                                           style: TextStyle(
                                               fontSize: 18.sp, color: grey2),
                                         ),
@@ -169,60 +173,96 @@ class _InfoPlaceScreenState extends State<InfoPlaceScreen> {
                             SizedBox(
                               height: 10.h,
                             ),
+                            InfoPlaceCubit.get(context).info!.desc!.en != null
+                                ? Html(
+                                    data: LanguageCubit.get(context).isEn
+                                        ? InfoPlaceCubit.get(context)
+                                            .info!
+                                            .desc!
+                                            .en!
+                                        : InfoPlaceCubit.get(context)
+                                            .info!
+                                            .desc!
+                                            .ar!,
+                                  )
+                                : Text(
+                                    LanguageCubit.get(context)
+                                        .getTexts('PlaceDescription')
+                                        .toString(),
+                                    style: TextStyle(
+                                        fontSize: 18.sp, color: grey2),
+                                  ),
+                            SizedBox(
+                              height: 25.h,
+                            ),
                             Text(
-                              LanguageCubit.get(context).isEn
-                                  ? InfoPlaceCubit.get(context)
-                                          .info!
-                                          .desc
-                                          ?.en ??
-                                      ''
-                                  : InfoPlaceCubit.get(context)
-                                          .info!
-                                          .desc
-                                          ?.ar ??
-                                      '',
-                              style: TextStyle(fontSize: 18.sp, color: grey2),
+                              LanguageCubit.get(context)
+                                  .getTexts('Gallery')
+                                  .toString(),
+                              style: TextStyle(
+                                  fontSize: 20.sp,
+                                  color: black,
+                                  fontWeight: FontWeight.bold),
                             ),
                             SizedBox(
                               height: 25.h,
                             ),
-                            GridView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: InfoPlaceCubit.get(context)
-                                  .info!
-                                  .gallery!
-                                  .length,
-                              shrinkWrap: true,
-                              gridDelegate:
-                                  SliverGridDelegateWithMaxCrossAxisExtent(
-                                      maxCrossAxisExtent: 150.sp,
-                                      crossAxisSpacing: 20.w,
-                                      mainAxisSpacing: 20.h),
-                              itemBuilder: (context, i) {
-                                return Container(
-                                  height: 200.h,
-                                  width: 250.w,
-                                  decoration: BoxDecoration(
-                                    color: white,
-                                    shape: BoxShape.rectangle,
-                                    borderRadius: BorderRadius.circular(25.r),
-                                    border: Border.all(color: Colors.black),
+                            InfoPlaceCubit.get(context)
+                                    .info!
+                                    .gallery!
+                                    .isNotEmpty
+                                ? GridView.builder(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: InfoPlaceCubit.get(context)
+                                        .info!
+                                        .gallery!
+                                        .length,
+                                    shrinkWrap: true,
+                                    gridDelegate:
+                                        SliverGridDelegateWithMaxCrossAxisExtent(
+                                            maxCrossAxisExtent: 150.sp,
+                                            crossAxisSpacing: 20.w,
+                                            mainAxisSpacing: 20.h),
+                                    itemBuilder: (context, i) {
+                                      return Container(
+                                        height: 200.h,
+                                        width: 250.w,
+                                        decoration: BoxDecoration(
+                                          color: white,
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                              BorderRadius.circular(25.r),
+                                          border:
+                                              Border.all(color: Colors.black),
+                                        ),
+                                        child: SizedBox(
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(25.r),
+                                            child: ImageTools.image(
+                                              url: InfoPlaceCubit.get(context)
+                                                  .info!
+                                                  .gallery![i]
+                                                  .src,
+                                              fit: BoxFit.fill,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  )
+                                : Text(
+                                    widget.type == "Branch"
+                                        ? LanguageCubit.get(context)
+                                            .getTexts('NotHaveGalleryBranch')
+                                            .toString()
+                                        : LanguageCubit.get(context)
+                                            .getTexts('NotHaveGalleryPlace')
+                                            .toString(),
+                                    style: TextStyle(
+                                        fontSize: 18.sp, color: grey2),
                                   ),
-                                  child: SizedBox(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(25.r),
-                                      child: ImageTools.image(
-                                        url: InfoPlaceCubit.get(context)
-                                            .info!
-                                            .gallery![i]
-                                            .src,
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
                             SizedBox(
                               height: 25.h,
                             ),
@@ -271,7 +311,7 @@ class _InfoPlaceScreenState extends State<InfoPlaceScreen> {
                               firstTime: true));
                     },
                     text:
-                        "${LanguageCubit.get(context).getTexts('selectThis').toString()} ${widget.type == 'Branch' ? LanguageCubit.get(context).getTexts('Branch').toString() : LanguageCubit.get(context).getTexts('Place').toString()}",
+                        "${LanguageCubit.get(context).getTexts('select').toString()} ${widget.type == 'Branch' ? LanguageCubit.get(context).getTexts('Branch').toString() : LanguageCubit.get(context).getTexts('Place').toString()}",
                     backColor: accentColor,
                     textColor: white),
               ),

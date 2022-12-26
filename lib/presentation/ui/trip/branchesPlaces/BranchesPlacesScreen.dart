@@ -55,7 +55,7 @@ class _BranchesPlacesScreenState extends State<BranchesPlacesScreen> {
               appBar: AppBar(
                 title: Text(
                   LanguageCubit.get(context)
-                      .getTexts('ChooseDestination')
+                      .getTexts('ChooseBranch')
                       .toString(),
                   style: TextStyle(color: primaryColor, fontSize: 20.sp),
                 ),
@@ -141,8 +141,8 @@ class _BranchesPlacesScreenState extends State<BranchesPlacesScreen> {
                                               ),
                                               Text(
                                                 LanguageCubit.get(context).isEn
-                                                    ? '${data.area!.title!.en!}, ${data.city!.title!.en!}, ${data.country!.title!.en!}, ${data.address!.en!}'
-                                                    : '${data.area!.title!.ar!}, ${data.city!.title!.ar!}, ${data.country!.title!.ar!}, ${data.address!.ar!}',
+                                                    ? '${data.country!.title!.en!}, ${data.city!.title!.en!}, ${data.area!.title!.en!}, ${data.address!.en!}'
+                                                    : '${data.country!.title!.ar!}, ${data.city!.title!.ar!}, ${data.area!.title!.ar!}, ${data.address!.ar!}',
 
                                                 style: TextStyle(
                                                     fontSize: 15.sp,

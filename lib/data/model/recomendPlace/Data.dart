@@ -157,6 +157,12 @@ class Data {
 
   List<Gallery>? get gallery => _gallery;
 
+
+  @override
+  String toString() {
+    return 'Data{_brief: $_brief, _address: $_address, _banner: $_banner, _desc: $_desc, _logo: $_logo, _image: $_image, _title: $_title, _categories: $_categories, _place: $_place, _branchesCount: $_branchesCount, _id: $_id, _city: $_city, _area: $_area, _country: $_country, _gallery: $_gallery}';
+  }
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     if (_brief != null) {

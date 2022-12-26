@@ -22,6 +22,8 @@ class InfoBranchCubit extends Cubit<InfoBranchState> {
   List<Data> branches = [];
   int indexBranches = 1;
   bool loadingBranches = false;
+  String failureInfo = '';
+  String failureBranches = '';
 
   void getBranches(int index, String placeId) async {
     var body = {"page": index, "place": placeId};
@@ -40,6 +42,7 @@ class InfoBranchCubit extends Cubit<InfoBranchState> {
   InfoBranchState eitherLoadedOrErrorStatePlaces(
       Either<String, RecomendPlaces?> data) {
     return data.fold((failure1) {
+      failureBranches = failure1;
       return GetBranchesErrorState(failure1);
     }, (data) {
       if (data!.data!.isNotEmpty) {
@@ -55,6 +58,7 @@ class InfoBranchCubit extends Cubit<InfoBranchState> {
   InfoBranchState eitherLoadedOrErrorStatePlaces2(
       Either<String, RecomendPlaces?> data) {
     return data.fold((failure1) {
+      failureBranches = failure1;
       return GetBranchesErrorState(failure1);
     }, (data) {
       if (data!.data!.isNotEmpty) {
@@ -70,7 +74,7 @@ class InfoBranchCubit extends Cubit<InfoBranchState> {
     });
   }
 
-  void getInfoPlace(String id) async {
+  void getInfoBranch(String id) async {
     emit(GetInfoPlaceInitial());
     infoPlaceBranchUseCase.execute(id).then((value) {
       emit(eitherLoadedOrErrorStateInfoPlace(value));
@@ -80,6 +84,7 @@ class InfoBranchCubit extends Cubit<InfoBranchState> {
   InfoBranchState eitherLoadedOrErrorStateInfoPlace(
       Either<String, Data?> data) {
     return data.fold((failure1) {
+      failureInfo = failure1;
       return GetInfoPlaceErrorState(failure1);
     }, (data) {
       info = data;
@@ -87,5 +92,4 @@ class InfoBranchCubit extends Cubit<InfoBranchState> {
       return GetInfoPlaceSuccessState(data);
     });
   }
-
 }

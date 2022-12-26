@@ -23,7 +23,7 @@ class CategoryPlaceTripScreen extends StatefulWidget {
 }
 
 class _CategoryPlaceTripScreenState extends State<CategoryPlaceTripScreen> {
-  bool loadingMoreUpCategory = false;
+  bool loadingMoreCategory = false;
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +34,11 @@ class _CategoryPlaceTripScreenState extends State<CategoryPlaceTripScreen> {
         listener: (context, state) {
           if (state is CategoryPlaceTripSuccessState) {
             setState(() {
-              loadingMoreUpCategory = false;
+              loadingMoreCategory = false;
             });
           } else if (state is CategoryPlaceTripErrorState) {
             setState(() {
-              loadingMoreUpCategory = false;
+              loadingMoreCategory = false;
             });
           }
         },
@@ -66,7 +66,7 @@ class _CategoryPlaceTripScreenState extends State<CategoryPlaceTripScreen> {
                 // dispatch: true,
                 listener: () {
                   setState(() {
-                    loadingMoreUpCategory = true;
+                    loadingMoreCategory = true;
                   });
                   CategoryPlaceTripScreenCubit.get(context).getCategoryPlace(
                       CategoryPlaceTripScreenCubit.get(context).indexCategoryPlace);
@@ -87,86 +87,104 @@ class _CategoryPlaceTripScreenState extends State<CategoryPlaceTripScreen> {
                                       .getCategoryPlace(1);
                                 },
                                 context: context)
-                            : Container(
+                            :  SingleChildScrollView(
+                              child: Container(
                                 margin: EdgeInsets.symmetric(horizontal: 15.r),
-                                child: AlignedGridView.count(
-                                  crossAxisCount: 2,
-                                  crossAxisSpacing: 20.w,
-                                  scrollDirection: Axis.vertical,
-                                  physics: AlwaysScrollableScrollPhysics(),
-                                  itemCount:
-                                      CategoryPlaceTripScreenCubit.get(context)
-                                          .categoryPlace
-                                          .length,
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, i) {
-                                    Data data =
-                                        CategoryPlaceTripScreenCubit.get(
-                                                context)
-                                            .categoryPlace[i];
-                                    return InkWell(
-                                      child: Container(
-                                        margin: EdgeInsets.symmetric(
-                                            vertical: 10.r),
-                                        padding: EdgeInsets.all(10.r),
-                                        decoration: BoxDecoration(
-                                          color: white,
-                                          shape: BoxShape.rectangle,
-                                          borderRadius:
-                                              BorderRadius.circular(25.r),
-                                          border: Border.all(color: grey2),
-                                        ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            SizedBox(
-                                              height: 1.sw / 3.5,
-                                              width: 1.sw / 3.5,
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(25.r),
-                                                child: ImageTools.image(
-                                                  url: data.icon != null
-                                                      ? data.icon!.src!
-                                                      : null,
-                                                  fit: BoxFit.fill,
+                                child: Column(
+                                      children: [
+                                        AlignedGridView.count(
+                                          crossAxisCount: 2,
+                                          crossAxisSpacing: 20.w,
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          itemCount:
+                                              CategoryPlaceTripScreenCubit.get(context)
+                                                  .categoryPlace
+                                                  .length,
+                                          shrinkWrap: true,
+                                          itemBuilder: (context, i) {
+                                            Data data =
+                                                CategoryPlaceTripScreenCubit.get(
+                                                        context)
+                                                    .categoryPlace[i];
+                                            return InkWell(
+                                              child: Container(
+                                                margin: EdgeInsets.symmetric(
+                                                    vertical: 10.r),
+                                                padding: EdgeInsets.all(10.r),
+                                                decoration: BoxDecoration(
+                                                  color: white,
+                                                  shape: BoxShape.rectangle,
+                                                  borderRadius:
+                                                      BorderRadius.circular(25.r),
+                                                  border: Border.all(color: grey2),
+                                                ),
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 1.sw / 3.5,
+                                                      width: 1.sw / 3.5,
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius.circular(25.r),
+                                                        child: ImageTools.image(
+                                                          url: data.icon != null
+                                                              ? data.icon!.src!
+                                                              : null,
+                                                          fit: BoxFit.fill,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 15.h,
+                                                    ),
+                                                    Text(
+                                                      LanguageCubit.get(context).isEn
+                                                          ? data.title!.en!
+                                                          : data.title!.ar!,
+                                                      textAlign: TextAlign.center,
+                                                      style: TextStyle(
+                                                        color: black,
+                                                        fontSize: 16.sp,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                            ),
-                                            SizedBox(
-                                              height: 15.h,
-                                            ),
-                                            Text(
-                                              LanguageCubit.get(context).isEn
-                                                  ? data.title!.en!
-                                                  : data.title!.ar!,
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: black,
-                                                fontSize: 16.sp,
-                                              ),
-                                            ),
-                                          ],
+                                              onTap: () async {
+                                                CurrentLocation location =
+                                                    await navigateToWithRefreshPagePrevious(
+                                                        context,
+                                                        RecomendPlacesScreen(
+                                                          id: data.id!,
+                                                        )) as CurrentLocation;
+                                                setState(() {
+                                                  if (location.description != null) {
+                                                    Navigator.of(context).pop(location);
+                                                  }
+                                                });
+                                              },
+                                            );
+                                          },
                                         ),
-                                      ),
-                                      onTap: () async {
-                                        CurrentLocation location =
-                                            await navigateToWithRefreshPagePrevious(
-                                                context,
-                                                RecomendPlacesScreen(
-                                                  id: data.id!,
-                                                )) as CurrentLocation;
-                                        setState(() {
-                                          if (location.description != null) {
-                                            Navigator.of(context).pop(location);
-                                          }
-                                        });
-                                      },
-                                    );
-                                  },
-                                ),
-                              )
+                                         loadingMoreCategory
+                                            ? Column(
+                                              children: [
+                                                SizedBox(
+                                                  height: 10.h,
+                                                ),
+                                                loading(),
+                                                SizedBox(
+                                                  height: 10.h,
+                                                ),
+                                              ],
+                                            )
+                                            : Container(),
+                                      ],
+                                    ),
+                              ),
+                            )
                         : state is CategoryPlaceTripErrorState
                             ? errorMessage(
                                 message: state.message,

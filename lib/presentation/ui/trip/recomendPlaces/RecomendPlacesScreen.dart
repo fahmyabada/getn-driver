@@ -53,7 +53,7 @@ class _RecomendPlacesScreenState extends State<RecomendPlacesScreen> {
               appBar: AppBar(
                 title: Text(
                   LanguageCubit.get(context)
-                      .getTexts('ChooseDestination')
+                      .getTexts('ChoosePlace')
                       .toString(),
                   style: TextStyle(color: primaryColor, fontSize: 20.sp),
                 ),

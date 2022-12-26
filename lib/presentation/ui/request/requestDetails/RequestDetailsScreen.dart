@@ -962,7 +962,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                     color: black,
                                                   ))
                                                 : defaultButton2(
-                                                    text: 'Add Trip',
+                                                    text: LanguageCubit.get(context).getTexts('AddTrip').toString(),
                                                     press: () {
                                                       RequestDetailsCubit.get(
                                                               context)
