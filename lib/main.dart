@@ -18,6 +18,7 @@ import 'package:getn_driver/presentation/ui/splash/SplashScreen.dart';
 import 'package:getn_driver/presentation/ui/trip/tripDetails/trip_details_cubit.dart';
 import 'package:getn_driver/presentation/ui/wallet/wallet_cubit.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
 // for error connection with api
@@ -43,7 +44,6 @@ void main() async {
   //   builder: (context) => MyApp(),
   // ));
 
-
   runApp(const MyApp());
 }
 
@@ -51,6 +51,8 @@ Future<void> backgroundHandler(RemoteMessage message) async {
   if (kDebugMode) {
     print('messageData ********=${message.data.toString()}');
     print('messageTitle ********=${message.notification!.toString()}');
+    // final sharedPreferences = await SharedPreferences.getInstance();
+    getIt<SharedPreferences>().setString('screenResume', message.data['type']);
   }
 }
 
@@ -64,48 +66,47 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       designSize: const Size(411, 891),
       minTextAdapt: true,
-      builder: (BuildContext context, child) =>
-          MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (context) => WalletCubit(),
+      builder: (BuildContext context, child) => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => WalletCubit(),
+          ),
+          BlocProvider(
+            create: (context) => LanguageCubit(),
+          ),
+          BlocProvider(
+            create: (context) => RequestDetailsCubit(),
+          ),
+          BlocProvider(
+            create: (context) => TripDetailsCubit(),
+          ),
+          BlocProvider(
+            create: (context) => RequestCubit(),
+          ),
+        ],
+        child: MaterialApp(
+          navigatorKey: navigatorKey,
+          debugShowCheckedModeBanner: false,
+          title: 'GetNDriver',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            scaffoldBackgroundColor: white,
+            appBarTheme: const AppBarTheme(
+              systemOverlayStyle: SystemUiOverlayStyle(
+                statusBarColor: accentColor,
+                statusBarBrightness: Brightness.light,
+                statusBarIconBrightness: Brightness.light,
               ),
-              BlocProvider(
-                create: (context) => LanguageCubit(),
+              iconTheme: IconThemeData(
+                color: black, //change your color here
               ),
-              BlocProvider(
-                create: (context) => RequestDetailsCubit(),
-              ),
-              BlocProvider(
-                create: (context) => TripDetailsCubit(),
-              ),
-              BlocProvider(
-                create: (context) => RequestCubit(),
-              ),
-            ],
-            child: MaterialApp(
-              navigatorKey: navigatorKey,
-              debugShowCheckedModeBanner: false,
-              title: 'GetNDriver',
-              theme: ThemeData(
-                primarySwatch: Colors.blue,
-                scaffoldBackgroundColor: white,
-                appBarTheme: const AppBarTheme(
-                  systemOverlayStyle: SystemUiOverlayStyle(
-                    statusBarColor: accentColor,
-                    statusBarBrightness: Brightness.light,
-                    statusBarIconBrightness: Brightness.light,
-                  ),
-                  iconTheme: IconThemeData(
-                    color: black, //change your color here
-                  ),
-                  color: white,
-                  elevation: 0.0,
-                ),
-              ),
-              home: const SplashScreen(),
+              color: white,
+              elevation: 0.0,
             ),
           ),
+          home: const SplashScreen(),
+        ),
+      ),
     );
   }
 }

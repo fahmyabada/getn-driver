@@ -192,6 +192,13 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
 
   void viewWillAppear() {
     print("onResume / viewWillAppear / onFocusGained   TripDetailsScreen");
+    if (getIt<SharedPreferences>().getString('screenResume') != null &&
+        getIt<SharedPreferences>().getString('screenResume')!.isNotEmpty &&
+        getIt<SharedPreferences>().getString('screenResume').toString() ==
+            'request') {
+      getIt<SharedPreferences>().setString('screenResume', '');
+      TripDetailsCubit.get(context).getTripDetails(widget.idTrip!);
+    }
     getIt<SharedPreferences>().setString('typeScreen', "tripDetails");
     getIt<SharedPreferences>().setString('tripDetailsId', widget.idTrip!);
     getIt<SharedPreferences>().setString('requestDetailsId', "");

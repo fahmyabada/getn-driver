@@ -150,6 +150,24 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
 
   void viewWillAppear() {
     print("onResume / viewWillAppear / onFocusGained    requestTabs");
+    if (getIt<SharedPreferences>().getString('screenResume') != null &&
+        getIt<SharedPreferences>().getString('screenResume')!.isNotEmpty &&
+        getIt<SharedPreferences>().getString('screenResume').toString() ==
+            'request') {
+      getIt<SharedPreferences>().setString('screenResume', '');
+      if (_currentIndex == 0) {
+        RequestCubit.get(context).getRequestCurrent(1);
+      } else if (_currentIndex == 1) {
+        RequestCubit.get(context).indexUpComing = 1;
+        RequestCubit.get(context).getRequestUpComing(1);
+      } else if (_currentIndex == 2) {
+        RequestCubit.get(context).indexPast = 1;
+        RequestCubit.get(context).getRequestPast(1);
+      } else if (_currentIndex == 3) {
+        RequestCubit.get(context).indexPending = 1;
+        RequestCubit.get(context).getRequestPending(1);
+      }
+    }
     getIt<SharedPreferences>().setString('typeScreen', "request");
     getIt<SharedPreferences>().setString('requestDetailsId', "");
     getIt<SharedPreferences>().setString('tripDetailsId', "");
@@ -247,9 +265,15 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               : ui.TextDirection.rtl,
           child: Scaffold(
             appBar: AppBar(
-              title: Text(
-                LanguageCubit.get(context).getTexts('Requests').toString(),
-                style: TextStyle(color: primaryColor, fontSize: 20.sp),
+              title: InkWell(
+                onTap: (){
+                  print("onResume******** ${getIt<SharedPreferences>().getString('screenResume').toString()}");
+
+                },
+                child: Text(
+                  LanguageCubit.get(context).getTexts('Requests').toString(),
+                  style: TextStyle(color: primaryColor, fontSize: 20.sp),
+                ),
               ),
               centerTitle: true,
               elevation: 1.0,
