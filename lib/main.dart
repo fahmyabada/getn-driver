@@ -51,8 +51,9 @@ Future<void> backgroundHandler(RemoteMessage message) async {
   if (kDebugMode) {
     print('messageData ********=${message.data.toString()}');
     print('messageTitle ********=${message.notification!.toString()}');
-    // final sharedPreferences = await SharedPreferences.getInstance();
-    getIt<SharedPreferences>().setString('screenResume', message.data['type']);
+    final sharedPreferences = await SharedPreferences.getInstance();
+    // getIt<SharedPreferences>().setString('screenResume', message.data['type']);
+    sharedPreferences.setString('screenResume', message.data['type']);
   }
 }
 

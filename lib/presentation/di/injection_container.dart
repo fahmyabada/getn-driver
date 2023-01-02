@@ -16,6 +16,8 @@ import 'package:getn_driver/data/repository/myCar/MyCarRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/myCar/MyCarRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/notifications/NotificationRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/notifications/NotificationRepositoryImpl.dart';
+import 'package:getn_driver/data/repository/packages/PackagesRemoteDataSource.dart';
+import 'package:getn_driver/data/repository/packages/PackagesRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/policies/PoliciesRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/policies/PoliciesRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/recomendPlaces/RecomendPlacesRemoteDataSource.dart';
@@ -38,6 +40,7 @@ import 'package:getn_driver/domain/repository/InfoBranchRepository.dart';
 import 'package:getn_driver/domain/repository/InfoPlaceRepository.dart';
 import 'package:getn_driver/domain/repository/MyCarRepository.dart';
 import 'package:getn_driver/domain/repository/NotificationRepository.dart';
+import 'package:getn_driver/domain/repository/PackagesRepository.dart';
 import 'package:getn_driver/domain/repository/PoliciesRepository.dart';
 import 'package:getn_driver/domain/repository/RecomendPlaceRepository.dart';
 import 'package:getn_driver/domain/repository/RequestDetailsRepository.dart';
@@ -73,6 +76,7 @@ import 'package:getn_driver/domain/usecase/myCar/GetMyCarSubCategoryUseCase.dart
 import 'package:getn_driver/domain/usecase/myCar/GetMyCarUseCase.dart';
 import 'package:getn_driver/domain/usecase/myCar/GetMyColorUseCase.dart';
 import 'package:getn_driver/domain/usecase/notifications/GetNotificationUseCase.dart';
+import 'package:getn_driver/domain/usecase/packages/GetPackagesUseCase.dart';
 import 'package:getn_driver/domain/usecase/policies/GetPoliciesUseCase.dart';
 import 'package:getn_driver/domain/usecase/recomendPlaces/GetRecomendPlacesUseCase.dart';
 import 'package:getn_driver/domain/usecase/request/GetProfileUseCase.dart';
@@ -159,6 +163,7 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => SignOutUseCase(getIt()));
   getIt.registerLazySingleton(() => CanCreateTripUseCase(getIt()));
   getIt.registerLazySingleton(() => GetCategoryPlaceTripUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetPackagesUseCase(getIt()));
 
   // Repository
   getIt.registerLazySingleton<AuthRepository>(
@@ -170,6 +175,13 @@ Future<void> init() async {
 
   getIt.registerLazySingleton<CategoryPlaceTripRepository>(
         () => CategoryPlaceTripRepositoryImpl(
+      getIt(),
+      getIt(),
+    ),
+  );
+
+  getIt.registerLazySingleton<PackagesRepository>(
+        () => PackagesRepositoryImpl(
       getIt(),
       getIt(),
     ),
@@ -313,6 +325,8 @@ Future<void> init() async {
   getIt.registerLazySingleton<MyCarRemoteDataSource>(
           () => MyCarRemoteDataSourceImpl());
 
+  getIt.registerLazySingleton<PackagesRemoteDataSource>(
+          () => PackagesRemoteDataSourceImpl());
 
   //! Core
   getIt.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(getIt()));
