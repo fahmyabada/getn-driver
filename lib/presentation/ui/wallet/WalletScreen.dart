@@ -102,6 +102,21 @@ class _WalletScreenState extends State<WalletScreen> {
   void viewWillAppear() {
     print("onResume / viewWillAppear / onFocusGained     WalletScreen");
     getIt<SharedPreferences>().setString('typeScreen', "WalletScreen");
+    getIt<SharedPreferences>().reload().then((value) {
+      print(
+          "onResumeWalletScreen******** ${getIt<SharedPreferences>().getString('screenResume').toString()}");
+      getIt<SharedPreferences>().setString('screenResume', '');
+      if (getIt<SharedPreferences>().getString('screenResume') != null &&
+          getIt<SharedPreferences>().getString('screenResume')!.isNotEmpty &&
+          getIt<SharedPreferences>().getString('screenResume').toString() ==
+              'payment') {
+        loadingMoreWallet = false;
+        loadingMoreRequests = false;
+        WalletCubit.get(context).currentIndex = 0;
+        WalletCubit.get(context).typeScreen = "wallet";
+        WalletCubit.get(context).getWallet(1);
+      }
+    });
   }
 
   void viewWillDisappear() {
@@ -468,9 +483,9 @@ class _WalletScreenState extends State<WalletScreen> {
                                                               height: 5.h,
                                                             ),
                                                             item.paymentMethod ==
-                                                                'visa'
+                                                                    'visa'
                                                                 ? Text(
-                                                                '${LanguageCubit.get(context).getTexts('BankName')} : ${item.paymentDetails!.bankName!}')
+                                                                    '${LanguageCubit.get(context).getTexts('BankName')} : ${item.paymentDetails!.bankName!}')
                                                                 : Container(),
                                                             Text(item.paymentMethod ==
                                                                     'visa'
@@ -479,7 +494,6 @@ class _WalletScreenState extends State<WalletScreen> {
                                                                         'phone'
                                                                     ? '${LanguageCubit.get(context).isEn ? DateFormat.yMEd().format(DateTime.parse(item.createdAt!)) : DateFormat.yMEd('ar').format(DateTime.parse(item.createdAt!))} ${LanguageCubit.get(context).isEn ? DateFormat.jm().format(DateTime.parse(item.createdAt!)) : DateFormat.jm('ar').format(DateTime.parse(item.createdAt!))}'
                                                                     : ''),
-
                                                           ],
                                                         ),
                                                         trailing: Text(

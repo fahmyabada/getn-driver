@@ -130,19 +130,22 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   void viewWillAppear() {
     print("onResume / viewWillAppear / onFocusGained     RequestDetailsScreen");
-    if (getIt<SharedPreferences>().getString('screenResume') != null &&
-        getIt<SharedPreferences>().getString('screenResume')!.isNotEmpty &&
-        getIt<SharedPreferences>().getString('screenResume').toString() ==
-            'request') {
+    getIt<SharedPreferences>().reload().then((value) {
+      print("onResumeRequestDetailsScreen******** ${getIt<SharedPreferences>().getString('screenResume').toString()}");
       getIt<SharedPreferences>().setString('screenResume', '');
-      loadingMoreTrips = false;
-      RequestDetailsCubit.get(context).indexTrips = 1;
-      RequestDetailsCubit.get(context).loadingRequest = false;
-      RequestDetailsCubit.get(context).failureRequest = "";
-      RequestDetailsCubit.get(context).failureTrip = "";
-      RequestDetailsCubit.get(context)
-          .getRequestDetails(RequestDetailsCubit.get(context).idRequest);
-    }
+      if (getIt<SharedPreferences>().getString('screenResume') != null &&
+          getIt<SharedPreferences>().getString('screenResume')!.isNotEmpty &&
+          getIt<SharedPreferences>().getString('screenResume').toString() ==
+              'request') {
+        loadingMoreTrips = false;
+        RequestDetailsCubit.get(context).indexTrips = 1;
+        RequestDetailsCubit.get(context).loadingRequest = false;
+        RequestDetailsCubit.get(context).failureRequest = "";
+        RequestDetailsCubit.get(context).failureTrip = "";
+        RequestDetailsCubit.get(context)
+            .getRequestDetails(RequestDetailsCubit.get(context).idRequest);
+      }
+    });
     getIt<SharedPreferences>().setString('typeScreen', "requestDetails");
     getIt<SharedPreferences>().setString(
         'requestDetailsId', RequestDetailsCubit.get(context).idRequest);
