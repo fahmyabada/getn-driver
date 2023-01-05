@@ -41,7 +41,7 @@
             android:value="2" />
 
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCVy_LzCTaZn-MCwJF6qElGO3gc5K0JwI8"/>
+            android:value="AIzaSyBw4jfzf6T0r8C8BZK6f7PG_3JJXoDOe70"/>
 
     <!--for show popup notification in background or terminate-->
         <meta-data

@@ -742,34 +742,6 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
           children: [
             Expanded(
               child: Card(
-                color: yellowLightColor,
-                child: Padding(
-                  padding: EdgeInsets.all(10.r),
-                  child: Column(children: [
-                    Text(
-                      LanguageCubit.get(context)
-                          .getTexts('Distance')
-                          .toString(),
-                      style: TextStyle(color: grey2, fontSize: 13.sp),
-                    ),
-                    SizedBox(
-                      height: 5.r,
-                    ),
-                    Text(
-                      // '20',
-                      '${data.consumptionKM!.toStringAsFixed(2)} ${LanguageCubit.get(context).getTexts('KM')}',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: black,
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ]),
-                ),
-              ),
-            ),
-            Expanded(
-              child: Card(
                 color: rough,
                 child: Padding(
                   padding: EdgeInsets.all(10.r),
@@ -812,6 +784,34 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                     Text(
                       // '20',
                       data.oneKMPoints.toString(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: black,
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ]),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Card(
+                color: yellowLightColor,
+                child: Padding(
+                  padding: EdgeInsets.all(10.r),
+                  child: Column(children: [
+                    Text(
+                      LanguageCubit.get(context)
+                          .getTexts('Distance')
+                          .toString(),
+                      style: TextStyle(color: grey2, fontSize: 13.sp),
+                    ),
+                    SizedBox(
+                      height: 5.r,
+                    ),
+                    Text(
+                      // '20',
+                      '${data.consumptionKM!.toStringAsFixed(2)} ${LanguageCubit.get(context).getTexts('KM')}',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: black,

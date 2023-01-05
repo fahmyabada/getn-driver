@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -168,7 +169,7 @@ class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
     try {
       var body = {
         "input": text,
-        "key": "AIzaSyCVy_LzCTaZn-MCwJF6qElGO3gc5K0JwI8"
+        "key": Platform.isIOS ? apiKeyIos : apiKeyAndroid
       };
 
       return await DioHelper.getData(
@@ -198,7 +199,7 @@ class TripDetailsRemoteDataSourceImpl implements TripDetailsRemoteDataSource {
     try {
       var body = {
         "place_id": placeId,
-        "key": "AIzaSyCVy_LzCTaZn-MCwJF6qElGO3gc5K0JwI8"
+        "key": Platform.isIOS ? apiKeyIos : apiKeyAndroid
       };
 
       return await DioHelper.getData(

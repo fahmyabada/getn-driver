@@ -176,20 +176,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.7.3"
-  device_frame:
-    dependency: transitive
-    description:
-      name: device_frame
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.0"
-  device_preview:
-    dependency: "direct main"
-    description:
-      name: device_preview
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.0"
   dio:
     dependency: "direct main"
     description:
@@ -504,13 +490,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  freezed_annotation:
-    dependency: transitive
+  font_awesome_flutter:
+    dependency: "direct main"
     description:
-      name: freezed_annotation
+      name: font_awesome_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.0"
+    version: "10.3.0"
   geocoding:
     dependency: "direct main"
     description:

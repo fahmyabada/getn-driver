@@ -13,6 +13,7 @@ class LanguageCubit extends Cubit<LanguageState> {
   static LanguageCubit get(context) => BlocProvider.of(context);
 
   Map<String, Object> textAr = {
+    'NotificationSetting': 'يجب تفعيل الاشعارات اولا',
     'networkFailureMessage': 'لا يوجد انترنت',
     'egp': 'ج.م',
     'optTrip': 'قم بإدخال كود التأكيد الثنائي المرسل للعميل لبدء الرحلة',
@@ -139,6 +140,7 @@ class LanguageCubit extends Cubit<LanguageState> {
     'extraKM': 'كيلوات اضافية',
     'UsedPoints': 'النقاط/اليوم',
     'TotalDistance': 'إجمالي المسافة',
+    'packagesPoints': 'النقاط الاضافية',
     'TotalPrice': 'إجمالي السعر',
     'current': 'الحالية',
     'currentDay': 'اليوم الحالي',
@@ -240,6 +242,7 @@ class LanguageCubit extends Cubit<LanguageState> {
   };
 
   Map<String, Object> textEn = {
+    'NotificationSetting': 'Notifications must be activated first',
     'networkFailureMessage': 'network not available',
     'egp': 'EGP',
     'optTrip':
@@ -366,6 +369,7 @@ class LanguageCubit extends Cubit<LanguageState> {
     'extraKM': 'Extra KM',
     'UsedPoints': 'Points/Day',
     'TotalDistance': 'Total Km/D',
+    'packagesPoints': 'Additional Points',
     'KM': 'KM',
     'TotalPrice': 'Total Price',
     'current': 'current',

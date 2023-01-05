@@ -151,7 +151,8 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
   void viewWillAppear() {
     print("onResume / viewWillAppear / onFocusGained    requestTabs");
     getIt<SharedPreferences>().reload().then((value) {
-      print("onResumeRequestTabsScreen******** ${getIt<SharedPreferences>().getString('screenResume').toString()}");
+      print(
+          "onResumeRequestTabsScreen******** ${getIt<SharedPreferences>().getString('screenResume').toString()}");
       getIt<SharedPreferences>().setString('screenResume', '');
       if (getIt<SharedPreferences>().getString('screenResume') != null &&
           getIt<SharedPreferences>().getString('screenResume')!.isNotEmpty &&
@@ -766,7 +767,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                     children: [
                       Text(
                         LanguageCubit.get(context)
-                            .getTexts('TotalDistance')
+                            .getTexts('packagesPoints')
                             .toString(),
                         textAlign: TextAlign.center,
                         style: TextStyle(color: grey2, fontSize: 12.sp),
@@ -775,8 +776,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                         height: 5.h,
                       ),
                       Text(
-                        ((current.subtotalPoints! / current.days!.length) *
-                                current.carCategory!.oneKMPoints!.toDouble())
+                        // ((current.subtotalPoints! / current.days!.length) *
+                        //     current.carCategory!.oneKMPoints!.toDouble())
+                        //     .toStringAsFixed(2),
+                        (current.packagesPoints! -
+                                current.consumptionPackagesPoints!)
                             .toStringAsFixed(2),
                         textAlign: TextAlign.center,
                         style: TextStyle(
@@ -1212,7 +1216,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                       children: [
                         Text(
                           LanguageCubit.get(context)
-                              .getTexts('TotalDistance')
+                              .getTexts('packagesPoints')
                               .toString(),
                           textAlign: TextAlign.center,
                           style: TextStyle(color: grey2, fontSize: 13.sp),
@@ -1221,8 +1225,10 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          ((upComing.subtotalPoints! / upComing.days!.length) *
-                                  upComing.carCategory!.oneKMPoints!.toDouble())
+                          // ((upComing.subtotalPoints! / upComing.days!.length) *
+                          //         upComing.carCategory!.oneKMPoints!.toDouble())
+                            (upComing.packagesPoints! -
+                              upComing.consumptionPackagesPoints!)
                               .toStringAsFixed(2),
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -1657,7 +1663,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                       children: [
                         Text(
                           LanguageCubit.get(context)
-                              .getTexts('TotalDistance')
+                              .getTexts('packagesPoints')
                               .toString(),
                           textAlign: TextAlign.center,
                           style: TextStyle(color: grey2, fontSize: 12.sp),
@@ -1666,8 +1672,10 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          ((past.subtotalPoints! / past.days!.length) *
-                                  past.carCategory!.oneKMPoints!.toDouble())
+                          // ((past.subtotalPoints! / past.days!.length) *
+                          //         past.carCategory!.oneKMPoints!.toDouble())
+                            (past.packagesPoints! -
+                              past.consumptionPackagesPoints!)
                               .toStringAsFixed(2),
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -2064,7 +2072,7 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                       children: [
                         Text(
                           LanguageCubit.get(context)
-                              .getTexts('TotalDistance')
+                              .getTexts('packagesPoints')
                               .toString(),
                           textAlign: TextAlign.center,
                           style: TextStyle(color: grey2, fontSize: 12.sp),
@@ -2073,8 +2081,9 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                           height: 5.h,
                         ),
                         Text(
-                          ((pending.subtotalPoints! / pending.days!.length) *
-                                  pending.carCategory!.oneKMPoints!.toDouble())
+                          // ((pending.subtotalPoints! / pending.days!.length) *
+                          //         pending.carCategory!.oneKMPoints!.toDouble())
+                            (pending.packagesPoints! - pending.consumptionPackagesPoints!)
                               .toStringAsFixed(2),
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -2129,45 +2138,47 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                 loadAcceptVisible
                     ? RequestCubit.get(context).loadingEditPending
                         ? Expanded(child: loading())
-                        : Expanded( 
-                          child: defaultButton2(
-                              press: () {
-                                RequestCubit.get(context)
-                                    .editRequest(pending.id!, "accept", "");
+                        : Expanded(
+                            child: defaultButton2(
+                                press: () {
+                                  RequestCubit.get(context)
+                                      .editRequest(pending.id!, "accept", "");
 
-                                setState(() {
-                                  indexPending = i;
-                                });
-                              },
-                              text: LanguageCubit.get(context)
-                                  .getTexts('Accept')
-                                  .toString(),
-                              paddingVertical: 1,
-                              fontSize: 20,
-                              borderRadius: 100,
-                              backColor: accentColor,
-                              textColor: white),
-                        )
+                                  setState(() {
+                                    indexPending = i;
+                                  });
+                                },
+                                text: LanguageCubit.get(context)
+                                    .getTexts('Accept')
+                                    .toString(),
+                                paddingVertical: 1,
+                                fontSize: 20,
+                                borderRadius: 100,
+                                backColor: accentColor,
+                                textColor: white),
+                          )
                     : Expanded(
-                      child: defaultButton2(
-                          press: () {
-                            RequestCubit.get(context)
-                                .editRequest(pending.id!, "accept", "");
-                            setState(() {
-                              indexPending = i;
-                            });
-                          },
-                          text: LanguageCubit.get(context)
-                              .getTexts('Accept')
-                              .toString(),
-                          paddingVertical: 1,
-                          paddingHorizontal: 10,
-                          fontSize: 20,
-                          borderRadius: 100,
-                          backColor: accentColor,
-                          textColor: white),
-                    ),
-                SizedBox(width: 15.w,),
+                        child: defaultButton2(
+                            press: () {
+                              RequestCubit.get(context)
+                                  .editRequest(pending.id!, "accept", "");
+                              setState(() {
+                                indexPending = i;
+                              });
+                            },
+                            text: LanguageCubit.get(context)
+                                .getTexts('Accept')
+                                .toString(),
+                            paddingVertical: 1,
+                            paddingHorizontal: 10,
+                            fontSize: 20,
+                            borderRadius: 100,
+                            backColor: accentColor,
+                            textColor: white),
+                      ),
+                SizedBox(
+                  width: 15.w,
+                ),
                 Expanded(
                   child: defaultButton2(
                     press: () {
@@ -2193,8 +2204,9 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
                         },
                       );
                     },
-                    text:
-                        LanguageCubit.get(context).getTexts('Reject').toString(),
+                    text: LanguageCubit.get(context)
+                        .getTexts('Reject')
+                        .toString(),
                     borderRadius: 100,
                     paddingVertical: 1,
                     fontSize: 20,
@@ -2258,13 +2270,11 @@ class _RequestTabsScreenState extends State<RequestTabsScreen>
               child: Row(
                 children: [
                   ClipRRect(
-                    borderRadius:
-                    BorderRadius.circular(
-                        40.r),
+                    borderRadius: BorderRadius.circular(40.r),
                     child: ImageTools.image(
                         fit: BoxFit.fill,
                         url: getIt<SharedPreferences>()
-                            .getString('userImage') ??
+                                .getString('userImage') ??
                             "https://www.pphfoundation.ca/wp-content/uploads/2018/05/default-avatar.png",
                         height: 75.w,
                         width: 75.w),

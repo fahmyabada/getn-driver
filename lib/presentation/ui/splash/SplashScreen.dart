@@ -13,6 +13,7 @@ import 'package:getn_driver/presentation/ui/auth/CarRegistrationScreen.dart';
 import 'package:getn_driver/presentation/ui/auth/DriverInformationScreen.dart';
 import 'package:getn_driver/presentation/ui/language/LanguageScreen.dart';
 import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
+import 'package:getn_driver/presentation/ui/notificationSetting/NotificationSettingScreen.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/RequestTabsScreen.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
 import 'package:getn_driver/presentation/ui/splash/splash_screen_cubit.dart';
@@ -50,10 +51,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
     // final idToken = await FirebaseAuth.instance.currentUser?.getIdToken();
     // print('token=****************** $idToken');
-    _messaging.getToken().then((token) {
-      print('token fcm=****************** $token');
-      getIt<SharedPreferences>().setString('fcmToken', token!);
-    });
+    // _messaging.getToken().then((token) {
+    //   print('token fcm=****************** $token');
+    //   getIt<SharedPreferences>().setString('fcmToken', token!);
+    // });
     // 3. On iOS, this helps to take the user permissions
     NotificationSettings settings = await _messaging.requestPermission(
       alert: true,
@@ -146,8 +147,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 LocalNotificationService.createAndDisplayNotification(
                     message, "outTripInRequest");
               }
-            }
-            else if (message.data['type'] == "request" ||
+            } else if (message.data['type'] == "request" ||
                 message.data['type'] == "payment") {
               if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails' &&
@@ -166,49 +166,50 @@ class _SplashScreenState extends State<SplashScreen> {
                 }
                 LocalNotificationService.createAndDisplayNotification(
                     message, "inSameRequest");
-              }
-              else if (getIt<SharedPreferences>().getString('typeScreen') ==
+              } else if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails' &&
                   getIt<SharedPreferences>().getString('requestDetailsId') !=
                       message.data['typeId']) {
                 LocalNotificationService.createAndDisplayNotification(
                     message, "newRequest");
-              }
-              else if (getIt<SharedPreferences>().getString('typeScreen') !=
+              } else if (getIt<SharedPreferences>().getString('typeScreen') !=
                       'requestDetails' &&
                   getIt<SharedPreferences>().getString('typeScreen') !=
                       'tripDetails') {
                 LocalNotificationService.createAndDisplayNotification(
                     message, "outRequest");
-              }
-              else if (getIt<SharedPreferences>().getString('typeScreen') !=
+              } else if (getIt<SharedPreferences>().getString('typeScreen') !=
                       'requestDetails' &&
                   getIt<SharedPreferences>().getString('typeScreen') ==
                       'tripDetails') {
                 LocalNotificationService.createAndDisplayNotification(
                     message, "outRequestInTrip");
               }
-            }
-            else if (message.data['type'] == "requestTransaction" ||
+            } else if (message.data['type'] == "requestTransaction" ||
                 message.data['type'] == "walletTransaction") {
               if (getIt<SharedPreferences>().getString('typeScreen') ==
-                      'WalletScreen') {
-                print('${message.data['type']}***************************equal');
-                WalletCubit.get(navigatorKey.currentContext).typeScreen = "wallet";
+                  'WalletScreen') {
+                print(
+                    '${message.data['type']}***************************equal');
+                WalletCubit.get(navigatorKey.currentContext).typeScreen =
+                    "wallet";
                 WalletCubit.get(navigatorKey.currentContext).indexWallet = 1;
                 WalletCubit.get(navigatorKey.currentContext).currentIndex = 0;
                 WalletCubit.get(navigatorKey.currentContext).getWallet(1);
                 LocalNotificationService.createAndDisplayNotification(
                     message, "inWallet");
-              }else{
-                print('${message.data['type']}***************************NotEqual');
+              } else {
+                print(
+                    '${message.data['type']}***************************NotEqual');
                 LocalNotificationService.createAndDisplayNotification(
                     message, "outWallet");
               }
             }
 
-            print('ssssssss11***************************${getIt<SharedPreferences>().getString('typeScreen')}');
-            print('ssssssss22***************************${getIt<SharedPreferences>().getString('requestDetailsId')}');
+            print(
+                'ssssssss11***************************${getIt<SharedPreferences>().getString('typeScreen')}');
+            print(
+                'ssssssss22***************************${getIt<SharedPreferences>().getString('requestDetailsId')}');
             // this comment for update tabs anyway because i may return request tabs after
             // i in request details that open from notification
 
@@ -359,8 +360,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 // LocalNotificationService.createAndDisplayNotification(
                 //     message, "outTripInRequest");
               }
-            }
-            else if (message.data['type'] == "request" ||
+            } else if (message.data['type'] == "request" ||
                 message.data['type'] == "payment") {
               if (getIt<SharedPreferences>().getString('typeScreen') ==
                       'requestDetails' &&
@@ -404,19 +404,22 @@ class _SplashScreenState extends State<SplashScreen> {
                 // LocalNotificationService.createAndDisplayNotification(
                 //     message, "outRequestInTrip");
               }
-            }
-            else if (message.data['type'] == "requestTransaction" ||
+            } else if (message.data['type'] == "requestTransaction" ||
                 message.data['type'] == "walletTransaction") {
               if (getIt<SharedPreferences>().getString('typeScreen') ==
                   'WalletScreen') {
-                print('${message.data['type']}***************************NotEqual1');
-                WalletCubit.get(navigatorKey.currentContext).typeScreen = "wallet";
+                print(
+                    '${message.data['type']}***************************NotEqual1');
+                WalletCubit.get(navigatorKey.currentContext).typeScreen =
+                    "wallet";
                 WalletCubit.get(navigatorKey.currentContext).indexWallet = 1;
                 WalletCubit.get(navigatorKey.currentContext).currentIndex = 0;
                 WalletCubit.get(navigatorKey.currentContext).getWallet(1);
-              }else{
-                print('${message.data['type']}***************************NotEqual2');
-                LocalNotificationService.goToNextScreen("outWallet", "push", "outWallet");
+              } else {
+                print(
+                    '${message.data['type']}***************************NotEqual2');
+                LocalNotificationService.goToNextScreen(
+                    "outWallet", "push", "outWallet");
               }
             }
 
@@ -503,6 +506,12 @@ class _SplashScreenState extends State<SplashScreen> {
         },
       );
     }
+    else {
+      if (kDebugMode) {
+        print('User Not granted permission');
+      }
+      idRequest = 'NotificationSettingScreen';
+    }
   }
 
   @override
@@ -515,30 +524,37 @@ class _SplashScreenState extends State<SplashScreen> {
             if (kDebugMode) {
               print('*******StartState');
             }
-            if (getIt<SharedPreferences>().getString("typeSign") != null &&
-                getIt<SharedPreferences>().getString("token") != null) {
-              if (getIt<SharedPreferences>().getString("typeSign") == "sign") {
-                navigateAndFinish(context, const DriverInformationScreen());
-              } else if (getIt<SharedPreferences>().getString("typeSign") ==
-                  "signWithInformation") {
-                navigateAndFinish(context, const CarRegistrationScreen());
-              } else if (getIt<SharedPreferences>().getString("typeSign") ==
-                  "signWithCarRegistration") {
-                if (idRequest == 'wallet') {
-                  LocalNotificationService.goToNextScreen(
-                      idRequest, "pushAndRemoveUntil", "wallet");
-                } else if (idRequest.isNotEmpty) {
-                  LocalNotificationService.goToNextScreen(
-                      idRequest, "pushAndRemoveUntil", "");
+            if (idRequest == 'NotificationSettingScreen') {
+              navigateAndFinish(navigatorKey.currentContext,
+                  const NotificationSettingScreen());
+            } else {
+              if (getIt<SharedPreferences>().getString("typeSign") != null &&
+                  getIt<SharedPreferences>().getString("token") != null) {
+                if (getIt<SharedPreferences>().getString("typeSign") ==
+                    "sign") {
+                  navigateAndFinish(context, const DriverInformationScreen());
+                } else if (getIt<SharedPreferences>().getString("typeSign") ==
+                    "signWithInformation") {
+                  navigateAndFinish(context, const CarRegistrationScreen());
+                } else if (getIt<SharedPreferences>().getString("typeSign") ==
+                    "signWithCarRegistration") {
+                  if (idRequest == 'wallet') {
+                    LocalNotificationService.goToNextScreen(
+                        idRequest, "pushAndRemoveUntil", "wallet");
+                  } else if (idRequest.isNotEmpty) {
+                    LocalNotificationService.goToNextScreen(
+                        idRequest, "pushAndRemoveUntil", "");
+                  } else {
+                    print(
+                        'token******${getIt<SharedPreferences>().getString('token')}');
+                    navigateAndFinish(context, const RequestTabsScreen());
+                  }
                 } else {
-                  print('token******${getIt<SharedPreferences>().getString('token')}');
-                  navigateAndFinish(context, const RequestTabsScreen());
+                  navigateAndFinish(context, const LanguageScreen());
                 }
               } else {
                 navigateAndFinish(context, const LanguageScreen());
               }
-            } else {
-              navigateAndFinish(context, const LanguageScreen());
             }
           }
         }, builder: (context, state) {

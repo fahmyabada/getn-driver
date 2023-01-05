@@ -131,7 +131,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   void viewWillAppear() {
     print("onResume / viewWillAppear / onFocusGained     RequestDetailsScreen");
     getIt<SharedPreferences>().reload().then((value) {
-      print("onResumeRequestDetailsScreen******** ${getIt<SharedPreferences>().getString('screenResume').toString()}");
+      print(
+          "onResumeRequestDetailsScreen******** ${getIt<SharedPreferences>().getString('screenResume').toString()}");
       getIt<SharedPreferences>().setString('screenResume', '');
       if (getIt<SharedPreferences>().getString('screenResume') != null &&
           getIt<SharedPreferences>().getString('screenResume')!.isNotEmpty &&
@@ -1463,7 +1464,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         children: [
                           Text(
                             LanguageCubit.get(context)
-                                .getTexts('TotalDistance')
+                                .getTexts('packagesPoints')
                                 .toString(),
                             textAlign: TextAlign.center,
                             style: TextStyle(color: grey2, fontSize: 12.sp),
@@ -1472,18 +1473,25 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             height: 5.h,
                           ),
                           Text(
-                            ((RequestDetailsCubit.get(context)
-                                            .requestDetails!
-                                            .subtotalPoints! /
-                                        RequestDetailsCubit.get(context)
-                                            .requestDetails!
-                                            .days!
-                                            .length) *
+                            // ((RequestDetailsCubit.get(context)
+                            //     .requestDetails!
+                            //     .subtotalPoints! /
+                            //     RequestDetailsCubit.get(context)
+                            //         .requestDetails!
+                            //         .days!
+                            //         .length) *
+                            //     RequestDetailsCubit.get(context)
+                            //         .requestDetails!
+                            //         .carCategory!
+                            //         .oneKMPoints!
+                            //         .toDouble())
+                            //     .toStringAsFixed(2),
+                            (RequestDetailsCubit.get(context)
+                                        .requestDetails!
+                                        .packagesPoints! -
                                     RequestDetailsCubit.get(context)
                                         .requestDetails!
-                                        .carCategory!
-                                        .oneKMPoints!
-                                        .toDouble())
+                                        .consumptionPackagesPoints!)
                                 .toStringAsFixed(2),
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -1961,37 +1969,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                           children: [
                                             Expanded(
                                               child: Card(
-                                                color: yellowLightColor,
-                                                child: Padding(
-                                                  padding: EdgeInsets.all(10.r),
-                                                  child: Column(children: [
-                                                    Text(
-                                                      LanguageCubit.get(context)
-                                                          .getTexts('Distance')
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          color: grey2,
-                                                          fontSize: 14.sp),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 5.r,
-                                                    ),
-                                                    Text(
-                                                      '${trip.consumptionKM!.toStringAsFixed(2)} ${LanguageCubit.get(context).getTexts('KM')}',
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                          color: black,
-                                                          fontSize: 14.sp,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                  ]),
-                                                ),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Card(
                                                 color: rough,
                                                 child: Padding(
                                                   padding: EdgeInsets.all(10.r),
@@ -2049,6 +2026,37 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                           fontSize: 14.sp,
                                                           fontWeight:
                                                               FontWeight.bold),
+                                                    ),
+                                                  ]),
+                                                ),
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Card(
+                                                color: yellowLightColor,
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(10.r),
+                                                  child: Column(children: [
+                                                    Text(
+                                                      LanguageCubit.get(context)
+                                                          .getTexts('Distance')
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                          color: grey2,
+                                                          fontSize: 14.sp),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 5.r,
+                                                    ),
+                                                    Text(
+                                                      '${trip.consumptionKM!.toStringAsFixed(2)} ${LanguageCubit.get(context).getTexts('KM')}',
+                                                      textAlign:
+                                                      TextAlign.center,
+                                                      style: TextStyle(
+                                                          color: black,
+                                                          fontSize: 14.sp,
+                                                          fontWeight:
+                                                          FontWeight.bold),
                                                     ),
                                                   ]),
                                                 ),

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:getn_driver/data/api/network_info.dart';
@@ -7,6 +9,7 @@ import 'package:getn_driver/data/model/predictionsPlaceSearch/PredictionsPlaceSe
 import 'package:getn_driver/data/model/request/DataRequest.dart';
 import 'package:getn_driver/data/model/trips/Data.dart';
 import 'package:getn_driver/data/repository/tripDetails/TripDetailsRemoteDataSource.dart';
+import 'package:getn_driver/data/utils/constant.dart';
 import 'package:getn_driver/domain/repository/TripDetailsRepository.dart';
 import 'package:getn_driver/main.dart';
 import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
@@ -110,7 +113,7 @@ class TripDetailsRepositoryImpl extends TripDetailsRepository {
         final body = {
           'origin': '${l1.latitude},${l1.longitude}',
           'destination': '${l2.latitude},${l2.longitude}',
-          'key': 'AIzaSyAERKSFYMxdSR6mrMmgyesmQOr8miAFd4c',
+          "key": Platform.isIOS ? apiKeyIos : apiKeyAndroid
         };
 
         return await tripDetailsRemoteDataSource

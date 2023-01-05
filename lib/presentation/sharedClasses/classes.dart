@@ -300,7 +300,7 @@ class _CustomDialogLocationState extends State<CustomDialogLocation> {
                                 minWidth: 80.w,
                                 onPressed: widget.press,
                                 child: Text(
-                                  "ok",
+                                  LanguageCubit.get(context).getTexts('Ok').toString(),
                                   style:
                                       TextStyle(color: white, fontSize: 15.sp),
                                 )),
@@ -316,7 +316,7 @@ class _CustomDialogLocationState extends State<CustomDialogLocation> {
                                     AppSettings.openLocationSettings(),
                                 minWidth: 80.w,
                                 child: Text(
-                                  "Setting",
+                                  LanguageCubit.get(context).getTexts('Setting').toString(),
                                   style:
                                       TextStyle(color: black, fontSize: 15.sp),
                                 )),
@@ -1792,17 +1792,6 @@ class CustomNotHaveNetwork extends StatelessWidget {
       ),
     );
   }
-}
-
-Future<double> getDistanceKM(double fromLatitude, double fromLongitude,
-    double toLatitude, double toLongitude) async {
-  return Geolocator.distanceBetween(
-        fromLatitude,
-        fromLongitude,
-        toLatitude,
-        toLongitude,
-      ) /
-      1000;
 }
 
 class DrawerMenu extends StatelessWidget {

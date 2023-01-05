@@ -5,7 +5,8 @@ import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 const placeHolderImage =
     "https://www.escapeauthority.com/wp-content/uploads/2116/11/No-image-found.jpg";
 
-const apiKey = "AIzaSyCVy_LzCTaZn-MCwJF6qElGO3gc5K0JwI8";
+const apiKeyAndroid = "AIzaSyBw4jfzf6T0r8C8BZK6f7PG_3JJXoDOe70";
+const apiKeyIos = "AIzaSyBD1KUeURXjZajvtxdqFnjrqaNvPJPnEzs";
 
 String serverFailureMessage = 'Server Failure';
 String cashFailureMessage = 'Cache Failure';
