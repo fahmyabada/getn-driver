@@ -3,10 +3,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/main.dart';
+import 'package:getn_driver/data/utils/notification_icons.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
 import 'package:getn_driver/presentation/notificationService/local_notification_service.dart';
 import 'package:getn_driver/presentation/ui/auth/CarRegistrationScreen.dart';
@@ -42,7 +42,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Icon(
-                FontAwesomeIcons.exclamation,
+                MyFlutterApp.attention_alt,
                 size: 200.sp,
                 color: accentColor,
               ),
