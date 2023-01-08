@@ -92,8 +92,11 @@ class _SearchMapScreenState extends State<SearchMapScreen> {
                   ),
                   suggestionsCallback: (pattern) async {
                     return pattern.isNotEmpty
-                        ? await TripCreateCubit.get(context)
-                            .searchLocation(pattern)
+                        ? await Future.delayed(
+                            const Duration(milliseconds: 500), () async {
+                            return await TripCreateCubit.get(context)
+                                .searchLocation(pattern);
+                          })
                         : [Predictions(placeId: "", description: "")];
                   },
                   itemBuilder: (context, Predictions suggestion) {

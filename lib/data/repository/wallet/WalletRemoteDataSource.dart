@@ -23,7 +23,7 @@ class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
   @override
   Future<Either<String, WalletModel>> getWallet(int index) async {
     try {
-      var body = {"page": index, "sort": 'createdAt: -1'};
+      var body = {"page": index, "sort": 'createdAt:-1'};
       return await DioHelper.getData(
               url: 'walletTransactions',
               query: body,
@@ -43,7 +43,7 @@ class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
   @override
   Future<Either<String, WalletModel?>> getRequests(int index) async {
     try {
-      var body = {"page": index, "sort": 'createdAt: -1'};
+      var body = {"page": index, "sort": 'createdAt:-1'};
       return await DioHelper.getData(
               url: 'requestTransactions',
               query: body,

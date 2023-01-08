@@ -949,36 +949,37 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                         SizedBox(
                                           height: 15.h,
                                         ),
-                                        RequestDetailsCubit.get(context)
-                                                        .requestDetails!
-                                                        .status !=
-                                                    null &&
-                                                RequestDetailsCubit.get(context)
-                                                        .requestDetails!
-                                                        .status ==
-                                                    "start" &&
-                                                currentDate.isBefore(
-                                                  DateFormat("yyyy-MM-ddTHH:mm")
-                                                      .parse(RequestDetailsCubit
-                                                              .get(context)
-                                                          .requestDetails!
-                                                          .to!),
-                                                ) &&
-                                                currentDate.isAfter(
-                                                  DateFormat("yyyy-MM-ddTHH:mm")
-                                                      .parse(RequestDetailsCubit
-                                                              .get(context)
-                                                          .requestDetails!
-                                                          .from!
-                                                          .date!),
-                                                )
-                                            ? state is CurrentLocationLoading
-                                                ? const Center(
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                    color: black,
-                                                  ))
-                                                : defaultButton2(
+                                        // RequestDetailsCubit.get(context)
+                                        //                 .requestDetails!
+                                        //                 .status !=
+                                        //             null &&
+                                        //         RequestDetailsCubit.get(context)
+                                        //                 .requestDetails!
+                                        //                 .status ==
+                                        //             "start" &&
+                                        //         currentDate.isBefore(
+                                        //           DateFormat("yyyy-MM-ddTHH:mm")
+                                        //               .parse(RequestDetailsCubit
+                                        //                       .get(context)
+                                        //                   .requestDetails!
+                                        //                   .to!),
+                                        //         ) &&
+                                        //         currentDate.isAfter(
+                                        //           DateFormat("yyyy-MM-ddTHH:mm")
+                                        //               .parse(RequestDetailsCubit
+                                        //                       .get(context)
+                                        //                   .requestDetails!
+                                        //                   .from!
+                                        //                   .date!),
+                                        //         )
+                                        //     ? state is CurrentLocationLoading
+                                        //         ? const Center(
+                                        //             child:
+                                        //                 CircularProgressIndicator(
+                                        //             color: black,
+                                        //           ))
+                                        //         :
+                                        defaultButton2(
                                                     text: LanguageCubit.get(
                                                             context)
                                                         .getTexts('AddTrip')
@@ -993,8 +994,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                     paddingHorizontal: 80,
                                                     fontSize: 20,
                                                     textColor: white,
-                                                    backColor: accentColor)
-                                            : Container(),
+                                                    backColor: accentColor),
+                                            // : Container(),
                                         SizedBox(
                                           height: 15.h,
                                         ),
