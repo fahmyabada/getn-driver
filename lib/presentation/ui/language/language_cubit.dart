@@ -13,6 +13,13 @@ class LanguageCubit extends Cubit<LanguageState> {
   static LanguageCubit get(context) => BlocProvider.of(context);
 
   Map<String, Object> textAr = {
+    'successDelete': 'تم الحذف بنجاح',
+    'reason': 'سبب حذف الحساب',
+    'SendRequest': 'ارسل الطلب',
+    'EnterReason': 'أدخل السبب أولاً من فضلك',
+    'titleDeleteAccount': 'هل تريد حذف حسابك الشخصي؟',
+    'contentDeleteAccount': 'إذا كنت متاكد من ذلك, قم بإدخال اسباب الحذف الخاص بك ومن ثم قم بإارسال الطلب',
+    'DeleteAccount': 'حذف الحساب',
     'NotificationSetting': 'يجب تفعيل الاشعارات اولا',
     'networkFailureMessage': 'لا يوجد انترنت',
     'egp': 'ج.م',
@@ -28,6 +35,7 @@ class LanguageCubit extends Cubit<LanguageState> {
     'Ok': 'موافق',
     'Cancel': 'إلغاء',
     'comment': 'سبب الرفض',
+    'EnterComment': 'أدخل التعليق أولا من فضلك',
     'networkNotAvailable': 'لا يوجد انترنت',
     'notPaidYet': 'لم يدفع بعد..',
     'CarRegistration': 'تسجيل السيارة',
@@ -242,6 +250,13 @@ class LanguageCubit extends Cubit<LanguageState> {
   };
 
   Map<String, Object> textEn = {
+    'successDelete': 'Deleted successfully',
+    'reason': 'The reason for deleting the account',
+    'SendRequest': 'Send a request',
+    'EnterReason': 'Enter Reason First Please..',
+    'titleDeleteAccount': 'Do you want to delete your account?',
+    'contentDeleteAccount': 'if yes, enter your reasons and send a request to our support team.',
+    'DeleteAccount': 'Delete Account',
     'NotificationSetting': 'Notifications must be activated first',
     'networkFailureMessage': 'network not available',
     'egp': 'EGP',

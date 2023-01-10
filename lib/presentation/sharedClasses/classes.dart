@@ -1,6 +1,8 @@
 import 'dart:ui' as ui;
 
 import 'package:app_settings/app_settings.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,12 +21,187 @@ import 'package:getn_driver/presentation/ui/policies/PoliciesScreen.dart';
 import 'package:getn_driver/presentation/ui/request/requestDetails/request_details_cubit.dart';
 import 'package:getn_driver/presentation/ui/request/requestTabs/request_cubit.dart';
 import 'package:getn_driver/presentation/ui/setting/SettingScreen.dart';
+import 'package:getn_driver/presentation/ui/setting/setting_screen_cubit.dart';
 import 'package:getn_driver/presentation/ui/trip/tripDetails/TripDetailsScreen.dart';
 import 'package:getn_driver/presentation/ui/trip/tripDetails/trip_details_cubit.dart';
 import 'package:getn_driver/presentation/ui/wallet/WalletScreen.dart';
 import 'package:getn_driver/presentation/ui/wallet/wallet_cubit.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+class CustomDialogDeleteAccount extends StatefulWidget {
+  final String? title, description;
+
+  const CustomDialogDeleteAccount({
+    Key? key,
+    this.title,
+    this.description,
+  }) : super(key: key);
+
+  @override
+  State<CustomDialogDeleteAccount> createState() =>
+      _CustomDialogDeleteAccountState();
+}
+
+class _CustomDialogDeleteAccountState extends State<CustomDialogDeleteAccount> {
+  bool loadingDeleteAccount = false;
+  var reasonController = TextEditingController();
+  var formKeyReason = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => SettingScreenCubit(),
+      child: BlocConsumer<SettingScreenCubit, SettingScreenState>(
+        listener: (context, state) {
+          if (state is DeleteAccountErrorState) {
+            setState(() {
+              loadingDeleteAccount = false;
+            });
+          } else if (state is DeleteAccountSuccessState) {
+            FirebaseMessaging messaging = FirebaseMessaging.instance;
+            FirebaseAuth.instance
+                .signOut()
+                .then((value) => messaging.deleteToken())
+                .then((value) {
+              getIt<SharedPreferences>().clear().then((value) {
+                getIt<SharedPreferences>()
+                    .setBool("isEn", LanguageCubit.get(context).isEn);
+                Navigator.pop(context);
+                showToastt(
+                    text: LanguageCubit.get(context)
+                        .getTexts('successDelete')
+                        .toString(),
+                    state: ToastStates.success,
+                    context: context);
+                navigateAndFinish(context, const SignInScreen());
+              });
+            });
+          }
+        },
+        builder: (context, state) {
+          return Directionality(
+            textDirection: LanguageCubit.get(context).isEn
+                ? ui.TextDirection.ltr
+                : ui.TextDirection.rtl,
+            child: Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              child: Container(
+                padding: EdgeInsets.only(
+                    top: 40.r, bottom: 20.r, left: 16.r, right: 16.r),
+                margin: EdgeInsets.only(top: 50.r),
+                decoration: BoxDecoration(
+                  color: white,
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 10.r,
+                    ),
+                    Text(
+                      widget.title!,
+                      style: TextStyle(
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w700,
+                          color: accentColor),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(
+                      height: 16.r,
+                    ),
+                    Text(
+                      widget.description!,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16.sp, color: black),
+                    ),
+                    SizedBox(
+                      height: 44.h,
+                    ),
+                    Form(
+                      key: formKeyReason,
+                      child: defaultFormField(
+                          controller: reasonController,
+                          type: TextInputType.text,
+                          label: LanguageCubit.get(context)
+                              .getTexts('reason')
+                              .toString(),
+                          textSize: 15,
+                          borderRadius: 50,
+                          border: false,
+                          borderColor: white,
+                          validatorText: reasonController.text,
+                          validatorMessage: LanguageCubit.get(context)
+                              .getTexts('EnterReason')
+                              .toString(),
+                          onEditingComplete: () {
+                            FocusScope.of(context).unfocus();
+                          }),
+                    ),
+                    SizedBox(
+                      height: 24.h,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        loadingDeleteAccount
+                            ? loading()
+                            : MaterialButton(
+                            height: 30.h,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.r)),
+                            color: accentColor,
+                            minWidth: 80.w,
+                            onPressed: () {
+                              if (formKeyReason.currentState!.validate()) {
+                                SettingScreenCubit.get(context).deleteAccount(
+                                    reasonController.text.toString().trim());
+
+                                setState(() {
+                                  loadingDeleteAccount = true;
+                                });
+                              }
+                            },
+                            child: Text(
+                              LanguageCubit.get(context)
+                                  .getTexts('SendRequest')
+                                  .toString(),
+                              style: TextStyle(color: white, fontSize: 15.sp),
+                            )),
+                        SizedBox(
+                          width: 30.w,
+                        ),
+                        MaterialButton(
+                            height: 30.h,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.r)),
+                            color: grey,
+                            onPressed: () => Navigator.pop(context),
+                            minWidth: 80.w,
+                            child: Text(
+                              LanguageCubit.get(context)
+                                  .getTexts('Cancel')
+                                  .toString(),
+                              style: TextStyle(color: black, fontSize: 15.sp),
+                            )),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
 
 class CustomDialogRequestTabs extends StatefulWidget {
   final String? title, description, id;
@@ -300,7 +477,9 @@ class _CustomDialogLocationState extends State<CustomDialogLocation> {
                                 minWidth: 80.w,
                                 onPressed: widget.press,
                                 child: Text(
-                                  LanguageCubit.get(context).getTexts('Ok').toString(),
+                                  LanguageCubit.get(context)
+                                      .getTexts('Ok')
+                                      .toString(),
                                   style:
                                       TextStyle(color: white, fontSize: 15.sp),
                                 )),
@@ -316,7 +495,9 @@ class _CustomDialogLocationState extends State<CustomDialogLocation> {
                                     AppSettings.openLocationSettings(),
                                 minWidth: 80.w,
                                 child: Text(
-                                  LanguageCubit.get(context).getTexts('Setting').toString(),
+                                  LanguageCubit.get(context)
+                                      .getTexts('Setting')
+                                      .toString(),
                                   style:
                                       TextStyle(color: black, fontSize: 15.sp),
                                 )),
@@ -1544,8 +1725,7 @@ class _CustomDialogOtpTripState extends State<CustomDialogOtpTrip> {
         elevation: 0,
         backgroundColor: Colors.transparent,
         child: Container(
-          padding:
-              EdgeInsets.all(40.r),
+          padding: EdgeInsets.all(40.r),
           margin: EdgeInsets.only(top: 50.r),
           decoration: BoxDecoration(
             color: white,
@@ -1558,9 +1738,7 @@ class _CustomDialogOtpTripState extends State<CustomDialogOtpTrip> {
               Text(
                 LanguageCubit.get(context).getTexts('optTrip').toString(),
                 style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w700,
-                    color: black),
+                    fontSize: 20.sp, fontWeight: FontWeight.w700, color: black),
                 textAlign: TextAlign.center,
               ),
               SizedBox(
@@ -1643,13 +1821,14 @@ class _CustomDialogOtpTripState extends State<CustomDialogOtpTrip> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                 
                   Expanded(
                     child: SizedBox(
                       child: ElevatedButton(
-                        onPressed: openOk ? () {
-                          Navigator.of(context).pop(otp);
-                        } : null,
+                        onPressed: openOk
+                            ? () {
+                                Navigator.of(context).pop(otp);
+                              }
+                            : null,
                         style: TextButton.styleFrom(
                           backgroundColor: accentColor,
                           foregroundColor: white,
@@ -1659,9 +1838,7 @@ class _CustomDialogOtpTripState extends State<CustomDialogOtpTrip> {
                           textStyle: TextStyle(fontSize: 20.sp),
                         ),
                         child: Text(
-                          LanguageCubit.get(context)
-                              .getTexts('Ok')
-                              .toString(),
+                          LanguageCubit.get(context).getTexts('Ok').toString(),
                         ),
                       ),
                     ),

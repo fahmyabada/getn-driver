@@ -26,6 +26,8 @@ import 'package:getn_driver/data/repository/request/RequestRemoteDataSource.dart
 import 'package:getn_driver/data/repository/request/RequestRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/requestDetails/RequestDetailsRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/requestDetails/RequestDetailsRepositoryImpl.dart';
+import 'package:getn_driver/data/repository/setting/SettingRemoteDataSource.dart';
+import 'package:getn_driver/data/repository/setting/SettingRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/tripCreate/TripCreateRemoteDataSource.dart';
 import 'package:getn_driver/data/repository/tripCreate/TripCreateRepositoryImpl.dart';
 import 'package:getn_driver/data/repository/tripDetails/TripDetailsRemoteDataSource.dart';
@@ -45,6 +47,7 @@ import 'package:getn_driver/domain/repository/PoliciesRepository.dart';
 import 'package:getn_driver/domain/repository/RecomendPlaceRepository.dart';
 import 'package:getn_driver/domain/repository/RequestDetailsRepository.dart';
 import 'package:getn_driver/domain/repository/RequestRepository.dart';
+import 'package:getn_driver/domain/repository/SettingRepository.dart';
 import 'package:getn_driver/domain/repository/TripCreateRepository.dart';
 import 'package:getn_driver/domain/repository/TripDetailsRepository.dart';
 import 'package:getn_driver/domain/repository/WalletRepository.dart';
@@ -88,6 +91,7 @@ import 'package:getn_driver/domain/usecase/requestDetails/GetLastTripUseCase.dar
 import 'package:getn_driver/domain/usecase/requestDetails/GetRequestDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/GetTripsRequestDetailsUseCase.dart';
 import 'package:getn_driver/domain/usecase/requestDetails/PutRequestDetailsUseCase.dart';
+import 'package:getn_driver/domain/usecase/setting/DeleteAccountUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripCreate/CanCreateTripUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripCreate/CreateTripUseCase.dart';
 import 'package:getn_driver/domain/usecase/tripCreate/GetPlaceDetailsUseCase.dart';
@@ -164,10 +168,18 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => CanCreateTripUseCase(getIt()));
   getIt.registerLazySingleton(() => GetCategoryPlaceTripUseCase(getIt()));
   getIt.registerLazySingleton(() => GetPackagesUseCase(getIt()));
+  getIt.registerLazySingleton(() => DeleteAccountUseCase(getIt()));
 
   // Repository
   getIt.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
+      getIt(),
+      getIt(),
+    ),
+  );
+
+  getIt.registerLazySingleton<SettingRepository>(
+        () => SettingRepositoryImpl(
       getIt(),
       getIt(),
     ),
@@ -327,6 +339,9 @@ Future<void> init() async {
 
   getIt.registerLazySingleton<PackagesRemoteDataSource>(
           () => PackagesRemoteDataSourceImpl());
+
+  getIt.registerLazySingleton<SettingRemoteDataSource>(
+          () => SettingRemoteDataSourceImpl());
 
   //! Core
   getIt.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(getIt()));

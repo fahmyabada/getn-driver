@@ -1,13 +1,14 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getn_driver/data/utils/colors.dart';
 import 'package:getn_driver/data/utils/widgets.dart';
 import 'package:getn_driver/presentation/di/injection_container.dart';
+import 'package:getn_driver/presentation/sharedClasses/classes.dart';
 import 'package:getn_driver/presentation/ui/editProfile/EditProfileScreen.dart';
 import 'package:getn_driver/presentation/ui/language/language_cubit.dart';
 import 'package:getn_driver/presentation/ui/myCar/MyCarScreen.dart';
-import 'dart:ui' as ui;
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -18,17 +19,15 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
-
   @override
   void initState() {
     super.initState();
 
     if (getIt<SharedPreferences>().getBool("isEn") != null) {
       LanguageCubit.get(context).isEn =
-      getIt<SharedPreferences>().getBool("isEn")!;
+          getIt<SharedPreferences>().getBool("isEn")!;
     }
   }
-
 
   bodyWidget(BuildContext context) {
     return SingleChildScrollView(
@@ -39,17 +38,14 @@ class _SettingScreenState extends State<SettingScreen> {
         ),
         child: Column(
           children: [
-
             buildSettingItem(
               context: context,
-              title: LanguageCubit.get(context)
-                  .getTexts('MyAccount')
-                  .toString(),
-              onClick: () async{
-               await navigateToWithRefreshPagePrevious(
-                    context,
-                    const EditProfileScreen());
-               setState(() {});
+              title:
+                  LanguageCubit.get(context).getTexts('MyAccount').toString(),
+              onClick: () async {
+                await navigateToWithRefreshPagePrevious(
+                    context, const EditProfileScreen());
+                setState(() {});
               },
             ),
             SizedBox(
@@ -57,13 +53,36 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
             buildSettingItem(
               context: context,
-              title: LanguageCubit.get(context)
-                  .getTexts('MyCar')
-                  .toString(),
+              title: LanguageCubit.get(context).getTexts('MyCar').toString(),
               onClick: () {
-                navigateTo(
-                    context,
-                    const MyCarScreen());
+                navigateTo(context, const MyCarScreen());
+              },
+            ),
+            SizedBox(
+              height: 10.h,
+            ),
+            buildSettingItem(
+              context: context,
+              title: LanguageCubit.get(context).getTexts('DeleteAccount').toString(),
+              onClick: () {
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  // outside to dismiss
+                  builder: (BuildContext context) {
+                    return WillPopScope(
+                      onWillPop: () async => false,
+                      child: CustomDialogDeleteAccount(
+                        title: LanguageCubit.get(context)
+                            .getTexts('titleDeleteAccount')
+                            .toString(),
+                        description: LanguageCubit.get(context)
+                            .getTexts('contentDeleteAccount')
+                            .toString(),
+                      ),
+                    );
+                  },
+                );
               },
             ),
           ],
@@ -103,9 +122,7 @@ class _SettingScreenState extends State<SettingScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            LanguageCubit.get(context)
-                .getTexts('Setting')
-                .toString(),
+            LanguageCubit.get(context).getTexts('Setting').toString(),
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.w500,
